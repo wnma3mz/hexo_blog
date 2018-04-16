@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion" lang="zh-Hans">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 <meta name="theme-color" content="#222">
@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="Wnma&#39;s Blogs">
 <meta property="og:description" content="本篇文章只做一个神经网络入门知识的梳理和个人的理解。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-04-16T14:43:10.204Z">
+<meta property="og:updated_time" content="2018-04-16T14:44:02.261Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="神经网络笔记">
 <meta name="twitter:description" content="本篇文章只做一个神经网络入门知识的梳理和个人的理解。">
@@ -128,7 +128,7 @@
 
 <link href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
 
-  <title>神经网络笔记 | Wnma's Blogs</title>
+  <title>神经网络笔记 | Wnma's Blogs</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
   
 
 
@@ -147,7 +147,7 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -455,7 +455,7 @@
 <li><p>交叉熵代价函数</p>
 <h2 id="C-frac-1-2n-sum-limits-x-y-ln-a-1-y-ln-1-a"><a href="#C-frac-1-2n-sum-limits-x-y-ln-a-1-y-ln-1-a" class="headerlink" title="$C=\frac{1}{2n}\sum_\limits{x}[y\ln a-(1-y)\ln(1-a)]$"></a>$C=\frac{1}{2n}\sum_\limits{x}[y\ln a-(1-y)\ln(1-a)]$</h2></li>
 <li><p>对数似然函数</p>
-<h2 id="C-frac-1-n-sum-limits-x-sum-limits-k-y-k-log-a-k"><a href="#C-frac-1-n-sum-limits-x-sum-limits-k-y-k-log-a-k" class="headerlink" title="$C=\frac{1}{n}\sum_\limits{x}\sum_\limits{k}y_k\log a_k$"></a>$C=\frac{1}{n}\sum_\limits{x}\sum_\limits{k}y_k\log a_k$</h2><p>前向传播是函数求偏导，反向传播减少了这个计算量</p>
+<h2 id="C-frac-1-n-sum-limits-x-sum-limits-k-y-k-log-a-k"><a href="#C-frac-1-n-sum-limits-x-sum-limits-k-y-k-log-a-k" class="headerlink" title="$C=\frac{1}{n}\sum\limits{x}\sum\limits{k}y_k\log a_k$"></a>$C=\frac{1}{n}\sum<em>\limits{x}\sum</em>\limits{k}y_k\log a_k$</h2><p>前向传播是函数求偏导，反向传播减少了这个计算量</p>
 </li>
 </ol>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding: utf-8</span></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sigmoid</span><span class="params">(x, deriv=False)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> (deriv == <span class="keyword">True</span>):</span><br><span class="line">        <span class="keyword">return</span> x * (<span class="number">1</span> - x)</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span> / (<span class="number">1</span> + np.exp(-x))</span><br><span class="line">X = np.array([[<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>],[<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>],[<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>],[<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>]])</span><br><span class="line">y = np.array([[<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>]]).T</span><br><span class="line"></span><br><span class="line">syn_0 = <span class="number">2</span> * np.random.random((<span class="number">3</span>, <span class="number">4</span>)) - <span class="number">1</span></span><br><span class="line">syn_1 = <span class="number">2</span> * np.random.random((<span class="number">4</span>, <span class="number">1</span>)) - <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 加入步长</span></span><br><span class="line">alphas = [<span class="number">0.001</span>,<span class="number">0.01</span>,<span class="number">0.1</span>,<span class="number">1</span>,<span class="number">10</span>,<span class="number">100</span>,<span class="number">1000</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> alpha <span class="keyword">in</span> alphas:</span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> range(<span class="number">10000</span>):</span><br><span class="line">        l0 = X</span><br><span class="line">        l1 = sigmoid(np.dot(l0, syn_0))</span><br><span class="line">        <span class="comment"># 加了一层神经网络，称为隐藏层</span></span><br><span class="line">        l2 = sigmoid(np.dot(l1, syn_1))</span><br><span class="line">        l2_error = y - l2</span><br><span class="line">        l2_delta = l2_error * sigmoid(l2, deriv=<span class="keyword">True</span>)</span><br><span class="line">        <span class="comment"># 计算完l2的误差之后，再用结果去计算l1的误差</span></span><br><span class="line">        l1_error = np.dot(l2_delta, syn_1.T)</span><br><span class="line">        l1_delta = l1_error * sigmoid(l1, deriv=<span class="keyword">True</span>)</span><br><span class="line">        <span class="comment"># 更新权重的时候加入步长</span></span><br><span class="line">        syn_1 += alpha * np.dot(l1.T, l2_delta)</span><br><span class="line">        syn_0 += alpha * np.dot(l0.T, l1_delta)</span><br><span class="line"></span><br><span class="line">    print(<span class="string">"alpha:"</span>, alpha, <span class="string">"l1:"</span>, l1)</span><br></pre></td></tr></table></figure>
@@ -474,7 +474,7 @@
 <p>这里假设对$l_1$进行drop_out。</p>
 <p>定义<code>len(x)=3, hidden_dim=4, dropout_percent=0.2</code></p>
 <p>代入数值计算,</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">np.random.binomial([array([[ <span class="number">1.</span>,  <span class="number">1.</span>,  <span class="number">1.</span>,  <span class="number">1.</span>],</span><br><span class="line">       					 [ <span class="number">1.</span>,  <span class="number">1.</span>,  <span class="number">1.</span>,  <span class="number">1.</span>],</span><br><span class="line">       					 [ <span class="number">1.</span>,  <span class="number">1.</span>,  <span class="number">1.</span>,  <span class="number">1.</span>]])], <span class="number">0.8</span>)[<span class="number">0</span>] * (<span class="number">1</span>/<span class="number">0.8</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">np.random.binomial([array([[ <span class="number">1.</span>,  <span class="number">1.</span>,  <span class="number">1.</span>,  <span class="number">1.</span>],</span><br><span class="line">                           [ <span class="number">1.</span>,  <span class="number">1.</span>,  <span class="number">1.</span>,  <span class="number">1.</span>],</span><br><span class="line">                           [ <span class="number">1.</span>,  <span class="number">1.</span>,  <span class="number">1.</span>,  <span class="number">1.</span>]])], <span class="number">0.8</span>)[<span class="number">0</span>] * (<span class="number">1</span>/<span class="number">0.8</span>)</span><br></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 默认的dropout_percent是0.5, 即如果不加如dropout_percent的话</span></span><br><span class="line"><span class="comment"># 如果是对图像进行操作的话，建议不超过0.25</span></span><br><span class="line">dropout_percent = <span class="number">0.2</span></span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">l1 *= np.random.binomial([np.ones((len(X), hidden_dim))],<span class="number">1</span> - dropout_percent)[<span class="number">0</span>] *(<span class="number">1.0</span>/(<span class="number">1</span> - dropout_percent))</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 <p>P.S:</p>
 <p>对二项分布进行采样。这里的n为<code>[np.ones((len(X), hidden_dim))]</code>，p为<code>1-dropout_percent</code></p>
@@ -699,7 +699,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#最简单的神经网络"><span class="nav-text">最简单的神经网络</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#激活函数"><span class="nav-text">激活函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三层神经网络"><span class="nav-text">三层神经网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#改进神经网络v1-0——增加梯度"><span class="nav-text">改进神经网络v1.0——增加梯度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C-frac-1-2n-sum-limits-n-y-x-a-L-x-2"><span class="nav-text">$C= \frac{1}{2n}\sum_\limits{n}[y(x)-a^L(x)]^2$</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C-frac-1-2n-sum-limits-x-y-ln-a-1-y-ln-1-a"><span class="nav-text">$C=\frac{1}{2n}\sum_\limits{x}[y\ln a-(1-y)\ln(1-a)]$</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C-frac-1-n-sum-limits-x-sum-limits-k-y-k-log-a-k"><span class="nav-text">$C=\frac{1}{n}\sum_\limits{x}\sum_\limits{k}y_k\log a_k$</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#改进神经网络v2-0——增加隐层"><span class="nav-text">改进神经网络v2.0——增加隐层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#改进神经网络v3-0——dropout"><span class="nav-text">改进神经网络v3.0——dropout</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#最简单的神经网络"><span class="nav-text">最简单的神经网络</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#激活函数"><span class="nav-text">激活函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三层神经网络"><span class="nav-text">三层神经网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#改进神经网络v1-0——增加梯度"><span class="nav-text">改进神经网络v1.0——增加梯度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C-frac-1-2n-sum-limits-n-y-x-a-L-x-2"><span class="nav-text">$C= \frac{1}{2n}\sum_\limits{n}[y(x)-a^L(x)]^2$</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C-frac-1-2n-sum-limits-x-y-ln-a-1-y-ln-1-a"><span class="nav-text">$C=\frac{1}{2n}\sum_\limits{x}[y\ln a-(1-y)\ln(1-a)]$</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C-frac-1-n-sum-limits-x-sum-limits-k-y-k-log-a-k"><span class="nav-text">$C=\frac{1}{n}\sum\limits{x}\sum\limits{k}y_k\log a_k$</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#改进神经网络v2-0——增加隐层"><span class="nav-text">改进神经网络v2.0——增加隐层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#改进神经网络v3-0——dropout"><span class="nav-text">改进神经网络v3.0——dropout</span></a></li></ol></div>
             
 
           </div>
@@ -1361,7 +1361,24 @@
         showTime(Counter);
       }
     });
-  </script>
+  </script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
 
 
 

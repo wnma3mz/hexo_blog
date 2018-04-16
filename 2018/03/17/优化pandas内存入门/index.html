@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion" lang="zh-Hans">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 <meta name="theme-color" content="#222">
@@ -128,7 +128,7 @@
 
 <link href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
 
-  <title>优化pandas内存入门 | Wnma's Blogs</title>
+  <title>优化pandas内存入门 | Wnma's Blogs</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
   
 
 
@@ -147,7 +147,7 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -412,7 +412,8 @@
 </ul>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> dtype <span class="keyword">in</span> [<span class="string">'float'</span>, <span class="string">'int'</span>, <span class="string">'object'</span>]:</span><br><span class="line">    <span class="comment"># 选中对应的dtype列</span></span><br><span class="line">    selected_dtype = df.select_dtypes(include=[dtype])</span><br><span class="line">    <span class="comment"># 查看内存使用量的平均值</span></span><br><span class="line">    mean_usage_b = selected_dtype.memory_usage(deep=<span class="keyword">True</span>).mean()</span><br><span class="line">    <span class="comment"># 获取到的数据单位为K, 这里转换一下</span></span><br><span class="line">    mean_usage_mb = mean_usage_b / <span class="number">1024</span> ** <span class="number">2</span></span><br><span class="line">    print(<span class="string">"Average memory usage for &#123;&#125; columns:&#123;:03.2f&#125; MB"</span>.format(dtype, mean_usage_mb))</span><br></pre></td></tr></table></figure>
 <p>这里我们可以发现<code>object</code>类占用内存最大</p>
-<h3 id="子类型-subtype"><a href="#子类型-subtype" class="headerlink" title="子类型(subtype)"></a>子类型(subtype)</h3><table>
+<h3 id="子类型-subtype"><a href="#子类型-subtype" class="headerlink" title="子类型(subtype)"></a>子类型(subtype)</h3><div class="table-container">
+<table>
 <thead>
 <tr>
 <th>memory usage</th>
@@ -472,6 +473,7 @@
 </tr>
 </tbody>
 </table>
+</div>
 <p>一个<code>int8</code>类型值使用1个字节的存储空间，可以表示256(2^8)个二进制数，即-128到127的所有整数值。根据表可以得出，对于每个列，应该尽可能”抠”一点， 物尽其用。这里的<code>uint</code>表示无符号整型，可以更有效地处理正整数的列。</p>
 <h2 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h2><h3 id="数值型数据"><a href="#数值型数据" class="headerlink" title="数值型数据"></a>数值型数据</h3><p>这里可以使用<code>to_numeric()</code>对数值类型进行<code>downcast</code>（向下转型）的操作。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 选中整数型的列</span></span><br><span class="line">df_int_columns = df.select_dtypes(include=[<span class="string">'int'</span>])</span><br><span class="line"><span class="comment"># 向下转型</span></span><br><span class="line">df_int_columns.apply(pd.to_numeric, downcast=<span class="string">'unsigned'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 选中浮点型数据</span></span><br><span class="line">df_float_columns = df.select_dtypes(include=[<span class="string">'float'</span>])</span><br><span class="line"><span class="comment"># 向下转型</span></span><br><span class="line">df_float_columns.apply(pd.to_numeric, downcast=<span class="string">'float'</span>)</span><br></pre></td></tr></table></figure>
@@ -1372,7 +1374,24 @@
         showTime(Counter);
       }
     });
-  </script>
+  </script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
 
 
 

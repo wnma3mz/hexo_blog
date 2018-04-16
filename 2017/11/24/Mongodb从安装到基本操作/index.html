@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion" lang="zh-Hans">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 <meta name="theme-color" content="#222">
@@ -131,7 +131,7 @@
 
 <link href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
 
-  <title>Mongodb从安装到基本操作 | Wnma's Blogs</title>
+  <title>Mongodb从安装到基本操作 | Wnma's Blogs</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
   
 
 
@@ -150,7 +150,7 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -447,7 +447,7 @@
 </li>
 <li><p>使用</p>
 <ol>
-<li>首先创建新的连接，如下图所示。在<code>Connection中，`</code>Name<code>为自定义连接名，</code>Address<code>填入对应的</code>host<code>和</code>port`；<br><img src="http://img.blog.csdn.net/20171124171027733?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvd25tYTNteg==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="pic1"></li>
+<li>首先创建新的连接，如下图所示。在<code>Connection中，``Name</code>为自定义连接名，<code>Address</code>填入对应的<code>host</code>和<code>port</code>；<br><img src="http://img.blog.csdn.net/20171124171027733?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvd25tYTNteg==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="pic1"></li>
 <li><p>在<code>Authentication</code>中，勾选<code>Perform authentication</code>，填上对应的<code>User Name</code>和<code>Password</code>。填写完成之后可以点击<code>Test</code>验证是否能够连接成功，如果无误的话，可以点击<code>Save</code>保存退出。</p>
 <p><img src="http://img.blog.csdn.net/20171124171111807?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvd25tYTNteg==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="pic2"></p>
 </li>
@@ -463,7 +463,7 @@
 <li>U: Update Operations, 更新</li>
 <li>D: Delete Operations, 删除</li>
 </ul>
-<p>mongo数据库至上而下是：<code>Database</code>–&gt;<code>Collections</code>–&gt;<code>Documents</code>。我在这里分别理解成数据库、集合、记录。</p>
+<p>mongo数据库至上而下是：<code>Database</code>—&gt;<code>Collections</code>—&gt;<code>Documents</code>。我在这里分别理解成数据库、集合、记录。</p>
 <p>这里直接用官方给的数据来操作。假设以下数据放在了<code>fruits</code>集合中。</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123; <span class="attr">"_id"</span>: <span class="string">"apples"</span>, <span class="attr">"qty"</span>: <span class="number">5</span>, <span class="attr">"score"</span>: [<span class="number">-1</span>, <span class="number">3</span>], <span class="attr">"links"</span>: [&#123;<span class="attr">"Uin"</span>: <span class="number">124</span>, <span class="attr">"NickName"</span>: <span class="string">"123"</span>&#125;]&#125;</span><br><span class="line">&#123; <span class="attr">"_id"</span>: <span class="string">"bananas"</span>, <span class="attr">"qty"</span>: <span class="number">7</span>, <span class="attr">"score"</span>: [<span class="number">1</span>, <span class="number">5</span>]&#125;</span><br><span class="line">&#123; <span class="attr">"_id"</span>: <span class="string">"oranges"</span>, <span class="attr">"qty"</span>: &#123; <span class="attr">"in stock"</span>: <span class="number">8</span>, <span class="attr">"ordered"</span>: <span class="number">12</span> &#125;,  <span class="attr">"score"</span>: [<span class="number">5</span>, <span class="number">5</span>] &#125;</span><br><span class="line">&#123; <span class="attr">"_id"</span>: <span class="string">"avocados"</span>, <span class="attr">"qty"</span>: <span class="string">"fourteen"</span> , <span class="attr">"score"</span>: [<span class="number">5</span>, <span class="number">5</span>]&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h3><p><code>json</code>数据的嵌套查找，就是说，如果有字段包含json，可以直接用<code>.</code>进行连接。</p>
@@ -483,8 +483,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.fruits.find(&#123;<span class="string">"score"</span>: &#123;<span class="string">"<span class="variable">$gt</span>"</span>: 2, <span class="string">"<span class="variable">$lt</span>"</span>: 5&#125;&#125;)  <span class="comment"># 大于3小于5。</span></span><br></pre></td></tr></table></figure>
 <p>将会返回下面两条记录。理由是，字段里的数组里有含有大于2小于5的数字。</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">/* 1 */</span><br><span class="line">&#123;</span><br><span class="line">    <span class="attr">"_id"</span> : <span class="string">"apples"</span>,</span><br><span class="line">    <span class="attr">"qty"</span> : <span class="number">5</span>,</span><br><span class="line">    <span class="attr">"score"</span> : [</span><br><span class="line">        <span class="number">-1</span>,</span><br><span class="line">        <span class="number">3</span></span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">"links"</span> : [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"Uin"</span> : <span class="number">124</span>,</span><br><span class="line">            <span class="attr">"NickName"</span> : <span class="string">"123"</span></span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/* 2 */</span><br><span class="line">&#123;</span><br><span class="line">    <span class="attr">"_id"</span> : <span class="string">"bananas"</span>,</span><br><span class="line">    <span class="attr">"qty"</span> : <span class="number">7</span>,</span><br><span class="line">    <span class="attr">"score"</span> : [</span><br><span class="line">        <span class="number">1</span>,</span><br><span class="line">        <span class="number">5</span></span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>###关系</p>
-<h4 id="in"><a href="#in" class="headerlink" title="$in"></a>$in</h4><p>查找<code>_id</code>字段中包含<code>5</code>或者<code>ObjectId(&quot;507c35dd8fada716c89d0013&quot;)</code>的记录</p>
+<h3 id="关系"><a href="#关系" class="headerlink" title="关系"></a>关系</h3><h4 id="in"><a href="#in" class="headerlink" title="$in"></a>$in</h4><p>查找<code>_id</code>字段中包含<code>5</code>或者<code>ObjectId(&quot;507c35dd8fada716c89d0013&quot;)</code>的记录</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.fruits.find(&#123;<span class="string">"_id"</span>: &#123;<span class="string">"<span class="variable">$in</span>"</span>:[5, ObjectId(<span class="string">"507c35dd8fada716c89d0013"</span>)] &#125;&#125;)</span><br></pre></td></tr></table></figure>
 <h4 id="elemMatch"><a href="#elemMatch" class="headerlink" title="$elemMatch"></a>$elemMatch</h4><p>用于字段中含有数组，且数组中含有<code>json</code>数据的的查找。</p>
 <p>查找<code>links</code>这个含有数组的字段，找出数组中<code>Uin</code>等于124的记录</p>
@@ -508,7 +507,8 @@
 <h4 id="查找某个key中的数组是否某包含某内容"><a href="#查找某个key中的数组是否某包含某内容" class="headerlink" title="查找某个key中的数组是否某包含某内容"></a>查找某个key中的数组是否某包含某内容</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.test_db.find(&#123;<span class="string">"tags"</span>: &#123;<span class="string">"<span class="variable">$in</span>"</span>: [<span class="string">"mongodb"</span>]&#125;&#125;)</span><br></pre></td></tr></table></figure>
 <h4 id="使用正则进行查找"><a href="#使用正则进行查找" class="headerlink" title="使用正则进行查找"></a>使用正则进行查找</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.test_db.find(&#123;<span class="string">"url"</span>: &#123;<span class="string">"<span class="variable">$regex</span>"</span>: <span class="string">"^http"</span>&#125;&#125;)</span><br></pre></td></tr></table></figure>
 <h4 id="查找某个由数组构成的key方法"><a href="#查找某个由数组构成的key方法" class="headerlink" title="查找某个由数组构成的key方法"></a>查找某个由数组构成的key方法</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.test_db.find(&#123;<span class="string">"links"</span>:&#123;<span class="string">"<span class="variable">$elemMatch</span>"</span>:&#123;<span class="string">"Uin"</span>:12266535,<span class="string">"NickName"</span>:<span class="string">"一二三"</span>&#125;&#125;&#125;)</span><br></pre></td></tr></table></figure>
-<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><h3 id="数据库权限说明表"><a href="#数据库权限说明表" class="headerlink" title="数据库权限说明表"></a>数据库权限说明表</h3><table>
+<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><h3 id="数据库权限说明表"><a href="#数据库权限说明表" class="headerlink" title="数据库权限说明表"></a>数据库权限说明表</h3><div class="table-container">
+<table>
 <thead>
 <tr>
 <th>名称</th>
@@ -550,6 +550,7 @@
 </tr>
 </tbody>
 </table>
+</div>
 
       
     </div>
@@ -770,7 +771,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装Mongodb-Centos7"><span class="nav-text">安装Mongodb(Centos7)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用Python连接Mongodb"><span class="nav-text">使用Python连接Mongodb</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用Robo-3t连接Mongodb"><span class="nav-text">使用Robo 3t连接Mongodb</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CURD操作（主要是查找数据）"><span class="nav-text">CURD操作（主要是查找数据）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本操作"><span class="nav-text">基本操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#比较"><span class="nav-text">比较</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#in"><span class="nav-text">$in</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#elemMatch"><span class="nav-text">$elemMatch</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#slice"><span class="nav-text">$slice</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#regex"><span class="nav-text">$regex</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#后缀"><span class="nav-text">后缀</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#sort——排序"><span class="nav-text">sort——排序</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#limit——限制"><span class="nav-text">limit——限制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#skip——跳过"><span class="nav-text">skip——跳过</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#count——计数"><span class="nav-text">count——计数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#collation——基于特定语言进行操作"><span class="nav-text">collation——基于特定语言进行操作</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#个人常用操作"><span class="nav-text">个人常用操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#返回查找结果的数目"><span class="nav-text">返回查找结果的数目</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查找某个key中的数组是否某包含某内容"><span class="nav-text">查找某个key中的数组是否某包含某内容</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用正则进行查找"><span class="nav-text">使用正则进行查找</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查找某个由数组构成的key方法"><span class="nav-text">查找某个由数组构成的key方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附录"><span class="nav-text">附录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据库权限说明表"><span class="nav-text">数据库权限说明表</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装Mongodb-Centos7"><span class="nav-text">安装Mongodb(Centos7)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用Python连接Mongodb"><span class="nav-text">使用Python连接Mongodb</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用Robo-3t连接Mongodb"><span class="nav-text">使用Robo 3t连接Mongodb</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CURD操作（主要是查找数据）"><span class="nav-text">CURD操作（主要是查找数据）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本操作"><span class="nav-text">基本操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#比较"><span class="nav-text">比较</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关系"><span class="nav-text">关系</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#in"><span class="nav-text">$in</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#elemMatch"><span class="nav-text">$elemMatch</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#slice"><span class="nav-text">$slice</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#regex"><span class="nav-text">$regex</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#后缀"><span class="nav-text">后缀</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#sort——排序"><span class="nav-text">sort——排序</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#limit——限制"><span class="nav-text">limit——限制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#skip——跳过"><span class="nav-text">skip——跳过</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#count——计数"><span class="nav-text">count——计数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#collation——基于特定语言进行操作"><span class="nav-text">collation——基于特定语言进行操作</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#个人常用操作"><span class="nav-text">个人常用操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#返回查找结果的数目"><span class="nav-text">返回查找结果的数目</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查找某个key中的数组是否某包含某内容"><span class="nav-text">查找某个key中的数组是否某包含某内容</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用正则进行查找"><span class="nav-text">使用正则进行查找</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查找某个由数组构成的key方法"><span class="nav-text">查找某个由数组构成的key方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附录"><span class="nav-text">附录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据库权限说明表"><span class="nav-text">数据库权限说明表</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -1432,7 +1433,24 @@
         showTime(Counter);
       }
     });
-  </script>
+  </script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
 
 
 

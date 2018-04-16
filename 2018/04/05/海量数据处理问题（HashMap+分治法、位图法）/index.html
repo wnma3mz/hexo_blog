@@ -7,7 +7,7 @@
 
 <html class="theme-next mist use-motion" lang="zh-Hans">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 <meta name="theme-color" content="#222">
@@ -128,7 +128,7 @@
 
 <link href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
 
-  <title>海量数据处理问题（HashMap+分治法、位图法） | Wnma's Blogs</title>
+  <title>海量数据处理问题（HashMap+分治法、位图法） | Wnma's Blogs</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
   
 
 
@@ -147,7 +147,7 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -403,7 +403,7 @@
       
         <p>这篇文章主要是讲HashMap+分治法、位图法，利用二种方法解决海量数据的一些算法问题。</p>
 <a id="more"></a>
-<p>原文链接：<a href="https://juejin.im/post/5aa0ee9f518825557c010bc0" target="_blank" rel="noopener">经典面试问题: Top K 之 —- 海量数据找出现次数最多或，不重复的。</a></p>
+<p>原文链接：<a href="https://juejin.im/post/5aa0ee9f518825557c010bc0" target="_blank" rel="noopener">经典面试问题: Top K 之 —— 海量数据找出现次数最多或，不重复的。</a></p>
 <p>在数据处理中，较为棘手的有这么一种问题，海量数据如何进行处理。一旦数据的数量足够大，我们就不能使用常规的思路来解决。典型例子就是排序算法，在数据不大（不超过内存）的情况下，可以直接使用排序算法，但是当数据量很大时，我们就需要使用如多路归并此类的算法。</p>
 <p>总结问题：</p>
 <ol>
@@ -1318,7 +1318,24 @@
         showTime(Counter);
       }
     });
-  </script>
+  </script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
 
 
 
