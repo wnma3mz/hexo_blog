@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="Wnma&#39;s Blogs">
 <meta property="og:description" content="本篇文章只做一个神经网络入门知识的梳理和个人的理解。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-04-16T14:37:19.920Z">
+<meta property="og:updated_time" content="2018-04-16T14:43:10.204Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="神经网络笔记">
 <meta name="twitter:description" content="本篇文章只做一个神经网络入门知识的梳理和个人的理解。">
@@ -473,7 +473,7 @@
 </ol>
 <p>这里假设对$l_1$进行drop_out。</p>
 <p>定义<code>len(x)=3, hidden_dim=4, dropout_percent=0.2</code></p>
-<p>代入数值计算, </p>
+<p>代入数值计算,</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">np.random.binomial([array([[ <span class="number">1.</span>,  <span class="number">1.</span>,  <span class="number">1.</span>,  <span class="number">1.</span>],</span><br><span class="line">       					 [ <span class="number">1.</span>,  <span class="number">1.</span>,  <span class="number">1.</span>,  <span class="number">1.</span>],</span><br><span class="line">       					 [ <span class="number">1.</span>,  <span class="number">1.</span>,  <span class="number">1.</span>,  <span class="number">1.</span>]])], <span class="number">0.8</span>)[<span class="number">0</span>] * (<span class="number">1</span>/<span class="number">0.8</span>)</span><br></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 默认的dropout_percent是0.5, 即如果不加如dropout_percent的话</span></span><br><span class="line"><span class="comment"># 如果是对图像进行操作的话，建议不超过0.25</span></span><br><span class="line">dropout_percent = <span class="number">0.2</span></span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">l1 *= np.random.binomial([np.ones((len(X), hidden_dim))],<span class="number">1</span> - dropout_percent)[<span class="number">0</span>] *(<span class="number">1.0</span>/(<span class="number">1</span> - dropout_percent))</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 <p>P.S:</p>
