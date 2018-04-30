@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Python,数学,机器学习," />
 
 
 
@@ -79,16 +79,21 @@
 
 
 
-<meta name="description" content="I want to change the world with data">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Wnma&#39;s Blogs">
-<meta property="og:url" content="https://wnma3mz.github.io/tags/HashMap/index.html">
+<meta name="description" content="本篇文章简单介绍了三种矩阵分解方式并且附上部分分解方式的实现代码。">
+<meta name="keywords" content="Python,数学,机器学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="矩阵分解介绍及Python实现（QR、SVD、LU）">
+<meta property="og:url" content="https://wnma3mz.github.io/2018/04/13/矩阵分解介绍及Python实现（QR、SVD、LU）/index.html">
 <meta property="og:site_name" content="Wnma&#39;s Blogs">
-<meta property="og:description" content="I want to change the world with data">
+<meta property="og:description" content="本篇文章简单介绍了三种矩阵分解方式并且附上部分分解方式的实现代码。">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://om1bxijvl.bkt.clouddn.com/2017-03-29-19-31-33.png">
+<meta property="og:image" content="http://om1bxijvl.bkt.clouddn.com/2017-03-29-20-13-15.png">
+<meta property="og:updated_time" content="2018-04-30T15:23:29.926Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Wnma&#39;s Blogs">
-<meta name="twitter:description" content="I want to change the world with data">
+<meta name="twitter:title" content="矩阵分解介绍及Python实现（QR、SVD、LU）">
+<meta name="twitter:description" content="本篇文章简单介绍了三种矩阵分解方式并且附上部分分解方式的实现代码。">
+<meta name="twitter:image" content="http://om1bxijvl.bkt.clouddn.com/2017-03-29-19-31-33.png">
 
 
 
@@ -118,7 +123,7 @@
 
 
 
-  <link rel="canonical" href="https://wnma3mz.github.io/tags/HashMap/"/>
+  <link rel="canonical" href="https://wnma3mz.github.io/2018/04/13/矩阵分解介绍及Python实现（QR、SVD、LU）/"/>
 
 
 
@@ -126,7 +131,7 @@
 
 <link href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
 
-  <title>标签: HashMap | Wnma's Blogs</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>矩阵分解介绍及Python实现（QR、SVD、LU） | Wnma's Blogs</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
   
 
 
@@ -145,7 +150,7 @@
     
   
 
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -262,62 +267,409 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
+  <div id="posts" class="posts-expand">
+    
+
+  
 
   
   
+    
   
-  <div class="post-block tag">
+  
 
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>HashMap<small>标签</small>
-        </h1>
-      </div>
+  <article class="post post-type-normal true" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/hexo_blog/2018/04/13/矩阵分解介绍及Python实现（QR、SVD、LU）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wnma3mz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wnma's Blogs">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">矩阵分解介绍及Python实现（QR、SVD、LU）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-13T11:12:23+08:00">
+                2018-04-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/hexo_blog/2018/04/13/矩阵分解介绍及Python实现（QR、SVD、LU）/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/hexo_blog/2018/04/13/矩阵分解介绍及Python实现（QR、SVD、LU）/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/hexo_blog/2018/04/13/矩阵分解介绍及Python实现（QR、SVD、LU）/" class="leancloud_visitors" data-flag-title="矩阵分解介绍及Python实现（QR、SVD、LU）">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1,538 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  6 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-        
+      
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/hexo_blog/2018/04/05/海量数据处理问题（HashMap+分治法、位图法）/" itemprop="url">
-              
-                <span itemprop="name">海量数据处理问题（HashMap+分治法、位图法）</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-04-05T10:18:06+08:00"
-              content="2018-04-05" >
-          04-05
-        </time>
-      </div>
-
-    </header>
-  </article>
-
+      
+        <p>本篇文章简单介绍了三种矩阵分解方式并且附上部分分解方式的实现代码。</p>
+<a id="more"></a>
+<h1 id="矩阵分解"><a href="#矩阵分解" class="headerlink" title="矩阵分解"></a>矩阵分解</h1><p>Python实现了QR与LU分解，QR用了两种变换方式实现。<a href="https://github.com/wnma3mz/Matrix-factorization" target="_blank" rel="noopener">Github地址</a></p>
+<h2 id="What？"><a href="#What？" class="headerlink" title="What？"></a>What？</h2><p><a href="https://zh.wikipedia.org/wiki/%E7%9F%A9%E9%98%B5%E5%88%86%E8%A7%A3" target="_blank" rel="noopener">wiki链接</a></p>
+<p>将矩阵拆分成数个三角形矩阵。</p>
+<h2 id="Why？"><a href="#Why？" class="headerlink" title="Why？"></a>Why？</h2><ol>
+<li>数值分析中，用于实现一些矩阵运算的快速算法</li>
+<li>推荐算法（SVD），信号处理（SVD）</li>
+<li>反应矩阵中的一些数值特性：如矩阵的秩、特征值(奇异值)</li>
+</ol>
+<p>每一种矩阵分解方式对应不同的意义</p>
+<h2 id="How？"><a href="#How？" class="headerlink" title="How？"></a>How？</h2><h3 id="基本概念介绍"><a href="#基本概念介绍" class="headerlink" title="基本概念介绍"></a>基本概念介绍</h3><p>关于转置、逆矩阵就不多介绍了。</p>
+<ul>
+<li>满秩矩阵<ul>
+<li>矩阵的秩等于行数—&gt;行满秩</li>
+<li>矩阵的秩等于列数—&gt;列满秩</li>
+<li>以上两个都满足称为n阶方阵</li>
+</ul>
+</li>
+<li>酉矩阵（正交矩阵）<ul>
+<li>方块矩阵，元素皆为实数，行与列皆正交的单位向量</li>
+<li>特性：矩阵的转置矩阵为逆矩阵</li>
+<li>定理（det表示行列式）：</li>
+</ul>
+</li>
+</ul>
+<script type="math/tex; mode=display">Q^T=Q^{-1}\Leftrightarrow Q^TQ=QQ^T = I</script><script type="math/tex; mode=display">1=\det(I)=\det(Q^TQ)=\det(Q^T)\det(Q)=(\det(Q))^2\Rightarrow|Q| \pm 1</script><ul>
+<li><p>单位矩阵</p>
+<ul>
+<li>矩阵中的每个元素都为1</li>
+<li>如下</li>
+</ul>
+<script type="math/tex; mode=display">\left| \begin{array}{ccc} 1 & 1 & 1 \\ 1 & 1 & 1 \\ 1& 1 & 1 \end{array} \right|</script></li>
+<li><p>上三角矩阵</p>
+<ul>
+<li>非零元素在右上方的矩阵</li>
+<li>如下</li>
+</ul>
+<script type="math/tex; mode=display">\left| \begin{array}{ccc} 1 & 2 & 3 \\ 0 & 1 & 2\\ 0& 0 & 1 \end{array} \right|</script></li>
+<li><p>二范数</p>
+<ul>
+<li>假设有一个x的向量</li>
+</ul>
+<script type="math/tex; mode=display">x= (1, 2, 3)^T</script><ul>
+<li>那么它的二范数表示如下</li>
+</ul>
+<script type="math/tex; mode=display">||x||_2 =\sqrt{1^2 + 2^2 + 3^2}=\sqrt{14}</script></li>
+<li><p>共轭转置</p>
+<script type="math/tex; mode=display">A^*=(\bar{A})^T=\bar{A^T}</script><ul>
+<li>现有矩阵A</li>
+</ul>
+<script type="math/tex; mode=display">A=\left[ \begin{array}{ccc} 3+i & 5 \\ 2-2i & i\end{array} \right]</script><ul>
+<li>则它的共轭矩阵如下</li>
+</ul>
+<script type="math/tex; mode=display">A^*=\left[ \begin{array}{ccc} 3-i & 2+2i \\ 5 & -i\end{array} \right]</script></li>
+<li><p>特征值与奇异值</p>
+<p>我的理解是：特征值是奇异值的一种特殊情况，特征值是在矩阵是方阵时候的奇异值。</p>
+<p>关于什么是特征值。</p>
+<p>一个矩阵可以理解为由n个向量组成的，而特征值就是反应向量长度（重要性）的标准，特征值越大，则对应向量就越重要。</p>
+<p>假设判断电影为动作片还是搞笑片，可以由以下几个特征来衡量，打斗场景、观众笑声次数、导演、演员……。将数据离散化成矩阵，然后提取特征值，特征值越大的特征则对于衡量电影是动作片还是搞笑片的比重越大。</p>
+</li>
+<li><p>Householder矩阵</p>
+<ul>
+<li><a href="https://zh.wikipedia.org/wiki/豪斯霍尔德变换" target="_blank" rel="noopener">wiki链接</a></li>
+<li><p>公式如下，H表示Householder矩阵，I表示单位矩阵，v表示单位向量，v*表示v的共轭转置。</p>
+<script type="math/tex; mode=display">H=I-2vv^*</script></li>
+<li><p>性质：</p>
+<ol>
+<li>H矩阵的转置等于它本身的逆</li>
+<li><p>H矩阵的平方等于单位矩阵</p>
+<script type="math/tex; mode=display">H^{-1}=H^*</script><script type="math/tex; mode=display">H^2=I</script></li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="1-SVD分解"><a href="#1-SVD分解" class="headerlink" title="1. SVD分解"></a>1. SVD分解</h3><p><a href="https://blog.csdn.net/u010099080/article/details/68060274" target="_blank" rel="noopener">数学解释参考链接</a></p>
+<p>奇异值分解。公式如下：</p>
+<script type="math/tex; mode=display">M=U\Sigma V^*</script><p>举例：</p>
+<script type="math/tex; mode=display">\begin{array}{clll} M &= U\Sigma V^* \\ &= \begin{bmatrix} 1 & 0 & 0 & 0 & 2\\ 0 & 0 & 3 & 0 & 0\\ 0 & 0 & 0 & 0 & 0\\ 0 & 4 & 0 & 0 & 0\end{bmatrix} \\  &= \begin{bmatrix} 0 & 0 & 1 & 0\\ 0 & 1 & 0 & 0\\ 0 & 0 & 0 & 1\\ 1 & 0 & 0 & 0\end{bmatrix} \cdot \begin{bmatrix} 4 & 0 & 0 & 0 & 0\\ 0 & 3 & 0 & 0 & 0\\ 0 & 0 & \sqrt{5} & 0 & 0\\ 0 & 0 & 0 & 0 & 0\end{bmatrix} \cdot \begin{bmatrix} 0 & 1 & 0 & 0 & 0\\ 0 & 0 & 1 & 0 & 0\\ \sqrt{0.2} & 0 & 0 & 0 & \sqrt{0.8}\\ 0 & 0 & 0 & 1 & 0\\ \sqrt{0.8} & 0 & 0 & 0 & -\sqrt{0.2}\end{bmatrix} \end{array}</script><p>性质:</p>
+<ol>
+<li>矩阵$\Sigma$的所有非对角元为0。矩阵<strong>U</strong>和$V^*$都是酉矩阵，它们乘上各自的共轭转置都得到单位矩阵</li>
+<li>奇异值的分解并不是唯一的，这是因为$\Sigma$矩阵中的对角元有元素为0</li>
+</ol>
+<p>步骤：</p>
+<ol>
+<li>计算$M.T\cdot M$得到特征向量（左奇异向量），是U的列向量</li>
+<li>计算$M\cdot M.T$得到特征向量（右奇异向量），是V的列向量</li>
+<li>计算$M\cdot M.T$或者$M.T\cdot M$得到特征值，所有非零特征值的平方根（二范数）</li>
+</ol>
+<p>得到特征向量之后，需要依照特征值从大到小进行排序。</p>
+<p>关于求特征值的方法，线代书上已做介绍，就不赘述。如果运用编程方法求矩阵的特征值，最常见的方法有<strong>雅可比算法、幂法。</strong>当然也可以用先进行QR分解求得特征值之后，再继续进行SVD。</p>
+<h3 id="2-LU分解"><a href="#2-LU分解" class="headerlink" title="2. LU分解"></a>2. LU分解</h3><p><a href="https://jiayi797.github.io/2017/03/29/%E6%95%B0%E5%AD%A6-%E7%9F%A9%E9%98%B5LU%E5%88%86%E8%A7%A3/" target="_blank" rel="noopener">参考链接</a></p>
+<p>将一个矩阵分解为一个下三角矩阵和一个上三角矩阵的乘积。形式如：</p>
+<script type="math/tex; mode=display">A=LU</script><p>格式如下</p>
+<p><img src="http://om1bxijvl.bkt.clouddn.com/2017-03-29-19-31-33.png" alt=""></p>
+<p>分解过程：</p>
+<p><img src="http://om1bxijvl.bkt.clouddn.com/2017-03-29-20-13-15.png" alt=""></p>
+<p>声明：l11表示L矩阵的第一行第一列的元素，U1i表示L矩阵第一行每一列（需要遍历的列）的元素</p>
+<ol>
+<li>初始化L、U矩阵。L矩阵下三角矩阵，对角元素全为1；U矩阵为上三角矩阵。</li>
+<li>计算U矩阵的第一行，对应A矩阵的第一行元素，不需要做任何操作</li>
+<li>计算L矩阵的第一列（除去第一行元素），对应A矩阵的第一列元素，每个元素除以u11</li>
+<li>计算U矩阵的第二行（除去第一列元素），对应A矩阵的第二行元素，每个元素减去l21*u1i</li>
+<li>计算L矩阵的第二列（除去前两行元素），对应A矩阵的第二列元素，每个元素先减去l31*u12，再除以u22</li>
+<li>……</li>
+</ol>
+<p>总结公式如下：</p>
+<p>L矩阵对角元素为1。</p>
+<p>第一步的公式：</p>
+<script type="math/tex; mode=display">\begin{array}{lll} a_{1j}=(1,0,0,\cdots,0)\cdot(u_{1j},u_{2j},\cdots,u_{ij}).T=u_{1j} \\ a_{i1}=(l_{i1}, l_{i1},\cdots,l_{i1})\cdot(u_{11},0,\cdots,0).T=l_{i1}\cdot u_{11} \\u_{1j}=a_{1j}  \\ l_{i1}=\frac{a_{i1}}{u_{11}} \\j=1,2,\cdots,n \\i=2,3,\cdots,n\end{array}</script><p>第r步的公式：</p>
+<script type="math/tex; mode=display">\begin{array}{rl}  a_{rj}&=(l_{r1},l_{r2},...,l_{rr-1})\cdot(u_{1j},u_{2j},...,u_{jj}).T \\&=\sum\limits_{k=1}^{r-1}l_{rk}u_{kj}+u_{rj}  \end{array}</script><script type="math/tex; mode=display">\begin{array}{lll} u_{rj}=a_{rj}-\sum\limits_{k=1}^{r-1}l_{rk}u_{kj} \\ l_{ir}=\frac{a_{ir}-\sum\limits_{k=1}^{r-1}l_{ik}u_{kr}}{u_{rr}} \end{array}</script><script type="math/tex; mode=display">\begin{array}{lll} j=r,r+1,\cdots,n \\ r=2,3,\cdots,n-1 \\ i=r+1,\cdots,n\end{array}</script><h3 id="3-QR分解"><a href="#3-QR分解" class="headerlink" title="3. QR分解"></a>3. QR分解</h3><p><a href="https://wenku.baidu.com/view/c2e34678168884868762d6f9.html" target="_blank" rel="noopener">参考链接</a></p>
+<p>把矩阵分解成一个半正交矩阵与一个上三角矩阵的积。</p>
+<p>形式如:</p>
+<script type="math/tex; mode=display">A=QR</script><p>分解定理：任意一个满秩实（复）矩阵A，都可唯一地分解A=QR,其中Q为正交（酉）矩阵，R是具有对角元的上三角矩阵。</p>
+<h4 id="三种实现方式"><a href="#三种实现方式" class="headerlink" title="三种实现方式"></a>三种实现方式</h4><ol>
+<li><p>Gram-Schmidt正交化</p>
+<p>   过程:</p>
+<ol>
+<li><p>取出矩阵A中的每一列命名为x_col，它们之间线性无关</p>
+</li>
+<li><p>将每一个x_col正交化得到y_col</p>
+</li>
+<li><p>再将y_col进行单位化，即转换为e_col。这里每个e_col为矩阵Q中的每一列。</p>
+</li>
+<li><p>将第二步中，先转换为y_col的正交化得到x_col，再转换为e_col正交化得到x_col。这里每个e_col的系数，对应的就是矩阵R中的每一列</p>
+</li>
+</ol>
+</li>
+<li><p>Householder变换</p>
+<p> <a href="https://www.bbsmax.com/A/gVdnKqK1zW/" target="_blank" rel="noopener">参考链接</a></p>
+<p> outer函数</p>
+<ul>
+<li><p>通常有两个输入向量，假设为向量a、b</p>
+<script type="math/tex; mode=display">a = (1, 2, 3) , b = (-1, -2, -3)</script></li>
+<li><p>那么，outer函数运算过程如</p>
+<script type="math/tex; mode=display">outer(a, b) = \left[ \begin{array}{ccc} 1*-1 & 1*-2 & 1*-3 \\ 2*1 & 2*-2 & 2*-3 \\ 3*-1 & 3*-2 & 3*-3 \end{array} \right]</script><p>过程:</p>
+<ol>
+<li>初始化矩阵Q为单位矩阵(rxr)，r为矩阵A的行数。初始化矩阵R为矩阵A</li>
+<li>取R中的下三角矩阵，每次取一列命名为x（不包括最后一列）。e初始化为形如x的零向量</li>
+<li>e中的第一个元素为向量x的二范数</li>
+<li>这里得到v，范数取2</li>
+</ol>
+<script type="math/tex; mode=display">v = \frac{x - e}{||x-e||}</script><ol>
+<li>初始化一个单位矩阵命名为Q_cnt，取Q_cnt的下三角矩阵，每次取一列在原有的基础上减去2*outer(v, v)。（不包括最后一列）</li>
+<li>更新R,Q</li>
+</ol>
+<script type="math/tex; mode=display">R = Q\_cnt * R</script><script type="math/tex; mode=display">Q = Q * Q\_cnt</script></li>
+</ul>
+</li>
+<li><p>Givens变换</p>
+<p>   <a href="http://www.voidcn.com/article/p-vmnqitql-xa.html" target="_blank" rel="noopener">参考链接</a></p>
+<p>   有待补充</p>
+</li>
+</ol>
 
       
     </div>
+    
+    
+    
 
+    
+      <div>
+        
+<div style="text-align:center;color: #ccc;font-size:14px;">
+    ------ 本文结束 ------</div>
+
+
+      </div>
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    wnma3mz
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wnma3mz.github.io/2018/04/13/矩阵分解介绍及Python实现（QR、SVD、LU）/" title="矩阵分解介绍及Python实现（QR、SVD、LU）">https://wnma3mz.github.io/2018/04/13/矩阵分解介绍及Python实现（QR、SVD、LU）/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/hexo_blog/tags/Python/" rel="tag"># Python</a>
+          
+            <a href="/hexo_blog/tags/数学/" rel="tag"># 数学</a>
+          
+            <a href="/hexo_blog/tags/机器学习/" rel="tag"># 机器学习</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/hexo_blog/2018/04/07/SQL语句的优化/" rel="next" title="SQL语句的优化">
+                <i class="fa fa-chevron-left"></i> SQL语句的优化
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/hexo_blog/2018/04/14/神经网络笔记/" rel="prev" title="神经网络笔记">
+                神经网络笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
           </div>
           
 
 
           
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
 
         </div>
         
@@ -338,8 +690,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -410,6 +771,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#矩阵分解"><span class="nav-text">矩阵分解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#What？"><span class="nav-text">What？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Why？"><span class="nav-text">Why？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#How？"><span class="nav-text">How？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本概念介绍"><span class="nav-text">基本概念介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-SVD分解"><span class="nav-text">1. SVD分解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-LU分解"><span class="nav-text">2. LU分解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-QR分解"><span class="nav-text">3. QR分解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#三种实现方式"><span class="nav-text">三种实现方式</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -554,6 +931,10 @@
   
 
   
+  <script type="text/javascript" src="/hexo_blog/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/hexo_blog/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
@@ -600,6 +981,30 @@
 
     
 
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: '1523589143000',
+            owner: 'wnma3mz',
+            repo: 'gitment-comments',
+            
+            lang: "" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: '49efe3e546e077524ac6dec1044974530216d625',
+            
+                client_id: '9bca1eab6c9fed529c25'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
     
 
 
