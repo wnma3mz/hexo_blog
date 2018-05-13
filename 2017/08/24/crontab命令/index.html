@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Linux，crontab," />
 
 
 
@@ -79,16 +79,20 @@
 
 
 
-<meta name="description" content="I change the world with data">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Wnma&#39;s Blogs">
-<meta property="og:url" content="https://wnma3mz.github.io/tags/mongo/index.html">
+<meta name="description" content="Linux下crontab命令简单使用及介绍">
+<meta name="keywords" content="Linux，crontab">
+<meta property="og:type" content="article">
+<meta property="og:title" content="crontab命令">
+<meta property="og:url" content="https://wnma3mz.github.io/2017/08/24/crontab命令/index.html">
 <meta property="og:site_name" content="Wnma&#39;s Blogs">
-<meta property="og:description" content="I change the world with data">
+<meta property="og:description" content="Linux下crontab命令简单使用及介绍">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://sfault-image.b0.upaiyun.com/175/110/1751101486-55155eadab949_articlex">
+<meta property="og:updated_time" content="2018-05-13T15:13:11.679Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Wnma&#39;s Blogs">
-<meta name="twitter:description" content="I change the world with data">
+<meta name="twitter:title" content="crontab命令">
+<meta name="twitter:description" content="Linux下crontab命令简单使用及介绍">
+<meta name="twitter:image" content="https://sfault-image.b0.upaiyun.com/175/110/1751101486-55155eadab949_articlex">
 
 
 
@@ -118,7 +122,7 @@
 
 
 
-  <link rel="canonical" href="https://wnma3mz.github.io/tags/mongo/"/>
+  <link rel="canonical" href="https://wnma3mz.github.io/2017/08/24/crontab命令/"/>
 
 
 
@@ -126,7 +130,7 @@
 
 <link href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
 
-  <title>标签: mongo | Wnma's Blogs</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>crontab命令 | Wnma's Blogs</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
   
 
 
@@ -145,7 +149,7 @@
     
   
 
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left ">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -262,62 +266,269 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
+  <div id="posts" class="posts-expand">
+    
+
+  
 
   
   
+    
   
-  <div class="post-block tag">
+  
 
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>mongo<small>标签</small>
-        </h1>
-      </div>
+  <article class="post post-type-normal true" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/hexo_blog/2017/08/24/crontab命令/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wnma3mz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wnma's Blogs">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">crontab命令</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-24T08:44:45+08:00">
+                2017-08-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/hexo_blog/2017/08/24/crontab命令/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/hexo_blog/2017/08/24/crontab命令/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/hexo_blog/2017/08/24/crontab命令/" class="leancloud_visitors" data-flag-title="crontab命令">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  625 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  2 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-        
+      
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/hexo_blog/2017/11/24/Mongodb从安装到基本操作/" itemprop="url">
-              
-                <span itemprop="name">Mongodb从安装到基本操作</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-11-24T17:12:28+08:00"
-              content="2017-11-24" >
-          11-24
-        </time>
-      </div>
-
-    </header>
-  </article>
-
+      
+        <p>Linux下crontab命令简单使用及介绍</p>
+<a id="more"></a>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看当前用户的定时任务，也可以使用crontab -uroot -l查看指定用户的定时任务</span></span><br><span class="line">&gt;&gt;&gt;crontab -l</span><br><span class="line"></span><br><span class="line"><span class="comment"># 编辑crontab定时任务，貌似是使用vim的编辑命令</span></span><br><span class="line">&gt;&gt;&gt;crontab -e</span><br><span class="line"></span><br><span class="line"><span class="comment"># 其实基本上知道这两个就可以处理定时任务了</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除当前用户的所有定时任务，不知道为什么会有这种设定（手贱按下过一次，恢复起来真的惨）</span></span><br><span class="line">&gt;&gt;&gt;crontab -r</span><br><span class="line"><span class="comment"># 如果按到了，就去日志文件里面找记录，尽可能恢复命令吧</span></span><br></pre></td></tr></table></figure>
+<p>下面讲讲编辑任务的格式</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 基本格式</span></span><br><span class="line"></span><br><span class="line">  *  *  *  *  * <span class="built_in">command</span> </span><br><span class="line"></span><br><span class="line"><span class="comment"># 分 时 日 月 周 需要执行的命令</span></span><br></pre></td></tr></table></figure>
+<p>几个栗子</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 每分钟执行一次command命令，空格表示间隔</span></span><br><span class="line">* * * * * <span class="built_in">command</span>  </span><br><span class="line"></span><br><span class="line"><span class="comment"># 每小时执行一次，‘/’表示频率</span></span><br><span class="line">0 */1 * * * <span class="built_in">command</span> </span><br><span class="line"></span><br><span class="line"><span class="comment"># 每小时的10分和40分各执行一次，‘,’表示并列</span></span><br><span class="line">10,40 * * * * <span class="built_in">command</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 每个星期一的10-14点的10，40执行，‘-’表述区间</span></span><br><span class="line">10,40 10-14 * * 1 <span class="built_in">command</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 每天的8，13，20点执行，注意此时表示分的那个*要替换为0</span></span><br><span class="line">0 8,13,20 * * * <span class="built_in">command</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://sfault-image.b0.upaiyun.com/175/110/1751101486-55155eadab949_articlex" alt=""></p>
+<p>日志文件一般存放在<code>/var/log/cron*</code>中，不过我的Ubuntu好像没有开启cron日志，可以在<code>/etc/rsyslog.d/50-default.conf</code>中进行设置（Centos在<code>/etc/rsyslog.conf</code>中设置）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt; sudo vim /etc/rsyslog.d/50-default.conf</span><br><span class="line"><span class="comment"># 找到cron*, 去掉前面的#注释即可</span></span><br><span class="line"><span class="comment"># 重启rsyslog</span></span><br><span class="line">&gt; sudo service rsyslog  restart</span><br></pre></td></tr></table></figure>
+<p>crontab相关目录介绍</p>
+<p><code>/etc/anacrontab</code>: 这个文件存着系统级的任务。它主要用来运行每日的(daily)，每周的(weekly),每月的(monthly)的任务。一般不在此文件安装自己的任务</p>
+<p><code>/etc/cron.d/</code>: 此目录下存放的是系统级任务的任务文件。</p>
+<p><code>/var/spool/cron/</code>: 此目录下存放各个用户的任务文件。各个用户的任务存放在以自已用户名为文件名的任务文件中。此文件中的指令行没有用户域。</p>
+<p><code>/etc/crontab</code>: crontab的主要配置文件，执行了每小时、每日、每周、每月的脚本文件</p>
+<p><code>/etc/cron.hourly</code>、<code>/etc/cron.daily</code>、<code>/etc/cron.weekly</code>、<code>/etc/cron.monthly</code>：这四个目录下分别对应着每隔一段时间需要执行的脚本任务，脚本使用shell命令编写</p>
+<p><a href="https://segmentfault.com/a/1190000002628040" target="_blank" rel="noopener"></a></p>
+<p><a href="http://www.cnblogs.com/peida/archive/2013/01/08/2850483.html" target="_blank" rel="noopener">每天一个linux命令（50）：crontab命令</a></p>
+<p><a href="https://segmentfault.com/a/1190000002628040" target="_blank" rel="noopener">Linux 下执行定时任务 crontab 命令详解</a></p>
 
       
     </div>
+    
+    
+    
 
+    
+      <div>
+        
+<div style="text-align:center;color: #ccc;font-size:14px;">
+    ------ 本文结束 ------</div>
+
+
+      </div>
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    wnma3mz
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wnma3mz.github.io/2017/08/24/crontab命令/" title="crontab命令">https://wnma3mz.github.io/2017/08/24/crontab命令/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/hexo_blog/tags/Linux，crontab/" rel="tag"># Linux，crontab</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/hexo_blog/2017/08/14/风格迁移转换的两种实现/" rel="next" title="风格迁移转换的两种实现">
+                <i class="fa fa-chevron-left"></i> 风格迁移转换的两种实现
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/hexo_blog/2017/08/26/Matplotlib笔记/" rel="prev" title="Matplotlib笔记">
+                Matplotlib笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
           </div>
           
 
 
           
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
 
         </div>
         
@@ -554,6 +765,10 @@
   
 
   
+  <script type="text/javascript" src="/hexo_blog/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/hexo_blog/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
@@ -600,6 +815,30 @@
 
     
 
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: '1503535485000',
+            owner: 'wnma3mz',
+            repo: 'gitment-comments',
+            
+            lang: "" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: '49efe3e546e077524ac6dec1044974530216d625',
+            
+                client_id: '9bca1eab6c9fed529c25'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
     
 
 
