@@ -92,7 +92,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/Nltk_Study/master/imgs/1-2.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/Nltk_Study/master/imgs/1-4.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/Nltk_Study/master/imgs/1-5.png">
-<meta property="og:updated_time" content="2018-05-14T08:41:24.226Z">
+<meta property="og:updated_time" content="2018-05-14T09:03:04.999Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《Python自然语言处理》阅读笔记">
 <meta name="twitter:description" content="NLP基本知识的介绍及NLTK模块的使用。">
@@ -368,7 +368,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1,098 字
+                  1,427 字
                 </span>
               
 
@@ -384,7 +384,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  4 分钟
+                  6 分钟
                 </span>
               
             </div>
@@ -409,13 +409,11 @@
       
         <p>NLP基本知识的介绍及NLTK模块的使用。</p>
 <a id="more"></a>
-<h2 id="写在开头"><a class="markdownIt-Anchor" href="#写在开头"></a> 写在开头</h2>
-<p>在这里主要是对NLP的相关知识做一个整理和对NLTK模块的介绍，书中Python基础内容在这里不做介绍，如书中有我认为值得介绍的写法，我会进行说明。由于书中nltk老版本的问题，语法上存在一些变动，在这里也会进行修正。当然也十分推荐读者亲自阅读此书。</p>
+<h2 id="写在开头"><a href="#写在开头" class="headerlink" title="写在开头"></a>写在开头</h2><p>在这里主要是对NLP的相关知识做一个整理和对NLTK模块的介绍，书中Python基础内容在这里不做介绍，如书中有我认为值得介绍的写法，我会进行说明。由于书中nltk老版本的问题，语法上存在一些变动，在这里也会进行修正。当然也十分推荐读者亲自阅读此书。</p>
 <p>nltk版本是3.2.3，<a href="http://www.nltk.org/" target="_blank" rel="noopener">官网</a></p>
 <p>python版本3.6.1</p>
 <p>数据、PDF和一些重要的代码已经放在了Github上了。<a href="https://github.com/wnma3mz/Nltk_Study" target="_blank" rel="noopener">github地址</a></p>
-<h2 id="第一章语言处理与python"><a class="markdownIt-Anchor" href="#第一章语言处理与python"></a> 第一章：语言处理与Python</h2>
-<p>NLTK库的安装，在这里不做介绍，强烈建议直接使用Anaconda环境。<a href="https://www.anaconda.com/download/" target="_blank" rel="noopener">官网下载链接</a>。本文是直接使用了Anaconda环境。</p>
+<h2 id="第一章：语言处理与Python"><a href="#第一章：语言处理与Python" class="headerlink" title="第一章：语言处理与Python"></a>第一章：语言处理与Python</h2><p>NLTK库的安装，在这里不做介绍，强烈建议直接使用Anaconda环境。<a href="https://www.anaconda.com/download/" target="_blank" rel="noopener">官网下载链接</a>。本文是直接使用了Anaconda环境。</p>
 <p>数据的获取，这里nltk有官方提供的文本数据，可以直接使用<code>nltk.download()</code>打开图形界面，下载语料集<code>book</code>。由于使用这个方法下载速度比较慢的原因，我在这里Github上提供了数据集<code>nltk_data</code>，下载之后，移动到<code>nltk.download()</code>原本的下载目录下，之后再运行<code>nltk.download()</code>就不需要下载数据集而是直接解压数据集，速度会快上很多。<a href="https://github.com/wnma3mz/Nltk_Study" target="_blank" rel="noopener">下载链接</a></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 导入nltk模块</span></span><br><span class="line"><span class="keyword">import</span> nltk</span><br><span class="line"><span class="comment"># 导入基本语料集(不需要额外下载)，包含text1到text9变量，可以直接输出这些变量</span></span><br><span class="line"><span class="keyword">from</span> nltk.book <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="comment"># 搜索文本。这里表示找到"monstrous"所包含的句子，并且输出上下文</span></span><br><span class="line">text1.concordance(<span class="string">"monstrous"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 搜索文本出现在相似的上下文中</span></span><br><span class="line">text1.similar(<span class="string">"monstrous"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 搜索两个及两个以上共同词的上下文</span></span><br><span class="line">text2.common_contexts([<span class="string">"monstrous"</span>, <span class="string">"very"</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 画一张离散图表示这些词出现在文本中的位置，输出见下图</span></span><br><span class="line">text4.dispersion_plot([<span class="string">"citizens"</span>, <span class="string">"democracy"</span>, <span class="string">"freedom"</span>, <span class="string">"duties"</span>, <span class="string">"America"</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 基于文本，随机生成一些文本</span></span><br><span class="line">text3.generate()</span><br></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/wnma3mz/Nltk_Study/master/imgs/1-1.png" alt="1-1.png"></p>
@@ -424,6 +422,7 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 词语搭配，双连词(bigrams)</span></span><br><span class="line">nltk.bigrams([<span class="string">'more'</span>,<span class="string">'is'</span>, <span class="string">'said'</span>, <span class="string">'than'</span>, <span class="string">'done'</span>])</span><br><span class="line"><span class="comment"># 输出</span></span><br><span class="line">[(<span class="string">'more'</span>,<span class="string">'is'</span>),(<span class="string">'is'</span>,<span class="string">'said'</span>),(<span class="string">'said'</span>, <span class="string">'than'</span>), (<span class="string">'than'</span>,<span class="string">'done'</span>)]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 文本中单个词的频率预期得到的更频繁出现的双连词</span></span><br><span class="line">text4.collocations()</span><br></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 与nltk自带的聊天机器人系统对话</span></span><br><span class="line"><span class="comment"># 导入模块</span></span><br><span class="line"><span class="keyword">from</span> nltk.chat <span class="keyword">import</span> chatbots()</span><br><span class="line"><span class="comment"># 选择一个聊天机器人并开始对话</span></span><br><span class="line">chatbots()</span><br></pre></td></tr></table></figure>
 <p>补充部分：</p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -470,6 +469,7 @@
 </tr>
 </tbody>
 </table>
+</div>
 <p>一些定义：</p>
 <ul>
 <li>词类型：一个词在一个文本中独一无二的出现形式或拼写。也就是说，这个词在词汇表中是唯一的。</li>
@@ -492,6 +492,9 @@
 <li>人机对话系统：图灵测试。</li>
 <li>文本含义识别（Recognizing Textual Entailment 简称 RTE）：根据假定的一些条件，来推断给出的一句话是否正确。</li>
 </ul>
+<h2 id="第二章：获得文本语料和词汇资源"><a href="#第二章：获得文本语料和词汇资源" class="headerlink" title="第二章：获得文本语料和词汇资源"></a>第二章：获得文本语料和词汇资源</h2><p><a href="http://www.gutenberg.org/" target="_blank" rel="noopener">古腾堡语料库</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 导入nltk的古腾堡语料库</span></span><br><span class="line"><span class="keyword">from</span> nltk.corpus <span class="keyword">import</span> gutenberg</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看这个语料库中的所有txt文件名</span></span><br><span class="line">gutenberg.fileids()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 选中其中的一个</span></span><br><span class="line">emma = gutenberg.words(<span class="string">'austen-emma.txt'</span>)</span><br><span class="line"><span class="comment"># 查看它包含的词汇个数</span></span><br><span class="line">len(emma)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果要使用第一章中concordance()这样的命令，就必须要将数据放到nltk.Text对象中</span></span><br><span class="line">emma = nltk.Text(emma)</span><br><span class="line">emma.concordance(<span class="string">"suprprize"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用words获取的是经过分隔成标识符的文本。使用sents函数则可以获取以句子进行划分后的数据。具体区别可以运行看看，请读者自行对比。</span></span><br><span class="line">emma_sents = gutenberg.sents(<span class="string">'austen-emma.txt'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取原始文本。一个字符串</span></span><br><span class="line">emma_raw = gutenberg.raw(<span class="string">'austen-emma.txt'</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 网络和聊天文本</span></span><br><span class="line"><span class="keyword">from</span> nltk.corpus <span class="keyword">import</span> webtext</span><br><span class="line"><span class="keyword">from</span> nltk.corpus <span class="keyword">import</span> nps_chat</span><br><span class="line"></span><br><span class="line"><span class="comment"># 布朗语料库</span></span><br><span class="line"><span class="keyword">from</span> nltk.corpus <span class="keyword">import</span> brown</span><br><span class="line"></span><br><span class="line"><span class="comment"># 布朗语料库中所有的类别</span></span><br><span class="line">brown.categories()</span><br><span class="line"><span class="comment"># words函数根据类别选择数据</span></span><br><span class="line">brown.words(categories=<span class="string">'news'</span>)</span><br><span class="line">[<span class="string">'The'</span>, <span class="string">'Fulton'</span>, <span class="string">'County'</span>, <span class="string">'Grand'</span>, <span class="string">'Jury'</span>, <span class="string">'said'</span>, ...]</span><br><span class="line"><span class="comment"># words函数根据文件名选择数据</span></span><br><span class="line">brown.words(fileids=[<span class="string">'cg22'</span>])</span><br><span class="line">[<span class="string">'Does'</span>, <span class="string">'our'</span>, <span class="string">'society'</span>, <span class="string">'have'</span>, <span class="string">'a'</span>, <span class="string">'runaway'</span>, <span class="string">','</span>, ...]</span><br><span class="line"><span class="comment"># sents函数根据类别选择数据</span></span><br><span class="line">brown.sents(categories=[<span class="string">'news'</span>, <span class="string">'editorial'</span>, <span class="string">'reviews'</span>])</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -706,7 +709,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#写在开头"><span class="nav-text"> 写在开头</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第一章语言处理与python"><span class="nav-text"> 第一章：语言处理与Python</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#写在开头"><span class="nav-text">写在开头</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第一章：语言处理与Python"><span class="nav-text">第一章：语言处理与Python</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第二章：获得文本语料和词汇资源"><span class="nav-text">第二章：获得文本语料和词汇资源</span></a></li></ol></div>
             
 
           </div>
@@ -1366,7 +1369,7 @@
         showTime(Counter);
       }
     });
-  </script>
+  </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 
 
 
@@ -1378,28 +1381,6 @@
   
 
   
-  
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Config({
-        tex2jax: {
-          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
-          processEscapes: true,
-          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-        }
-      });
-    </script>
-
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for (i=0; i < all.length; i += 1) {
-          all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-      });
-    </script>
-    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
-  
-
 
   
 
