@@ -92,7 +92,12 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/Nltk_Study/master/imgs/1-2.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/Nltk_Study/master/imgs/1-4.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/Nltk_Study/master/imgs/1-5.png">
-<meta property="og:updated_time" content="2018-05-14T09:03:04.999Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/Nltk_Study/master/imgs/2-1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/Nltk_Study/master/imgs/2-2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/Nltk_Study/master/imgs/2-3.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/Nltk_Study/master/imgs/2-4.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/Nltk_Study/master/imgs/2-5.png">
+<meta property="og:updated_time" content="2018-05-17T16:07:08.257Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《Python自然语言处理》阅读笔记">
 <meta name="twitter:description" content="NLP基本知识的介绍及NLTK模块的使用。">
@@ -368,7 +373,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1,427 字
+                  2,458 字
                 </span>
               
 
@@ -384,7 +389,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  6 分钟
+                  10 分钟
                 </span>
               
             </div>
@@ -410,7 +415,9 @@
         <p>NLP基本知识的介绍及NLTK模块的使用。</p>
 <a id="more"></a>
 <h2 id="写在开头"><a class="markdownIt-Anchor" href="#写在开头"></a> 写在开头</h2>
-<p>在这里主要是对NLP的相关知识做一个整理和对NLTK模块的介绍，书中Python基础内容在这里不做介绍，如书中有我认为值得介绍的写法，我会进行说明。由于书中nltk老版本的问题，语法上存在一些变动，在这里也会进行修正。当然也十分推荐读者亲自阅读此书。</p>
+<p>在这里主要是对NLP的相关知识做一个整理和对NLTK模块的介绍，书中Python基础内容在这里不做介绍，如书中有我认为值得介绍的Python写法，我会进行说明。</p>
+<p>由于书中nltk是老版本的问题，语法上存在一些变动，在这里也会进行修正。可能由于书是译本的原因（当然也可能原作者自己的失误），部分代码有些错误，在这里我也进行了校正。如果您发现了我的文章中有需要改正或改进的地方，欢迎在评论区提出。</p>
+<p>最后十分感谢原作者的贡献和译者的翻译，强烈推荐读者亲自阅读此书。</p>
 <p>nltk版本是3.2.3，<a href="http://www.nltk.org/" target="_blank" rel="noopener">官网</a></p>
 <p>python版本3.6.1</p>
 <p>数据、PDF和一些重要的代码已经放在了Github上了。<a href="https://github.com/wnma3mz/Nltk_Study" target="_blank" rel="noopener">github地址</a></p>
@@ -470,7 +477,7 @@
 </tr>
 </tbody>
 </table>
-<p>一些定义：</p>
+<p>概念补充：</p>
 <ul>
 <li>词类型：一个词在一个文本中独一无二的出现形式或拼写。也就是说，这个词在词汇表中是唯一的。</li>
 <li>频率分布：</li>
@@ -494,8 +501,57 @@
 </ul>
 <h2 id="第二章获得文本语料和词汇资源"><a class="markdownIt-Anchor" href="#第二章获得文本语料和词汇资源"></a> 第二章：获得文本语料和词汇资源</h2>
 <p><a href="http://www.gutenberg.org/" target="_blank" rel="noopener">古腾堡语料库</a></p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/Nltk_Study/master/imgs/2-1.png" alt="2-1.png"></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 导入nltk的古腾堡语料库</span></span><br><span class="line"><span class="keyword">from</span> nltk.corpus <span class="keyword">import</span> gutenberg</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看这个语料库中的所有txt文件名</span></span><br><span class="line">gutenberg.fileids()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 选中其中的一个</span></span><br><span class="line">emma = gutenberg.words(<span class="string">'austen-emma.txt'</span>)</span><br><span class="line"><span class="comment"># 查看它包含的词汇个数</span></span><br><span class="line">len(emma)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果要使用第一章中concordance()这样的命令，就必须要将数据放到nltk.Text对象中</span></span><br><span class="line">emma = nltk.Text(emma)</span><br><span class="line">emma.concordance(<span class="string">"suprprize"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用words获取的是经过分隔成标识符的文本。使用sents函数则可以获取以句子进行划分后的数据。具体区别可以运行看看，请读者自行对比。</span></span><br><span class="line">emma_sents = gutenberg.sents(<span class="string">'austen-emma.txt'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取原始文本。一个字符串</span></span><br><span class="line">emma_raw = gutenberg.raw(<span class="string">'austen-emma.txt'</span>)</span><br></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 网络和聊天文本</span></span><br><span class="line"><span class="keyword">from</span> nltk.corpus <span class="keyword">import</span> webtext</span><br><span class="line"><span class="keyword">from</span> nltk.corpus <span class="keyword">import</span> nps_chat</span><br><span class="line"></span><br><span class="line"><span class="comment"># 布朗语料库</span></span><br><span class="line"><span class="keyword">from</span> nltk.corpus <span class="keyword">import</span> brown</span><br><span class="line"></span><br><span class="line"><span class="comment"># 布朗语料库中所有的类别</span></span><br><span class="line">brown.categories()</span><br><span class="line"><span class="comment"># words函数根据类别选择数据</span></span><br><span class="line">brown.words(categories=<span class="string">'news'</span>)</span><br><span class="line">[<span class="string">'The'</span>, <span class="string">'Fulton'</span>, <span class="string">'County'</span>, <span class="string">'Grand'</span>, <span class="string">'Jury'</span>, <span class="string">'said'</span>, ...]</span><br><span class="line"><span class="comment"># words函数根据文件名选择数据</span></span><br><span class="line">brown.words(fileids=[<span class="string">'cg22'</span>])</span><br><span class="line">[<span class="string">'Does'</span>, <span class="string">'our'</span>, <span class="string">'society'</span>, <span class="string">'have'</span>, <span class="string">'a'</span>, <span class="string">'runaway'</span>, <span class="string">','</span>, ...]</span><br><span class="line"><span class="comment"># sents函数根据类别选择数据</span></span><br><span class="line">brown.sents(categories=[<span class="string">'news'</span>, <span class="string">'editorial'</span>, <span class="string">'reviews'</span>])</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> nltk</span><br><span class="line"><span class="keyword">from</span> nltk.corpus <span class="keyword">import</span> brown</span><br><span class="line"><span class="comment"># 带条件的频率分布函数</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 取出brown语料库中所有类别中的所有词。每个类别对应该类别下的所有词。(类别，所有词)</span></span><br><span class="line">cfd = nltk.ConditionalFreqDist(</span><br><span class="line">        (genre, word)</span><br><span class="line">        <span class="keyword">for</span> genre <span class="keyword">in</span> brown.categories()</span><br><span class="line">        <span class="keyword">for</span> word <span class="keyword">in</span> brown.words(categories=genre))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 指定一部分文本类别(genres)</span></span><br><span class="line">genres = [<span class="string">'news'</span>, <span class="string">'religion'</span>, <span class="string">'hobbies'</span>, <span class="string">'science_fiction'</span>, <span class="string">'romance'</span>, <span class="string">'humor'</span>]</span><br><span class="line"><span class="comment"># 指定一些情态动词(modals)</span></span><br><span class="line">modals = [<span class="string">'can'</span>, <span class="string">'could'</span>, <span class="string">'may'</span>, <span class="string">'might'</span>, <span class="string">'must'</span>, <span class="string">'will'</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出一张表格。genres与modals的对应数量关系</span></span><br><span class="line">cfd.tabulate(conditions=genres, samples=modals)</span><br><span class="line"><span class="comment"># 输出如下</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">                  can could   may might  must  will</span></span><br><span class="line"><span class="string">           news    93    86    66    38    50   389</span></span><br><span class="line"><span class="string">       religion    82    59    78    12    54    71</span></span><br><span class="line"><span class="string">        hobbies   268    58   131    22    83   264</span></span><br><span class="line"><span class="string">science_fiction    16    49     4    12     8    16</span></span><br><span class="line"><span class="string">        romance    74   193    11    51    45    43</span></span><br><span class="line"><span class="string">          humor    16    30     8     8     9    13</span></span><br><span class="line"><span class="string">"""</span></span><br></pre></td></tr></table></figure>
+<p>通过输出，我们很容易发现，在<code>news</code>类别里面用的最多的情态动词是<code>will</code>。当然，还有一些结论就由读者自行发现了。</p>
+<p>关于其他语料库的信息挖掘，在这里就不赘述了。书中也只是浅显的用了之前用过的一些方法。下面展示一些我认为比较有意思的代码及输出。</p>
+<p>官网提供了如何访问NLTK语料库的其他例子，<a href="http://www.nltk.org/howto/corpus.html" target="_blank" rel="noopener">链接</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> nltk</span><br><span class="line"><span class="keyword">from</span> nltk.corpus <span class="keyword">import</span> inaugural</span><br><span class="line"></span><br><span class="line"><span class="comment"># 先选出inaugural语料库中的所有字段的对应所有词汇，再统计出文本中以`america`和`citizen`开头的词在每个年份（filed）出现次数。（`america`或`citizen`, 年份）</span></span><br><span class="line">cfd = nltk.ConditionalFreqDist(</span><br><span class="line">        (target, fileid[:<span class="number">4</span>])</span><br><span class="line">        <span class="keyword">for</span> fileid <span class="keyword">in</span> inaugural.fileids()</span><br><span class="line">        <span class="keyword">for</span> w <span class="keyword">in</span> inaugural.words(fileid)</span><br><span class="line">        <span class="keyword">for</span> target <span class="keyword">in</span> [<span class="string">'america'</span>, <span class="string">'citizen'</span>]</span><br><span class="line">        <span class="keyword">if</span> w.lower().startswith(target))</span><br><span class="line"><span class="comment"># 绘图</span></span><br><span class="line">cfd.plot()</span><br></pre></td></tr></table></figure>
+<p>以<code>america</code>或<code>citizen</code>开始的词随时间（年份）的演变趋势</p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/Nltk_Study/master/imgs/2-2.png" alt="2-2.png"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># udhr语料库中不同语言版本的字长差异（彩色图）</span></span><br><span class="line"><span class="keyword">import</span> nltk</span><br><span class="line"><span class="keyword">from</span> nltk.corpus <span class="keyword">import</span> udhr</span><br><span class="line"></span><br><span class="line"><span class="comment"># 选取比较的语言</span></span><br><span class="line">languages = [<span class="string">'Chickasaw'</span>, <span class="string">'English'</span>, <span class="string">'German_Deutsch'</span>, <span class="string">'Greenlandic_Inuktikut'</span>, <span class="string">'Hungarian_Magyar'</span>, <span class="string">'Ibibio_Efik'</span>]</span><br><span class="line"><span class="comment"># 提取不同语言的数据</span></span><br><span class="line">cfd = nltk.ConditionalFreqDist(</span><br><span class="line">        (lang, len(word))</span><br><span class="line">        <span class="keyword">for</span> lang <span class="keyword">in</span> languages</span><br><span class="line">        <span class="keyword">for</span> word <span class="keyword">in</span> udhr.words(lang + <span class="string">'-Latin1'</span>))</span><br><span class="line"></span><br><span class="line">cfd.plot(cumulative=<span class="keyword">True</span>)</span><br></pre></td></tr></table></figure>
+<p>累积字长分布： “世界人权宣言”的6个翻译版本<br>
+<img src="https://raw.githubusercontent.com/wnma3mz/Nltk_Study/master/imgs/2-3.png" alt="2-3.png"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 载入自己的语料库，文本文件</span></span><br><span class="line"><span class="keyword">from</span> nltk.corpus <span class="keyword">import</span> PlaintextCorpusReader</span><br><span class="line"><span class="comment"># 设置语料库的路径</span></span><br><span class="line">corpus_root = <span class="string">'/usr/share/dict'</span></span><br><span class="line"><span class="comment"># 解析路径下的所有文件</span></span><br><span class="line">wordlists = PlaintextCorpusReader(corpus_root, <span class="string">'.*'</span>)</span><br><span class="line"><span class="comment"># 语料库中所有的文件名</span></span><br><span class="line">wordlists.fileids()</span><br><span class="line"><span class="comment"># 语料库中`connectives`中的单词</span></span><br><span class="line">wordlists.words(<span class="string">'connectives'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 本地个人的语料库</span></span><br><span class="line"><span class="keyword">from</span> nltk.corpus <span class="keyword">import</span> BracketParseCorpusReader</span><br><span class="line">corpus_root = <span class="string">r"C:\corpora\penntreebank\parsed\mrg\wsj"</span></span><br><span class="line"><span class="comment"># 使用正则匹配</span></span><br><span class="line">file_pattern = <span class="string">r".*/wsj_.*\.mrg"</span></span><br><span class="line">ptb = BracketParseCorpusReader(corpus_root, file_pattern)</span><br><span class="line">ptb.fileids()</span><br></pre></td></tr></table></figure>
+<p>概念补充：</p>
+<ul>
+<li>
+<p>文本语料库的结构：</p>
+<ul>
+<li>
+<p>孤立的无特别组织的文本集合</p>
+</li>
+<li>
+<p>按文体等分类组织结构</p>
+</li>
+<li>
+<p>分类重叠，主题类别（路透社语料库）</p>
+</li>
+<li>
+<p>随时间变化语言语言用法的改变（就职演说语料库）</p>
+</li>
+</ul>
+</li>
+<li>
+<p>NLTK中定义的基本语料库函数</p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/Nltk_Study/master/imgs/2-4.png" alt="2-4.png"></p>
+</li>
+<li>
+<p>条件频率分布</p>
+<p><strong>条件频率分布是频率分布的集合，每个频率分布有一个不同的“条件”。这个条件通常是文本的类别。</strong></p>
+<p>当语料文本被分为几类（文体、主题、作者等）时，我们可以计算每个类别独立的频率分布，研究类别之间的系统性差异。</p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/Nltk_Study/master/imgs/2-5.png" alt="2-5.png"></p>
+</li>
+<li>
+<p>条件和事件</p>
+<p>对于NLP来说，文本出现的词汇就是事件。条件频率分布需要给每个事件关联一个条件，所以处理的是一个配对序列。每对形式是：（条件，事件）。举例就是，（文本类别，文本中的一个词汇）</p>
+</li>
+<li>
+<p>FreqDist()以一个简单的链表作为输入，ConditionalFreqDist()以一个配对链表作为输入。</p>
+</li>
+</ul>
 
       
     </div>
@@ -563,6 +619,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/hexo_blog/2018/05/18/CUDA编程二次入门/" rel="prev" title="CUDA二次编程入门">
+                CUDA二次编程入门 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -648,7 +708,7 @@
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">23</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -661,7 +721,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-count">34</span>
                   <span class="site-state-item-name">标签</span>
                 
               </div>
@@ -1370,7 +1430,7 @@
         showTime(Counter);
       }
     });
-  </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  </script>
 
 
 
@@ -1382,6 +1442,26 @@
   
 
   
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
   
 
 
