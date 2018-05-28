@@ -90,7 +90,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/Nltk_Study/master/imgs/3-2.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/Nltk_Study/master/imgs/3-1.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/Nltk_Study/master/imgs/3-3.png">
-<meta property="og:updated_time" content="2018-05-23T12:41:40.923Z">
+<meta property="og:updated_time" content="2018-05-25T09:06:52.989Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《Python自然语言处理》阅读笔记（二）">
 <meta name="twitter:description" content="NLP基本知识的介绍及NLTK模块的使用。 接《Python自然语言处理》阅读笔记（一）">
@@ -366,7 +366,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1,331 字
+                  2,509 字
                 </span>
               
 
@@ -382,7 +382,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  5 分钟
+                  11 分钟
                 </span>
               
             </div>
@@ -487,6 +487,136 @@
 <li>动态规划</li>
 </ol>
 <h2 id="第五章分类和标注词汇"><a class="markdownIt-Anchor" href="#第五章分类和标注词汇"></a> 第五章：分类和标注词汇</h2>
+<p>NLP基本技术：</p>
+<ul>
+<li>序列标注</li>
+<li>N-gram 模型</li>
+<li>回退和评估</li>
+</ul>
+<p>将词汇按它们的<strong>词性</strong>（parts-of-speech，POS）分类以及相应的标注它们的过程被称为<strong>词性标注</strong>（part-of-speech tagging, POS tagging）或干脆简称<strong>标注</strong>。词性也称为<strong>词类</strong>或<strong>词汇范畴</strong>。用于特定任务的标记的集合被称为一个<strong>标记集</strong>。</p>
+<h3 id="词性标注器"><a class="markdownIt-Anchor" href="#词性标注器"></a> 词性标注器</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> nltk</span><br><span class="line">text = nltk.word_tokenize(<span class="string">"And now for something completely different"</span>)</span><br><span class="line"><span class="comment"># 标注出text中每个词的词性</span></span><br><span class="line">nltk.pos_tag(text)</span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">[('And', 'CC'),</span></span><br><span class="line"><span class="string"> ('now', 'RB'),</span></span><br><span class="line"><span class="string"> ('for', 'IN'),</span></span><br><span class="line"><span class="string"> ('something', 'NN'),</span></span><br><span class="line"><span class="string"> ('completely', 'RB'),</span></span><br><span class="line"><span class="string"> ('different', 'JJ')]</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line">text = nltk.Text(word.lower() <span class="keyword">for</span> word <span class="keyword">in</span> nltk.corpus.brown.words())</span><br><span class="line"><span class="comment"># 为一个词找出所有它的上下文</span></span><br><span class="line">text.similar(<span class="string">'woman'</span>)</span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">man time day year car moment world house family child country boy</span></span><br><span class="line"><span class="string">state job place way war girl work word</span></span><br><span class="line"><span class="string">'''</span></span><br></pre></td></tr></table></figure>
+<h3 id="标注语料库"><a class="markdownIt-Anchor" href="#标注语料库"></a> 标注语料库</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建一个有标识的字符串</span></span><br><span class="line">tagged_token = nltk.tag.str2tuple(<span class="string">'fly/NN'</span>)</span><br><span class="line">tagged_token</span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">tagged_token</span></span><br><span class="line"><span class="string">('fly', 'NN')</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line">tagged_token[<span class="number">0</span>]</span><br><span class="line">tagged_token[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 批量标注</span></span><br><span class="line">sent = <span class="string">'''The/AT grand/JJ jury/NN commented/VBD on/IN a/AT number/NN of/INother/AP topics/NNS ,/, AMONG/IN them/PPO the/AT Atlanta/NP and/CCFulton/NP-tl County/NN-tl purchasing/VBG departments/NNS which/WDT it/PPsaid/VBD ``/`` ARE/BER well/QL operated/VBN and/CC follow/VB generally/Raccepted/VBN practices/NNS which/WDT inure/VB to/IN the/AT best/JJTinterest/NN of/IN both/ABX governments/NNS ''/'' ./.'''</span></span><br><span class="line">[nltk.tag.str2tuple(t) <span class="keyword">for</span> t <span class="keyword">in</span> sent.split()]</span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">[('The', 'AT'),</span></span><br><span class="line"><span class="string"> ('grand', 'JJ'),</span></span><br><span class="line"><span class="string"> ('jury', 'NN'),</span></span><br><span class="line"><span class="string"> ('commented', 'VBD'),</span></span><br><span class="line"><span class="string"> ('on', 'IN'),</span></span><br><span class="line"><span class="string"> ('a', 'AT'),</span></span><br><span class="line"><span class="string"> ('number', 'NN'),</span></span><br><span class="line"><span class="string"> ('of/INother', 'AP'),</span></span><br><span class="line"><span class="string"> ('topics', 'NNS'),</span></span><br><span class="line"><span class="string"> (',', ','),</span></span><br><span class="line"><span class="string"> ('AMONG', 'IN'),</span></span><br><span class="line"><span class="string"> ('them', 'PPO'),</span></span><br><span class="line"><span class="string"> ('the', 'AT'),</span></span><br><span class="line"><span class="string"> ('Atlanta', 'NP'),</span></span><br><span class="line"><span class="string"> ('and/CCFulton', 'NP-TL'),</span></span><br><span class="line"><span class="string"> ('County', 'NN-TL'),</span></span><br><span class="line"><span class="string"> ('purchasing', 'VBG'),</span></span><br><span class="line"><span class="string"> ('departments', 'NNS'),</span></span><br><span class="line"><span class="string"> ('which', 'WDT'),</span></span><br><span class="line"><span class="string"> ('it/PPsaid', 'VBD'),</span></span><br><span class="line"><span class="string"> ('``', '``'),</span></span><br><span class="line"><span class="string"> ('ARE', 'BER'),</span></span><br><span class="line"><span class="string"> ('well', 'QL'),</span></span><br><span class="line"><span class="string"> ('operated', 'VBN'),</span></span><br><span class="line"><span class="string"> ('and', 'CC'),</span></span><br><span class="line"><span class="string"> ('follow', 'VB'),</span></span><br><span class="line"><span class="string"> ('generally/Raccepted', 'VBN'),</span></span><br><span class="line"><span class="string"> ('practices', 'NNS'),</span></span><br><span class="line"><span class="string"> ('which', 'WDT'),</span></span><br><span class="line"><span class="string"> ('inure', 'VB'),</span></span><br><span class="line"><span class="string"> ('to', 'IN'),</span></span><br><span class="line"><span class="string"> ('the', 'AT'),</span></span><br><span class="line"><span class="string"> ('best/JJTinterest', 'NN'),</span></span><br><span class="line"><span class="string"> ('of', 'IN'),</span></span><br><span class="line"><span class="string"> ('both', 'ABX'),</span></span><br><span class="line"><span class="string"> ('governments', 'NNS'),</span></span><br><span class="line"><span class="string"> ("''", "''"),</span></span><br><span class="line"><span class="string"> ('.', '.')]</span></span><br><span class="line"><span class="string"> '''</span></span><br></pre></td></tr></table></figure>
+<h3 id="获取已标注的语料库"><a class="markdownIt-Anchor" href="#获取已标注的语料库"></a> 获取已标注的语料库</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 获取标注好的语料库</span></span><br><span class="line">nltk.corpus.brown.tagged_words()</span><br><span class="line"><span class="comment"># </span></span><br><span class="line">nltk.corpus.brown.tagged_words(tagset=<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line">nltk.corpus.nps_chat.tagged_words()</span><br><span class="line">nltk.corpus.conll2000.tagged_words()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 未简化的标记</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 最频繁的名词标记</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findtags</span><span class="params">(tag_prefix, tagged_text)</span>:</span></span><br><span class="line">	cfd = nltk.ConditionalFreqDist((tag, word) <span class="keyword">for</span> (word, tag) <span class="keyword">in</span> tagged_text <span class="keyword">if</span> tag.startswith(tag_prefix))</span><br><span class="line">	<span class="keyword">return</span> dict((tag, cfd[tag].keys()[:<span class="number">5</span>]) <span class="keyword">for</span> tag <span class="keyword">in</span> cfd.conditions())</span><br><span class="line"></span><br><span class="line">tagdict = findtags(<span class="string">'NN'</span>, nltk.corpus.brown.tagged_words(categories=<span class="string">'news'</span>))</span><br><span class="line"><span class="keyword">for</span> tag <span class="keyword">in</span> sorted(tagdict):</span><br><span class="line">	<span class="keyword">print</span> tag, tagdict[tag]</span><br><span class="line"></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">$：名词所有格,</span></span><br><span class="line"><span class="string">S：复数名词（因为复数名词通常以 s结尾），</span></span><br><span class="line"><span class="string">P：专有名词</span></span><br><span class="line"><span class="string">-NC：引用</span></span><br><span class="line"><span class="string">-HL：标题中的词</span></span><br><span class="line"><span class="string">-TL：标题（布朗标记的特征）</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 探索已标注的语料库</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用POS标记寻找三词短语</span></span><br><span class="line"><span class="keyword">from</span> nltk.corpus <span class="keyword">import</span> brown</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">process</span><span class="params">(sentence)</span>:</span></span><br><span class="line">	<span class="keyword">for</span> (w1,t1), (w2,t2), (w3,t3) <span class="keyword">in</span> nltk.trigrams(sentence):</span><br><span class="line">         <span class="comment"># 动词+TO+动词</span></span><br><span class="line">		<span class="keyword">if</span> (t1.startswith(<span class="string">'V'</span>) <span class="keyword">and</span> t2 == <span class="string">'TO'</span> <span class="keyword">and</span> t3.startswith(<span class="string">'V'</span>)):</span><br><span class="line">			print(w1, w2, w3)</span><br><span class="line"><span class="keyword">for</span> tagged_sent <span class="keyword">in</span> brown.tagged_sents():</span><br><span class="line">	process(tagged_sent)</span><br></pre></td></tr></table></figure>
+<p>Python字典部分不做介绍。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用默认字典可以防止使用未定义的key报错</span></span><br><span class="line"><span class="comment"># nltk的默认字典,需要提前定义类型（int、float、str、list、dict、tuple）。</span></span><br><span class="line">frequency = nltk.defaultdict(int)</span><br><span class="line"><span class="comment"># 创建具有默认值的字典</span></span><br><span class="line">pos = nltk.defaultdict(<span class="keyword">lambda</span>: <span class="string">'N'</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="自动标注"><a class="markdownIt-Anchor" href="#自动标注"></a> 自动标注</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> nltk</span><br><span class="line"><span class="keyword">from</span> nltk.corpus <span class="keyword">import</span> brown</span><br><span class="line"></span><br><span class="line">brown_tagged_sents = brown.tagged_sents(categories=<span class="string">'news'</span>)</span><br><span class="line">brown_sents = brown.sents(categories=<span class="string">'news'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 默认标注器</span></span><br><span class="line">tags = [tag <span class="keyword">for</span> (word, tag) <span class="keyword">in</span> brown.tagged_words(categories=<span class="string">'news'</span>)]</span><br><span class="line">nltk.FreqDist(tags).max()</span><br><span class="line"><span class="comment"># 将所有词都标注为NN的标注器</span></span><br><span class="line">raw = <span class="string">'I do not like green eggs and ham, I do not like them Sam I am!'</span></span><br><span class="line">tokens = nltk.word_tokenize(raw)</span><br><span class="line">default_tagger = nltk.DefaultTagger(<span class="string">'NN'</span>)</span><br><span class="line">default_tagger.tag(tokens)</span><br><span class="line"><span class="comment"># 评判标注正确性</span></span><br><span class="line">default_tagger.evaluate(brown_tagged_sents)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 正则标注</span></span><br><span class="line">patterns = [</span><br><span class="line">	(<span class="string">r'.*ing$'</span>, <span class="string">'VBG'</span>), <span class="comment"># gerunds</span></span><br><span class="line">	(<span class="string">r'.*ed$'</span>, <span class="string">'VBD'</span>), <span class="comment"># simple past</span></span><br><span class="line">	(<span class="string">r'.*es$'</span>, <span class="string">'VBZ'</span>), <span class="comment"># 3rd singular present</span></span><br><span class="line">	(<span class="string">r'.*ould$'</span>, <span class="string">'MD'</span>), <span class="comment"># modals</span></span><br><span class="line">	(<span class="string">r'.*\'s$'</span>, <span class="string">'NN$'</span>), <span class="comment"># possessive nouns</span></span><br><span class="line">	(<span class="string">r'.*s$'</span>, <span class="string">'NNS'</span>), <span class="comment"># plural nouns</span></span><br><span class="line"><span class="number">190</span></span><br><span class="line">	(<span class="string">r'^-?[0-9]+(.[0-9]+)?$'</span>, <span class="string">'CD'</span>), <span class="comment"># cardinal numbers</span></span><br><span class="line">	(<span class="string">r'.*'</span>, <span class="string">'NN'</span>) <span class="comment"># nouns (default)</span></span><br><span class="line">]</span><br><span class="line">regexp_tagger = nltk.RegexpTagger(patterns)</span><br><span class="line">regexp_tagger.tag(brown_sents[<span class="number">3</span>])</span><br><span class="line">regexp_tagger.evaluate(brown_tagged_sents)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查询标注器</span></span><br><span class="line"><span class="comment"># 找出100个最频繁的词</span></span><br><span class="line">fd = nltk.FreqDist(brown.words(categories=<span class="string">'news'</span>))</span><br><span class="line">cfd = nltk.ConditionalFreqDist(brown.tagged_words(categories=<span class="string">'news'</span>))</span><br><span class="line">most_freq_words = fd.keys()[:<span class="number">100</span>]</span><br><span class="line">likely_tags = dict((word, cfd[word].max()) <span class="keyword">for</span> word <span class="keyword">in</span> most_freq_words)</span><br><span class="line"><span class="comment"># 使用上面这个信息作为"查找标注器"</span></span><br><span class="line">baseline_tagger = nltk.UnigramTagger(model=likely_tags)</span><br><span class="line">baseline_tagger.evaluate(brown_tagged_sents)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用信息作为标注器，如果没有找到就使用默认标注器。这个过程称为"回退"</span></span><br><span class="line">baseline_tagger = nltk.UnigramTagger(model=likely_tags, backoff=nltk.DefaultTagger(<span class="string">'NN'</span>))</span><br></pre></td></tr></table></figure>
+<p>评估</p>
+<p>可以通过<code>nltk.app.concordance()</code>来可视化查找某个语料库中某个单词的词性</p>
+<table>
+<thead>
+<tr>
+<th>标记</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ADJ</td>
+<td>形容词</td>
+</tr>
+<tr>
+<td>ADV</td>
+<td>动词</td>
+</tr>
+<tr>
+<td>CNJ</td>
+<td>连词</td>
+</tr>
+<tr>
+<td>CC</td>
+<td>并列连词</td>
+</tr>
+<tr>
+<td>DET</td>
+<td>限定词</td>
+</tr>
+<tr>
+<td>EX</td>
+<td>存在量词</td>
+</tr>
+<tr>
+<td>FW</td>
+<td>外来词</td>
+</tr>
+<tr>
+<td>MOD</td>
+<td>情态动词</td>
+</tr>
+<tr>
+<td>RB</td>
+<td>副词</td>
+</tr>
+<tr>
+<td>IN</td>
+<td>介词</td>
+</tr>
+<tr>
+<td>N</td>
+<td>名词</td>
+</tr>
+<tr>
+<td>NP</td>
+<td>专有名词</td>
+</tr>
+<tr>
+<td>NUM</td>
+<td>数词</td>
+</tr>
+<tr>
+<td>PRO</td>
+<td>代词</td>
+</tr>
+<tr>
+<td>P</td>
+<td>介词</td>
+</tr>
+<tr>
+<td>TO</td>
+<td>词to</td>
+</tr>
+<tr>
+<td>UH</td>
+<td>感叹词</td>
+</tr>
+<tr>
+<td>V</td>
+<td>动词</td>
+</tr>
+<tr>
+<td>VD</td>
+<td>过去式</td>
+</tr>
+<tr>
+<td>VG</td>
+<td>现在分词</td>
+</tr>
+<tr>
+<td>VN</td>
+<td>过去分词</td>
+</tr>
+<tr>
+<td>WH</td>
+<td>Wh限定词</td>
+</tr>
+<tr>
+<td>NN</td>
+<td>名词</td>
+</tr>
+<tr>
+<td>JJ</td>
+<td>形容词</td>
+</tr>
+<tr>
+<td>VBP</td>
+<td>一般现在时动词</td>
+</tr>
+</tbody>
+</table>
 
       
     </div>
@@ -701,7 +831,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#第三章加工原料文本"><span class="nav-text"> 第三章：加工原料文本</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#词干提取器"><span class="nav-text"> 词干提取器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分词"><span class="nav-text"> 分词：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第四章编写结构化程序"><span class="nav-text"> 第四章：编写结构化程序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第五章分类和标注词汇"><span class="nav-text"> 第五章：分类和标注词汇</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#第三章加工原料文本"><span class="nav-text"> 第三章：加工原料文本</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#词干提取器"><span class="nav-text"> 词干提取器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分词"><span class="nav-text"> 分词：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第四章编写结构化程序"><span class="nav-text"> 第四章：编写结构化程序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第五章分类和标注词汇"><span class="nav-text"> 第五章：分类和标注词汇</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#词性标注器"><span class="nav-text"> 词性标注器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#标注语料库"><span class="nav-text"> 标注语料库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获取已标注的语料库"><span class="nav-text"> 获取已标注的语料库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自动标注"><span class="nav-text"> 自动标注</span></a></li></ol></li></ol></div>
             
 
           </div>
