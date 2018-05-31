@@ -2,6 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://wnma3mz.github.io/2018/05/18/CUDA%E7%BC%96%E7%A8%8B%E4%BA%8C%E6%AC%A1%E5%85%A5%E9%97%A8/</loc>
+    
+    <lastmod>2018-05-30T06:28:24.850Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/2018/05/30/%E6%9D%82%E8%AE%B0/</loc>
+    
+    <lastmod>2018-05-30T06:10:40.675Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/2018/04/14/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%AC%94%E8%AE%B0/</loc>
+    
+    <lastmod>2018-05-30T05:53:03.057Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/2017/08/24/crontab%E5%91%BD%E4%BB%A4/</loc>
+    
+    <lastmod>2018-05-30T05:13:08.510Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://wnma3mz.github.io/2018/03/12/Numpy%E7%9A%8470%E4%B8%AA%E6%93%8D%E4%BD%9C/</loc>
     
     <lastmod>2018-05-28T11:57:55.351Z</lastmod>
@@ -44,13 +72,6 @@
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/2018/05/18/CUDA%E7%BC%96%E7%A8%8B%E4%BA%8C%E6%AC%A1%E5%85%A5%E9%97%A8/</loc>
-    
-    <lastmod>2018-05-28T11:55:49.331Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://wnma3mz.github.io/2018/04/30/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E4%B9%98%E5%AD%90%E6%B3%95%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</loc>
     
     <lastmod>2018-05-28T11:55:07.342Z</lastmod>
@@ -61,13 +82,6 @@
     <loc>https://wnma3mz.github.io/2018/05/13/CUDA%E7%BC%96%E7%A8%8B%E5%85%A5%E9%97%A8/</loc>
     
     <lastmod>2018-05-28T11:55:01.231Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/2017/08/24/crontab%E5%91%BD%E4%BB%A4/</loc>
-    
-    <lastmod>2018-05-28T11:54:41.193Z</lastmod>
     
   </url>
   
@@ -89,13 +103,6 @@
     <loc>https://wnma3mz.github.io/2018/04/13/%E7%9F%A9%E9%98%B5%E5%88%86%E8%A7%A3%E4%BB%8B%E7%BB%8D%E5%8F%8APython%E5%AE%9E%E7%8E%B0%EF%BC%88QR%E3%80%81SVD%E3%80%81LU%EF%BC%89/</loc>
     
     <lastmod>2018-05-28T11:54:18.576Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/2018/04/14/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%AC%94%E8%AE%B0/</loc>
-    
-    <lastmod>2018-05-28T11:54:13.506Z</lastmod>
     
   </url>
   
