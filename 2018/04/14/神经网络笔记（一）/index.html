@@ -82,14 +82,14 @@
 <meta name="description" content="本篇文章只做一个神经网络入门知识的梳理和个人的理解。">
 <meta name="keywords" content="numpy,Python,机器学习,神经网络">
 <meta property="og:type" content="article">
-<meta property="og:title" content="神经网络笔记">
-<meta property="og:url" content="https://wnma3mz.github.io/2018/04/14/神经网络笔记/index.html">
+<meta property="og:title" content="神经网络笔记（一）">
+<meta property="og:url" content="https://wnma3mz.github.io/2018/04/14/神经网络笔记（一）/index.html">
 <meta property="og:site_name" content="Wnma&#39;s Blogs">
 <meta property="og:description" content="本篇文章只做一个神经网络入门知识的梳理和个人的理解。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-05-30T05:53:03.057Z">
+<meta property="og:updated_time" content="2018-08-20T13:49:36.223Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="神经网络笔记">
+<meta name="twitter:title" content="神经网络笔记（一）">
 <meta name="twitter:description" content="本篇文章只做一个神经网络入门知识的梳理和个人的理解。">
 
 
@@ -120,7 +120,7 @@
 
 
 
-  <link rel="canonical" href="https://wnma3mz.github.io/2018/04/14/神经网络笔记/"/>
+  <link rel="canonical" href="https://wnma3mz.github.io/2018/04/14/神经网络笔记（一）/"/>
 
 
 
@@ -128,7 +128,7 @@
 
 <link href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
 
-  <title>神经网络笔记 | Wnma's Blogs</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>神经网络笔记（一） | Wnma's Blogs</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
   
 
 
@@ -290,7 +290,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/hexo_blog/2018/04/14/神经网络笔记/">
+    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/hexo_blog/2018/04/14/神经网络笔记（一）/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="wnma3mz">
@@ -307,7 +307,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">神经网络笔记</h1>
+          <h1 class="post-title" itemprop="name headline">神经网络笔记（一）</h1>
         
 
         <div class="post-meta">
@@ -360,8 +360,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/hexo_blog/2018/04/14/神经网络笔记/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count gitment-comments-count" data-xid="/hexo_blog/2018/04/14/神经网络笔记/" itemprop="commentsCount"></span>
+                <a href="/hexo_blog/2018/04/14/神经网络笔记（一）/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/hexo_blog/2018/04/14/神经网络笔记（一）/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -369,7 +369,7 @@
 
           
           
-             <span id="/hexo_blog/2018/04/14/神经网络笔记/" class="leancloud_visitors" data-flag-title="神经网络笔记">
+             <span id="/hexo_blog/2018/04/14/神经网络笔记（一）/" class="leancloud_visitors" data-flag-title="神经网络笔记（一）">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -394,7 +394,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  2,597 字
+                  2,600 字
                 </span>
               
 
@@ -511,7 +511,7 @@ C=\frac{1}{n}\sum_\limits{x}\sum_\limits{k}y_k\log a_k
 </li>
 </ol>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding: utf-8</span></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sigmoid</span><span class="params">(x, deriv=False)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> (deriv == <span class="keyword">True</span>):</span><br><span class="line">        <span class="keyword">return</span> x * (<span class="number">1</span> - x)</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span> / (<span class="number">1</span> + np.exp(-x))</span><br><span class="line">X = np.array([[<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>],[<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>],[<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>],[<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>]])</span><br><span class="line">y = np.array([[<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>]]).T</span><br><span class="line"></span><br><span class="line">syn_0 = <span class="number">2</span> * np.random.random((<span class="number">3</span>, <span class="number">4</span>)) - <span class="number">1</span></span><br><span class="line">syn_1 = <span class="number">2</span> * np.random.random((<span class="number">4</span>, <span class="number">1</span>)) - <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 加入步长</span></span><br><span class="line">alphas = [<span class="number">0.001</span>,<span class="number">0.01</span>,<span class="number">0.1</span>,<span class="number">1</span>,<span class="number">10</span>,<span class="number">100</span>,<span class="number">1000</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> alpha <span class="keyword">in</span> alphas:</span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> range(<span class="number">10000</span>):</span><br><span class="line">        l0 = X</span><br><span class="line">        l1 = sigmoid(np.dot(l0, syn_0))</span><br><span class="line">        <span class="comment"># 加了一层神经网络，称为隐藏层</span></span><br><span class="line">        l2 = sigmoid(np.dot(l1, syn_1))</span><br><span class="line">        l2_error = y - l2</span><br><span class="line">        l2_delta = l2_error * sigmoid(l2, deriv=<span class="keyword">True</span>)</span><br><span class="line">        <span class="comment"># 计算完l2的误差之后，再用结果去计算l1的误差</span></span><br><span class="line">        l1_error = np.dot(l2_delta, syn_1.T)</span><br><span class="line">        l1_delta = l1_error * sigmoid(l1, deriv=<span class="keyword">True</span>)</span><br><span class="line">        <span class="comment"># 更新权重的时候加入步长</span></span><br><span class="line">        syn_1 += alpha * np.dot(l1.T, l2_delta)</span><br><span class="line">        syn_0 += alpha * np.dot(l0.T, l1_delta)</span><br><span class="line"></span><br><span class="line">    print(<span class="string">"alpha:"</span>, alpha, <span class="string">"l1:"</span>, l1)</span><br></pre></td></tr></table></figure>
-<h2 id="改进神经网络v20增加隐层"><a class="markdownIt-Anchor" href="#改进神经网络v20增加隐层"></a> 改进神经网络v2.0——增加隐层</h2>
+<h2 id="改进神经网络v20更改隐单元个数"><a class="markdownIt-Anchor" href="#改进神经网络v20更改隐单元个数"></a> 改进神经网络v2.0——更改隐单元个数</h2>
 <p>更改网络的神经元个数，这个可能就是所谓的玄学调参</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding: utf-8</span></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sigmoid</span><span class="params">(x, deriv=False)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> (deriv == <span class="keyword">True</span>):</span><br><span class="line">        <span class="keyword">return</span> x * (<span class="number">1</span> - x)</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span> / (<span class="number">1</span> + np.exp(-x))</span><br><span class="line">X = np.array([[<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>],[<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>],[<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>],[<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>]])</span><br><span class="line">y = np.array([[<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">0</span>]]).T</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义神经元个数，随机</span></span><br><span class="line">hidden_dim = np.random.randint(<span class="number">2</span>, <span class="number">8</span>)</span><br><span class="line"></span><br><span class="line">syn_0 = <span class="number">2</span> * np.random.random((<span class="number">3</span>, hidden_dim)) - <span class="number">1</span></span><br><span class="line">syn_1 = <span class="number">2</span> * np.random.random((hidden_dim, <span class="number">1</span>)) - <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> range(<span class="number">10000</span>):</span><br><span class="line">    l0 = X</span><br><span class="line">    l1 = sigmoid(np.dot(l0, syn_0))</span><br><span class="line">    l2 = sigmoid(np.dot(l1, syn_1))</span><br><span class="line">    l2_error = y - l2</span><br><span class="line">    l2_delta = l2_error * sigmoid(l2, deriv=<span class="keyword">True</span>)</span><br><span class="line">    l1_error = np.dot(l2_delta, syn_1.T)</span><br><span class="line">    l1_delta = l1_error * sigmoid(l1, deriv=<span class="keyword">True</span>)</span><br><span class="line">    syn_1 += np.dot(l1.T, l2_delta)</span><br><span class="line">    syn_0 += np.dot(l0.T, l1_delta)</span><br><span class="line"></span><br><span class="line">print(l1)</span><br></pre></td></tr></table></figure>
 <h2 id="改进神经网络v30dropout"><a class="markdownIt-Anchor" href="#改进神经网络v30dropout"></a> 改进神经网络v3.0——dropout</h2>
@@ -569,7 +569,7 @@ C=\frac{1}{n}\sum_\limits{x}\sum_\limits{k}y_k\log a_k
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://wnma3mz.github.io/2018/04/14/神经网络笔记/" title="神经网络笔记">https://wnma3mz.github.io/2018/04/14/神经网络笔记/</a>
+    <a href="https://wnma3mz.github.io/2018/04/14/神经网络笔记（一）/" title="神经网络笔记（一）">https://wnma3mz.github.io/2018/04/14/神经网络笔记（一）/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -701,7 +701,7 @@ C=\frac{1}{n}\sum_\limits{x}\sum_\limits{k}y_k\log a_k
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-count">28</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -772,7 +772,7 @@ C=\frac{1}{n}\sum_\limits{x}\sum_\limits{k}y_k\log a_k
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#最简单的神经网络"><span class="nav-text"> 最简单的神经网络</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#激活函数"><span class="nav-text"> 激活函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三层神经网络"><span class="nav-text"> 三层神经网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#改进神经网络v10增加梯度"><span class="nav-text"> 改进神经网络v1.0——增加梯度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#改进神经网络v20增加隐层"><span class="nav-text"> 改进神经网络v2.0——增加隐层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#改进神经网络v30dropout"><span class="nav-text"> 改进神经网络v3.0——dropout</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#最简单的神经网络"><span class="nav-text"> 最简单的神经网络</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#激活函数"><span class="nav-text"> 激活函数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三层神经网络"><span class="nav-text"> 三层神经网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#改进神经网络v10增加梯度"><span class="nav-text"> 改进神经网络v1.0——增加梯度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#改进神经网络v20更改隐单元个数"><span class="nav-text"> 改进神经网络v2.0——更改隐单元个数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#改进神经网络v30dropout"><span class="nav-text"> 改进神经网络v3.0——dropout</span></a></li></ol></div>
             
 
           </div>
