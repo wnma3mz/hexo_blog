@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="Wnma&#39;s Blogs">
 <meta property="og:description" content="本篇文章只做一个神经网络入门知识的梳理和个人的理解。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-01-10T09:14:13.770Z">
+<meta property="og:updated_time" content="2019-06-30T15:47:16.306Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ssh笔记（端口转发）">
 <meta name="twitter:description" content="本篇文章只做一个神经网络入门知识的梳理和个人的理解。">
@@ -394,7 +394,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  1,178 字
+                  1,388 字
                 </span>
               
 
@@ -410,7 +410,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  4 分钟
+                  5 分钟
                 </span>
               
             </div>
@@ -457,6 +457,9 @@
 <li>端口转发是通过ssh连接建立的，所以关闭了端口，端口转发也会关闭</li>
 <li>选择远程端口号的时候，一般是无权绑定<code>1-1023</code>端口的，只能使用管理员权限才能绑定。一般是使用<code>1024-65535</code>之间的一个端口</li>
 </ol>
+<p>内网转发内网流量，A，C都在局域网下，二者不可相互连接。B是公网服务器，A，C皆可连接B，但B不可以连接A，C。现在需求是A借助C的流量上网。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># A机器执行。user和remotehost是B机器的用户名和ip</span></span><br><span class="line">ssh -L localhost:3000:localhost:2000 user@remotehost</span><br><span class="line"><span class="comment"># C机器执行。user和remotehost是B机器的用户名和ip</span></span><br><span class="line">ssh -R 2222:localhost:22 user@remotehost</span><br><span class="line"><span class="comment"># B机器执行。user是C机器的用户名</span></span><br><span class="line">ssh -D 2000 -p 2222 user@localhost</span><br><span class="line"></span><br><span class="line"><span class="comment"># A机器上代理：SOCKS5://127.0.0.1:3000</span></span><br></pre></td></tr></table></figure>
+<p>win10开启ssh服务器端，1. 应用和功能：下载openssh服务端；2. 服务：开启openssh server服务；3. 连接用户名win10系统盘的用户文件下的文件名，比如我的是Administrator（即和公用文件夹并列的文件夹）。</p>
 <p>参考文章</p>
 <p><a href="http://www.ruanyifeng.com/blog/2011/12/ssh_port_forwarding.html" target="_blank" rel="noopener">SSH原理与运用（二）：远程操作与端口转发</a></p>
 <p><a href="https://www.ibm.com/developerworks/cn/linux/l-cn-sshforward/" target="_blank" rel="noopener">实战 SSH 端口转发</a></p>
@@ -614,7 +617,7 @@
               
                 <a href="/hexo_blog/archives/">
               
-                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-count">32</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
