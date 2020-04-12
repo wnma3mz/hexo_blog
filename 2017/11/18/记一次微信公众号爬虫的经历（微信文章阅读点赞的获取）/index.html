@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/hexo_blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/hexo_blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/hexo_blog/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="微信文章的阅读、点赞、评论获取，制作微信文章PDF">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记一次微信公众号爬虫的经历（微信文章阅读点赞的获取）">
+<meta property="og:url" content="https://wnma3mz.github.io/2017/11/18/记一次微信公众号爬虫的经历（微信文章阅读点赞的获取）/index.html">
+<meta property="og:site_name" content="Wnma&#39;s Blogs">
+<meta property="og:description" content="微信文章的阅读、点赞、评论获取，制作微信文章PDF">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200319174821639.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dubWEzbXo=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcxMTE4MTkxMzExMzM2">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcxMTE4MTkxNDM5MzM1">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcxMTE4MTkxNTM4MTk5">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcxMTE4MTkxNzA1NzQy">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcxMTE4MTkxODMzNzAx">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcxMTE4MTkxOTA0MDAw">
+<meta property="og:image" content="https://i.loli.net/2019/09/20/14QGTkfgstDxv9C.jpg">
+<meta property="og:image" content="https://i.loli.net/2018/06/26/5b3234e7e35a0.jpg">
+<meta property="og:updated_time" content="2020-04-12T02:17:17.123Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="记一次微信公众号爬虫的经历（微信文章阅读点赞的获取）">
+<meta name="twitter:description" content="微信文章的阅读、点赞、评论获取，制作微信文章PDF">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200319174821639.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dubWEzbXo=,size_16,color_FFFFFF,t_70">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/hexo_blog/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://wnma3mz.github.io/2017/11/18/记一次微信公众号爬虫的经历（微信文章阅读点赞的获取）/"/>
+
+
+
+
+
+<link href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
+
+  <title>记一次微信公众号爬虫的经历（微信文章阅读点赞的获取） | Wnma's Blogs</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/hexo_blog/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wnma's Blogs</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/hexo_blog/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/hexo_blog/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/hexo_blog/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/hexo_blog/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+    
+  
+  
+
+  <article class="post post-type-normal true" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/hexo_blog/2017/11/18/记一次微信公众号爬虫的经历（微信文章阅读点赞的获取）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wnma3mz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wnma's Blogs">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">记一次微信公众号爬虫的经历（微信文章阅读点赞的获取）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-18T19:19:53+08:00">
+                2017-11-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/数据/" itemprop="url" rel="index">
+                    <span itemprop="name">数据</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/hexo_blog/2017/11/18/记一次微信公众号爬虫的经历（微信文章阅读点赞的获取）/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/hexo_blog/2017/11/18/记一次微信公众号爬虫的经历（微信文章阅读点赞的获取）/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/hexo_blog/2017/11/18/记一次微信公众号爬虫的经历（微信文章阅读点赞的获取）/" class="leancloud_visitors" data-flag-title="记一次微信公众号爬虫的经历（微信文章阅读点赞的获取）">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2,039 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  8 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>微信文章的阅读、点赞、评论获取，制作微信文章PDF</p>
+<a id="more"></a>
+<p>项目实现地址。查看我的<a href="https://github.com/wnma3mz/wechat_articles_spider" target="_blank" rel="noopener">Github地址</a></p>
+<p>一个公众号数据暂定10元起，量大优惠；另亦可爬取文章具体内容整理成完整PDF。相关需求请加微信见文末，样例图：</p>
+<p>目前具体可获取指标（包含但不局限）：阅读数、点赞数（在看）、评论内容及总数、正文内容及图片、是否为头条、是否为原创。<br>
+<img src="https://img-blog.csdnimg.cn/20200319174821639.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dubWEzbXo=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>项目已经实现，比本文介绍的更加方便简单，可直接调用。</p>
+<p>关于批量关注公众号的问题已解决，见我的另一篇文章:<a href="https://blog.csdn.net/wnma3mz/article/details/105448808" target="_blank" rel="noopener">自动批量关注微信公众号（非逆向）</a></p>
+<p>不求完美，只求能够用。。。</p>
+<p>截至2019年4月项目可正常运行， 方法已更新。</p>
+<p>3月1号更新：</p>
+<ol>
+<li>获取阅读点赞时，每篇文章间隔10s 一次性可获取500篇文章以上</li>
+<li>从公众号获取永久链接时，间隔3分钟，可以连续获取几小时（网友测试）</li>
+</ol>
+<p>公开已爬取的公众号历史文章的永久链接，数据上传至GitHub，日期均截止commit时间。</p>
+<p><a href="https://github.com/wnma3mz/wechat_articles_spider/blob/master/%E7%A7%91%E6%8A%80%E7%BE%8E%E5%AD%A6.json" target="_blank" rel="noopener">科技美学</a></p>
+<p><a href="https://github.com/wnma3mz/wechat_articles_spider/blob/master/%E5%85%B1%E9%9D%92%E5%9B%A2%E4%B8%AD%E5%A4%AE.json" target="_blank" rel="noopener">共青团中央</a></p>
+<p><a href="https://github.com/wnma3mz/wechat_articles_spider/blob/master/AppSo.json" target="_blank" rel="noopener">AppSo</a></p>
+<p><a href="https://github.com/wnma3mz/wechat_articles_spider/blob/master/%E5%8D%97%E6%96%B9%E5%91%A8%E6%9C%AB.json" target="_blank" rel="noopener">南方周末</a></p>
+<h2 id="需求"><a class="markdownIt-Anchor" href="#需求"></a> 需求</h2>
+<p>某某微信公众号历史的所有文章的阅读数和点赞数</p>
+<h2 id="难点"><a class="markdownIt-Anchor" href="#难点"></a> 难点</h2>
+<ol>
+<li>微信公众号历史的所有文章（来源？？？）</li>
+<li>每篇文章的阅读量和点赞量（电脑上浏览文章只显示内容，没有阅读量、点赞量、评论……）</li>
+</ol>
+<h3 id="突破难点一"><a class="markdownIt-Anchor" href="#突破难点一"></a> 突破难点一</h3>
+<ol>
+<li><a href="http://weixin.sogou.com/" target="_blank" rel="noopener">搜狗微信搜索</a>，可以搜索微信公众号文章。但是貌似只能显示该公众号最近十篇的文章。放弃……</li>
+<li>利用抓包工具（Fiddler），抓取文章。成本有点大……，且貌似只能抓取原创文章。不符合个人需求，放弃……</li>
+<li>利用微信个人订阅号进行爬取，神奇的操作。</li>
+</ol>
+<h4 id="操作"><a class="markdownIt-Anchor" href="#操作"></a> 操作</h4>
+<ol>
+<li>
+<p>拥有一个微信个人订阅号，附上登陆和注册链接。<a href="https://mp.weixin.qq.com/" target="_blank" rel="noopener">微信公众平台</a></p>
+</li>
+<li>
+<p>好在之前无聊注册过一次，所以就可以直接登陆操作。没有注册的童鞋可以用自己的微信号注册一下，过程十分简单，在此就不赘述了</p>
+</li>
+<li>
+<p>登陆之后，点击左侧菜单栏“管理”-“素材管理”。再点击右边的“新建图文素材”</p>
+<p>​</p>
+</li>
+</ol>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcxMTE4MTkxMzExMzM2" alt="pic1"></p>
+<ol start="4">
+<li>
+<p>弹出一个新的标签页，在上面的工具栏找到“超链接”并点击<br>
+<img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcxMTE4MTkxNDM5MzM1" alt="pic2"></p>
+</li>
+<li>
+<p>弹出了一个小窗口，选择“查找文章”，输入需要查找的公众号，这里用“科技美学”公众号作为例子<br>
+<img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcxMTE4MTkxNTM4MTk5" alt="pic3"></p>
+</li>
+<li>
+<p>点击之后，可以弹出该公众号的所有历史文章</p>
+</li>
+</ol>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcxMTE4MTkxNzA1NzQy" alt="pic4"></p>
+<h4 id="代码实现"><a class="markdownIt-Anchor" href="#代码实现"></a> 代码实现</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 目标url</span></span><br><span class="line">url = <span class="string">"https://mp.weixin.qq.com/cgi-bin/appmsg"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用Cookie，跳过登陆操作</span></span><br><span class="line">headers = &#123;</span><br><span class="line">  <span class="string">"Cookie"</span>: yourcookie,</span><br><span class="line">  <span class="string">"User-Agent"</span>: <span class="string">"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36"</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">需要提交的data</span></span><br><span class="line"><span class="string">以下个别字段是否一定需要还未验证。</span></span><br><span class="line"><span class="string">注意修改yourtoken,number</span></span><br><span class="line"><span class="string">number表示从第number页开始爬取，为5的倍数，从0开始。如0、5、10……</span></span><br><span class="line"><span class="string">token可以使用Chrome自带的工具进行获取</span></span><br><span class="line"><span class="string">fakeid是公众号独一无二的一个id，等同于后面的__biz</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line">data = &#123;</span><br><span class="line">    <span class="string">"token"</span>: yourtoken,</span><br><span class="line">    <span class="string">"lang"</span>: <span class="string">"zh_CN"</span>,</span><br><span class="line">    <span class="string">"f"</span>: <span class="string">"json"</span>,</span><br><span class="line">    <span class="string">"ajax"</span>: <span class="string">"1"</span>,</span><br><span class="line">    <span class="string">"action"</span>: <span class="string">"list_ex"</span>,</span><br><span class="line">    <span class="string">"begin"</span>: number,</span><br><span class="line">    <span class="string">"count"</span>: <span class="string">"5"</span>,</span><br><span class="line">    <span class="string">"query"</span>: <span class="string">""</span>,</span><br><span class="line">    <span class="string">"fakeid"</span>: yourfakeid,</span><br><span class="line">    <span class="string">"type"</span>: <span class="string">"9"</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用get方法进行提交</span></span><br><span class="line">content_json = requests.get(url, headers=headers, params=data).json()</span><br><span class="line"><span class="comment"># 返回了一个json，里面是每一页的数据</span></span><br><span class="line"><span class="keyword">for</span> item <span class="keyword">in</span> content_json[<span class="string">"app_msg_list"</span>]:</span><br><span class="line">    <span class="comment"># 提取每页文章的标题及对应的url</span></span><br><span class="line">    print(item[<span class="string">"title"</span>], <span class="string">"url"</span>: item[<span class="string">"link"</span>])</span><br></pre></td></tr></table></figure>
+<p>以上，即可爬取微信公众号的一页数据，如果是爬取所有页的数据，则需要改变number进行爬取。</p>
+<p>注：每次抓取完一页之后，最好设定time.sleep(3)。过快会导致爬取失败</p>
+<h3 id="突破难点二"><a class="markdownIt-Anchor" href="#突破难点二"></a> 突破难点二</h3>
+<p>这里我使用的方法是在电脑上登陆微信客户端，进行抓包分析。从客户端看推文可以看到阅读量、点赞量。</p>
+<p>我使用的是Fiddler。Fiddller具体使用就不赘述了。下面直接演示操作</p>
+<h4 id="操作-2"><a class="markdownIt-Anchor" href="#操作-2"></a> 操作</h4>
+<ol>
+<li>打开fiddler开始监控</li>
+<li>登陆微信客户端，浏览该公众号的任意一篇推文</li>
+<li>可以观察到这里的内容显示会有阅读量、点赞量、评论等</li>
+<li>观察fiddler的监控数据，如下图显示</li>
+</ol>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcxMTE4MTkxODMzNzAx" alt="pic5"><br>
+5. 其中<code>/mp/getappmgsext?...</code>是我们推文内容的url，双击之后，fiddler界面右边出现如下图数据</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcxMTE4MTkxOTA0MDAw" alt="pic6"><br>
+6. 上图下侧的json里面的<code>read_num</code>、<code>like_num</code>分别是阅读量和点赞量</p>
+<p>####代码实现</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 目标url</span></span><br><span class="line">url = <span class="string">"http://mp.weixin.qq.com/mp/getappmsgext"</span></span><br><span class="line"><span class="comment"># 添加Cookie避免登陆操作，这里的"User-Agent"最好为手机浏览器的标识</span></span><br><span class="line">headers = &#123;</span><br><span class="line">    <span class="string">"Cookie"</span>: yourcookie,</span><br><span class="line">    <span class="string">"User-Agent"</span>: <span class="string">"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36 MicroMessenger/6.5.2.501 NetType/WIFI WindowsWechat QBCore/3.43.27.400 QQBrowser/9.0.2524.400"</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">data = &#123;</span><br><span class="line">    <span class="string">"is_only_read"</span>: <span class="string">"1"</span>,</span><br><span class="line">    <span class="string">"is_temp_url"</span>: <span class="string">"0"</span>,                </span><br><span class="line">    <span class="string">"appmsg_type"</span>: <span class="string">"9"</span>, <span class="comment"># 新参数，不加入无法获取like_num</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">添加请求参数</span></span><br><span class="line"><span class="string">__biz对应公众号的信息，唯一</span></span><br><span class="line"><span class="string">mid、sn、idx分别对应每篇文章的url的信息，需要从url中进行提取</span></span><br><span class="line"><span class="string">key、appmsg_token从fiddler上复制即可</span></span><br><span class="line"><span class="string">pass_ticket对应的文章的信息，貌似影响不大，也可以直接从fiddler复制</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line">params = &#123;</span><br><span class="line">    <span class="string">"__biz"</span>: your__biz,</span><br><span class="line">    <span class="string">"mid"</span>: article_mid,</span><br><span class="line">    <span class="string">"sn"</span>: article_sn,</span><br><span class="line">    <span class="string">"idx"</span>: article_idx,</span><br><span class="line">    <span class="string">"key"</span>: yourkey,</span><br><span class="line">    <span class="string">"pass_ticket"</span>: pass_ticket,</span><br><span class="line">    <span class="string">"appmsg_token"</span>: yourappmsg_token,</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment"># 使用post方法进行提交</span></span><br><span class="line">content = requests.post(url, headers=headers, data=data, params=params).json()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 由于上面这种方法可能会获取数据失败，可以采取字符串拼接这种方法</span></span><br><span class="line">origin_url = <span class="string">"https://mp.weixin.qq.com/mp/getappmsgext?"</span></span><br><span class="line">appmsgext_url = origin_url + <span class="string">"__biz=&#123;&#125;&amp;mid=&#123;&#125;&amp;sn=&#123;&#125;&amp;idx=&#123;&#125;&amp;appmsg_token=&#123;&#125;&amp;x5=1"</span>.format(your__biz, article_mid, article_sn, article_idx, yourappmsg_token)</span><br><span class="line">content = requests.post(appmsgext_url, headers=headers, data=data).json()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 提取其中的阅读数和点赞数</span></span><br><span class="line">print(content[<span class="string">"appmsgstat"</span>][<span class="string">"read_num"</span>], content[<span class="string">"appmsgstat"</span>][<span class="string">"like_num"</span>])</span><br></pre></td></tr></table></figure>
+<p>以上即可获取到一篇文章的阅读量、点赞量。<br>
+<code>Cookie</code>、<code>req_id</code>、<code>pass_ticket</code>、<code>key</code>、<code>appmsg_token</code>、<code>__biz</code>利用fiddler获取<br>
+如果是需要多篇文章，需要更改的参数<code>mid</code>、<code>sn</code>、<code>idx</code><br>
+如果是不同公众号，就需要根据url修改<code>__biz</code><br>
+多篇文章的爬取，需要根据之前爬取到的url进行提取关键信息，分别爬取。<br>
+注：每次抓取完一页之后，最好设定time.sleep(3)。过快会导致爬取失败。</p>
+<h2 id="写在最后"><a class="markdownIt-Anchor" href="#写在最后"></a> 写在最后</h2>
+<p>以上就是这次微信爬虫的经历。</p>
+<p>需要掌握的基本技能：</p>
+<ol>
+<li>python爬虫的语法</li>
+<li>Chrome、Fiddler基本使用</li>
+<li>网络爬虫基本常识</li>
+</ol>
+<p>缺陷：</p>
+<ol>
+<li>使用Cookie登陆，未实现自动登陆</li>
+<li>key、appmsg_token一些关键参数需要进行手动获取</li>
+<li>实际运行之后，就算设定了爬取间隙时间，还是会被封禁（获取链接时）。</li>
+</ol>
+<p>说明：</p>
+<ol>
+<li>网上一些说法，key半小时过期，我好像没有遇到。</li>
+<li>代码中若有细节问题，欢迎指出讨论</li>
+</ol>
+<p>Github上已经实现了第1、2点，欢迎回到文章开头看github上的实现过程。</p>
+<p>关于被封禁的问题，已有两个解决方案，均放在github上，在这不做讲解。</p>
+<ol>
+<li>selenium解决方案，提高约十倍抓取量（不确定）。优点：提高抓取量；缺点：速度慢，不一定能完全抓取完整，抓取量不确定。<a href="https://github.com/wnma3mz/wechat_articles_spider/blob/master/test/test_seleinum/test_seleinum.py" target="_blank" rel="noopener">test_seleinum.py</a></li>
+<li>利用个人微信号的查看公众号历史消息，抓取量在500条以上，具体未测试。优点：抓取量最多的方案；缺点：短时间内（5-10分钟）无法查看历史消息，或者说无法持续抓取；不保证微信号会被封号。<a href="https://github.com/wnma3mz/wechat_articles_spider/blob/master/test/test_GetUrls.py" target="_blank" rel="noopener">test_GetUrls.py</a></li>
+</ol>
+<p>若觉得需要完整思路分享、数据抓取或其他需求，请扫码加微信。</p>
+<div align="center"><img src="https://i.loli.net/2019/09/20/14QGTkfgstDxv9C.jpg" width="50%" id="wechat_account"></div>
+随意打赏即可
+<div align="center"><img src="https://i.loli.net/2018/06/26/5b3234e7e35a0.jpg" width="50%" id="微信赞赏码"></div>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        
+<div style="text-align:center;color: #ccc;font-size:14px;">
+    ------ 本文结束 ------</div>
+
+
+      </div>
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    wnma3mz
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wnma3mz.github.io/2017/11/18/记一次微信公众号爬虫的经历（微信文章阅读点赞的获取）/" title="记一次微信公众号爬虫的经历（微信文章阅读点赞的获取）">https://wnma3mz.github.io/2017/11/18/记一次微信公众号爬虫的经历（微信文章阅读点赞的获取）/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/hexo_blog/2017/08/26/Matplotlib笔记/" rel="next" title="Matplotlib笔记">
+                <i class="fa fa-chevron-left"></i> Matplotlib笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/hexo_blog/2017/11/24/Mongodb从安装到基本操作/" rel="prev" title="Mongodb从安装到基本操作">
+                Mongodb从安装到基本操作 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/hexo_blog/images/avatar.png"
+                alt="wnma3mz" />
+            
+              <p class="site-author-name" itemprop="name">wnma3mz</p>
+              <p class="site-description motion-element" itemprop="description">I change the world with data</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/hexo_blog/archives/">
+              
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/hexo_blog/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/hexo_blog/tags/index.html">
+                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/wnma3mz" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:wnma3mz@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#需求"><span class="nav-text"> 需求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#难点"><span class="nav-text"> 难点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#突破难点一"><span class="nav-text"> 突破难点一</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#操作"><span class="nav-text"> 操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#代码实现"><span class="nav-text"> 代码实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#突破难点二"><span class="nav-text"> 突破难点二</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#操作-2"><span class="nav-text"> 操作</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#写在最后"><span class="nav-text"> 写在最后</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wnma3mz</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/hexo_blog/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/hexo_blog/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/hexo_blog/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/hexo_blog/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/hexo_blog/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+        <script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: '1511003993000',
+            owner: 'wnma3mz',
+            repo: 'gitment-comments',
+            
+            lang: "" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: '49efe3e546e077524ac6dec1044974530216d625',
+            
+                client_id: '9bca1eab6c9fed529c25'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/hexo_blog/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("eoVNlIJq5laKXK4jYgB2wCiF-gzGzoHsz", "eMgalJamMnlzVS7c0VvH4TjH");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>
