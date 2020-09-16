@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="note,v2ray,ipv6," />
 
 
 
@@ -79,16 +79,18 @@
 
 
 
-<meta name="description" content="Day Day Up">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Wnma&#39;s Blogs">
-<meta property="og:url" content="https://wnma3mz.github.io/archives/2020/09/index.html">
+<meta name="description" content="借助ssh端口转发，使用ipv6绕过流量计费限制，前提是ipv6不被计费且拥有不被流量限制的ipv6设备。。。">
+<meta name="keywords" content="note,v2ray,ipv6">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ipv6免流">
+<meta property="og:url" content="https://wnma3mz.github.io/2020/09/16/ipv6免流/index.html">
 <meta property="og:site_name" content="Wnma&#39;s Blogs">
-<meta property="og:description" content="Day Day Up">
+<meta property="og:description" content="借助ssh端口转发，使用ipv6绕过流量计费限制，前提是ipv6不被计费且拥有不被流量限制的ipv6设备。。。">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-09-16T11:05:15.656Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Wnma&#39;s Blogs">
-<meta name="twitter:description" content="Day Day Up">
+<meta name="twitter:title" content="ipv6免流">
+<meta name="twitter:description" content="借助ssh端口转发，使用ipv6绕过流量计费限制，前提是ipv6不被计费且拥有不被流量限制的ipv6设备。。。">
 
 
 
@@ -118,7 +120,7 @@
 
 
 
-  <link rel="canonical" href="https://wnma3mz.github.io/archives/2020/09/"/>
+  <link rel="canonical" href="https://wnma3mz.github.io/2020/09/16/ipv6免流/"/>
 
 
 
@@ -126,7 +128,7 @@
 
 <link href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
 
-  <title>归档 | Wnma's Blogs</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>ipv6免流 | Wnma's Blogs</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
   
 
 
@@ -145,7 +147,7 @@
     
   
 
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-archive">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -272,118 +274,281 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
+  <div id="posts" class="posts-expand">
+    
+
+  
 
   
   
+    
   
-  <div class="post-block archive">
-    <div id="posts" class="posts-collapse">
-      <span class="archive-move-on"></span>
+  
 
-      <span class="archive-page-counter">
-        
-        
-         
-        
-        OK! 目前共计 38 篇日志。 继续努力。
-      </span>
+  <article class="post post-type-normal true" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/hexo_blog/2020/09/16/ipv6免流/">
 
-      
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wnma3mz">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/hexo_blog/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wnma's Blogs">
+    </span>
+
+    
+      <header class="post-header">
 
         
         
+          <h1 class="post-title" itemprop="name headline">ipv6免流</h1>
         
 
-        
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-16T00:00:00+08:00">
+                2020-09-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
           
-          <div class="collection-title">
-            <h1 class="archive-year" id="archive-year-2020">2020</h1>
-          </div>
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/hexo_blog/2020/09/16/ICS在线课表制作/" itemprop="url">
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
               
-                <span itemprop="name">ICS在线课表制作</span>
+                <span class="post-meta-item-text">分类于</span>
               
-            </a>
-        
-      </h2>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/奇技淫巧/" itemprop="url" rel="index">
+                    <span itemprop="name">奇技淫巧</span>
+                  </a>
+                </span>
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2020-09-16T18:41:23+08:00"
-              content="2020-09-16" >
-          09-16
-        </time>
-      </div>
+                
+                
+              
+            </span>
+          
 
-    </header>
-  </article>
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/hexo_blog/2020/09/16/ipv6免流/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/hexo_blog/2020/09/16/ipv6免流/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
 
+          
+          
+             <span id="/hexo_blog/2020/09/16/ipv6免流/" class="leancloud_visitors" data-flag-title="ipv6免流">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
 
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  225 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  1 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/hexo_blog/2020/09/16/ipv6免流/" itemprop="url">
-              
-                <span itemprop="name">ipv6免流</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2020-09-16T00:00:00+08:00"
-              content="2020-09-16" >
-          09-16
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
       
 
+      
+        <p>借助ssh端口转发，使用ipv6绕过流量计费限制，前提是ipv6不被计费且拥有不被流量限制的ipv6设备。。。</p>
+<a id="more"></a>
+<p>学校校园网一个月使用流量有限制，但发现上传是不计入流量统计的（不过对个人没啥利益，或者利用点比较少。。）。另外发现学校给分配ipv6，然后突发奇想，ipv6是不是没有被计费。。。然后利用家里的树莓派（有ipv6，可直连）测了一下上传下载速度，发现真的没有被计费。。。。</p>
+<p>所以可以直接使用端口转发来达到免流目的，见博客(<a href="https://wnma3mz.github.io/hexo_blog/2018/02/11/ssh/">https://wnma3mz.github.io/hexo_blog/2018/02/11/ssh/</a>)，一行命令即可。</p>
+<p>当然，另一个操作其实是借助v2ray+国外服务器+规则文件+IBM免费的中转，这样搭配使用更加舒适（可以跑满百兆网）。</p>
+
+      
     </div>
+    
+    
+    
+
+    
+      <div>
+        
+<div style="text-align:center;color: #ccc;font-size:14px;">
+    ------ 本文结束 ------</div>
+
+
+      </div>
+    
+
+    
+
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    wnma3mz
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wnma3mz.github.io/2020/09/16/ipv6免流/" title="ipv6免流">https://wnma3mz.github.io/2020/09/16/ipv6免流/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/hexo_blog/tags/note/" rel="tag"># note</a>
+          
+            <a href="/hexo_blog/tags/v2ray/" rel="tag"># v2ray</a>
+          
+            <a href="/hexo_blog/tags/ipv6/" rel="tag"># ipv6</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/hexo_blog/2020/08/08/firewall端口转发/" rel="next" title="端口转发工具笔记（端口转发）">
+                <i class="fa fa-chevron-left"></i> 端口转发工具笔记（端口转发）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/hexo_blog/2020/09/16/ICS在线课表制作/" rel="prev" title="ICS在线课表制作">
+                ICS在线课表制作 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
-
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
           </div>
           
 
 
           
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
 
         </div>
         
@@ -629,6 +794,10 @@
   
 
   
+  <script type="text/javascript" src="/hexo_blog/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/hexo_blog/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
@@ -675,6 +844,30 @@
 
     
 
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: '1600185600000',
+            owner: 'wnma3mz',
+            repo: 'gitment-comments',
+            
+            lang: "" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: '49efe3e546e077524ac6dec1044974530216d625',
+            
+                client_id: '9bca1eab6c9fed529c25'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
     
 
 
