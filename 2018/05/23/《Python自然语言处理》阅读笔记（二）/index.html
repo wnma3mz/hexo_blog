@@ -1,138 +1,58 @@
 <!DOCTYPE html>
-
-
-
-  
-
-
-<html class="theme-next mist use-motion" lang="zh-Hans">
+<html lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/hexo_blog/css/main.css">
 
 
+<link rel="stylesheet" href="/hexo_blog/lib/font-awesome/css/all.min.css">
 
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wnma3mz.github.io","root":"/hexo_blog/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
 
-
-
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-  <link href="/hexo_blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
-
-
-
-
-
-
-
-<link href="/hexo_blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
-
-<link href="/hexo_blog/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png?v=5.1.4">
-
-
-  <link rel="mask-icon" href="/hexo_blog/images/logo.svg?v=5.1.4" color="#222">
-
-
-
-
-
-  <meta name="keywords" content="note,Python,NLP," />
-
-
-
-
-
-
-
-
-
-
-<meta name="description" content="NLP基本知识的介绍及NLTK模块的使用。 接《Python自然语言处理》阅读笔记（一）">
-<meta name="keywords" content="note,Python,NLP">
+  <meta name="description" content="NLP基本知识的介绍及NLTK模块的使用。 接《Python自然语言处理》阅读笔记（一）">
 <meta property="og:type" content="article">
 <meta property="og:title" content="《Python自然语言处理》阅读笔记（二）">
-<meta property="og:url" content="https://wnma3mz.github.io/2018/05/23/《Python自然语言处理》阅读笔记（二）/index.html">
+<meta property="og:url" content="https://wnma3mz.github.io/2018/05/23/%E3%80%8APython%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86%E3%80%8B%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89/index.html">
 <meta property="og:site_name" content="Wnma&#39;s Blogs">
 <meta property="og:description" content="NLP基本知识的介绍及NLTK模块的使用。 接《Python自然语言处理》阅读笔记（一）">
-<meta property="og:locale" content="zh-Hans">
+<meta property="og:locale">
 <meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/Nltk_Study/master/imgs/3-2.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/Nltk_Study/master/imgs/3-1.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/Nltk_Study/master/imgs/3-3.png">
-<meta property="og:updated_time" content="2018-08-11T01:27:12.101Z">
+<meta property="article:published_time" content="2018-05-23T03:23:24.000Z">
+<meta property="article:modified_time" content="2018-08-11T01:27:12.101Z">
+<meta property="article:author" content="wnma3mz">
+<meta property="article:tag" content="note">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="NLP">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="《Python自然语言处理》阅读笔记（二）">
-<meta name="twitter:description" content="NLP基本知识的介绍及NLTK模块的使用。 接《Python自然语言处理》阅读笔记（一）">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/wnma3mz/Nltk_Study/master/imgs/3-2.png">
 
+<link rel="canonical" href="https://wnma3mz.github.io/2018/05/23/%E3%80%8APython%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86%E3%80%8B%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89/">
 
 
-<script type="text/javascript" id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/hexo_blog/',
-    scheme: 'Mist',
-    version: '5.1.4',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
-    fancybox: true,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    duoshuo: {
-      userId: '0',
-      author: '博主'
-    },
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
   };
 </script>
 
-
-
-  <link rel="canonical" href="https://wnma3mz.github.io/2018/05/23/《Python自然语言处理》阅读笔记（二）/"/>
-
-
-
-
-
-<link href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
-
-  <title>《Python自然语言处理》阅读笔记（二） | Wnma's Blogs</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>《Python自然语言处理》阅读笔记（二） | Wnma's Blogs</title>
   
 
 
@@ -140,293 +60,188 @@
 
 
 
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
 
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
 
-</head>
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
 
-  
-  
-    
-  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
 
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+<body itemscope itemtype="http://schema.org/WebPage">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container use-motion">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta ">
-    
-
-    <div class="custom-logo-site-title">
-      <a href="/hexo_blog/"  class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Wnma's Blogs</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Navigationsleiste an/ausschalten">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
     </div>
-      
-        <p class="site-subtitle"></p>
-      
   </div>
 
-  <div class="site-nav-toggle">
-    <button>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
+  <div class="site-meta">
+
+    <a href="/hexo_blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Wnma's Blogs</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
   </div>
 </div>
+
+
+
 
 <nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu">
-      
-        
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
-          <a href="/hexo_blog/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
-            
-            首页
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-tags">
-          <a href="/hexo_blog/tags/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
-            
-            标签
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-categories">
-          <a href="/hexo_blog/categories/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
-            
-            分类
-          </a>
-        </li>
-      
-        
+
+    <a href="/hexo_blog/" rel="section"><i class="fa fa-home fa-fw"></i>Startseite</a>
+
+  </li>
         <li class="menu-item menu-item-archives">
-          <a href="/hexo_blog/archives/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
-            
-            归档
-          </a>
-        </li>
-      
 
-      
-        <li class="menu-item menu-item-search">
-          
-            <a href="javascript:;" class="popup-trigger">
-          
-            
-              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
-            
-            搜索
-          </a>
-        </li>
-      
-    </ul>
-  
+    <a href="/hexo_blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archiv</a>
 
-  
-    <div class="site-search">
-      
-  <div class="popup search-popup local-search-popup">
-  <div class="local-search-header clearfix">
-    <span class="search-icon">
-      <i class="fa fa-search"></i>
-    </span>
-    <span class="popup-btn-close">
-      <i class="fa fa-times-circle"></i>
-    </span>
-    <div class="local-search-input-wrapper">
-      <input autocomplete="off"
-             placeholder="搜索..." spellcheck="false"
-             type="text" id="local-search-input">
-    </div>
-  </div>
-  <div id="local-search-result"></div>
-</div>
-
-
-
-    </div>
-  
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Suche
+        </a>
+      </li>
+  </ul>
 </nav>
 
 
 
- </div>
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Suche..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
     </header>
 
-    <main id="main" class="main">
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
       <div class="main-inner">
         <div class="content-wrap">
-          <div id="content" class="content">
+          
+
+          <div class="content post posts-expand">
             
-  <div id="posts" class="posts-expand">
-    
 
-  
-
-  
-  
     
   
   
-
-  <article class="post post-type-normal true" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/hexo_blog/2018/05/23/《Python自然语言处理》阅读笔记（二）/">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/2018/05/23/%E3%80%8APython%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86%E3%80%8B%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wnma3mz">
-      <meta itemprop="description" content="">
       <meta itemprop="image" content="/hexo_blog/images/avatar.png">
+      <meta itemprop="name" content="wnma3mz">
+      <meta itemprop="description" content="Day Day Up">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Wnma's Blogs">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">《Python自然语言处理》阅读笔记（二）</h1>
-        
+        <h1 class="post-title" itemprop="name headline">
+          《Python自然语言处理》阅读笔记（二）
+        </h1>
 
         <div class="post-meta">
-          <span class="post-time">
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-23T11:23:24+08:00">
-                2018-05-23
-              </time>
-            
+              <span class="post-meta-item-text">Veröffentlicht am</span>
 
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/学习笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">学习笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
+              <time title="Erstellt: 2018-05-23 11:23:24" itemprop="dateCreated datePublished" datetime="2018-05-23T11:23:24+08:00">2018-05-23</time>
             </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
+              <span class="post-meta-item">
                 <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
+                  <i class="far fa-calendar-check"></i>
                 </span>
-                <a href="/hexo_blog/2018/05/23/《Python自然语言处理》阅读笔记（二）/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count gitment-comments-count" data-xid="/hexo_blog/2018/05/23/《Python自然语言处理》阅读笔记（二）/" itemprop="commentsCount"></span>
-                </a>
+                <span class="post-meta-item-text">Bearbeitet am</span>
+                <time title="Geändert am: 2018-08-11 09:27:12" itemprop="dateModified" datetime="2018-08-11T09:27:12+08:00">2018-08-11</time>
               </span>
-            
-          
-
-          
-          
-             <span id="/hexo_blog/2018/05/23/《Python自然语言处理》阅读笔记（二）/" class="leancloud_visitors" data-flag-title="《Python自然语言处理》阅读笔记（二）">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">in</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">学习笔记</span></a>
                 </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  3,043 字
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  14 分钟
-                </span>
-              
-            </div>
-          
+            </span>
 
           
-
-          
+            <span id="/hexo_blog/2018/05/23/%E3%80%8APython%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86%E3%80%8B%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89/" class="post-meta-item leancloud_visitors" data-flag-title="《Python自然语言处理》阅读笔记（二）" title="Aufrufe">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Aufrufe: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
 
         </div>
       </header>
-    
 
     
     
@@ -434,14 +249,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
         <p>NLP基本知识的介绍及NLTK模块的使用。</p>
 <p>接<a href="https://wnma3mz.github.io/hexo_blog/2018/05/13/%E3%80%8APython%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86%E3%80%8B%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89/">《Python自然语言处理》阅读笔记（一）</a></p>
 <a id="more"></a>
 <h2 id="第三章加工原料文本"><a class="markdownIt-Anchor" href="#第三章加工原料文本"></a> 第三章：加工原料文本</h2>
-<p><a href="http://www.gutenberg.org/catalog/" target="_blank" rel="noopener">古腾堡项目</a></p>
+<p><a target="_blank" rel="noopener" href="http://www.gutenberg.org/catalog/">古腾堡项目</a></p>
 <p>可以从这个项目中获取感兴趣的文本，之后进行分析。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> nltk</span><br><span class="line"><span class="comment"># 将原始文本字符串转换为list，以\r\n标点符号等为分隔符进行切割</span></span><br><span class="line">tokens = nltk.word_tokenize(raw)</span><br><span class="line"><span class="comment"># 创建NLTK文本</span></span><br><span class="line">text = nltk.Text(tokens)</span><br></pre></td></tr></table></figure>
 <p>处理文本部分：</p>
@@ -450,16 +262,16 @@
 <p><code>feedparser</code>：处理RSS订阅</p>
 <p><code>os</code>：处理本地文件</p>
 <p>字符串基本操作在这里请见下图。注：字符串是不可改变的。</p>
-<p><img src="https://raw.githubusercontent.com/wnma3mz/Nltk_Study/master/imgs/3-2.png" alt="3-2.png"></p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/Nltk_Study/master/imgs/3-2.png" alt="3-2.png" /></p>
 <p>关于编码这个大坑，在Python3中做的已经比Python2好太多，在这里也不做介绍了。介绍一些关于编码处理的库。</p>
 <p><code>codecs</code>、<code>unicodedata</code></p>
 <p>正则表达式部分，推荐自主学习。难度系数不算高。搜索关键词，Python, 正则表达式, re即可。值得一提的是，<code>re</code>是目前我了解处理文本速度最快最优雅的一种方式。</p>
 <p>英文文本是高度冗余的，忽略掉词内部的元音仍然可以很容易的阅读，有些时候这很明显。例如：declaration 变成 dclrtn，inalienable 变成 inlnble，保留所有词首或词尾的元音序列 。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> nltk</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"></span><br><span class="line">regexp = <span class="string">r'^[AEIOUaeiou]+|[AEIOUaeiou]+$|[^AEIOUaeiou]'</span></span><br><span class="line"><span class="comment"># 压缩元音字符串</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">compress</span><span class="params">(word)</span>:</span></span><br><span class="line">	pieces = re.findall(regexp, word)</span><br><span class="line">	<span class="keyword">return</span> <span class="string">''</span>.join(pieces)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取语料库数据</span></span><br><span class="line">english_udhr = nltk.corpus.udhr.words(<span class="string">'English-Latin1'</span>)</span><br><span class="line"><span class="comment"># 进行压缩</span></span><br><span class="line">nltk.tokenwrap(compress(w) <span class="keyword">for</span> w <span class="keyword">in</span> english_udhr[:<span class="number">75</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 正则结合条件频率，提取辅音-元音序列</span></span><br><span class="line">rotokas_words = nltk.corpus.toolbox.words(<span class="string">'rotokas.dic'</span>)</span><br><span class="line">cvs = [cv <span class="keyword">for</span> w <span class="keyword">in</span> rotokas_words <span class="keyword">for</span> cv <span class="keyword">in</span> re.findall(<span class="string">r'[ptksvr][aeiou]'</span>, w)]</span><br><span class="line">cfd = nltk.ConditionalFreqDist(cvs)</span><br><span class="line">cfd.tabulate()</span><br><span class="line"></span><br><span class="line">    a   e   i   o   u</span><br><span class="line">k <span class="number">418</span> <span class="number">148</span>  <span class="number">94</span> <span class="number">420</span> <span class="number">173</span></span><br><span class="line">p  <span class="number">83</span>  <span class="number">31</span> <span class="number">105</span>  <span class="number">34</span>  <span class="number">51</span></span><br><span class="line">r <span class="number">187</span>  <span class="number">63</span>  <span class="number">84</span>  <span class="number">89</span>  <span class="number">79</span></span><br><span class="line">s   <span class="number">0</span>   <span class="number">0</span> <span class="number">100</span>   <span class="number">2</span>   <span class="number">1</span></span><br><span class="line">t  <span class="number">47</span>   <span class="number">8</span>   <span class="number">0</span> <span class="number">148</span>  <span class="number">37</span></span><br><span class="line">v  <span class="number">93</span>  <span class="number">27</span> <span class="number">105</span>  <span class="number">48</span>  <span class="number">49</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> nltk</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"></span><br><span class="line">regexp = <span class="string">r&#x27;^[AEIOUaeiou]+|[AEIOUaeiou]+$|[^AEIOUaeiou]&#x27;</span></span><br><span class="line"><span class="comment"># 压缩元音字符串</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">compress</span>(<span class="params">word</span>):</span></span><br><span class="line">	pieces = re.findall(regexp, word)</span><br><span class="line">	<span class="keyword">return</span> <span class="string">&#x27;&#x27;</span>.join(pieces)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取语料库数据</span></span><br><span class="line">english_udhr = nltk.corpus.udhr.words(<span class="string">&#x27;English-Latin1&#x27;</span>)</span><br><span class="line"><span class="comment"># 进行压缩</span></span><br><span class="line">nltk.tokenwrap(compress(w) <span class="keyword">for</span> w <span class="keyword">in</span> english_udhr[:<span class="number">75</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 正则结合条件频率，提取辅音-元音序列</span></span><br><span class="line">rotokas_words = nltk.corpus.toolbox.words(<span class="string">&#x27;rotokas.dic&#x27;</span>)</span><br><span class="line">cvs = [cv <span class="keyword">for</span> w <span class="keyword">in</span> rotokas_words <span class="keyword">for</span> cv <span class="keyword">in</span> re.findall(<span class="string">r&#x27;[ptksvr][aeiou]&#x27;</span>, w)]</span><br><span class="line">cfd = nltk.ConditionalFreqDist(cvs)</span><br><span class="line">cfd.tabulate()</span><br><span class="line"></span><br><span class="line">    a   e   i   o   u</span><br><span class="line">k <span class="number">418</span> <span class="number">148</span>  <span class="number">94</span> <span class="number">420</span> <span class="number">173</span></span><br><span class="line">p  <span class="number">83</span>  <span class="number">31</span> <span class="number">105</span>  <span class="number">34</span>  <span class="number">51</span></span><br><span class="line">r <span class="number">187</span>  <span class="number">63</span>  <span class="number">84</span>  <span class="number">89</span>  <span class="number">79</span></span><br><span class="line">s   <span class="number">0</span>   <span class="number">0</span> <span class="number">100</span>   <span class="number">2</span>   <span class="number">1</span></span><br><span class="line">t  <span class="number">47</span>   <span class="number">8</span>   <span class="number">0</span> <span class="number">148</span>  <span class="number">37</span></span><br><span class="line">v  <span class="number">93</span>  <span class="number">27</span> <span class="number">105</span>  <span class="number">48</span>  <span class="number">49</span></span><br></pre></td></tr></table></figure>
 <h3 id="词干提取器"><a class="markdownIt-Anchor" href="#词干提取器"></a> 词干提取器</h3>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查找词干，laptop与laptops其实只是单复数的区别。词干是相同的</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">stem</span><span class="params">(word)</span>:</span></span><br><span class="line">    regexp = <span class="string">r'^(.*?)(ing|ly|ed|ious|ies|ive|es|s|ment)?$'</span></span><br><span class="line">    stem, suffix = re.findall(regexp, word)[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">return</span> stem</span><br><span class="line"></span><br><span class="line"><span class="comment"># nltk自带的词干提取器</span></span><br><span class="line"><span class="comment"># 索引一些文本和使搜索支持不同词汇形式的话，使用Porter词干提取器</span></span><br><span class="line">porter = nltk.PorterStemmer()</span><br><span class="line">lancaster = nltk.LancasterStemmer()</span><br><span class="line"><span class="comment"># 编译一些文本的词汇或想要一个有效词条（或中心词）列表，使用WordNet词形归并器</span></span><br><span class="line">wnl = nltk.WordNetLemmatizer()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查找词干，laptop与laptops其实只是单复数的区别。词干是相同的</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">stem</span>(<span class="params">word</span>):</span></span><br><span class="line">    regexp = <span class="string">r&#x27;^(.*?)(ing|ly|ed|ious|ies|ive|es|s|ment)?$&#x27;</span></span><br><span class="line">    stem, suffix = re.findall(regexp, word)[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">return</span> stem</span><br><span class="line"></span><br><span class="line"><span class="comment"># nltk自带的词干提取器</span></span><br><span class="line"><span class="comment"># 索引一些文本和使搜索支持不同词汇形式的话，使用Porter词干提取器</span></span><br><span class="line">porter = nltk.PorterStemmer()</span><br><span class="line">lancaster = nltk.LancasterStemmer()</span><br><span class="line"><span class="comment"># 编译一些文本的词汇或想要一个有效词条（或中心词）列表，使用WordNet词形归并器</span></span><br><span class="line">wnl = nltk.WordNetLemmatizer()</span><br></pre></td></tr></table></figure>
 <h3 id="分词"><a class="markdownIt-Anchor" href="#分词"></a> 分词：</h3>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用正则进行分词</span></span><br><span class="line">re.findall(<span class="string">r"\w+(?:[-']\w+)|'|[-.(]+|\S\w"</span>, raw)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用nltk自带的函数进行分词，效率更高且不需要特殊处理符号</span></span><br><span class="line">nltk.regexp_tokenize()</span><br><span class="line"></span><br><span class="line">pattern = <span class="string">r'''(?x) # 去除嵌入的空白字符和注释</span></span><br><span class="line"><span class="string">			([A-Z]\.)+ # 设定允许的标识符（单词）</span></span><br><span class="line"><span class="string">			| \w+(-\w+)* # 可选的内部连字符</span></span><br><span class="line"><span class="string">			| \$?\d+(\.\d+)?%? # 货币与百分比</span></span><br><span class="line"><span class="string">			| \.\.\. # 省略符</span></span><br><span class="line"><span class="string">			| [][.,;"'?():-_`] # 额外的标志</span></span><br><span class="line"><span class="string">		'''</span></span><br><span class="line">nltk.regexp_tokenize(text, pattern)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用正则进行分词</span></span><br><span class="line">re.findall(<span class="string">r&quot;\w+(?:[-&#x27;]\w+)|&#x27;|[-.(]+|\S\w&quot;</span>, raw)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用nltk自带的函数进行分词，效率更高且不需要特殊处理符号</span></span><br><span class="line">nltk.regexp_tokenize()</span><br><span class="line"></span><br><span class="line">pattern = <span class="string">r&#x27;&#x27;&#x27;(?x) # 去除嵌入的空白字符和注释</span></span><br><span class="line"><span class="string">			([A-Z]\.)+ # 设定允许的标识符（单词）</span></span><br><span class="line"><span class="string">			| \w+(-\w+)* # 可选的内部连字符</span></span><br><span class="line"><span class="string">			| \$?\d+(\.\d+)?%? # 货币与百分比</span></span><br><span class="line"><span class="string">			| \.\.\. # 省略符</span></span><br><span class="line"><span class="string">			| [][.,;&quot;&#x27;?():-_`] # 额外的标志</span></span><br><span class="line"><span class="string">		&#x27;&#x27;&#x27;</span></span><br><span class="line">nltk.regexp_tokenize(text, pattern)</span><br></pre></td></tr></table></figure>
 <p>已经分词好的数据举例：</p>
 <p>《华尔街日报》原始文本（<code>nltk.corpus.treebank_raw.raw()</code>）和分好词的版本（<code>nltk.corpus.treebank.words()</code>）</p>
 <p>分词的最后一个问题是缩写的存在，如“didn’t”。如果我们想分析一个句子的意思，将这种形式规范化为两个独立的形式：“did”和“n’t”(不是 not)可能更加有用。我们可以通过查表来做这项工作。</p>
@@ -468,7 +280,7 @@
 <ul>
 <li>
 <p>建立词汇表流程</p>
-<p><img src="https://raw.githubusercontent.com/wnma3mz/Nltk_Study/master/imgs/3-1.png" alt="3-1.png"></p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/Nltk_Study/master/imgs/3-1.png" alt="3-1.png" /></p>
 </li>
 <li>
 <p>编码点：每个字符分配一个编号</p>
@@ -478,7 +290,7 @@
 </li>
 <li>
 <p>编码：将Unicode转化为其它编码的过程</p>
-<p><img src="https://raw.githubusercontent.com/wnma3mz/Nltk_Study/master/imgs/3-3.png" alt="3-3.png"></p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/Nltk_Study/master/imgs/3-3.png" alt="3-3.png" /></p>
 </li>
 <li>
 <p>从 Unicode的角度来看，字符是可以实现一个或多个 字形的抽象的实体。只有字形可以出现在屏幕上或被打印在纸上。一个字体是一个字符到字形映射。</p>
@@ -527,16 +339,16 @@
 </ul>
 <p>将词汇按它们的<strong>词性</strong>（parts-of-speech，POS）分类以及相应的标注它们的过程被称为<strong>词性标注</strong>（part-of-speech tagging, POS tagging）或干脆简称<strong>标注</strong>。词性也称为<strong>词类</strong>或<strong>词汇范畴</strong>。用于特定任务的标记的集合被称为一个<strong>标记集</strong>。</p>
 <h3 id="词性标注器"><a class="markdownIt-Anchor" href="#词性标注器"></a> 词性标注器</h3>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> nltk</span><br><span class="line">text = nltk.word_tokenize(<span class="string">"And now for something completely different"</span>)</span><br><span class="line"><span class="comment"># 标注出text中每个词的词性</span></span><br><span class="line">nltk.pos_tag(text)</span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">[('And', 'CC'),</span></span><br><span class="line"><span class="string"> ('now', 'RB'),</span></span><br><span class="line"><span class="string"> ('for', 'IN'),</span></span><br><span class="line"><span class="string"> ('something', 'NN'),</span></span><br><span class="line"><span class="string"> ('completely', 'RB'),</span></span><br><span class="line"><span class="string"> ('different', 'JJ')]</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line">text = nltk.Text(word.lower() <span class="keyword">for</span> word <span class="keyword">in</span> nltk.corpus.brown.words())</span><br><span class="line"><span class="comment"># 为一个词找出所有它的上下文</span></span><br><span class="line">text.similar(<span class="string">'woman'</span>)</span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">man time day year car moment world house family child country boy</span></span><br><span class="line"><span class="string">state job place way war girl work word</span></span><br><span class="line"><span class="string">'''</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> nltk</span><br><span class="line">text = nltk.word_tokenize(<span class="string">&quot;And now for something completely different&quot;</span>)</span><br><span class="line"><span class="comment"># 标注出text中每个词的词性</span></span><br><span class="line">nltk.pos_tag(text)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">[(&#x27;And&#x27;, &#x27;CC&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;now&#x27;, &#x27;RB&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;for&#x27;, &#x27;IN&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;something&#x27;, &#x27;NN&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;completely&#x27;, &#x27;RB&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;different&#x27;, &#x27;JJ&#x27;)]</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">text = nltk.Text(word.lower() <span class="keyword">for</span> word <span class="keyword">in</span> nltk.corpus.brown.words())</span><br><span class="line"><span class="comment"># 为一个词找出所有它的上下文</span></span><br><span class="line">text.similar(<span class="string">&#x27;woman&#x27;</span>)</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">man time day year car moment world house family child country boy</span></span><br><span class="line"><span class="string">state job place way war girl work word</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
 <h3 id="标注语料库"><a class="markdownIt-Anchor" href="#标注语料库"></a> 标注语料库</h3>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建一个有标识的字符串</span></span><br><span class="line">tagged_token = nltk.tag.str2tuple(<span class="string">'fly/NN'</span>)</span><br><span class="line">tagged_token</span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">tagged_token</span></span><br><span class="line"><span class="string">('fly', 'NN')</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line">tagged_token[<span class="number">0</span>]</span><br><span class="line">tagged_token[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 批量标注</span></span><br><span class="line">sent = <span class="string">'''The/AT grand/JJ jury/NN commented/VBD on/IN a/AT number/NN of/INother/AP topics/NNS ,/, AMONG/IN them/PPO the/AT Atlanta/NP and/CCFulton/NP-tl County/NN-tl purchasing/VBG departments/NNS which/WDT it/PPsaid/VBD ``/`` ARE/BER well/QL operated/VBN and/CC follow/VB generally/Raccepted/VBN practices/NNS which/WDT inure/VB to/IN the/AT best/JJTinterest/NN of/IN both/ABX governments/NNS ''/'' ./.'''</span></span><br><span class="line">[nltk.tag.str2tuple(t) <span class="keyword">for</span> t <span class="keyword">in</span> sent.split()]</span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">[('The', 'AT'),</span></span><br><span class="line"><span class="string"> ('grand', 'JJ'),</span></span><br><span class="line"><span class="string"> ('jury', 'NN'),</span></span><br><span class="line"><span class="string"> ('commented', 'VBD'),</span></span><br><span class="line"><span class="string"> ('on', 'IN'),</span></span><br><span class="line"><span class="string"> ('a', 'AT'),</span></span><br><span class="line"><span class="string"> ('number', 'NN'),</span></span><br><span class="line"><span class="string"> ('of/INother', 'AP'),</span></span><br><span class="line"><span class="string"> ('topics', 'NNS'),</span></span><br><span class="line"><span class="string"> (',', ','),</span></span><br><span class="line"><span class="string"> ('AMONG', 'IN'),</span></span><br><span class="line"><span class="string"> ('them', 'PPO'),</span></span><br><span class="line"><span class="string"> ('the', 'AT'),</span></span><br><span class="line"><span class="string"> ('Atlanta', 'NP'),</span></span><br><span class="line"><span class="string"> ('and/CCFulton', 'NP-TL'),</span></span><br><span class="line"><span class="string"> ('County', 'NN-TL'),</span></span><br><span class="line"><span class="string"> ('purchasing', 'VBG'),</span></span><br><span class="line"><span class="string"> ('departments', 'NNS'),</span></span><br><span class="line"><span class="string"> ('which', 'WDT'),</span></span><br><span class="line"><span class="string"> ('it/PPsaid', 'VBD'),</span></span><br><span class="line"><span class="string"> ('``', '``'),</span></span><br><span class="line"><span class="string"> ('ARE', 'BER'),</span></span><br><span class="line"><span class="string"> ('well', 'QL'),</span></span><br><span class="line"><span class="string"> ('operated', 'VBN'),</span></span><br><span class="line"><span class="string"> ('and', 'CC'),</span></span><br><span class="line"><span class="string"> ('follow', 'VB'),</span></span><br><span class="line"><span class="string"> ('generally/Raccepted', 'VBN'),</span></span><br><span class="line"><span class="string"> ('practices', 'NNS'),</span></span><br><span class="line"><span class="string"> ('which', 'WDT'),</span></span><br><span class="line"><span class="string"> ('inure', 'VB'),</span></span><br><span class="line"><span class="string"> ('to', 'IN'),</span></span><br><span class="line"><span class="string"> ('the', 'AT'),</span></span><br><span class="line"><span class="string"> ('best/JJTinterest', 'NN'),</span></span><br><span class="line"><span class="string"> ('of', 'IN'),</span></span><br><span class="line"><span class="string"> ('both', 'ABX'),</span></span><br><span class="line"><span class="string"> ('governments', 'NNS'),</span></span><br><span class="line"><span class="string"> ("''", "''"),</span></span><br><span class="line"><span class="string"> ('.', '.')]</span></span><br><span class="line"><span class="string"> '''</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建一个有标识的字符串</span></span><br><span class="line">tagged_token = nltk.tag.str2tuple(<span class="string">&#x27;fly/NN&#x27;</span>)</span><br><span class="line">tagged_token</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">tagged_token</span></span><br><span class="line"><span class="string">(&#x27;fly&#x27;, &#x27;NN&#x27;)</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">tagged_token[<span class="number">0</span>]</span><br><span class="line">tagged_token[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 批量标注</span></span><br><span class="line">sent = <span class="string">&#x27;&#x27;&#x27;The/AT grand/JJ jury/NN commented/VBD on/IN a/AT number/NN of/INother/AP topics/NNS ,/, AMONG/IN them/PPO the/AT Atlanta/NP and/CCFulton/NP-tl County/NN-tl purchasing/VBG departments/NNS which/WDT it/PPsaid/VBD ``/`` ARE/BER well/QL operated/VBN and/CC follow/VB generally/Raccepted/VBN practices/NNS which/WDT inure/VB to/IN the/AT best/JJTinterest/NN of/IN both/ABX governments/NNS &#x27;&#x27;/&#x27;&#x27; ./.&#x27;&#x27;&#x27;</span></span><br><span class="line">[nltk.tag.str2tuple(t) <span class="keyword">for</span> t <span class="keyword">in</span> sent.split()]</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">[(&#x27;The&#x27;, &#x27;AT&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;grand&#x27;, &#x27;JJ&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;jury&#x27;, &#x27;NN&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;commented&#x27;, &#x27;VBD&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;on&#x27;, &#x27;IN&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;a&#x27;, &#x27;AT&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;number&#x27;, &#x27;NN&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;of/INother&#x27;, &#x27;AP&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;topics&#x27;, &#x27;NNS&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;,&#x27;, &#x27;,&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;AMONG&#x27;, &#x27;IN&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;them&#x27;, &#x27;PPO&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;the&#x27;, &#x27;AT&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;Atlanta&#x27;, &#x27;NP&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;and/CCFulton&#x27;, &#x27;NP-TL&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;County&#x27;, &#x27;NN-TL&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;purchasing&#x27;, &#x27;VBG&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;departments&#x27;, &#x27;NNS&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;which&#x27;, &#x27;WDT&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;it/PPsaid&#x27;, &#x27;VBD&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;``&#x27;, &#x27;``&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;ARE&#x27;, &#x27;BER&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;well&#x27;, &#x27;QL&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;operated&#x27;, &#x27;VBN&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;and&#x27;, &#x27;CC&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;follow&#x27;, &#x27;VB&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;generally/Raccepted&#x27;, &#x27;VBN&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;practices&#x27;, &#x27;NNS&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;which&#x27;, &#x27;WDT&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;inure&#x27;, &#x27;VB&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;to&#x27;, &#x27;IN&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;the&#x27;, &#x27;AT&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;best/JJTinterest&#x27;, &#x27;NN&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;of&#x27;, &#x27;IN&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;both&#x27;, &#x27;ABX&#x27;),</span></span><br><span class="line"><span class="string"> (&#x27;governments&#x27;, &#x27;NNS&#x27;),</span></span><br><span class="line"><span class="string"> (&quot;&#x27;&#x27;&quot;, &quot;&#x27;&#x27;&quot;),</span></span><br><span class="line"><span class="string"> (&#x27;.&#x27;, &#x27;.&#x27;)]</span></span><br><span class="line"><span class="string"> &#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
 <h3 id="获取已标注的语料库"><a class="markdownIt-Anchor" href="#获取已标注的语料库"></a> 获取已标注的语料库</h3>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 获取标注好的语料库</span></span><br><span class="line">nltk.corpus.brown.tagged_words()</span><br><span class="line"><span class="comment">#</span></span><br><span class="line">nltk.corpus.brown.tagged_words(tagset=<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line">nltk.corpus.nps_chat.tagged_words()</span><br><span class="line">nltk.corpus.conll2000.tagged_words()</span><br></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 未简化的标记</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 最频繁的名词标记</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findtags</span><span class="params">(tag_prefix, tagged_text)</span>:</span></span><br><span class="line">	cfd = nltk.ConditionalFreqDist((tag, word) <span class="keyword">for</span> (word, tag) <span class="keyword">in</span> tagged_text <span class="keyword">if</span> tag.startswith(tag_prefix))</span><br><span class="line">	<span class="keyword">return</span> dict((tag, cfd[tag].keys()[:<span class="number">5</span>]) <span class="keyword">for</span> tag <span class="keyword">in</span> cfd.conditions())</span><br><span class="line"></span><br><span class="line">tagdict = findtags(<span class="string">'NN'</span>, nltk.corpus.brown.tagged_words(categories=<span class="string">'news'</span>))</span><br><span class="line"><span class="keyword">for</span> tag <span class="keyword">in</span> sorted(tagdict):</span><br><span class="line">	<span class="keyword">print</span> tag, tagdict[tag]</span><br><span class="line"></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"><span class="string">$：名词所有格,</span></span><br><span class="line"><span class="string">S：复数名词（因为复数名词通常以 s结尾），</span></span><br><span class="line"><span class="string">P：专有名词</span></span><br><span class="line"><span class="string">-NC：引用</span></span><br><span class="line"><span class="string">-HL：标题中的词</span></span><br><span class="line"><span class="string">-TL：标题（布朗标记的特征）</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 探索已标注的语料库</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用POS标记寻找三词短语</span></span><br><span class="line"><span class="keyword">from</span> nltk.corpus <span class="keyword">import</span> brown</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">process</span><span class="params">(sentence)</span>:</span></span><br><span class="line">	<span class="keyword">for</span> (w1,t1), (w2,t2), (w3,t3) <span class="keyword">in</span> nltk.trigrams(sentence):</span><br><span class="line">         <span class="comment"># 动词+TO+动词</span></span><br><span class="line">		<span class="keyword">if</span> (t1.startswith(<span class="string">'V'</span>) <span class="keyword">and</span> t2 == <span class="string">'TO'</span> <span class="keyword">and</span> t3.startswith(<span class="string">'V'</span>)):</span><br><span class="line">			print(w1, w2, w3)</span><br><span class="line"><span class="keyword">for</span> tagged_sent <span class="keyword">in</span> brown.tagged_sents():</span><br><span class="line">	process(tagged_sent)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 获取标注好的语料库</span></span><br><span class="line">nltk.corpus.brown.tagged_words()</span><br><span class="line"><span class="comment">#</span></span><br><span class="line">nltk.corpus.brown.tagged_words(tagset=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">nltk.corpus.nps_chat.tagged_words()</span><br><span class="line">nltk.corpus.conll2000.tagged_words()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 未简化的标记</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 最频繁的名词标记</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">findtags</span>(<span class="params">tag_prefix, tagged_text</span>):</span></span><br><span class="line">	cfd = nltk.ConditionalFreqDist((tag, word) <span class="keyword">for</span> (word, tag) <span class="keyword">in</span> tagged_text <span class="keyword">if</span> tag.startswith(tag_prefix))</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">dict</span>((tag, cfd[tag].keys()[:<span class="number">5</span>]) <span class="keyword">for</span> tag <span class="keyword">in</span> cfd.conditions())</span><br><span class="line"></span><br><span class="line">tagdict = findtags(<span class="string">&#x27;NN&#x27;</span>, nltk.corpus.brown.tagged_words(categories=<span class="string">&#x27;news&#x27;</span>))</span><br><span class="line"><span class="keyword">for</span> tag <span class="keyword">in</span> <span class="built_in">sorted</span>(tagdict):</span><br><span class="line">	<span class="built_in">print</span> tag, tagdict[tag]</span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">$：名词所有格,</span></span><br><span class="line"><span class="string">S：复数名词（因为复数名词通常以 s结尾），</span></span><br><span class="line"><span class="string">P：专有名词</span></span><br><span class="line"><span class="string">-NC：引用</span></span><br><span class="line"><span class="string">-HL：标题中的词</span></span><br><span class="line"><span class="string">-TL：标题（布朗标记的特征）</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 探索已标注的语料库</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用POS标记寻找三词短语</span></span><br><span class="line"><span class="keyword">from</span> nltk.corpus <span class="keyword">import</span> brown</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">process</span>(<span class="params">sentence</span>):</span></span><br><span class="line">	<span class="keyword">for</span> (w1,t1), (w2,t2), (w3,t3) <span class="keyword">in</span> nltk.trigrams(sentence):</span><br><span class="line">         <span class="comment"># 动词+TO+动词</span></span><br><span class="line">		<span class="keyword">if</span> (t1.startswith(<span class="string">&#x27;V&#x27;</span>) <span class="keyword">and</span> t2 == <span class="string">&#x27;TO&#x27;</span> <span class="keyword">and</span> t3.startswith(<span class="string">&#x27;V&#x27;</span>)):</span><br><span class="line">			print(w1, w2, w3)</span><br><span class="line"><span class="keyword">for</span> tagged_sent <span class="keyword">in</span> brown.tagged_sents():</span><br><span class="line">	process(tagged_sent)</span><br></pre></td></tr></table></figure>
 <p>Python字典部分不做介绍。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用默认字典可以防止使用未定义的key报错</span></span><br><span class="line"><span class="comment"># nltk的默认字典,需要提前定义类型（int、float、str、list、dict、tuple）。</span></span><br><span class="line">frequency = nltk.defaultdict(int)</span><br><span class="line"><span class="comment"># 创建具有默认值的字典</span></span><br><span class="line">pos = nltk.defaultdict(<span class="keyword">lambda</span>: <span class="string">'N'</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用默认字典可以防止使用未定义的key报错</span></span><br><span class="line"><span class="comment"># nltk的默认字典,需要提前定义类型（int、float、str、list、dict、tuple）。</span></span><br><span class="line">frequency = nltk.defaultdict(<span class="built_in">int</span>)</span><br><span class="line"><span class="comment"># 创建具有默认值的字典</span></span><br><span class="line">pos = nltk.defaultdict(<span class="keyword">lambda</span>: <span class="string">&#x27;N&#x27;</span>)</span><br></pre></td></tr></table></figure>
 <h3 id="自动标注"><a class="markdownIt-Anchor" href="#自动标注"></a> 自动标注</h3>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> nltk</span><br><span class="line"><span class="keyword">from</span> nltk.corpus <span class="keyword">import</span> brown</span><br><span class="line"></span><br><span class="line">brown_tagged_sents = brown.tagged_sents(categories=<span class="string">'news'</span>)</span><br><span class="line">brown_sents = brown.sents(categories=<span class="string">'news'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 默认标注器</span></span><br><span class="line">tags = [tag <span class="keyword">for</span> (word, tag) <span class="keyword">in</span> brown.tagged_words(categories=<span class="string">'news'</span>)]</span><br><span class="line">nltk.FreqDist(tags).max()</span><br><span class="line"><span class="comment"># 将所有词都标注为NN的标注器</span></span><br><span class="line">raw = <span class="string">'I do not like green eggs and ham, I do not like them Sam I am!'</span></span><br><span class="line">tokens = nltk.word_tokenize(raw)</span><br><span class="line">default_tagger = nltk.DefaultTagger(<span class="string">'NN'</span>)</span><br><span class="line">default_tagger.tag(tokens)</span><br><span class="line"><span class="comment"># 评判标注正确性</span></span><br><span class="line">default_tagger.evaluate(brown_tagged_sents)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 正则标注</span></span><br><span class="line">patterns = [</span><br><span class="line">	(<span class="string">r'.*ing$'</span>, <span class="string">'VBG'</span>), <span class="comment"># gerunds</span></span><br><span class="line">	(<span class="string">r'.*ed$'</span>, <span class="string">'VBD'</span>), <span class="comment"># simple past</span></span><br><span class="line">	(<span class="string">r'.*es$'</span>, <span class="string">'VBZ'</span>), <span class="comment"># 3rd singular present</span></span><br><span class="line">	(<span class="string">r'.*ould$'</span>, <span class="string">'MD'</span>), <span class="comment"># modals</span></span><br><span class="line">	(<span class="string">r'.*\'s$'</span>, <span class="string">'NN$'</span>), <span class="comment"># possessive nouns</span></span><br><span class="line">	(<span class="string">r'.*s$'</span>, <span class="string">'NNS'</span>), <span class="comment"># plural nouns</span></span><br><span class="line"><span class="number">190</span></span><br><span class="line">	(<span class="string">r'^-?[0-9]+(.[0-9]+)?$'</span>, <span class="string">'CD'</span>), <span class="comment"># cardinal numbers</span></span><br><span class="line">	(<span class="string">r'.*'</span>, <span class="string">'NN'</span>) <span class="comment"># nouns (default)</span></span><br><span class="line">]</span><br><span class="line">regexp_tagger = nltk.RegexpTagger(patterns)</span><br><span class="line">regexp_tagger.tag(brown_sents[<span class="number">3</span>])</span><br><span class="line">regexp_tagger.evaluate(brown_tagged_sents)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查询标注器</span></span><br><span class="line"><span class="comment"># 找出100个最频繁的词</span></span><br><span class="line">fd = nltk.FreqDist(brown.words(categories=<span class="string">'news'</span>))</span><br><span class="line">cfd = nltk.ConditionalFreqDist(brown.tagged_words(categories=<span class="string">'news'</span>))</span><br><span class="line">most_freq_words = fd.keys()[:<span class="number">100</span>]</span><br><span class="line">likely_tags = dict((word, cfd[word].max()) <span class="keyword">for</span> word <span class="keyword">in</span> most_freq_words)</span><br><span class="line"><span class="comment"># 使用上面这个信息作为"查找标注器"</span></span><br><span class="line">baseline_tagger = nltk.UnigramTagger(model=likely_tags)</span><br><span class="line">baseline_tagger.evaluate(brown_tagged_sents)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用信息作为标注器，如果没有找到就使用默认标注器。这个过程称为"回退"</span></span><br><span class="line">baseline_tagger = nltk.UnigramTagger(model=likely_tags, backoff=nltk.DefaultTagger(<span class="string">'NN'</span>))</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> nltk</span><br><span class="line"><span class="keyword">from</span> nltk.corpus <span class="keyword">import</span> brown</span><br><span class="line"></span><br><span class="line">brown_tagged_sents = brown.tagged_sents(categories=<span class="string">&#x27;news&#x27;</span>)</span><br><span class="line">brown_sents = brown.sents(categories=<span class="string">&#x27;news&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 默认标注器</span></span><br><span class="line">tags = [tag <span class="keyword">for</span> (word, tag) <span class="keyword">in</span> brown.tagged_words(categories=<span class="string">&#x27;news&#x27;</span>)]</span><br><span class="line">nltk.FreqDist(tags).<span class="built_in">max</span>()</span><br><span class="line"><span class="comment"># 将所有词都标注为NN的标注器</span></span><br><span class="line">raw = <span class="string">&#x27;I do not like green eggs and ham, I do not like them Sam I am!&#x27;</span></span><br><span class="line">tokens = nltk.word_tokenize(raw)</span><br><span class="line">default_tagger = nltk.DefaultTagger(<span class="string">&#x27;NN&#x27;</span>)</span><br><span class="line">default_tagger.tag(tokens)</span><br><span class="line"><span class="comment"># 评判标注正确性</span></span><br><span class="line">default_tagger.evaluate(brown_tagged_sents)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 正则标注</span></span><br><span class="line">patterns = [</span><br><span class="line">	(<span class="string">r&#x27;.*ing$&#x27;</span>, <span class="string">&#x27;VBG&#x27;</span>), <span class="comment"># gerunds</span></span><br><span class="line">	(<span class="string">r&#x27;.*ed$&#x27;</span>, <span class="string">&#x27;VBD&#x27;</span>), <span class="comment"># simple past</span></span><br><span class="line">	(<span class="string">r&#x27;.*es$&#x27;</span>, <span class="string">&#x27;VBZ&#x27;</span>), <span class="comment"># 3rd singular present</span></span><br><span class="line">	(<span class="string">r&#x27;.*ould$&#x27;</span>, <span class="string">&#x27;MD&#x27;</span>), <span class="comment"># modals</span></span><br><span class="line">	(<span class="string">r&#x27;.*\&#x27;s$&#x27;</span>, <span class="string">&#x27;NN$&#x27;</span>), <span class="comment"># possessive nouns</span></span><br><span class="line">	(<span class="string">r&#x27;.*s$&#x27;</span>, <span class="string">&#x27;NNS&#x27;</span>), <span class="comment"># plural nouns</span></span><br><span class="line"><span class="number">190</span></span><br><span class="line">	(<span class="string">r&#x27;^-?[0-9]+(.[0-9]+)?$&#x27;</span>, <span class="string">&#x27;CD&#x27;</span>), <span class="comment"># cardinal numbers</span></span><br><span class="line">	(<span class="string">r&#x27;.*&#x27;</span>, <span class="string">&#x27;NN&#x27;</span>) <span class="comment"># nouns (default)</span></span><br><span class="line">]</span><br><span class="line">regexp_tagger = nltk.RegexpTagger(patterns)</span><br><span class="line">regexp_tagger.tag(brown_sents[<span class="number">3</span>])</span><br><span class="line">regexp_tagger.evaluate(brown_tagged_sents)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查询标注器</span></span><br><span class="line"><span class="comment"># 找出100个最频繁的词</span></span><br><span class="line">fd = nltk.FreqDist(brown.words(categories=<span class="string">&#x27;news&#x27;</span>))</span><br><span class="line">cfd = nltk.ConditionalFreqDist(brown.tagged_words(categories=<span class="string">&#x27;news&#x27;</span>))</span><br><span class="line">most_freq_words = fd.keys()[:<span class="number">100</span>]</span><br><span class="line">likely_tags = <span class="built_in">dict</span>((word, cfd[word].<span class="built_in">max</span>()) <span class="keyword">for</span> word <span class="keyword">in</span> most_freq_words)</span><br><span class="line"><span class="comment"># 使用上面这个信息作为&quot;查找标注器&quot;</span></span><br><span class="line">baseline_tagger = nltk.UnigramTagger(model=likely_tags)</span><br><span class="line">baseline_tagger.evaluate(brown_tagged_sents)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用信息作为标注器，如果没有找到就使用默认标注器。这个过程称为&quot;回退&quot;</span></span><br><span class="line">baseline_tagger = nltk.UnigramTagger(model=likely_tags, backoff=nltk.DefaultTagger(<span class="string">&#x27;NN&#x27;</span>))</span><br></pre></td></tr></table></figure>
 <h3 id="评估"><a class="markdownIt-Anchor" href="#评估"></a> 评估</h3>
 <p>使用<strong>黄金标准</strong>测试数据。一个已经手动标注并作为自动系统评估标准而被接收的语料库。</p>
 <p>如果标注器对词的标记与黄金标准标记相同，那么标注器就被认为是正确的。当然这只是相对于黄金标准这个测试数据而言。</p>
@@ -657,17 +469,17 @@
 <p>2-gram 标注器：二元标注器（bigram taggers）</p>
 <p>3-gram 标注器：三元标注器（trigram taggers）</p>
 <p>N-gram标注不考虑句子边界的上下文。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> nltk.corpus <span class="keyword">import</span> brown</span><br><span class="line">brown_tagged_sents = brown.tagged_sents(categories=<span class="string">'news'</span>)</span><br><span class="line">brown_sents = brown.sents(categories=<span class="string">'news'</span>)</span><br><span class="line"><span class="comment"># 标注</span></span><br><span class="line">unigram_tagger = nltk.UnigramTagger(brown_tagged_sents)</span><br><span class="line">bigram_tagger = nltk.BigramTagger(brown_tagged_sents)</span><br><span class="line">trigram_tagger = nltk.TrigramTagger(brown_tagged_sents)</span><br><span class="line"><span class="comment"># 组合标注</span></span><br><span class="line">t0 = nltk.DefaultTagger(<span class="string">'NN'</span>)</span><br><span class="line">t1 = nltk.UnigramTagger(train_sents, backoff=t0)</span><br><span class="line">t2 = nltk.BigramTagger(train_sents, backoff=t1)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> nltk.corpus <span class="keyword">import</span> brown</span><br><span class="line">brown_tagged_sents = brown.tagged_sents(categories=<span class="string">&#x27;news&#x27;</span>)</span><br><span class="line">brown_sents = brown.sents(categories=<span class="string">&#x27;news&#x27;</span>)</span><br><span class="line"><span class="comment"># 标注</span></span><br><span class="line">unigram_tagger = nltk.UnigramTagger(brown_tagged_sents)</span><br><span class="line">bigram_tagger = nltk.BigramTagger(brown_tagged_sents)</span><br><span class="line">trigram_tagger = nltk.TrigramTagger(brown_tagged_sents)</span><br><span class="line"><span class="comment"># 组合标注</span></span><br><span class="line">t0 = nltk.DefaultTagger(<span class="string">&#x27;NN&#x27;</span>)</span><br><span class="line">t1 = nltk.UnigramTagger(train_sents, backoff=t0)</span><br><span class="line">t2 = nltk.BigramTagger(train_sents, backoff=t1)</span><br></pre></td></tr></table></figure>
 <p>存储可以使用python自带的存储模块<code>pickle</code>。</p>
 <p>效果：</p>
 <ol>
 <li>
 <p>根据经验来进行判断——一般方法</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cfd = nltk.ConditionalFreqDist(((x[<span class="number">1</span>], y[<span class="number">1</span>], z[<span class="number">0</span>]), z[<span class="number">1</span>]) <span class="keyword">for</span> sent <span class="keyword">in</span> brown_tagged_sents <span class="keyword">for</span> x, y, z <span class="keyword">in</span> nltk.trigrams(sent))</span><br><span class="line">ambiguous_contexts = [c <span class="keyword">for</span> c <span class="keyword">in</span> cfd.conditions() <span class="keyword">if</span> len(cfd[c]) &gt; <span class="number">1</span>]</span><br><span class="line">sum(cfd[c].N() <span class="keyword">for</span> c <span class="keyword">in</span> ambiguous_contexts) / cfd.N()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cfd = nltk.ConditionalFreqDist(((x[<span class="number">1</span>], y[<span class="number">1</span>], z[<span class="number">0</span>]), z[<span class="number">1</span>]) <span class="keyword">for</span> sent <span class="keyword">in</span> brown_tagged_sents <span class="keyword">for</span> x, y, z <span class="keyword">in</span> nltk.trigrams(sent))</span><br><span class="line">ambiguous_contexts = [c <span class="keyword">for</span> c <span class="keyword">in</span> cfd.conditions() <span class="keyword">if</span> <span class="built_in">len</span>(cfd[c]) &gt; <span class="number">1</span>]</span><br><span class="line"><span class="built_in">sum</span>(cfd[c].N() <span class="keyword">for</span> c <span class="keyword">in</span> ambiguous_contexts) / cfd.N()</span><br></pre></td></tr></table></figure>
 </li>
 <li>
 <p>研究标注器的错误——混淆矩阵</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">test_tags = [tag <span class="keyword">for</span> sent <span class="keyword">in</span> brown.sents(categories=<span class="string">'editorial'</span>) <span class="keyword">for</span> (word, tag) <span class="keyword">in</span> t2.tag(sent)]</span><br><span class="line">gold_tags = [tag <span class="keyword">for</span> (word, tag) <span class="keyword">in</span> brown.tagged_words(categories=<span class="string">'editorial'</span>)]</span><br><span class="line"><span class="keyword">print</span> nltk.ConfusionMatrix(gold, test)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">test_tags = [tag <span class="keyword">for</span> sent <span class="keyword">in</span> brown.sents(categories=<span class="string">&#x27;editorial&#x27;</span>) <span class="keyword">for</span> (word, tag) <span class="keyword">in</span> t2.tag(sent)]</span><br><span class="line">gold_tags = [tag <span class="keyword">for</span> (word, tag) <span class="keyword">in</span> brown.tagged_words(categories=<span class="string">&#x27;editorial&#x27;</span>)]</span><br><span class="line"><span class="built_in">print</span> nltk.ConfusionMatrix(gold, test)</span><br></pre></td></tr></table></figure>
 </li>
 </ol>
 <p>n-gram标注器的问题</p>
@@ -679,947 +491,304 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nltk.tag.brill.demo()</span><br></pre></td></tr></table></figure>
 <p>下一篇：<a href="https://wnma3mz.github.io/hexo_blog/2018/08/05/%E3%80%8APython%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86%E3%80%8B%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89/">《Python自然语言处理》阅读笔记（三）</a></p>
 
-      
     </div>
+
     
     
     
 
-    
-      <div>
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hexo_blog/tags/note/" rel="tag"># note</a>
+              <a href="/hexo_blog/tags/Python/" rel="tag"># Python</a>
+              <a href="/hexo_blog/tags/NLP/" rel="tag"># NLP</a>
+          </div>
+
         
-<div style="text-align:center;color: #ccc;font-size:14px;">
-    ------ 本文结束 ------</div>
 
 
-      </div>
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2018/05/18/CUDA%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E7%AC%94%E8%AE%B0/" rel="prev" title="CUDA官方文档笔记">
+      <i class="fa fa-chevron-left"></i> CUDA官方文档笔记
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2018/05/30/%E6%9D%82%E8%AE%B0/" rel="next" title="杂记">
+      杂记 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
     
-
-    
-
-    
-
-    
-      <div>
-        <ul class="post-copyright">
-  <li class="post-copyright-author">
-    <strong>本文作者：</strong>
-    wnma3mz
-  </li>
-  <li class="post-copyright-link">
-    <strong>本文链接：</strong>
-    <a href="https://wnma3mz.github.io/2018/05/23/《Python自然语言处理》阅读笔记（二）/" title="《Python自然语言处理》阅读笔记（二）">https://wnma3mz.github.io/2018/05/23/《Python自然语言处理》阅读笔记（二）/</a>
-  </li>
-  <li class="post-copyright-license">
-    <strong>版权声明： </strong>
-    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
-  </li>
-</ul>
-
-      </div>
-    
-
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/hexo_blog/tags/note/" rel="tag"># note</a>
-          
-            <a href="/hexo_blog/tags/Python/" rel="tag"># Python</a>
-          
-            <a href="/hexo_blog/tags/NLP/" rel="tag"># NLP</a>
-          
-        </div>
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/hexo_blog/2018/05/18/CUDA官方文档笔记/" rel="next" title="CUDA官方文档笔记">
-                <i class="fa fa-chevron-left"></i> CUDA官方文档笔记
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/hexo_blog/2018/05/30/杂记/" rel="prev" title="杂记">
-                杂记 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
-  </div>
-  
-  
-  
   </article>
+  
+  
+  
 
 
-    <div class="post-spread">
-      
-    </div>
-  </div>
 
           </div>
           
 
-
-          
-
-  
-    <div class="comments" id="comments">
-      
-        <div id="gitment-container"></div>
-      
-    </div>
-
-  
-
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <section class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image"
-                src="/hexo_blog/images/avatar.png"
-                alt="wnma3mz" />
-            
-              <p class="site-author-name" itemprop="name">wnma3mz</p>
-              <p class="site-description motion-element" itemprop="description">Day Day Up</p>
-          </div>
-
-          <nav class="site-state motion-element">
-
-            
-              <div class="site-state-item site-state-posts">
-              
-                <a href="/hexo_blog/archives/">
-              
-                  <span class="site-state-item-count">40</span>
-                  <span class="site-state-item-name">日志</span>
-                </a>
-              </div>
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-categories">
-                <a href="/hexo_blog/categories/index.html">
-                  <span class="site-state-item-count">13</span>
-                  <span class="site-state-item-name">分类</span>
-                </a>
-              </div>
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-tags">
-                <a href="/hexo_blog/tags/index.html">
-                  <span class="site-state-item-count">44</span>
-                  <span class="site-state-item-name">标签</span>
-                </a>
-              </div>
-            
-
-          </nav>
-
-          
-
-          
-            <div class="links-of-author motion-element">
-                
-                  <span class="links-of-author-item">
-                    <a href="https://github.com/wnma3mz" target="_blank" title="GitHub">
-                      
-                        <i class="fa fa-fw fa-github"></i>GitHub</a>
-                  </span>
-                
-                  <span class="links-of-author-item">
-                    <a href="mailto:wnma3mz@gmail.com" target="_blank" title="E-Mail">
-                      
-                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
-                  </span>
-                
-            </div>
-          
-
-          
-          
-
-          
-          
-
-          
-
-        </div>
-      </section>
-
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#第三章加工原料文本"><span class="nav-text"> 第三章：加工原料文本</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#词干提取器"><span class="nav-text"> 词干提取器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分词"><span class="nav-text"> 分词：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第四章编写结构化程序"><span class="nav-text"> 第四章：编写结构化程序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第五章分类和标注词汇"><span class="nav-text"> 第五章：分类和标注词汇</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#词性标注器"><span class="nav-text"> 词性标注器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#标注语料库"><span class="nav-text"> 标注语料库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获取已标注的语料库"><span class="nav-text"> 获取已标注的语料库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自动标注"><span class="nav-text"> 自动标注</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#评估"><span class="nav-text"> 评估</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#n-gram标注"><span class="nav-text"> N-gram标注</span></a></li></ol></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
-      
-
-      
-
-    </div>
-  </aside>
-
-
-        
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
-  <span class="with-love">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">wnma3mz</span>
-
-  
-</div>
-
-
-  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
-
-
-
-  <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
-
-
-
-
-
-
-        
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-          <span id="scrollpercent"><span>0</span>%</span>
-        
-      </div>
-    
-
-    
-
-  </div>
-
-  
-
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
   }
 </script>
 
-
-
-
-
-
-
-
-
+        </div>
+          
   
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
 
+  <aside class="sidebar">
+    <div class="sidebar-inner">
 
-  
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Inhaltsverzeichnis
+        </li>
+        <li class="sidebar-nav-overview">
+          Übersicht
+        </li>
+      </ul>
 
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E7%AB%A0%E5%8A%A0%E5%B7%A5%E5%8E%9F%E6%96%99%E6%96%87%E6%9C%AC"><span class="nav-text"> 第三章：加工原料文本</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%8D%E5%B9%B2%E6%8F%90%E5%8F%96%E5%99%A8"><span class="nav-text"> 词干提取器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E8%AF%8D"><span class="nav-text"> 分词：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E5%9B%9B%E7%AB%A0%E7%BC%96%E5%86%99%E7%BB%93%E6%9E%84%E5%8C%96%E7%A8%8B%E5%BA%8F"><span class="nav-text"> 第四章：编写结构化程序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%BA%94%E7%AB%A0%E5%88%86%E7%B1%BB%E5%92%8C%E6%A0%87%E6%B3%A8%E8%AF%8D%E6%B1%87"><span class="nav-text"> 第五章：分类和标注词汇</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8%E5%99%A8"><span class="nav-text"> 词性标注器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%87%E6%B3%A8%E8%AF%AD%E6%96%99%E5%BA%93"><span class="nav-text"> 标注语料库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%B7%B2%E6%A0%87%E6%B3%A8%E7%9A%84%E8%AF%AD%E6%96%99%E5%BA%93"><span class="nav-text"> 获取已标注的语料库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E6%A0%87%E6%B3%A8"><span class="nav-text"> 自动标注</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%84%E4%BC%B0"><span class="nav-text"> 评估</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#n-gram%E6%A0%87%E6%B3%A8"><span class="nav-text"> N-gram标注</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
 
-
-
-
-
-
-
-
-
-
-  
-  
-    <script type="text/javascript" src="/hexo_blog/lib/jquery/index.js?v=2.1.3"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/hexo_blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/hexo_blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/hexo_blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/hexo_blog/lib/canvas-nest/canvas-nest.min.js"></script>
-  
-
-
-  
-
-
-  <script type="text/javascript" src="/hexo_blog/js/src/utils.js?v=5.1.4"></script>
-
-  <script type="text/javascript" src="/hexo_blog/js/src/motion.js?v=5.1.4"></script>
-
-
-
-  
-  
-
-  
-  <script type="text/javascript" src="/hexo_blog/js/src/scrollspy.js?v=5.1.4"></script>
-<script type="text/javascript" src="/hexo_blog/js/src/post-details.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  <script type="text/javascript" src="/hexo_blog/js/src/bootstrap.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  
-
-
-
-
-	
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-
-
-
-
-
-
-<!-- LOCAL: You can save these files to your site and update links -->
-    
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="wnma3mz"
+      src="/hexo_blog/images/avatar.png">
+  <p class="site-author-name" itemprop="name">wnma3mz</p>
+  <div class="site-description" itemprop="description">Day Day Up</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/hexo_blog/archives/">
         
-        <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
-        <script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script>
-    
-<!-- END LOCAL -->
-
-    
-
-    
-      <script type="text/javascript">
-      function renderGitment(){
-        var gitment = new Gitmint({
-            id: '1527045804000',
-            owner: 'wnma3mz',
-            repo: 'gitment-comments',
-            
-            lang: "" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
-            
-            oauth: {
-            
-            
-                client_secret: '49efe3e546e077524ac6dec1044974530216d625',
-            
-                client_id: '9bca1eab6c9fed529c25'
-            }});
-        gitment.render('gitment-container');
-      }
-
-      
-      renderGitment();
-      
-      </script>
-    
+          <span class="site-state-item-count">40</span>
+          <span class="site-state-item-name">Artikel</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/hexo_blog/categories/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">Kategorien</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/hexo_blog/tags/">
+        <span class="site-state-item-count">44</span>
+        <span class="site-state-item-name">schlagwörter</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wnma3mz" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wnma3mz" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wnma3mz@gmail.com" title="E-Mail → mailto:wnma3mz@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
 
 
 
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
 
 
+      </div>
+    </main>
 
+    <footer class="footer">
+      <div class="footer-inner">
+        
 
+        
+
+<div class="copyright">
   
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wnma3mz</span>
+</div>
+  <div class="powered-by">Erstellt mit  <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
 
-  <script type="text/javascript">
-    // Popup Window;
-    var isfetched = false;
-    var isXml = true;
-    // Search DB path;
-    var search_path = "search.xml";
-    if (search_path.length === 0) {
-      search_path = "search.xml";
-    } else if (/json$/i.test(search_path)) {
-      isXml = false;
-    }
-    var path = "/hexo_blog/" + search_path;
-    // monitor main search box;
-
-    var onPopupClose = function (e) {
-      $('.popup').hide();
-      $('#local-search-input').val('');
-      $('.search-result-list').remove();
-      $('#no-result').remove();
-      $(".local-search-pop-overlay").remove();
-      $('body').css('overflow', '');
-    }
-
-    function proceedsearch() {
-      $("body")
-        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
-        .css('overflow', 'hidden');
-      $('.search-popup-overlay').click(onPopupClose);
-      $('.popup').toggle();
-      var $localSearchInput = $('#local-search-input');
-      $localSearchInput.attr("autocapitalize", "none");
-      $localSearchInput.attr("autocorrect", "off");
-      $localSearchInput.focus();
-    }
-
-    // search function;
-    var searchFunc = function(path, search_id, content_id) {
-      'use strict';
-
-      // start loading animation
-      $("body")
-        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
-          '<div id="search-loading-icon">' +
-          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
-          '</div>' +
-          '</div>')
-        .css('overflow', 'hidden');
-      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
-
-      $.ajax({
-        url: path,
-        dataType: isXml ? "xml" : "json",
-        async: true,
-        success: function(res) {
-          // get the contents from search data
-          isfetched = true;
-          $('.popup').detach().appendTo('.header-inner');
-          var datas = isXml ? $("entry", res).map(function() {
-            return {
-              title: $("title", this).text(),
-              content: $("content",this).text(),
-              url: $("url" , this).text()
-            };
-          }).get() : res;
-          var input = document.getElementById(search_id);
-          var resultContent = document.getElementById(content_id);
-          var inputEventFunction = function() {
-            var searchText = input.value.trim().toLowerCase();
-            var keywords = searchText.split(/[\s\-]+/);
-            if (keywords.length > 1) {
-              keywords.push(searchText);
-            }
-            var resultItems = [];
-            if (searchText.length > 0) {
-              // perform local searching
-              datas.forEach(function(data) {
-                var isMatch = false;
-                var hitCount = 0;
-                var searchTextCount = 0;
-                var title = data.title.trim();
-                var titleInLowerCase = title.toLowerCase();
-                var content = data.content.trim().replace(/<[^>]+>/g,"");
-                var contentInLowerCase = content.toLowerCase();
-                var articleUrl = decodeURIComponent(data.url);
-                var indexOfTitle = [];
-                var indexOfContent = [];
-                // only match articles with not empty titles
-                if(title != '') {
-                  keywords.forEach(function(keyword) {
-                    function getIndexByWord(word, text, caseSensitive) {
-                      var wordLen = word.length;
-                      if (wordLen === 0) {
-                        return [];
-                      }
-                      var startPosition = 0, position = [], index = [];
-                      if (!caseSensitive) {
-                        text = text.toLowerCase();
-                        word = word.toLowerCase();
-                      }
-                      while ((position = text.indexOf(word, startPosition)) > -1) {
-                        index.push({position: position, word: word});
-                        startPosition = position + wordLen;
-                      }
-                      return index;
-                    }
-
-                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
-                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
-                  });
-                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
-                    isMatch = true;
-                    hitCount = indexOfTitle.length + indexOfContent.length;
-                  }
-                }
-
-                // show search results
-
-                if (isMatch) {
-                  // sort index by position of keyword
-
-                  [indexOfTitle, indexOfContent].forEach(function (index) {
-                    index.sort(function (itemLeft, itemRight) {
-                      if (itemRight.position !== itemLeft.position) {
-                        return itemRight.position - itemLeft.position;
-                      } else {
-                        return itemLeft.word.length - itemRight.word.length;
-                      }
-                    });
-                  });
-
-                  // merge hits into slices
-
-                  function mergeIntoSlice(text, start, end, index) {
-                    var item = index[index.length - 1];
-                    var position = item.position;
-                    var word = item.word;
-                    var hits = [];
-                    var searchTextCountInSlice = 0;
-                    while (position + word.length <= end && index.length != 0) {
-                      if (word === searchText) {
-                        searchTextCountInSlice++;
-                      }
-                      hits.push({position: position, length: word.length});
-                      var wordEnd = position + word.length;
-
-                      // move to next position of hit
-
-                      index.pop();
-                      while (index.length != 0) {
-                        item = index[index.length - 1];
-                        position = item.position;
-                        word = item.word;
-                        if (wordEnd > position) {
-                          index.pop();
-                        } else {
-                          break;
-                        }
-                      }
-                    }
-                    searchTextCount += searchTextCountInSlice;
-                    return {
-                      hits: hits,
-                      start: start,
-                      end: end,
-                      searchTextCount: searchTextCountInSlice
-                    };
-                  }
-
-                  var slicesOfTitle = [];
-                  if (indexOfTitle.length != 0) {
-                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
-                  }
-
-                  var slicesOfContent = [];
-                  while (indexOfContent.length != 0) {
-                    var item = indexOfContent[indexOfContent.length - 1];
-                    var position = item.position;
-                    var word = item.word;
-                    // cut out 100 characters
-                    var start = position - 20;
-                    var end = position + 80;
-                    if(start < 0){
-                      start = 0;
-                    }
-                    if (end < position + word.length) {
-                      end = position + word.length;
-                    }
-                    if(end > content.length){
-                      end = content.length;
-                    }
-                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
-                  }
-
-                  // sort slices in content by search text's count and hits' count
-
-                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
-                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
-                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
-                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
-                      return sliceRight.hits.length - sliceLeft.hits.length;
-                    } else {
-                      return sliceLeft.start - sliceRight.start;
-                    }
-                  });
-
-                  // select top N slices in content
-
-                  var upperBound = parseInt('1');
-                  if (upperBound >= 0) {
-                    slicesOfContent = slicesOfContent.slice(0, upperBound);
-                  }
-
-                  // highlight title and content
-
-                  function highlightKeyword(text, slice) {
-                    var result = '';
-                    var prevEnd = slice.start;
-                    slice.hits.forEach(function (hit) {
-                      result += text.substring(prevEnd, hit.position);
-                      var end = hit.position + hit.length;
-                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
-                      prevEnd = end;
-                    });
-                    result += text.substring(prevEnd, slice.end);
-                    return result;
-                  }
-
-                  var resultItem = '';
-
-                  if (slicesOfTitle.length != 0) {
-                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
-                  } else {
-                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
-                  }
-
-                  slicesOfContent.forEach(function (slice) {
-                    resultItem += "<a href='" + articleUrl + "'>" +
-                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
-                      "...</p>" + "</a>";
-                  });
-
-                  resultItem += "</li>";
-                  resultItems.push({
-                    item: resultItem,
-                    searchTextCount: searchTextCount,
-                    hitCount: hitCount,
-                    id: resultItems.length
-                  });
-                }
-              })
-            };
-            if (keywords.length === 1 && keywords[0] === "") {
-              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
-            } else if (resultItems.length === 0) {
-              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
-            } else {
-              resultItems.sort(function (resultLeft, resultRight) {
-                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
-                  return resultRight.searchTextCount - resultLeft.searchTextCount;
-                } else if (resultLeft.hitCount !== resultRight.hitCount) {
-                  return resultRight.hitCount - resultLeft.hitCount;
-                } else {
-                  return resultRight.id - resultLeft.id;
-                }
-              });
-              var searchResultList = '<ul class=\"search-result-list\">';
-              resultItems.forEach(function (result) {
-                searchResultList += result.item;
-              })
-              searchResultList += "</ul>";
-              resultContent.innerHTML = searchResultList;
-            }
-          }
-
-          if ('auto' === 'auto') {
-            input.addEventListener('input', inputEventFunction);
-          } else {
-            $('.search-icon').click(inputEventFunction);
-            input.addEventListener('keypress', function (event) {
-              if (event.keyCode === 13) {
-                inputEventFunction();
-              }
-            });
-          }
-
-          // remove loading animation
-          $(".local-search-pop-overlay").remove();
-          $('body').css('overflow', '');
-
-          proceedsearch();
-        }
-      });
-    }
-
-    // handle and trigger popup window;
-    $('.popup-trigger').click(function(e) {
-      e.stopPropagation();
-      if (isfetched === false) {
-        searchFunc(path, 'local-search-input', 'local-search-result');
-      } else {
-        proceedsearch();
-      };
-    });
-
-    $('.popup-btn-close').click(onPopupClose);
-    $('.popup').click(function(e){
-      e.stopPropagation();
-    });
-    $(document).on('keyup', function (event) {
-      var shouldDismissSearchPopup = event.which === 27 &&
-        $('.search-popup').is(':visible');
-      if (shouldDismissSearchPopup) {
-        onPopupClose();
-      }
-    });
-  </script>
+        
 
 
 
 
 
-  
 
-  
-  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
-  <script>AV.initialize("eoVNlIJq5laKXK4jYgB2wCiF-gzGzoHsz", "eMgalJamMnlzVS7c0VvH4TjH");</script>
-  <script>
-    function showTime(Counter) {
-      var query = new AV.Query(Counter);
-      var entries = [];
-      var $visitors = $(".leancloud_visitors");
-
-      $visitors.each(function () {
-        entries.push( $(this).attr("id").trim() );
-      });
-
-      query.containedIn('url', entries);
-      query.find()
-        .done(function (results) {
-          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
-
-          if (results.length === 0) {
-            $visitors.find(COUNT_CONTAINER_REF).text(0);
-            return;
-          }
-
-          for (var i = 0; i < results.length; i++) {
-            var item = results[i];
-            var url = item.get('url');
-            var time = item.get('time');
-            var element = document.getElementById(url);
-
-            $(element).find(COUNT_CONTAINER_REF).text(time);
-          }
-          for(var i = 0; i < entries.length; i++) {
-            var url = entries[i];
-            var element = document.getElementById(url);
-            var countSpan = $(element).find(COUNT_CONTAINER_REF);
-            if( countSpan.text() == '') {
-              countSpan.text(0);
-            }
-          }
-        })
-        .fail(function (object, error) {
-          console.log("Error: " + error.code + " " + error.message);
-        });
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
     }
 
     function addCount(Counter) {
-      var $visitors = $(".leancloud_visitors");
-      var url = $visitors.attr('id').trim();
-      var title = $visitors.attr('data-flag-title').trim();
-      var query = new AV.Query(Counter);
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
 
-      query.equalTo("url", url);
-      query.find({
-        success: function(results) {
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
           if (results.length > 0) {
             var counter = results[0];
-            counter.fetchWhenSave(true);
-            counter.increment("time");
-            counter.save(null, {
-              success: function(counter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(counter.get('time'));
-              },
-              error: function(counter, error) {
-                console.log('Failed to save Visitor num, with error message: ' + error.message);
-              }
-            });
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
           } else {
-            var newcounter = new Counter();
-            /* Set ACL */
-            var acl = new AV.ACL();
-            acl.setPublicReadAccess(true);
-            acl.setPublicWriteAccess(true);
-            newcounter.setACL(acl);
-            /* End Set ACL */
-            newcounter.set("title", title);
-            newcounter.set("url", url);
-            newcounter.set("time", 1);
-            newcounter.save(null, {
-              success: function(newcounter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
-              },
-              error: function(newcounter, error) {
-                console.log('Failed to create');
-              }
-            });
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
           }
-        },
-        error: function(error) {
-          console.log('Error:' + error.code + " " + error.message);
-        }
-      });
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
     }
 
-    $(function() {
-      var Counter = AV.Object.extend("Counter");
-      if ($('.leancloud_visitors').length == 1) {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"eoVNlIJq5laKXK4jYgB2wCiF-gzGzoHsz","app_key":"eMgalJamMnlzVS7c0VvH4TjH","server_url":null,"security":false};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
         addCount(Counter);
-      } else if ($('.post-title-link').length > 1) {
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
         showTime(Counter);
       }
-    });
-  </script>
-
-
-
-  
-
-  
-
-  
-  
-
-  
-  
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Config({
-        tex2jax: {
-          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
-          processEscapes: true,
-          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-        }
-      });
-    </script>
-
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for (i=0; i < all.length; i += 1) {
-          all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-      });
-    </script>
-    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
     }
-  });
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
 </script>
 
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/hexo_blog/lib/anime.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/hexo_blog/js/utils.js"></script>
+
+<script src="/hexo_blog/js/motion.js"></script>
+
+
+<script src="/hexo_blog/js/schemes/muse.js"></script>
+
+
+<script src="/hexo_blog/js/next-boot.js"></script>
+
+
+
+
   
 
+
+
+
+  
+<script src="/hexo_blog/js/local-search.js"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
 
   
 

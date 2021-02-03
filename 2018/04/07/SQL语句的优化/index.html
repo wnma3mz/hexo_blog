@@ -1,134 +1,53 @@
 <!DOCTYPE html>
-
-
-
-  
-
-
-<html class="theme-next mist use-motion" lang="zh-Hans">
+<html lang="zh-Hans">
 <head>
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/hexo_blog/css/main.css">
 
 
+<link rel="stylesheet" href="/hexo_blog/lib/font-awesome/css/all.min.css">
 
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wnma3mz.github.io","root":"/hexo_blog/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
 
-
-
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-  <link href="/hexo_blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
-
-
-
-
-
-
-
-<link href="/hexo_blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
-
-<link href="/hexo_blog/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png?v=5.1.4">
-
-
-  <link rel="mask-icon" href="/hexo_blog/images/logo.svg?v=5.1.4" color="#222">
-
-
-
-
-
-  <meta name="keywords" content="数据库,SQL," />
-
-
-
-
-
-
-
-
-
-
-<meta name="description" content="这篇文章主要介绍了关于SQL语句（主要是Oracle数据库）的优化方案。">
-<meta name="keywords" content="数据库,SQL">
+  <meta name="description" content="这篇文章主要介绍了关于SQL语句（主要是Oracle数据库）的优化方案。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SQL语句的优化">
-<meta property="og:url" content="https://wnma3mz.github.io/2018/04/07/SQL语句的优化/index.html">
+<meta property="og:url" content="https://wnma3mz.github.io/2018/04/07/SQL%E8%AF%AD%E5%8F%A5%E7%9A%84%E4%BC%98%E5%8C%96/index.html">
 <meta property="og:site_name" content="Wnma&#39;s Blogs">
 <meta property="og:description" content="这篇文章主要介绍了关于SQL语句（主要是Oracle数据库）的优化方案。">
-<meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-05-28T11:53:51.869Z">
+<meta property="og:locale">
+<meta property="article:published_time" content="2018-04-07T04:32:12.000Z">
+<meta property="article:modified_time" content="2018-05-28T11:53:51.869Z">
+<meta property="article:author" content="wnma3mz">
+<meta property="article:tag" content="数据库">
+<meta property="article:tag" content="SQL">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="SQL语句的优化">
-<meta name="twitter:description" content="这篇文章主要介绍了关于SQL语句（主要是Oracle数据库）的优化方案。">
+
+<link rel="canonical" href="https://wnma3mz.github.io/2018/04/07/SQL%E8%AF%AD%E5%8F%A5%E7%9A%84%E4%BC%98%E5%8C%96/">
 
 
-
-<script type="text/javascript" id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/hexo_blog/',
-    scheme: 'Mist',
-    version: '5.1.4',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
-    fancybox: true,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    duoshuo: {
-      userId: '0',
-      author: '博主'
-    },
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
   };
 </script>
 
-
-
-  <link rel="canonical" href="https://wnma3mz.github.io/2018/04/07/SQL语句的优化/"/>
-
-
-
-
-
-<link href="//cdn.bootcss.com/animate.css/3.5.0/animate.min.css" rel="stylesheet">
-
-  <title>SQL语句的优化 | Wnma's Blogs</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  <title>SQL语句的优化 | Wnma's Blogs</title>
   
 
 
@@ -136,293 +55,188 @@
 
 
 
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
 
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
 
-</head>
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
 
-  
-  
-    
-  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
 
-  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+<body itemscope itemtype="http://schema.org/WebPage">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container use-motion">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta ">
-    
-
-    <div class="custom-logo-site-title">
-      <a href="/hexo_blog/"  class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Wnma's Blogs</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Navigationsleiste an/ausschalten">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
     </div>
-      
-        <p class="site-subtitle"></p>
-      
   </div>
 
-  <div class="site-nav-toggle">
-    <button>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
+  <div class="site-meta">
+
+    <a href="/hexo_blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Wnma's Blogs</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
   </div>
 </div>
+
+
+
 
 <nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu">
-      
-        
+  <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
-          <a href="/hexo_blog/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
-            
-            首页
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-tags">
-          <a href="/hexo_blog/tags/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
-            
-            标签
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-categories">
-          <a href="/hexo_blog/categories/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
-            
-            分类
-          </a>
-        </li>
-      
-        
+
+    <a href="/hexo_blog/" rel="section"><i class="fa fa-home fa-fw"></i>Startseite</a>
+
+  </li>
         <li class="menu-item menu-item-archives">
-          <a href="/hexo_blog/archives/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
-            
-            归档
-          </a>
-        </li>
-      
 
-      
-        <li class="menu-item menu-item-search">
-          
-            <a href="javascript:;" class="popup-trigger">
-          
-            
-              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
-            
-            搜索
-          </a>
-        </li>
-      
-    </ul>
-  
+    <a href="/hexo_blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archiv</a>
 
-  
-    <div class="site-search">
-      
-  <div class="popup search-popup local-search-popup">
-  <div class="local-search-header clearfix">
-    <span class="search-icon">
-      <i class="fa fa-search"></i>
-    </span>
-    <span class="popup-btn-close">
-      <i class="fa fa-times-circle"></i>
-    </span>
-    <div class="local-search-input-wrapper">
-      <input autocomplete="off"
-             placeholder="搜索..." spellcheck="false"
-             type="text" id="local-search-input">
-    </div>
-  </div>
-  <div id="local-search-result"></div>
-</div>
-
-
-
-    </div>
-  
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Suche
+        </a>
+      </li>
+  </ul>
 </nav>
 
 
 
- </div>
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Suche..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
     </header>
 
-    <main id="main" class="main">
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
       <div class="main-inner">
         <div class="content-wrap">
-          <div id="content" class="content">
+          
+
+          <div class="content post posts-expand">
             
-  <div id="posts" class="posts-expand">
-    
 
-  
-
-  
-  
     
   
   
-
-  <article class="post post-type-normal true" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/hexo_blog/2018/04/07/SQL语句的优化/">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/2018/04/07/SQL%E8%AF%AD%E5%8F%A5%E7%9A%84%E4%BC%98%E5%8C%96/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="wnma3mz">
-      <meta itemprop="description" content="">
       <meta itemprop="image" content="/hexo_blog/images/avatar.png">
+      <meta itemprop="name" content="wnma3mz">
+      <meta itemprop="description" content="Day Day Up">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Wnma's Blogs">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">SQL语句的优化</h1>
-        
+        <h1 class="post-title" itemprop="name headline">
+          SQL语句的优化
+        </h1>
 
         <div class="post-meta">
-          <span class="post-time">
-            
+            <span class="post-meta-item">
               <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
+                <i class="far fa-calendar"></i>
               </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-07T12:32:12+08:00">
-                2018-04-07
-              </time>
-            
+              <span class="post-meta-item-text">Veröffentlicht am</span>
 
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/数据库/" itemprop="url" rel="index">
-                    <span itemprop="name">数据库</span>
-                  </a>
-                </span>
-
-                
-                
-              
+              <time title="Erstellt: 2018-04-07 12:32:12" itemprop="dateCreated datePublished" datetime="2018-04-07T12:32:12+08:00">2018-04-07</time>
             </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
+              <span class="post-meta-item">
                 <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
+                  <i class="far fa-calendar-check"></i>
                 </span>
-                <a href="/hexo_blog/2018/04/07/SQL语句的优化/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count gitment-comments-count" data-xid="/hexo_blog/2018/04/07/SQL语句的优化/" itemprop="commentsCount"></span>
-                </a>
+                <span class="post-meta-item-text">Bearbeitet am</span>
+                <time title="Geändert am: 2018-05-28 19:53:51" itemprop="dateModified" datetime="2018-05-28T19:53:51+08:00">2018-05-28</time>
               </span>
-            
-          
-
-          
-          
-             <span id="/hexo_blog/2018/04/07/SQL语句的优化/" class="leancloud_visitors" data-flag-title="SQL语句的优化">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">in</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
                 </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  5,031 字
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  19 分钟
-                </span>
-              
-            </div>
-          
+            </span>
 
           
-
-          
+            <span id="/hexo_blog/2018/04/07/SQL%E8%AF%AD%E5%8F%A5%E7%9A%84%E4%BC%98%E5%8C%96/" class="post-meta-item leancloud_visitors" data-flag-title="SQL语句的优化" title="Aufrufe">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Aufrufe: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
 
         </div>
       </header>
-    
 
     
     
@@ -430,12 +244,9 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
         <p>这篇文章主要介绍了关于SQL语句（主要是Oracle数据库）的优化方案。</p>
 <a id="more"></a>
-<p><a href="https://juejin.im/post/5ab0f39df265da23866fba55" target="_blank" rel="noopener">数据库性能优化之SQL语句优化</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.im/post/5ab0f39df265da23866fba55">数据库性能优化之SQL语句优化</a></p>
 <h2 id="操作符优化"><a class="markdownIt-Anchor" href="#操作符优化"></a> 操作符优化</h2>
 <h3 id="in-操作符"><a class="markdownIt-Anchor" href="#in-操作符"></a> IN 操作符</h3>
 <p>优点：编写容易，清晰易懂</p>
@@ -463,29 +274,29 @@
 <p>UNION在进行表连接之后会筛选掉重复的记录，所以在表连接之后会对产生的结果集进行排序运算，删除重复记录再返回结果。但是实际上大部分应用中是不会产生重复的记录，最常见的是过程表于历史表UNION。在这种情况下，替代方案就是使用UNION ALL代替UNION。UNION ALL操作只是简单的将两个结果合并后就返回</p>
 <h3 id="联接列"><a class="markdownIt-Anchor" href="#联接列"></a> 联接列</h3>
 <p>对于有联接的列，优化器是不会使用索引的。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 使用联接查询</span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> employss <span class="keyword">where</span> first_name||<span class="string">''</span>||last_name =<span class="string">'Beill Cliton'</span>;</span><br><span class="line"># 不使用联接查询，基于last_name创建索引</span><br><span class="line">where first_name ='Beill' and last_name ='Cliton';</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 使用联接查询</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> employss <span class="keyword">where</span> first_name<span class="operator">||</span><span class="string">&#x27;&#x27;</span><span class="operator">||</span>last_name <span class="operator">=</span><span class="string">&#x27;Beill Cliton&#x27;</span>;</span><br><span class="line"># 不使用联接查询，基于last_name创建索引</span><br><span class="line"><span class="keyword">where</span> first_name <span class="operator">=</span><span class="string">&#x27;Beill&#x27;</span> <span class="keyword">and</span> last_name <span class="operator">=</span><span class="string">&#x27;Cliton&#x27;</span>;</span><br></pre></td></tr></table></figure>
 <h3 id="order-by语句"><a class="markdownIt-Anchor" href="#order-by语句"></a> Order By语句</h3>
 <p>将返回的查询结果进行排序。任何在Order by语句的非索引项或者有计算表达式都将降低查询速度。解决方案就是为所使用的列建立另一个索引，同时也绝对避免在order by子句中使用表达式。</p>
 <h3 id="not-语句"><a class="markdownIt-Anchor" href="#not-语句"></a> NOT 语句</h3>
 <p>NOT可用来对任何逻辑运算符号取反。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 如果要使用NOT，则应在取反的短语前面机上括号，并在短语前面机上NOT运算符。</span><br><span class="line">where not (status = 'VALID')</span><br><span class="line"># NOT运算符包含在另外一个逻辑运算符&lt;&gt;运算符中。即使不在查询的where子句中显式地加入NOT词，NOT仍在运算符中</span><br><span class="line">where status &lt;&gt; 'INVALID';</span><br><span class="line"># 这种情况运行建立salary的索引，在速度上会优于上面的方案</span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> employee <span class="keyword">where</span> salary &lt; <span class="number">3000</span> <span class="keyword">or</span> salary &gt; <span class="number">3000</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 如果要使用<span class="keyword">NOT</span>，则应在取反的短语前面机上括号，并在短语前面机上<span class="keyword">NOT</span>运算符。</span><br><span class="line"><span class="keyword">where</span> <span class="keyword">not</span> (status <span class="operator">=</span> <span class="string">&#x27;VALID&#x27;</span>)</span><br><span class="line"># <span class="keyword">NOT</span>运算符包含在另外一个逻辑运算符<span class="operator">&lt;&gt;</span>运算符中。即使不在查询的<span class="keyword">where</span>子句中显式地加入<span class="keyword">NOT</span>词，<span class="keyword">NOT</span>仍在运算符中</span><br><span class="line"><span class="keyword">where</span> status <span class="operator">&lt;&gt;</span> <span class="string">&#x27;INVALID&#x27;</span>;</span><br><span class="line"># 这种情况运行建立salary的索引，在速度上会优于上面的方案</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> employee <span class="keyword">where</span> salary <span class="operator">&lt;</span> <span class="number">3000</span> <span class="keyword">or</span> salary <span class="operator">&gt;</span> <span class="number">3000</span>;</span><br></pre></td></tr></table></figure>
 <h2 id="书写的影响"><a class="markdownIt-Anchor" href="#书写的影响"></a> 书写的影响</h2>
 <h3 id="同一功能同一性能不同写法sql的影响"><a class="markdownIt-Anchor" href="#同一功能同一性能不同写法sql的影响"></a> 同一功能同一性能不同写法SQL的影响</h3>
 <p>尽可能避免不同写法的出现，根据Oracle共享内存SGA原理，如果语句不同则进行分析，占用共享内存。如果SQL字符串及格式完全相同，则Oracle只会分析一次，共享内存也只会留下一次的分析结果</p>
 <h3 id="where后面的条件顺序影响"><a class="markdownIt-Anchor" href="#where后面的条件顺序影响"></a> WHERE后面的条件顺序影响</h3>
 <p>下面两个语句，在没有建立索引的情况下，执行都是全表扫描。</p>
 <p><code>dy_dj = '1KV以下'</code>这个条件在记录集内比率为99%, <code>xh_bz=1</code>而这个条件只有0.5%。所以第二条SQL的CPU占用率明显低于第一条。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Select</span> * <span class="keyword">from</span> zl_yhjbqk <span class="keyword">where</span> dy_dj = <span class="string">'1KV以下'</span> <span class="keyword">and</span> xh_bz=<span class="number">1</span></span><br><span class="line"><span class="keyword">Select</span> * <span class="keyword">from</span> zl_yhjbqk <span class="keyword">where</span> xh_bz=<span class="number">1</span> <span class="keyword">and</span> dy_dj = <span class="string">'1KV以下'</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Select</span> <span class="operator">*</span> <span class="keyword">from</span> zl_yhjbqk <span class="keyword">where</span> dy_dj <span class="operator">=</span> <span class="string">&#x27;1KV以下&#x27;</span> <span class="keyword">and</span> xh_bz<span class="operator">=</span><span class="number">1</span></span><br><span class="line"><span class="keyword">Select</span> <span class="operator">*</span> <span class="keyword">from</span> zl_yhjbqk <span class="keyword">where</span> xh_bz<span class="operator">=</span><span class="number">1</span> <span class="keyword">and</span> dy_dj <span class="operator">=</span> <span class="string">&#x27;1KV以下&#x27;</span></span><br></pre></td></tr></table></figure>
 <h3 id="查询表顺序的影响"><a class="markdownIt-Anchor" href="#查询表顺序的影响"></a> 查询表顺序的影响</h3>
 <p>在FROM后面的表中的列表顺序会对SQL执行性能影响，在没有索引及ORACLE没有对表进行统计分析的情况下，ORACLE会按<strong>表出现的顺序</strong>进行连接，所以如果表的顺序不对时会产生十分消耗服务器资源的数据交叉（如果对表进行了统计分析，Oracle自动先进小表的连接，再进行大表的连接）</p>
 <h2 id="sql语句索引的利用"><a class="markdownIt-Anchor" href="#sql语句索引的利用"></a> SQL语句索引的利用</h2>
 <h3 id="条件字段的优化"><a class="markdownIt-Anchor" href="#条件字段的优化"></a> 条件字段的优化</h3>
 <p>函数处理的字段不能利用索引</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">原语句：substr(hbs_bh,1,4)='5400'</span><br><span class="line">优化处理：hbs_bh like '5400%'</span><br><span class="line"></span><br><span class="line">原语句：trunc(sk_rq)=trunc(sysdate)</span><br><span class="line">优化处理：sk_rq&gt;=trunc(sysdate) and sk_rq&lt;trunc(sysdate+1)</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">原语句：substr(hbs_bh,<span class="number">1</span>,<span class="number">4</span>)<span class="operator">=</span><span class="string">&#x27;5400&#x27;</span></span><br><span class="line">优化处理：hbs_bh <span class="keyword">like</span> <span class="string">&#x27;5400%&#x27;</span></span><br><span class="line"></span><br><span class="line">原语句：trunc(sk_rq)<span class="operator">=</span>trunc(sysdate)</span><br><span class="line">优化处理：sk_rq<span class="operator">&gt;=</span>trunc(sysdate) <span class="keyword">and</span> sk_rq<span class="operator">&lt;</span>trunc(sysdate<span class="operator">+</span><span class="number">1</span>)</span><br></pre></td></tr></table></figure>
 <p>进行了显示或隐式的运算的字段不能进行索引。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">原语句：'X' || hbs_bh&gt;'X5400021452'</span><br><span class="line">优化处理：hbs_bh&gt;'5400021542'</span><br><span class="line"></span><br><span class="line">原语句：sk_rq+5=sysdate</span><br><span class="line">优化处理：sk_rq=sysdate-5</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">原语句：<span class="string">&#x27;X&#x27;</span> <span class="operator">||</span> hbs_bh<span class="operator">&gt;</span><span class="string">&#x27;X5400021452&#x27;</span></span><br><span class="line">优化处理：hbs_bh<span class="operator">&gt;</span><span class="string">&#x27;5400021542&#x27;</span></span><br><span class="line"></span><br><span class="line">原语句：sk_rq<span class="operator">+</span><span class="number">5</span><span class="operator">=</span>sysdate</span><br><span class="line">优化处理：sk_rq<span class="operator">=</span>sysdate<span class="number">-5</span></span><br></pre></td></tr></table></figure>
 <p>条件内包括的多个本表的字段运算时不能进行索引</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">原语句：ys_df&gt;cx_df</span><br><span class="line">无法进行优化</span><br><span class="line"></span><br><span class="line">原语句：qc_bh || kh_bh='5400250000'</span><br><span class="line">优化处理：qc_bh='5400' and kh_bh='250000'</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">原语句：ys_df<span class="operator">&gt;</span>cx_df</span><br><span class="line">无法进行优化</span><br><span class="line"></span><br><span class="line">原语句：qc_bh <span class="operator">||</span> kh_bh<span class="operator">=</span><span class="string">&#x27;5400250000&#x27;</span></span><br><span class="line">优化处理：qc_bh<span class="operator">=</span><span class="string">&#x27;5400&#x27;</span> <span class="keyword">and</span> kh_bh<span class="operator">=</span><span class="string">&#x27;250000&#x27;</span></span><br></pre></td></tr></table></figure>
 <h2 id="其他优化方法"><a class="markdownIt-Anchor" href="#其他优化方法"></a> 其他优化方法</h2>
 <ol>
 <li>
@@ -520,7 +331,7 @@
 <li>删除重复记录：</li>
 </ol>
 <p>最高效的删除重复记录方法 ( 因为使用了ROWID)例子：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DELETE</span> <span class="keyword">FROM</span> EMP E <span class="keyword">WHERE</span> E.ROWID &gt; (<span class="keyword">SELECT</span> <span class="keyword">MIN</span>(X.ROWID) <span class="keyword">FROM</span> EMP X <span class="keyword">WHERE</span> X.EMP_NO = E.EMP_NO)</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DELETE</span> <span class="keyword">FROM</span> EMP E <span class="keyword">WHERE</span> E.ROWID <span class="operator">&gt;</span> (<span class="keyword">SELECT</span> <span class="built_in">MIN</span>(X.ROWID) <span class="keyword">FROM</span> EMP X <span class="keyword">WHERE</span> X.EMP_NO <span class="operator">=</span> E.EMP_NO)</span><br></pre></td></tr></table></figure>
 <ol start="9">
 <li>
 <p>用TRUNCATE替代DELETE</p>
@@ -544,7 +355,7 @@
 <li>
 <p>减少对表的查询</p>
 <p>在含有子查询的SQL语句中,要特别注意减少对表的查询</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> TAB_NAME <span class="keyword">FROM</span> <span class="keyword">TABLES</span> <span class="keyword">WHERE</span> (TAB_NAME,DB_VER) = ( <span class="keyword">SELECT</span> TAB_NAME,DB_VER <span class="keyword">FROM</span> TAB_COLUMNS <span class="keyword">WHERE</span> <span class="keyword">VERSION</span> = <span class="number">604</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> TAB_NAME <span class="keyword">FROM</span> TABLES <span class="keyword">WHERE</span> (TAB_NAME,DB_VER) <span class="operator">=</span> ( <span class="keyword">SELECT</span> TAB_NAME,DB_VER <span class="keyword">FROM</span> TAB_COLUMNS <span class="keyword">WHERE</span> VERSION <span class="operator">=</span> <span class="number">604</span>)</span><br></pre></td></tr></table></figure>
 </li>
 <li>
 <p>通过内部函数提高SQL效率</p>
@@ -561,18 +372,28 @@
 </ol>
 <pre><code>虽然目前各种关于SQL优化的图形化工具层出不穷,但是写出自己的SQL工具来解决问题始终是一个最好的方法。
 
-​<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> EXECUTIONS, DISK_READS, BUFFER_GETS,</span><br><span class="line"><span class="keyword">ROUND</span>((BUFFER_GETS-DISK_READS)/BUFFER_GETS,<span class="number">2</span>) Hit_radio,</span><br><span class="line"><span class="keyword">ROUND</span>(DISK_READS/EXECUTIONS,<span class="number">2</span>) Reads_per_run,</span><br><span class="line">SQL_TEXT</span><br><span class="line"><span class="keyword">FROM</span> V$SQLAREA</span><br><span class="line"><span class="keyword">WHERE</span> EXECUTIONS&gt;<span class="number">0</span></span><br><span class="line"><span class="keyword">AND</span> BUFFER_GETS &gt; <span class="number">0</span></span><br><span class="line"><span class="keyword">AND</span> (BUFFER_GETS-DISK_READS)/BUFFER_GETS &lt; <span class="number">0.8</span></span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> <span class="number">4</span> <span class="keyword">DESC</span>;</span><br><span class="line">​</span><br></pre></td></tr></table></figure>
+​```sql
+SELECT EXECUTIONS, DISK_READS, BUFFER_GETS,
+ROUND((BUFFER_GETS-DISK_READS)/BUFFER_GETS,2) Hit_radio,
+ROUND(DISK_READS/EXECUTIONS,2) Reads_per_run,
+SQL_TEXT
+FROM V$SQLAREA
+WHERE EXECUTIONS&gt;0
+AND BUFFER_GETS &gt; 0
+AND (BUFFER_GETS-DISK_READS)/BUFFER_GETS &lt; 0.8
+ORDER BY 4 DESC;
+​```
 </code></pre>
 <ol start="16">
 <li>
 <p>用索引提高效率</p>
 <p>索引是表的一个概念部分,用来提高检索数据的效率，ORACLE使用了一个复杂的自平衡B-tree结构. 通常,通过索引查询数据比全表扫描要快. 当ORACLE找出执行查询和Update语句的最佳路径时, ORACLE优化器将使用索引. 同样在联结多个表时使用索引也可以提高效率. 另一个使用索引的好处是,它提供了主键(primary key)的唯一性验证.。那些LONG或LONG RAW数据类型, 你可以索引几乎所有的列. 通常, 在大型表中使用索引特别有效. 当然,你也会发现, 在扫描小表时,使用索引同样能提高效率. 虽然使用索引能得到查询效率的提高,但是我们也必须注意到它的代价. 索引需要空间来存储,也需要定期维护, 每当有记录在表中增减或索引列被修改时, 索引本身也会被修改. 这意味着每条记录的INSERT , DELETE , UPDATE将为此多付出4 , 5 次的磁盘I/O . 因为索引需要额外的存储空间和处理,那些不必要的索引反而会使查询反应时间变慢.。定期的重构索引是有必要的</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">INDEX</span> &lt;INDEXNAME&gt; <span class="keyword">REBUILD</span> &lt;TABLESPACENAME&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> INDEX <span class="operator">&lt;</span>INDEXNAME<span class="operator">&gt;</span> REBUILD <span class="operator">&lt;</span>TABLESPACENAME<span class="operator">&gt;</span></span><br></pre></td></tr></table></figure>
 </li>
 <li>
 <p>用EXISTS替换DISTINCT</p>
 <p>当提交一个包含一对多表信息(比如部门表和雇员表)的查询时,避免在SELECT子句中使用DISTINCT. 一般可以考虑用EXIST替换, EXISTS 使查询更为迅速,因为RDBMS核心模块将在子查询的条件一旦满足后,立刻返回结果. 例子：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(低效):</span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">DISTINCT</span> DEPT_NO, DEPT_NAME <span class="keyword">FROM</span> DEPT D, EMP E <span class="keyword">WHERE</span> D.DEPT_NO = E.DEPT_NO</span><br><span class="line">(高效):</span><br><span class="line"><span class="keyword">SELECT</span> DEPT_NO, DEPT_NAME <span class="keyword">FROM</span> DEPT D <span class="keyword">WHERE</span> <span class="keyword">EXISTS</span> ( <span class="keyword">SELECT</span> <span class="string">'X'</span> <span class="keyword">FROM</span> EMP E <span class="keyword">WHERE</span> E.DEPT_NO = D.DEPT_NO);</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(低效):</span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">DISTINCT</span> DEPT_NO, DEPT_NAME <span class="keyword">FROM</span> DEPT D, EMP E <span class="keyword">WHERE</span> D.DEPT_NO <span class="operator">=</span> E.DEPT_NO</span><br><span class="line">(高效):</span><br><span class="line"><span class="keyword">SELECT</span> DEPT_NO, DEPT_NAME <span class="keyword">FROM</span> DEPT D <span class="keyword">WHERE</span> <span class="keyword">EXISTS</span> ( <span class="keyword">SELECT</span> <span class="string">&#x27;X&#x27;</span> <span class="keyword">FROM</span> EMP E <span class="keyword">WHERE</span> E.DEPT_NO <span class="operator">=</span> D.DEPT_NO);</span><br></pre></td></tr></table></figure>
 </li>
 <li>
 <p>sql语句用大写的</p>
@@ -590,26 +411,26 @@
 <li>
 <p>避免在索引列上使用计算</p>
 <p>WHERE子句中，如果索引列是函数的一部分．优化器将不使用索引而使用全表扫描．</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">低效：</span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> DEPT <span class="keyword">WHERE</span> SAL * <span class="number">12</span> &gt; <span class="number">25000</span>;</span><br><span class="line">高效:</span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> DEPT <span class="keyword">WHERE</span> SAL &gt; <span class="number">25000</span>/<span class="number">12</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">低效：</span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> DEPT <span class="keyword">WHERE</span> SAL <span class="operator">*</span> <span class="number">12</span> <span class="operator">&gt;</span> <span class="number">25000</span>;</span><br><span class="line">高效:</span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> DEPT <span class="keyword">WHERE</span> SAL <span class="operator">&gt;</span> <span class="number">25000</span><span class="operator">/</span><span class="number">12</span>;</span><br></pre></td></tr></table></figure>
 </li>
 <li>
 <p>用&gt;=替代&gt;</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">高效:</span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> EMP <span class="keyword">WHERE</span> DEPTNO &gt;= <span class="number">4</span></span><br><span class="line">低效:</span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> EMP <span class="keyword">WHERE</span> DEPTNO &gt; <span class="number">3</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">高效:</span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> EMP <span class="keyword">WHERE</span> DEPTNO <span class="operator">&gt;=</span> <span class="number">4</span></span><br><span class="line">低效:</span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> EMP <span class="keyword">WHERE</span> DEPTNO <span class="operator">&gt;</span> <span class="number">3</span></span><br></pre></td></tr></table></figure>
 </li>
 <li>
 <p>用UNION替换OR (适用于索引列)</p>
 <p>通常情况下, 用UNION替换WHERE子句中的OR将会起到较好的效果. 对索引列使用OR将造成全表扫描. 注意, 以上规则只针对多个索引列有效. 如果有column没有被索引, 查询效率可能会因为你没有选择OR而降低. 在下面的例子中, LOC_ID 和REGION上都建有索引.</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">高效:</span><br><span class="line"><span class="keyword">SELECT</span> LOC_ID , LOC_DESC , REGION</span><br><span class="line"><span class="keyword">FROM</span> LOCATION</span><br><span class="line"><span class="keyword">WHERE</span> LOC_ID = <span class="number">10</span></span><br><span class="line"><span class="keyword">UNION</span></span><br><span class="line"><span class="keyword">SELECT</span> LOC_ID , LOC_DESC , REGION</span><br><span class="line"><span class="keyword">FROM</span> LOCATION</span><br><span class="line"><span class="keyword">WHERE</span> REGION = <span class="string">"MELBOURNE"</span></span><br><span class="line">低效:</span><br><span class="line"><span class="keyword">SELECT</span> LOC_ID , LOC_DESC , REGION</span><br><span class="line"><span class="keyword">FROM</span> LOCATION</span><br><span class="line"><span class="keyword">WHERE</span> LOC_ID = <span class="number">10</span> <span class="keyword">OR</span> REGION = <span class="string">"MELBOURNE"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">高效:</span><br><span class="line"><span class="keyword">SELECT</span> LOC_ID , LOC_DESC , REGION</span><br><span class="line"><span class="keyword">FROM</span> LOCATION</span><br><span class="line"><span class="keyword">WHERE</span> LOC_ID <span class="operator">=</span> <span class="number">10</span></span><br><span class="line"><span class="keyword">UNION</span></span><br><span class="line"><span class="keyword">SELECT</span> LOC_ID , LOC_DESC , REGION</span><br><span class="line"><span class="keyword">FROM</span> LOCATION</span><br><span class="line"><span class="keyword">WHERE</span> REGION <span class="operator">=</span> &quot;MELBOURNE&quot;</span><br><span class="line">低效:</span><br><span class="line"><span class="keyword">SELECT</span> LOC_ID , LOC_DESC , REGION</span><br><span class="line"><span class="keyword">FROM</span> LOCATION</span><br><span class="line"><span class="keyword">WHERE</span> LOC_ID <span class="operator">=</span> <span class="number">10</span> <span class="keyword">OR</span> REGION <span class="operator">=</span> &quot;MELBOURNE&quot;</span><br></pre></td></tr></table></figure>
 </li>
 <li>
 <p>用IN来替换OR</p>
 <p>这是一条简单易记的规则，但是实际的执行效果还须检验，在ORACLE8下，两者的执行路径似乎是相同的．</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">低效:</span><br><span class="line"><span class="keyword">SELECT</span>…. <span class="keyword">FROM</span> LOCATION <span class="keyword">WHERE</span> LOC_ID = <span class="number">10</span> <span class="keyword">OR</span> LOC_ID = <span class="number">20</span> <span class="keyword">OR</span> LOC_ID = <span class="number">30</span></span><br><span class="line">高效</span><br><span class="line"><span class="keyword">SELECT</span>… <span class="keyword">FROM</span> LOCATION <span class="keyword">WHERE</span> LOC_IN <span class="keyword">IN</span> (<span class="number">10</span>,<span class="number">20</span>,<span class="number">30</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">低效:</span><br><span class="line"><span class="keyword">SELECT</span>…. <span class="keyword">FROM</span> LOCATION <span class="keyword">WHERE</span> LOC_ID <span class="operator">=</span> <span class="number">10</span> <span class="keyword">OR</span> LOC_ID <span class="operator">=</span> <span class="number">20</span> <span class="keyword">OR</span> LOC_ID <span class="operator">=</span> <span class="number">30</span></span><br><span class="line">高效</span><br><span class="line"><span class="keyword">SELECT</span>… <span class="keyword">FROM</span> LOCATION <span class="keyword">WHERE</span> LOC_IN <span class="keyword">IN</span> (<span class="number">10</span>,<span class="number">20</span>,<span class="number">30</span>);</span><br></pre></td></tr></table></figure>
 </li>
 <li>
 <p>避免在索引列上使用IS NULL和IS NOT NULL</p>
 <p>避免在索引中使用任何可以为空的列，ORACLE将无法使用该索引．对于单列索引，如果列包含空值，索引中将不存在此记录. 对于复合索引，如果每个列都为空，索引中同样不存在此记录. 如果至少有一个列不为空，则记录存在于索引中．举例: 如果唯一性索引建立在表的A列和B列上, 并且表中存在一条记录的A,B值为(123,null) , ORACLE将不接受下一条具有相同A,B值（123,null）的记录(插入). 然而如果所有的索引列都为空，ORACLE将认为整个键值为空而空不等于空. 因此你可以插入1000 条具有相同键值的记录,当然它们都是空! 因为空值不存在于索引列中,所以WHERE子句中对索引列进行空值比较将使ORACLE停用该索引.</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">低效: (索引失效)</span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> DEPARTMENT <span class="keyword">WHERE</span> DEPT_CODE <span class="keyword">IS</span> <span class="keyword">NOT</span> <span class="literal">NULL</span>;</span><br><span class="line">高效: (索引有效)</span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> DEPARTMENT <span class="keyword">WHERE</span> DEPT_CODE &gt;=<span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">低效: (索引失效)</span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> DEPARTMENT <span class="keyword">WHERE</span> DEPT_CODE <span class="keyword">IS</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span>;</span><br><span class="line">高效: (索引有效)</span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> DEPARTMENT <span class="keyword">WHERE</span> DEPT_CODE <span class="operator">&gt;=</span><span class="number">0</span>;</span><br></pre></td></tr></table></figure>
 </li>
 <li>
 <p>总是使用索引的第一个列</p>
@@ -618,7 +439,7 @@
 <li>
 <p>用UNION-ALL 替换UNION ( 如果有可能的话)</p>
 <p>当SQL 语句需要UNION两个查询结果集合时,这两个结果集合会以UNION-ALL的方式被合并, 然后在输出最终结果前进行排序. 如果用UNION ALL替代UNION, 这样排序就不是必要了. 效率就会因此得到提高. 需要注意的是，UNION ALL 将重复输出两个结果集合中相同记录. 因此各位还是要从业务需求分析使用UNION ALL的可行性. UNION 将对结果集合排序,这个操作会使用到SORT_AREA_SIZE这块内存. 对于这块内存的优化也是相当重要的. 下面的SQL可以用来查询排序的消耗量</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">低效：</span><br><span class="line"><span class="keyword">SELECT</span> ACCT_NUM, BALANCE_AMT</span><br><span class="line"><span class="keyword">FROM</span> DEBIT_TRANSACTIONS</span><br><span class="line"><span class="keyword">WHERE</span> TRAN_DATE = <span class="string">'31-DEC-95'</span></span><br><span class="line"><span class="keyword">UNION</span></span><br><span class="line"><span class="keyword">SELECT</span> ACCT_NUM, BALANCE_AMT</span><br><span class="line"><span class="keyword">FROM</span> DEBIT_TRANSACTIONS</span><br><span class="line"><span class="keyword">WHERE</span> TRAN_DATE = <span class="string">'31-DEC-95'</span></span><br><span class="line">高效:</span><br><span class="line"><span class="keyword">SELECT</span> ACCT_NUM, BALANCE_AMT</span><br><span class="line"><span class="keyword">FROM</span> DEBIT_TRANSACTIONS</span><br><span class="line"><span class="keyword">WHERE</span> TRAN_DATE = <span class="string">'31-DEC-95'</span></span><br><span class="line"><span class="keyword">UNION</span> ALL</span><br><span class="line"><span class="keyword">SELECT</span> ACCT_NUM, BALANCE_AMT</span><br><span class="line"><span class="keyword">FROM</span> DEBIT_TRANSACTIONS</span><br><span class="line"><span class="keyword">WHERE</span> TRAN_DATE = <span class="string">'31-DEC-95'</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">低效：</span><br><span class="line"><span class="keyword">SELECT</span> ACCT_NUM, BALANCE_AMT</span><br><span class="line"><span class="keyword">FROM</span> DEBIT_TRANSACTIONS</span><br><span class="line"><span class="keyword">WHERE</span> TRAN_DATE <span class="operator">=</span> <span class="string">&#x27;31-DEC-95&#x27;</span></span><br><span class="line"><span class="keyword">UNION</span></span><br><span class="line"><span class="keyword">SELECT</span> ACCT_NUM, BALANCE_AMT</span><br><span class="line"><span class="keyword">FROM</span> DEBIT_TRANSACTIONS</span><br><span class="line"><span class="keyword">WHERE</span> TRAN_DATE <span class="operator">=</span> <span class="string">&#x27;31-DEC-95&#x27;</span></span><br><span class="line">高效:</span><br><span class="line"><span class="keyword">SELECT</span> ACCT_NUM, BALANCE_AMT</span><br><span class="line"><span class="keyword">FROM</span> DEBIT_TRANSACTIONS</span><br><span class="line"><span class="keyword">WHERE</span> TRAN_DATE <span class="operator">=</span> <span class="string">&#x27;31-DEC-95&#x27;</span></span><br><span class="line"><span class="keyword">UNION</span> <span class="keyword">ALL</span></span><br><span class="line"><span class="keyword">SELECT</span> ACCT_NUM, BALANCE_AMT</span><br><span class="line"><span class="keyword">FROM</span> DEBIT_TRANSACTIONS</span><br><span class="line"><span class="keyword">WHERE</span> TRAN_DATE <span class="operator">=</span> <span class="string">&#x27;31-DEC-95&#x27;</span></span><br></pre></td></tr></table></figure>
 </li>
 <li>
 <p>用WHERE替代ORDER BY</p>
@@ -626,12 +447,12 @@
 <p>ORDER BY中所有的列必须包含在相同的索引中并保持在索引中的排列顺序.</p>
 <p>ORDER BY中所有的列必须定义为非空.</p>
 <p>WHERE子句使用的索引和ORDER BY子句中所使用的索引不能并列.</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">低效: (索引不被使用)</span><br><span class="line"><span class="keyword">SELECT</span> DEPT_CODE <span class="keyword">FROM</span> DEPT <span class="keyword">ORDER</span> <span class="keyword">BY</span> DEPT_TYPE</span><br><span class="line">高效: (使用索引)</span><br><span class="line"><span class="keyword">SELECT</span> DEPT_CODE <span class="keyword">FROM</span> DEPT <span class="keyword">WHERE</span> DEPT_TYPE &gt; <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">低效: (索引不被使用)</span><br><span class="line"><span class="keyword">SELECT</span> DEPT_CODE <span class="keyword">FROM</span> DEPT <span class="keyword">ORDER</span> <span class="keyword">BY</span> DEPT_TYPE</span><br><span class="line">高效: (使用索引)</span><br><span class="line"><span class="keyword">SELECT</span> DEPT_CODE <span class="keyword">FROM</span> DEPT <span class="keyword">WHERE</span> DEPT_TYPE <span class="operator">&gt;</span> <span class="number">0</span></span><br></pre></td></tr></table></figure>
 </li>
 <li>
 <p>避免改变索引列的类型</p>
 <p>当比较不同数据类型的数据时, ORACLE自动对列进行简单的类型转换.</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 假设 EMPNO是一个数值类型的索引列.</span><br><span class="line"># 低效</span><br><span class="line"><span class="keyword">SELECT</span> … <span class="keyword">FROM</span> EMP <span class="keyword">WHERE</span> EMPNO = <span class="string">'123'</span></span><br><span class="line"># 高效</span><br><span class="line"><span class="keyword">SELECT</span> … <span class="keyword">FROM</span> EMP <span class="keyword">WHERE</span> EMPNO = <span class="number">123</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 假设 EMPNO是一个数值类型的索引列.</span><br><span class="line"># 低效</span><br><span class="line"><span class="keyword">SELECT</span> … <span class="keyword">FROM</span> EMP <span class="keyword">WHERE</span> EMPNO <span class="operator">=</span> <span class="string">&#x27;123&#x27;</span></span><br><span class="line"># 高效</span><br><span class="line"><span class="keyword">SELECT</span> … <span class="keyword">FROM</span> EMP <span class="keyword">WHERE</span> EMPNO <span class="operator">=</span> <span class="number">123</span></span><br></pre></td></tr></table></figure>
 </li>
 <li>
 <p>需要当心的WHERE子句</p>
@@ -654,950 +475,308 @@
 <li>
 <p>优化GROUP BY</p>
 <p>提高GROUP BY 语句的效率, 可以通过将不需要的记录在GROUP BY 之前过滤掉.下面两个查询返回相同结果但第二个明显就快了许多.</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">低效:</span><br><span class="line"><span class="keyword">SELECT</span> JOB, <span class="keyword">AVG</span>(SAL)</span><br><span class="line"><span class="keyword">FROM</span> EMP</span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">by</span> JOB</span><br><span class="line"><span class="keyword">HAVING</span> JOB = <span class="string">'PRESIDENT'</span></span><br><span class="line"><span class="keyword">OR</span> JOB = <span class="string">'MANAGER'</span></span><br><span class="line">高效:</span><br><span class="line"><span class="keyword">SELECT</span> JOB, <span class="keyword">AVG</span>(SAL)</span><br><span class="line"><span class="keyword">FROM</span> EMP</span><br><span class="line"><span class="keyword">WHERE</span> JOB = <span class="string">'PRESIDENT'</span></span><br><span class="line"><span class="keyword">OR</span> JOB = <span class="string">'MANAGER'</span></span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">by</span> JOB</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">低效:</span><br><span class="line"><span class="keyword">SELECT</span> JOB, <span class="built_in">AVG</span>(SAL)</span><br><span class="line"><span class="keyword">FROM</span> EMP</span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">by</span> JOB</span><br><span class="line"><span class="keyword">HAVING</span> JOB <span class="operator">=</span> <span class="string">&#x27;PRESIDENT&#x27;</span></span><br><span class="line"><span class="keyword">OR</span> JOB <span class="operator">=</span> <span class="string">&#x27;MANAGER&#x27;</span></span><br><span class="line">高效:</span><br><span class="line"><span class="keyword">SELECT</span> JOB, <span class="built_in">AVG</span>(SAL)</span><br><span class="line"><span class="keyword">FROM</span> EMP</span><br><span class="line"><span class="keyword">WHERE</span> JOB <span class="operator">=</span> <span class="string">&#x27;PRESIDENT&#x27;</span></span><br><span class="line"><span class="keyword">OR</span> JOB <span class="operator">=</span> <span class="string">&#x27;MANAGER&#x27;</span></span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">by</span> JOB</span><br></pre></td></tr></table></figure>
 <p>​</p>
 </li>
 </ol>
 
-      
     </div>
+
     
     
     
 
-    
-      <div>
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hexo_blog/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 数据库</a>
+              <a href="/hexo_blog/tags/SQL/" rel="tag"># SQL</a>
+          </div>
+
         
-<div style="text-align:center;color: #ccc;font-size:14px;">
-    ------ 本文结束 ------</div>
 
 
-      </div>
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2018/04/05/%E6%B5%B7%E9%87%8F%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E9%97%AE%E9%A2%98%EF%BC%88HashMap+%E5%88%86%E6%B2%BB%E6%B3%95%E3%80%81%E4%BD%8D%E5%9B%BE%E6%B3%95%EF%BC%89/" rel="prev" title="海量数据处理问题（HashMap+分治法、位图法）">
+      <i class="fa fa-chevron-left"></i> 海量数据处理问题（HashMap+分治法、位图法）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2018/04/13/%E7%9F%A9%E9%98%B5%E5%88%86%E8%A7%A3%E4%BB%8B%E7%BB%8D%E5%8F%8APython%E5%AE%9E%E7%8E%B0%EF%BC%88QR%E3%80%81SVD%E3%80%81LU%EF%BC%89/" rel="next" title="矩阵分解介绍及Python实现（QR、SVD、LU）">
+      矩阵分解介绍及Python实现（QR、SVD、LU） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
     
-
-    
-
-    
-
-    
-      <div>
-        <ul class="post-copyright">
-  <li class="post-copyright-author">
-    <strong>本文作者：</strong>
-    wnma3mz
-  </li>
-  <li class="post-copyright-link">
-    <strong>本文链接：</strong>
-    <a href="https://wnma3mz.github.io/2018/04/07/SQL语句的优化/" title="SQL语句的优化">https://wnma3mz.github.io/2018/04/07/SQL语句的优化/</a>
-  </li>
-  <li class="post-copyright-license">
-    <strong>版权声明： </strong>
-    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
-  </li>
-</ul>
-
-      </div>
-    
-
-    <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/hexo_blog/tags/数据库/" rel="tag"># 数据库</a>
-          
-            <a href="/hexo_blog/tags/SQL/" rel="tag"># SQL</a>
-          
-        </div>
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/hexo_blog/2018/04/05/海量数据处理问题（HashMap+分治法、位图法）/" rel="next" title="海量数据处理问题（HashMap+分治法、位图法）">
-                <i class="fa fa-chevron-left"></i> 海量数据处理问题（HashMap+分治法、位图法）
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/hexo_blog/2018/04/13/矩阵分解介绍及Python实现（QR、SVD、LU）/" rel="prev" title="矩阵分解介绍及Python实现（QR、SVD、LU）">
-                矩阵分解介绍及Python实现（QR、SVD、LU） <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
-    </footer>
-  </div>
-  
-  
-  
   </article>
+  
+  
+  
 
 
-    <div class="post-spread">
-      
-    </div>
-  </div>
 
           </div>
           
 
-
-          
-
-  
-    <div class="comments" id="comments">
-      
-        <div id="gitment-container"></div>
-      
-    </div>
-
-  
-
-
-
-        </div>
-        
-          
-  
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
-    </div>
-  </div>
-
-  <aside id="sidebar" class="sidebar">
-    
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <section class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <img class="site-author-image" itemprop="image"
-                src="/hexo_blog/images/avatar.png"
-                alt="wnma3mz" />
-            
-              <p class="site-author-name" itemprop="name">wnma3mz</p>
-              <p class="site-description motion-element" itemprop="description">Day Day Up</p>
-          </div>
-
-          <nav class="site-state motion-element">
-
-            
-              <div class="site-state-item site-state-posts">
-              
-                <a href="/hexo_blog/archives/">
-              
-                  <span class="site-state-item-count">40</span>
-                  <span class="site-state-item-name">日志</span>
-                </a>
-              </div>
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-categories">
-                <a href="/hexo_blog/categories/index.html">
-                  <span class="site-state-item-count">13</span>
-                  <span class="site-state-item-name">分类</span>
-                </a>
-              </div>
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-tags">
-                <a href="/hexo_blog/tags/index.html">
-                  <span class="site-state-item-count">44</span>
-                  <span class="site-state-item-name">标签</span>
-                </a>
-              </div>
-            
-
-          </nav>
-
-          
-
-          
-            <div class="links-of-author motion-element">
-                
-                  <span class="links-of-author-item">
-                    <a href="https://github.com/wnma3mz" target="_blank" title="GitHub">
-                      
-                        <i class="fa fa-fw fa-github"></i>GitHub</a>
-                  </span>
-                
-                  <span class="links-of-author-item">
-                    <a href="mailto:wnma3mz@gmail.com" target="_blank" title="E-Mail">
-                      
-                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
-                  </span>
-                
-            </div>
-          
-
-          
-          
-
-          
-          
-
-          
-
-        </div>
-      </section>
-
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#操作符优化"><span class="nav-text"> 操作符优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#in-操作符"><span class="nav-text"> IN 操作符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#not-in操作符"><span class="nav-text"> NOT IN操作符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#is-null或is-not-null操作"><span class="nav-text"> IS NULL或IS NOT NULL操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#及-操作符"><span class="nav-text"> &lt; 及 &gt; 操作符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#like操作符"><span class="nav-text"> LIKE操作符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#union操作符"><span class="nav-text"> UNION操作符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#联接列"><span class="nav-text"> 联接列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#order-by语句"><span class="nav-text"> Order By语句</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#not-语句"><span class="nav-text"> NOT 语句</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#书写的影响"><span class="nav-text"> 书写的影响</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#同一功能同一性能不同写法sql的影响"><span class="nav-text"> 同一功能同一性能不同写法SQL的影响</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#where后面的条件顺序影响"><span class="nav-text"> WHERE后面的条件顺序影响</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查询表顺序的影响"><span class="nav-text"> 查询表顺序的影响</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sql语句索引的利用"><span class="nav-text"> SQL语句索引的利用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#条件字段的优化"><span class="nav-text"> 条件字段的优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他优化方法"><span class="nav-text"> 其他优化方法</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
-      
-
-      
-
-    </div>
-  </aside>
-
-
-        
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
-  <span class="with-love">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">wnma3mz</span>
-
-  
-</div>
-
-
-  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
-
-
-
-  <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
-
-
-
-
-
-
-        
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-          <span id="scrollpercent"><span>0</span>%</span>
-        
-      </div>
-    
-
-    
-
-  </div>
-
-  
-
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
   }
 </script>
 
-
-
-
-
-
-
-
-
+        </div>
+          
   
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
 
+  <aside class="sidebar">
+    <div class="sidebar-inner">
 
-  
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Inhaltsverzeichnis
+        </li>
+        <li class="sidebar-nav-overview">
+          Übersicht
+        </li>
+      </ul>
 
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E7%AC%A6%E4%BC%98%E5%8C%96"><span class="nav-text"> 操作符优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#in-%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-text"> IN 操作符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#not-in%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-text"> NOT IN操作符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#is-null%E6%88%96is-not-null%E6%93%8D%E4%BD%9C"><span class="nav-text"> IS NULL或IS NOT NULL操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8A-%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-text"> &lt; 及 &gt; 操作符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#like%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-text"> LIKE操作符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#union%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-text"> UNION操作符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%81%94%E6%8E%A5%E5%88%97"><span class="nav-text"> 联接列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#order-by%E8%AF%AD%E5%8F%A5"><span class="nav-text"> Order By语句</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#not-%E8%AF%AD%E5%8F%A5"><span class="nav-text"> NOT 语句</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B9%A6%E5%86%99%E7%9A%84%E5%BD%B1%E5%93%8D"><span class="nav-text"> 书写的影响</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8C%E4%B8%80%E5%8A%9F%E8%83%BD%E5%90%8C%E4%B8%80%E6%80%A7%E8%83%BD%E4%B8%8D%E5%90%8C%E5%86%99%E6%B3%95sql%E7%9A%84%E5%BD%B1%E5%93%8D"><span class="nav-text"> 同一功能同一性能不同写法SQL的影响</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#where%E5%90%8E%E9%9D%A2%E7%9A%84%E6%9D%A1%E4%BB%B6%E9%A1%BA%E5%BA%8F%E5%BD%B1%E5%93%8D"><span class="nav-text"> WHERE后面的条件顺序影响</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E8%A1%A8%E9%A1%BA%E5%BA%8F%E7%9A%84%E5%BD%B1%E5%93%8D"><span class="nav-text"> 查询表顺序的影响</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sql%E8%AF%AD%E5%8F%A5%E7%B4%A2%E5%BC%95%E7%9A%84%E5%88%A9%E7%94%A8"><span class="nav-text"> SQL语句索引的利用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E5%AD%97%E6%AE%B5%E7%9A%84%E4%BC%98%E5%8C%96"><span class="nav-text"> 条件字段的优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96%E6%96%B9%E6%B3%95"><span class="nav-text"> 其他优化方法</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
 
-
-
-
-
-
-
-
-
-
-  
-  
-    <script type="text/javascript" src="/hexo_blog/lib/jquery/index.js?v=2.1.3"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/hexo_blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/hexo_blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/hexo_blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/hexo_blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/hexo_blog/lib/canvas-nest/canvas-nest.min.js"></script>
-  
-
-
-  
-
-
-  <script type="text/javascript" src="/hexo_blog/js/src/utils.js?v=5.1.4"></script>
-
-  <script type="text/javascript" src="/hexo_blog/js/src/motion.js?v=5.1.4"></script>
-
-
-
-  
-  
-
-  
-  <script type="text/javascript" src="/hexo_blog/js/src/scrollspy.js?v=5.1.4"></script>
-<script type="text/javascript" src="/hexo_blog/js/src/post-details.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  <script type="text/javascript" src="/hexo_blog/js/src/bootstrap.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  
-
-
-
-
-	
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-
-
-
-
-
-
-<!-- LOCAL: You can save these files to your site and update links -->
-    
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="wnma3mz"
+      src="/hexo_blog/images/avatar.png">
+  <p class="site-author-name" itemprop="name">wnma3mz</p>
+  <div class="site-description" itemprop="description">Day Day Up</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/hexo_blog/archives/">
         
-        <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
-        <script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script>
-    
-<!-- END LOCAL -->
-
-    
-
-    
-      <script type="text/javascript">
-      function renderGitment(){
-        var gitment = new Gitmint({
-            id: '1523075532000',
-            owner: 'wnma3mz',
-            repo: 'gitment-comments',
-            
-            lang: "" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
-            
-            oauth: {
-            
-            
-                client_secret: '49efe3e546e077524ac6dec1044974530216d625',
-            
-                client_id: '9bca1eab6c9fed529c25'
-            }});
-        gitment.render('gitment-container');
-      }
-
-      
-      renderGitment();
-      
-      </script>
-    
+          <span class="site-state-item-count">40</span>
+          <span class="site-state-item-name">Artikel</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/hexo_blog/categories/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">Kategorien</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/hexo_blog/tags/">
+        <span class="site-state-item-count">44</span>
+        <span class="site-state-item-name">schlagwörter</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wnma3mz" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wnma3mz" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wnma3mz@gmail.com" title="E-Mail → mailto:wnma3mz@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
 
 
 
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
 
 
+      </div>
+    </main>
 
+    <footer class="footer">
+      <div class="footer-inner">
+        
 
+        
+
+<div class="copyright">
   
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wnma3mz</span>
+</div>
+  <div class="powered-by">Erstellt mit  <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  </div>
 
-  <script type="text/javascript">
-    // Popup Window;
-    var isfetched = false;
-    var isXml = true;
-    // Search DB path;
-    var search_path = "search.xml";
-    if (search_path.length === 0) {
-      search_path = "search.xml";
-    } else if (/json$/i.test(search_path)) {
-      isXml = false;
-    }
-    var path = "/hexo_blog/" + search_path;
-    // monitor main search box;
-
-    var onPopupClose = function (e) {
-      $('.popup').hide();
-      $('#local-search-input').val('');
-      $('.search-result-list').remove();
-      $('#no-result').remove();
-      $(".local-search-pop-overlay").remove();
-      $('body').css('overflow', '');
-    }
-
-    function proceedsearch() {
-      $("body")
-        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
-        .css('overflow', 'hidden');
-      $('.search-popup-overlay').click(onPopupClose);
-      $('.popup').toggle();
-      var $localSearchInput = $('#local-search-input');
-      $localSearchInput.attr("autocapitalize", "none");
-      $localSearchInput.attr("autocorrect", "off");
-      $localSearchInput.focus();
-    }
-
-    // search function;
-    var searchFunc = function(path, search_id, content_id) {
-      'use strict';
-
-      // start loading animation
-      $("body")
-        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
-          '<div id="search-loading-icon">' +
-          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
-          '</div>' +
-          '</div>')
-        .css('overflow', 'hidden');
-      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
-
-      $.ajax({
-        url: path,
-        dataType: isXml ? "xml" : "json",
-        async: true,
-        success: function(res) {
-          // get the contents from search data
-          isfetched = true;
-          $('.popup').detach().appendTo('.header-inner');
-          var datas = isXml ? $("entry", res).map(function() {
-            return {
-              title: $("title", this).text(),
-              content: $("content",this).text(),
-              url: $("url" , this).text()
-            };
-          }).get() : res;
-          var input = document.getElementById(search_id);
-          var resultContent = document.getElementById(content_id);
-          var inputEventFunction = function() {
-            var searchText = input.value.trim().toLowerCase();
-            var keywords = searchText.split(/[\s\-]+/);
-            if (keywords.length > 1) {
-              keywords.push(searchText);
-            }
-            var resultItems = [];
-            if (searchText.length > 0) {
-              // perform local searching
-              datas.forEach(function(data) {
-                var isMatch = false;
-                var hitCount = 0;
-                var searchTextCount = 0;
-                var title = data.title.trim();
-                var titleInLowerCase = title.toLowerCase();
-                var content = data.content.trim().replace(/<[^>]+>/g,"");
-                var contentInLowerCase = content.toLowerCase();
-                var articleUrl = decodeURIComponent(data.url);
-                var indexOfTitle = [];
-                var indexOfContent = [];
-                // only match articles with not empty titles
-                if(title != '') {
-                  keywords.forEach(function(keyword) {
-                    function getIndexByWord(word, text, caseSensitive) {
-                      var wordLen = word.length;
-                      if (wordLen === 0) {
-                        return [];
-                      }
-                      var startPosition = 0, position = [], index = [];
-                      if (!caseSensitive) {
-                        text = text.toLowerCase();
-                        word = word.toLowerCase();
-                      }
-                      while ((position = text.indexOf(word, startPosition)) > -1) {
-                        index.push({position: position, word: word});
-                        startPosition = position + wordLen;
-                      }
-                      return index;
-                    }
-
-                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
-                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
-                  });
-                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
-                    isMatch = true;
-                    hitCount = indexOfTitle.length + indexOfContent.length;
-                  }
-                }
-
-                // show search results
-
-                if (isMatch) {
-                  // sort index by position of keyword
-
-                  [indexOfTitle, indexOfContent].forEach(function (index) {
-                    index.sort(function (itemLeft, itemRight) {
-                      if (itemRight.position !== itemLeft.position) {
-                        return itemRight.position - itemLeft.position;
-                      } else {
-                        return itemLeft.word.length - itemRight.word.length;
-                      }
-                    });
-                  });
-
-                  // merge hits into slices
-
-                  function mergeIntoSlice(text, start, end, index) {
-                    var item = index[index.length - 1];
-                    var position = item.position;
-                    var word = item.word;
-                    var hits = [];
-                    var searchTextCountInSlice = 0;
-                    while (position + word.length <= end && index.length != 0) {
-                      if (word === searchText) {
-                        searchTextCountInSlice++;
-                      }
-                      hits.push({position: position, length: word.length});
-                      var wordEnd = position + word.length;
-
-                      // move to next position of hit
-
-                      index.pop();
-                      while (index.length != 0) {
-                        item = index[index.length - 1];
-                        position = item.position;
-                        word = item.word;
-                        if (wordEnd > position) {
-                          index.pop();
-                        } else {
-                          break;
-                        }
-                      }
-                    }
-                    searchTextCount += searchTextCountInSlice;
-                    return {
-                      hits: hits,
-                      start: start,
-                      end: end,
-                      searchTextCount: searchTextCountInSlice
-                    };
-                  }
-
-                  var slicesOfTitle = [];
-                  if (indexOfTitle.length != 0) {
-                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
-                  }
-
-                  var slicesOfContent = [];
-                  while (indexOfContent.length != 0) {
-                    var item = indexOfContent[indexOfContent.length - 1];
-                    var position = item.position;
-                    var word = item.word;
-                    // cut out 100 characters
-                    var start = position - 20;
-                    var end = position + 80;
-                    if(start < 0){
-                      start = 0;
-                    }
-                    if (end < position + word.length) {
-                      end = position + word.length;
-                    }
-                    if(end > content.length){
-                      end = content.length;
-                    }
-                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
-                  }
-
-                  // sort slices in content by search text's count and hits' count
-
-                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
-                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
-                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
-                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
-                      return sliceRight.hits.length - sliceLeft.hits.length;
-                    } else {
-                      return sliceLeft.start - sliceRight.start;
-                    }
-                  });
-
-                  // select top N slices in content
-
-                  var upperBound = parseInt('1');
-                  if (upperBound >= 0) {
-                    slicesOfContent = slicesOfContent.slice(0, upperBound);
-                  }
-
-                  // highlight title and content
-
-                  function highlightKeyword(text, slice) {
-                    var result = '';
-                    var prevEnd = slice.start;
-                    slice.hits.forEach(function (hit) {
-                      result += text.substring(prevEnd, hit.position);
-                      var end = hit.position + hit.length;
-                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
-                      prevEnd = end;
-                    });
-                    result += text.substring(prevEnd, slice.end);
-                    return result;
-                  }
-
-                  var resultItem = '';
-
-                  if (slicesOfTitle.length != 0) {
-                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
-                  } else {
-                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
-                  }
-
-                  slicesOfContent.forEach(function (slice) {
-                    resultItem += "<a href='" + articleUrl + "'>" +
-                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
-                      "...</p>" + "</a>";
-                  });
-
-                  resultItem += "</li>";
-                  resultItems.push({
-                    item: resultItem,
-                    searchTextCount: searchTextCount,
-                    hitCount: hitCount,
-                    id: resultItems.length
-                  });
-                }
-              })
-            };
-            if (keywords.length === 1 && keywords[0] === "") {
-              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
-            } else if (resultItems.length === 0) {
-              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
-            } else {
-              resultItems.sort(function (resultLeft, resultRight) {
-                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
-                  return resultRight.searchTextCount - resultLeft.searchTextCount;
-                } else if (resultLeft.hitCount !== resultRight.hitCount) {
-                  return resultRight.hitCount - resultLeft.hitCount;
-                } else {
-                  return resultRight.id - resultLeft.id;
-                }
-              });
-              var searchResultList = '<ul class=\"search-result-list\">';
-              resultItems.forEach(function (result) {
-                searchResultList += result.item;
-              })
-              searchResultList += "</ul>";
-              resultContent.innerHTML = searchResultList;
-            }
-          }
-
-          if ('auto' === 'auto') {
-            input.addEventListener('input', inputEventFunction);
-          } else {
-            $('.search-icon').click(inputEventFunction);
-            input.addEventListener('keypress', function (event) {
-              if (event.keyCode === 13) {
-                inputEventFunction();
-              }
-            });
-          }
-
-          // remove loading animation
-          $(".local-search-pop-overlay").remove();
-          $('body').css('overflow', '');
-
-          proceedsearch();
-        }
-      });
-    }
-
-    // handle and trigger popup window;
-    $('.popup-trigger').click(function(e) {
-      e.stopPropagation();
-      if (isfetched === false) {
-        searchFunc(path, 'local-search-input', 'local-search-result');
-      } else {
-        proceedsearch();
-      };
-    });
-
-    $('.popup-btn-close').click(onPopupClose);
-    $('.popup').click(function(e){
-      e.stopPropagation();
-    });
-    $(document).on('keyup', function (event) {
-      var shouldDismissSearchPopup = event.which === 27 &&
-        $('.search-popup').is(':visible');
-      if (shouldDismissSearchPopup) {
-        onPopupClose();
-      }
-    });
-  </script>
+        
 
 
 
 
 
-  
 
-  
-  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
-  <script>AV.initialize("eoVNlIJq5laKXK4jYgB2wCiF-gzGzoHsz", "eMgalJamMnlzVS7c0VvH4TjH");</script>
-  <script>
-    function showTime(Counter) {
-      var query = new AV.Query(Counter);
-      var entries = [];
-      var $visitors = $(".leancloud_visitors");
-
-      $visitors.each(function () {
-        entries.push( $(this).attr("id").trim() );
-      });
-
-      query.containedIn('url', entries);
-      query.find()
-        .done(function (results) {
-          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
-
-          if (results.length === 0) {
-            $visitors.find(COUNT_CONTAINER_REF).text(0);
-            return;
-          }
-
-          for (var i = 0; i < results.length; i++) {
-            var item = results[i];
-            var url = item.get('url');
-            var time = item.get('time');
-            var element = document.getElementById(url);
-
-            $(element).find(COUNT_CONTAINER_REF).text(time);
-          }
-          for(var i = 0; i < entries.length; i++) {
-            var url = entries[i];
-            var element = document.getElementById(url);
-            var countSpan = $(element).find(COUNT_CONTAINER_REF);
-            if( countSpan.text() == '') {
-              countSpan.text(0);
-            }
-          }
-        })
-        .fail(function (object, error) {
-          console.log("Error: " + error.code + " " + error.message);
-        });
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
     }
 
     function addCount(Counter) {
-      var $visitors = $(".leancloud_visitors");
-      var url = $visitors.attr('id').trim();
-      var title = $visitors.attr('data-flag-title').trim();
-      var query = new AV.Query(Counter);
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
 
-      query.equalTo("url", url);
-      query.find({
-        success: function(results) {
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
           if (results.length > 0) {
             var counter = results[0];
-            counter.fetchWhenSave(true);
-            counter.increment("time");
-            counter.save(null, {
-              success: function(counter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(counter.get('time'));
-              },
-              error: function(counter, error) {
-                console.log('Failed to save Visitor num, with error message: ' + error.message);
-              }
-            });
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
           } else {
-            var newcounter = new Counter();
-            /* Set ACL */
-            var acl = new AV.ACL();
-            acl.setPublicReadAccess(true);
-            acl.setPublicWriteAccess(true);
-            newcounter.setACL(acl);
-            /* End Set ACL */
-            newcounter.set("title", title);
-            newcounter.set("url", url);
-            newcounter.set("time", 1);
-            newcounter.save(null, {
-              success: function(newcounter) {
-                var $element = $(document.getElementById(url));
-                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
-              },
-              error: function(newcounter, error) {
-                console.log('Failed to create');
-              }
-            });
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
           }
-        },
-        error: function(error) {
-          console.log('Error:' + error.code + " " + error.message);
-        }
-      });
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
     }
 
-    $(function() {
-      var Counter = AV.Object.extend("Counter");
-      if ($('.leancloud_visitors').length == 1) {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"eoVNlIJq5laKXK4jYgB2wCiF-gzGzoHsz","app_key":"eMgalJamMnlzVS7c0VvH4TjH","server_url":null,"security":false};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
         addCount(Counter);
-      } else if ($('.post-title-link').length > 1) {
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
         showTime(Counter);
       }
-    });
-  </script>
-
-
-
-  
-
-  
-
-  
-  
-
-  
-  
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Config({
-        tex2jax: {
-          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
-          processEscapes: true,
-          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-        }
-      });
-    </script>
-
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for (i=0; i < all.length; i += 1) {
-          all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-      });
-    </script>
-    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
-</script>
-
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i=0; i < all.length; i += 1) {
-      all[i].SourceElement().parentNode.className += ' has-jax';
     }
-  });
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
 </script>
 
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
-</script>
-<!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/hexo_blog/lib/anime.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/hexo_blog/js/utils.js"></script>
+
+<script src="/hexo_blog/js/motion.js"></script>
+
+
+<script src="/hexo_blog/js/schemes/muse.js"></script>
+
+
+<script src="/hexo_blog/js/next-boot.js"></script>
+
+
+
+
   
 
+
+
+
+  
+<script src="/hexo_blog/js/local-search.js"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
 
   
 
