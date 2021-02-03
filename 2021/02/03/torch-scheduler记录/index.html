@@ -17,7 +17,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"wnma3mz.github.io","root":"/hexo_blog/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"wnma3mz.github.io","root":"/hexo_blog/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="torch中scheduler值得注意的点">
@@ -121,16 +121,31 @@
   <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/hexo_blog/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+    <a href="/hexo_blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/hexo_blog/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/hexo_blog/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/hexo_blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>الأرشيفات</a>
+    <a href="/hexo_blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-bookmark">
+
+    <a href="https://wnma3mz.github.io/bookmark/index.html" rel="section"><i class="fa fa-bookmark fa-fw"></i>书签</a>
 
   </li>
       <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>بحث
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
       </li>
   </ul>
@@ -146,7 +161,7 @@
   </span>
   <div class="search-input-container">
     <input autocomplete="off" autocapitalize="off"
-           placeholder="بحث..." spellcheck="false"
+           placeholder="搜索..." spellcheck="false"
            type="search" class="search-input">
   </div>
   <span class="popup-btn-close">
@@ -205,27 +220,27 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-calendar"></i>
               </span>
-              <span class="post-meta-item-text">نُشر في</span>
+              <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="أُنشأ: 2021-02-03 11:18:01 / عُدل: 11:23:18" itemprop="dateCreated datePublished" datetime="2021-02-03T11:18:01+08:00">2021-02-03</time>
+              <time title="创建于：2021-02-03 11:18:01 / عُدل：11:23:18" itemprop="dateCreated datePublished" datetime="2021-02-03T11:18:01+08:00">2021-02-03</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
-              <span class="post-meta-item-text">في</span>
+              <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/hexo_blog/categories/%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">笔记</span></a>
                 </span>
             </span>
 
           
-            <span id="/hexo_blog/2021/02/03/torch-scheduler%E8%AE%B0%E5%BD%95/" class="post-meta-item leancloud_visitors" data-flag-title="torch中的scheduler" title="مشاهدات">
+            <span id="/hexo_blog/2021/02/03/torch-scheduler%E8%AE%B0%E5%BD%95/" class="post-meta-item leancloud_visitors" data-flag-title="torch中的scheduler" title="阅读次数">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
-              <span class="post-meta-item-text">مشاهدات: </span>
+              <span class="post-meta-item-text">阅读次数：</span>
               <span class="leancloud-visitors-count"></span>
             </span>
 
@@ -240,9 +255,7 @@
       
         <p>torch中scheduler值得注意的点</p>
 <a id="more"></a>
-<p>代码</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"></span><br><span class="line">optimizer1 = torch.optim.SGD([torch.randn(<span class="number">1</span>, requires_grad=<span class="literal">True</span>)], lr=<span class="number">1e-3</span>)</span><br><span class="line">exp_lr_scheduler1 = torch.optim.lr_scheduler.MultiStepLR(optimizer1,</span><br><span class="line">                                             milestones=[<span class="number">5</span>, <span class="number">10</span>], gamma=<span class="number">0.1</span>)</span><br><span class="line"></span><br><span class="line">optimizer2 = torch.optim.SGD([torch.randn(<span class="number">1</span>, requires_grad=<span class="literal">True</span>)], lr=<span class="number">1e-3</span>)</span><br><span class="line">exp_lr_scheduler2 = torch.optim.lr_scheduler.MultiStepLR(optimizer2,</span><br><span class="line">                                             milestones=[<span class="number">5</span>, <span class="number">10</span>], gamma=<span class="number">0.1</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">15</span>):</span><br><span class="line">    exp_lr_scheduler1.step()</span><br><span class="line">    exp_lr_scheduler2.step(epoch)</span><br><span class="line">    print(<span class="string">&#x27;Epoch &#123;&#125;, lr1 &#123;&#125;, lr2 &#123;&#125;&#x27;</span>.<span class="built_in">format</span>(epoch,</span><br><span class="line">        optimizer1.param_groups[<span class="number">0</span>][<span class="string">&#x27;lr&#x27;</span>],</span><br><span class="line">        optimizer2.param_groups[<span class="number">0</span>][<span class="string">&#x27;lr&#x27;</span>]))</span><br></pre></td></tr></table></figure>
-<p>当torch版本为1.2.0时，输出如下：</p>
+<p>代码 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"></span><br><span class="line">optimizer1 = torch.optim.SGD([torch.randn(<span class="number">1</span>, requires_grad=<span class="literal">True</span>)], lr=<span class="number">1e-3</span>)</span><br><span class="line">exp_lr_scheduler1 = torch.optim.lr_scheduler.MultiStepLR(optimizer1,</span><br><span class="line">                                             milestones=[<span class="number">5</span>, <span class="number">10</span>], gamma=<span class="number">0.1</span>)</span><br><span class="line"></span><br><span class="line">optimizer2 = torch.optim.SGD([torch.randn(<span class="number">1</span>, requires_grad=<span class="literal">True</span>)], lr=<span class="number">1e-3</span>)</span><br><span class="line">exp_lr_scheduler2 = torch.optim.lr_scheduler.MultiStepLR(optimizer2,</span><br><span class="line">                                             milestones=[<span class="number">5</span>, <span class="number">10</span>], gamma=<span class="number">0.1</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">15</span>):</span><br><span class="line">    exp_lr_scheduler1.step()</span><br><span class="line">    exp_lr_scheduler2.step(epoch)</span><br><span class="line">    print(<span class="string">&#x27;Epoch &#123;&#125;, lr1 &#123;&#125;, lr2 &#123;&#125;&#x27;</span>.<span class="built_in">format</span>(epoch,</span><br><span class="line">        optimizer1.param_groups[<span class="number">0</span>][<span class="string">&#x27;lr&#x27;</span>],</span><br><span class="line">        optimizer2.param_groups[<span class="number">0</span>][<span class="string">&#x27;lr&#x27;</span>]))</span><br></pre></td></tr></table></figure> 当torch版本为1.2.0时，输出如下：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Epoch <span class="number">1</span>, lr1 <span class="number">0.001</span>, lr2 <span class="number">0.001</span></span><br><span class="line">Epoch <span class="number">2</span>, lr1 <span class="number">0.001</span>, lr2 <span class="number">0.001</span></span><br><span class="line">Epoch <span class="number">3</span>, lr1 <span class="number">0.001</span>, lr2 <span class="number">0.001</span></span><br><span class="line">Epoch <span class="number">4</span>, lr1 <span class="number">0.001</span>, lr2 <span class="number">0.001</span></span><br><span class="line">Epoch <span class="number">5</span>, lr1 <span class="number">0.0001</span>, lr2 <span class="number">0.0001</span></span><br><span class="line">Epoch <span class="number">6</span>, lr1 <span class="number">0.0001</span>, lr2 <span class="number">0.0001</span></span><br><span class="line">Epoch <span class="number">7</span>, lr1 <span class="number">0.0001</span>, lr2 <span class="number">0.0001</span></span><br><span class="line">Epoch <span class="number">8</span>, lr1 <span class="number">0.0001</span>, lr2 <span class="number">0.0001</span></span><br><span class="line">Epoch <span class="number">9</span>, lr1 <span class="number">0.0001</span>, lr2 <span class="number">0.0001</span></span><br><span class="line">Epoch <span class="number">10</span>, lr1 <span class="number">1.0000000000000003e-05</span>, lr2 <span class="number">1.0000000000000003e-05</span></span><br><span class="line">Epoch <span class="number">11</span>, lr1 <span class="number">1.0000000000000003e-05</span>, lr2 <span class="number">1.0000000000000003e-05</span></span><br><span class="line">Epoch <span class="number">12</span>, lr1 <span class="number">1.0000000000000003e-05</span>, lr2 <span class="number">1.0000000000000003e-05</span></span><br><span class="line">Epoch <span class="number">13</span>, lr1 <span class="number">1.0000000000000003e-05</span>, lr2 <span class="number">1.0000000000000003e-05</span></span><br><span class="line">Epoch <span class="number">14</span>, lr1 <span class="number">1.0000000000000003e-05</span>, lr2 <span class="number">1.0000000000000003e-05</span></span><br></pre></td></tr></table></figure>
 <p>当torch版本为1.4.0时，输出如下：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Epoch <span class="number">1</span>, lr1 <span class="number">0.001</span>, lr2 <span class="number">1.0000000000000003e-05</span></span><br><span class="line">Epoch <span class="number">2</span>, lr1 <span class="number">0.001</span>, lr2 <span class="number">1.0000000000000003e-05</span></span><br><span class="line">Epoch <span class="number">3</span>, lr1 <span class="number">0.001</span>, lr2 <span class="number">1.0000000000000003e-05</span></span><br><span class="line">Epoch <span class="number">4</span>, lr1 <span class="number">0.001</span>, lr2 <span class="number">1.0000000000000003e-05</span></span><br><span class="line">Epoch <span class="number">5</span>, lr1 <span class="number">0.0001</span>, lr2 <span class="number">1.0000000000000003e-05</span></span><br><span class="line">Epoch <span class="number">6</span>, lr1 <span class="number">0.0001</span>, lr2 <span class="number">1.0000000000000003e-05</span></span><br><span class="line">Epoch <span class="number">7</span>, lr1 <span class="number">0.0001</span>, lr2 <span class="number">1.0000000000000003e-05</span></span><br><span class="line">Epoch <span class="number">8</span>, lr1 <span class="number">0.0001</span>, lr2 <span class="number">1.0000000000000003e-05</span></span><br><span class="line">Epoch <span class="number">9</span>, lr1 <span class="number">0.0001</span>, lr2 <span class="number">1.0000000000000003e-05</span></span><br><span class="line">Epoch <span class="number">10</span>, lr1 <span class="number">1e-05</span>, lr2 <span class="number">1.0000000000000003e-05</span></span><br><span class="line">Epoch <span class="number">11</span>, lr1 <span class="number">1e-05</span>, lr2 <span class="number">1.0000000000000003e-05</span></span><br><span class="line">Epoch <span class="number">12</span>, lr1 <span class="number">1e-05</span>, lr2 <span class="number">1.0000000000000003e-05</span></span><br><span class="line">Epoch <span class="number">13</span>, lr1 <span class="number">1e-05</span>, lr2 <span class="number">1.0000000000000003e-05</span></span><br><span class="line">Epoch <span class="number">14</span>, lr1 <span class="number">1e-05</span>, lr2 <span class="number">1.0000000000000003e-05</span></span><br></pre></td></tr></table></figure>
@@ -253,6 +266,23 @@
     
     
     
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>wnma3mz
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wnma3mz.github.io/2021/02/03/torch-scheduler%E8%AE%B0%E5%BD%95/" title="torch中的scheduler">https://wnma3mz.github.io/2021/02/03/torch-scheduler记录/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
 
       <footer class="post-footer">
           <div class="post-tags">
@@ -285,7 +315,6 @@
 
           </div>
           
-    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -323,10 +352,10 @@
 
       <ul class="sidebar-nav motion-element">
         <li class="sidebar-nav-toc">
-          المحتويات
+          文章目录
         </li>
         <li class="sidebar-nav-overview">
-          عام
+          站点概览
         </li>
       </ul>
 
@@ -347,19 +376,21 @@
       <div class="site-state-item site-state-posts">
           <a href="/hexo_blog/archives/">
         
-          <span class="site-state-item-count">40</span>
-          <span class="site-state-item-name">المقالات</span>
+          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/hexo_blog/categories/">
-        <span class="site-state-item-count">13</span>
-        <span class="site-state-item-name">التصنيفات</span></a>
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/hexo_blog/tags/">
+          
         <span class="site-state-item-count">44</span>
-        <span class="site-state-item-name">الوسوم</span></a>
+        <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
 </div>
@@ -399,7 +430,7 @@
   </span>
   <span class="author" itemprop="copyrightHolder">wnma3mz</span>
 </div>
-  <div class="powered-by">تطبيق الموقع <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
   </div>
 
         
@@ -507,6 +538,7 @@
   </div>
 
   
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='99' src="/hexo_blog/lib/canvas-nest/canvas-nest-nomobile.min.js"></script>
   <script src="/hexo_blog/lib/anime.min.js"></script>
   <script src="/hexo_blog/lib/velocity/velocity.min.js"></script>
   <script src="/hexo_blog/lib/velocity/velocity.ui.min.js"></script>
@@ -549,26 +581,6 @@
   
 
   
-
-<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
-
-<script>
-NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
-  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
-    var gitalk = new Gitalk({
-      clientID    : '9bca1eab6c9fed529c25',
-      clientSecret: '49efe3e546e077524ac6dec1044974530216d625',
-      repo        : 'gitment-comments',
-      owner       : 'wnma3mz',
-      admin       : ['wnma3mz'],
-      id          : '86041ed4d2d6e33a3db92ed61cbf4eb0',
-        language: 'zh-CN',
-      distractionFreeMode: true
-    });
-    gitalk.render('gitalk-container');
-  }, window.Gitalk);
-});
-</script>
 
 </body>
 </html>
