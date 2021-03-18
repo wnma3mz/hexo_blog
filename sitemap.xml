@@ -305,27 +305,6 @@
 
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/Python/</loc>
-    <lastmod>2021-03-18</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/%E5%BE%AE%E4%BF%A1%E5%BC%80%E5%8F%91/</loc>
-    <lastmod>2021-03-18</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/Web%E5%BC%80%E5%8F%91/</loc>
-    <lastmod>2021-03-18</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://wnma3mz.github.io/tags/C/</loc>
     <lastmod>2021-03-18</lastmod>
     <changefreq>daily</changefreq>
@@ -354,6 +333,27 @@
   </url>
   
   <url>
+    <loc>https://wnma3mz.github.io/tags/Python/</loc>
+    <lastmod>2021-03-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/%E5%BE%AE%E4%BF%A1%E5%BC%80%E5%8F%91/</loc>
+    <lastmod>2021-03-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/Web%E5%BC%80%E5%8F%91/</loc>
+    <lastmod>2021-03-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://wnma3mz.github.io/tags/note/</loc>
     <lastmod>2021-03-18</lastmod>
     <changefreq>daily</changefreq>
@@ -369,6 +369,20 @@
   
   <url>
     <loc>https://wnma3mz.github.io/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/</loc>
+    <lastmod>2021-03-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/mongo/</loc>
+    <lastmod>2021-03-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
     <lastmod>2021-03-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -410,41 +424,6 @@
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/mongo/</loc>
-    <lastmod>2021-03-18</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
-    <lastmod>2021-03-18</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/magic-methods/</loc>
-    <lastmod>2021-03-18</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/test/</loc>
-    <lastmod>2021-03-18</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/Decorators/</loc>
-    <lastmod>2021-03-18</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://wnma3mz.github.io/tags/windows/</loc>
     <lastmod>2021-03-18</lastmod>
     <changefreq>daily</changefreq>
@@ -459,21 +438,7 @@
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/ssh/</loc>
-    <lastmod>2021-03-18</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/Pytorch/</loc>
-    <lastmod>2021-03-18</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/Deeplearning/</loc>
+    <loc>https://wnma3mz.github.io/tags/test/</loc>
     <lastmod>2021-03-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -494,6 +459,41 @@
   </url>
   
   <url>
+    <loc>https://wnma3mz.github.io/tags/magic-methods/</loc>
+    <lastmod>2021-03-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/Decorators/</loc>
+    <lastmod>2021-03-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/Pytorch/</loc>
+    <lastmod>2021-03-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/Deeplearning/</loc>
+    <lastmod>2021-03-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/ssh/</loc>
+    <lastmod>2021-03-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://wnma3mz.github.io/tags/NLP/</loc>
     <lastmod>2021-03-18</lastmod>
     <changefreq>daily</changefreq>
@@ -502,13 +502,6 @@
   
   <url>
     <loc>https://wnma3mz.github.io/tags/pandas/</loc>
-    <lastmod>2021-03-18</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/optimization/</loc>
     <lastmod>2021-03-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -536,7 +529,7 @@
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/adb/</loc>
+    <loc>https://wnma3mz.github.io/tags/optimization/</loc>
     <lastmod>2021-03-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -565,6 +558,13 @@
   
   <url>
     <loc>https://wnma3mz.github.io/tags/%E4%BD%8D%E5%9B%BE%E6%B3%95/</loc>
+    <lastmod>2021-03-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/adb/</loc>
     <lastmod>2021-03-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -629,13 +629,6 @@
 
   
   <url>
-    <loc>https://wnma3mz.github.io/categories/%E7%AC%94%E8%AE%B0/</loc>
-    <lastmod>2021-03-18</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://wnma3mz.github.io/categories/CUDA/</loc>
     <lastmod>2021-03-18</lastmod>
     <changefreq>daily</changefreq>
@@ -643,7 +636,21 @@
   </url>
   
   <url>
+    <loc>https://wnma3mz.github.io/categories/%E7%AC%94%E8%AE%B0/</loc>
+    <lastmod>2021-03-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://wnma3mz.github.io/categories/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</loc>
+    <lastmod>2021-03-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
     <lastmod>2021-03-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -658,13 +665,6 @@
   
   <url>
     <loc>https://wnma3mz.github.io/categories/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96/</loc>
-    <lastmod>2021-03-18</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
     <lastmod>2021-03-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
