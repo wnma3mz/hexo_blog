@@ -347,6 +347,27 @@
 
   
   <url>
+    <loc>https://wnma3mz.github.io/tags/Python/</loc>
+    <lastmod>2023-01-10</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/%E5%BE%AE%E4%BF%A1%E5%BC%80%E5%8F%91/</loc>
+    <lastmod>2023-01-10</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/Web%E5%BC%80%E5%8F%91/</loc>
+    <lastmod>2023-01-10</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://wnma3mz.github.io/tags/C/</loc>
     <lastmod>2023-01-10</lastmod>
     <changefreq>daily</changefreq>
@@ -382,27 +403,6 @@
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/Python/</loc>
-    <lastmod>2023-01-10</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/%E5%BE%AE%E4%BF%A1%E5%BC%80%E5%8F%91/</loc>
-    <lastmod>2023-01-10</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/Web%E5%BC%80%E5%8F%91/</loc>
-    <lastmod>2023-01-10</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://wnma3mz.github.io/tags/Hadoop/</loc>
     <lastmod>2023-01-10</lastmod>
     <changefreq>daily</changefreq>
@@ -417,13 +417,6 @@
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/ics/</loc>
-    <lastmod>2023-01-10</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://wnma3mz.github.io/tags/matplotlib/</loc>
     <lastmod>2023-01-10</lastmod>
     <changefreq>daily</changefreq>
@@ -432,6 +425,13 @@
   
   <url>
     <loc>https://wnma3mz.github.io/tags/python/</loc>
+    <lastmod>2023-01-10</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/ics/</loc>
     <lastmod>2023-01-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -536,13 +536,6 @@
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/NLP/</loc>
-    <lastmod>2023-01-10</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://wnma3mz.github.io/tags/Pytorch/</loc>
     <lastmod>2023-01-10</lastmod>
     <changefreq>daily</changefreq>
@@ -551,6 +544,13 @@
   
   <url>
     <loc>https://wnma3mz.github.io/tags/Deeplearning/</loc>
+    <lastmod>2023-01-10</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/NLP/</loc>
     <lastmod>2023-01-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -692,14 +692,14 @@
 
   
   <url>
-    <loc>https://wnma3mz.github.io/categories/CUDA/</loc>
+    <loc>https://wnma3mz.github.io/categories/%E7%AC%94%E8%AE%B0/</loc>
     <lastmod>2023-01-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/categories/%E7%AC%94%E8%AE%B0/</loc>
+    <loc>https://wnma3mz.github.io/categories/CUDA/</loc>
     <lastmod>2023-01-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -713,14 +713,14 @@
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/categories/%E5%A5%87%E6%8A%80%E6%B7%AB%E5%B7%A7/</loc>
+    <loc>https://wnma3mz.github.io/categories/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96/</loc>
     <lastmod>2023-01-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/categories/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96/</loc>
+    <loc>https://wnma3mz.github.io/categories/%E5%A5%87%E6%8A%80%E6%B7%AB%E5%B7%A7/</loc>
     <lastmod>2023-01-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
