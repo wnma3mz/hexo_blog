@@ -87,7 +87,7 @@
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="Navigationsleiste an/ausschalten">
+    <div class="toggle" aria-label="تشغيل شريط التصفح">
       <span class="toggle-line toggle-line-first"></span>
       <span class="toggle-line toggle-line-middle"></span>
       <span class="toggle-line toggle-line-last"></span>
@@ -219,7 +219,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建于：2023-01-10 20:21:22 / Geändert am：22:06:09" itemprop="dateCreated datePublished" datetime="2023-01-10T20:21:22+08:00">2023-01-10</time>
+              <time title="创建于：2023-01-10 20:21:22 / عُدل：22:25:28" itemprop="dateCreated datePublished" datetime="2023-01-10T20:21:22+08:00">2023-01-10</time>
             </span>
 
           
@@ -233,96 +233,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <a id="more"></a>
-<h2 id="基本界面">基本界面</h2>
-<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/openwrt/1673353557758.png" /></p>
-<p>准备：</p>
-<ul>
-<li>固件</li>
-<li>待恢复的配置</li>
-<li>需要安装的软件+运行的命令</li>
-</ul>
-<p>配置出问题，直接重刷。同时方便起见，要及时备份当前的配置。</p>
-<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/openwrt/1673353799884.png" /></p>
-<h2 id="软件包的安装">软件包的安装</h2>
-<p>能在线安装的可以直接在线安装。直接从&quot;系统-&gt;软件包&quot;里面找到需要安装的软件。</p>
-<p>但有时候在线安装会由于网络，软件源、软件版本等问题，无法自动安装。因此需要我们手动找到ipk文件进行安装。使用下面的命令进行安装。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">opkg install XXX</span><br></pre></td></tr></table></figure>
-<p>官方软件下载网页：https://downloads.openwrt.org/releases/</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 系统版本可以直接从管理界面的概况中得知，这里是17.01.4</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 内核版本</span></span><br><span class="line">&gt;&gt;&gt; uname -a </span><br><span class="line">Linux dw33d 4.4.194 <span class="comment">#0 Tue Oct 17 17:46:20 2017 mips GNU/Linux</span></span><br><span class="line"><span class="comment"># 查看支持的架构</span></span><br><span class="line">&gt;&gt;&gt; opkg print-architecture</span><br><span class="line">arch all 1</span><br><span class="line">arch noarch 1</span><br><span class="line">arch mips_24kc 10</span><br></pre></td></tr></table></figure>
-<p>对应我这里的第三方包就是：https://downloads.openwrt.org/releases/17.01.4/packages/mips_24kc/packages/</p>
-<p>基础的库：https://downloads.openwrt.org/releases/17.01.4/packages/mips_24kc/base</p>
-<p>luci：https://downloads.openwrt.org/releases/17.01.4/packages/mips_24kc/luci/</p>
-<h3 id="tmux">tmux</h3>
-<p>以tmux安装为例，该软件无法直接安装。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 从package里面下载tmux的ipkg文件</span></span><br><span class="line"><span class="comment"># 2. 执行安装命令</span></span><br><span class="line">&gt;&gt;&gt;opkg install tmux_2.3-1_mips_24kc.ipk</span><br><span class="line"><span class="comment"># 3. 报错信息，一些依赖文件没有。所以从base里面找到对应缺失的ipk文件。并进行安装</span></span><br><span class="line">&gt;&gt;&gt;opkg install terminfo_6.0-1_mips_24kc.ipk </span><br><span class="line"><span class="comment"># 4. 此时，再安装tmux。安装成功</span></span><br><span class="line"><span class="comment"># 5. 但是运行失败，提示缺失libevent2。所以到base里面再找到对应的文件进行安装。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 但安装libncurses这个库时，提示当前已安装，并且版本过高，并不会自动降级。所以需要手动卸载原有的软件</span></span><br><span class="line">&gt;&gt;&gt;opkg remove libncurses</span><br><span class="line"><span class="comment"># 卸载失败，提示已有软件依赖该库。所以我们需要强制进行卸载，将依赖软件也进行卸载。加上--force 命令</span></span><br><span class="line"><span class="comment"># 之后再安装低版本的libncurses</span></span><br><span class="line">&gt;&gt;&gt;opkg install libncurses_6.0-1_mips_24kc.ipk</span><br><span class="line"></span><br><span class="line"><span class="comment"># 最后再安装tmux，此时安装成功并运行成功</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 之前依赖的软件是transmission，如果需要重新安装。那么就到luci里面找到对应的文件下载</span></span><br><span class="line">&gt;&gt;&gt;opkg install luci-app-transmission_git-19.271.72080-7b230b0-1_all.ipk</span><br></pre></td></tr></table></figure>
-<p>其他软件应该同理，需要一步一步找到依赖文件，并且耐心地解决各种问题。dw33d内置了一个16g的sd卡，所以我把一些重装必备的ipk文件放到里面，便于快速安装。并且刷写固件并不会影响该sd卡的内容，可以放心存储。</p>
-<h3 id="tailscale">Tailscale</h3>
-<p>异地组网工具，从官网下载找到mips版本，放到sd卡中，避免刷新固件有影响。相当于单文件就可以运行。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 解压文件</span></span><br><span class="line">&gt;&gt;&gt; tar zxvf tailscale_1.34.1_mips.tgz</span><br><span class="line"><span class="comment"># 到对应的目录中，里面会有一些文件。主要是两个可执行文件tailscale和tailscaled。</span></span><br><span class="line"><span class="comment"># 第一次运行需要启动tailscaled服务</span></span><br><span class="line">&gt;&gt;&gt;./tailscaled --state=tailscaled.state</span><br><span class="line"><span class="comment"># 此时需要新开一个窗口，登录tailscale</span></span><br><span class="line">&gt;&gt;&gt;./tailscale login </span><br><span class="line"><span class="comment"># 可以直接把网址复制出来，用其他设备的浏览器进行登录</span></span><br></pre></td></tr></table></figure>
-<p>登录完毕之后，组网就完成了。此时，可以关闭该窗口。但为了后台启动，所以可以使用tmux，或者nohup命令。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nohup ./tailscaled --state=tailscaled.state &gt; t.log 2&gt;&amp;1 &amp;</span><br></pre></td></tr></table></figure>
-<p>同时为了保证开机自启动，所以我们可以在web管理界面中&quot;系统-&gt;启动项&quot;中，最后的&quot;本地启动脚本&quot;中插入(<code>exit 0</code>之前行)</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 先切换到对应目录，再执行</span></span><br><span class="line"><span class="built_in">cd</span> /mnt/sda1/tailscale_1.34.1_mips &amp;&amp; nohup ./tailscaled --state=tailscaled.state &gt; t.log 2&gt;&amp;1 &amp;</span><br></pre></td></tr></table></figure>
-<p>这样，就能保证异地管理该路由器的web界面，并且可以直接ssh登录</p>
-<h2 id="防火墙">防火墙</h2>
-<p>&quot;网络-&gt;防火墙&quot;中的默认配置，wan口是拒绝入站数据的。这样就会导致如果该路由器跟其他设备同属于一个局域网，ssh和web界面均不能通过ip登录。具体的例子是：</p>
-<ul>
-<li>该路由器连接了一个上级路由器A，获取到的IP是192.168.0.X。分配给下面的设备的IP是192.168.1.X</li>
-<li>另一个设备接入路由器A时，获取到的IP是192.168.0.Y。此时能ping通192.168.0.X，但是无法进行ssh，也无法通过192.168.0.X访问管理界面</li>
-<li>另一个设备接入该路由器时，获取到的IP是192.168.1.Y。此时能够通过ssh和web访问192.168.1.X。</li>
-</ul>
-<p>需求：在同局域网下的其他设备也能访问该路由器。</p>
-<p>做法：</p>
-<ul>
-<li>一个简单的做法就是如下图所示，把&quot;防火墙&quot;中的&quot;常规设置&quot;里面的wan口，入站数据从<strong>拒绝</strong>改成<strong>接受</strong>。（默认是拒绝入站的）</li>
-</ul>
-<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/openwrt@2%SA%5D@F~~%5DWNIHOLGPN5KO.png" /></p>
-<ul>
-<li>另一个做法是配置&quot;防火墙-&gt;端口转发&quot;，把需要配置的端口转发出来。如下图所示，web界面的端口是80。所以从wan口出来的访问80端口的流量，直接转发到192.168.4.1（该路由器分配给下面的IP，不是获取的IP）</li>
-</ul>
-<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/openwrt/1673356610477.png" /></p>
-<p>关于流量规则这里，则是在系统内部决定是否开放某个端口。可以参考默认的一些配置进行开放，一般应该是不需要调整的。</p>
-<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/openwrt/1673356804612.png" /></p>
-<h2 id="接口">接口</h2>
-<p>&quot;网络-&gt;接口&quot;</p>
-<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/openwrt/1673357070459.png" /></p>
-<p>我主要会有以下四种上网方式（不会专业术语，简单描述现象）：</p>
-<ul>
-<li><p>桥接光猫</p>
-<ul>
-<li>将路由器WAN口接入光猫LAN口，代替光猫进行拨号，需要知道宽带的账号密码。</li>
-<li>在WAN口中，协议选择<strong>PPPoE</strong>，输入账号密码</li>
-<li>此时该路由器就是主路由器，一般同时有ipv4和ipv6两个地址，假设ipv4的ip为192.168.1.1</li>
-<li>接入该路由器的设备，由该路由器进行分配ip，ip与路由器同网段，如192.168.1.2</li>
-</ul></li>
-<li><p>桥接上一级路由器</p>
-<ul>
-<li></li>
-</ul></li>
-<li><p>做NAT</p>
-<ul>
-<li>将路由器WAN接入上一级路由器的LAN口，相当于把该路由器做一个新的入口。</li>
-<li>在WAN中，协议选择<strong>DHCP客户端</strong>或<strong>静态地址</strong>（需要额外配置）</li>
-<li>此时，接入该路由器的设备会独立上一级路由器的设备，即网段不同。</li>
-<li>注：如果此时还需要ipv6，可以参考这篇文件进行配置。https://www.lategege.com/?p=676
-<ul>
-<li>简单来说，就是需要选择静态IP，并在<strong>WAN口</strong>和<strong>LAN</strong>中的&quot;DHCP服务器&quot;中的IPv6设置中，路由器广告服务，DHCPv6服务，NDP-代理三个均选择中继模式</li>
-<li>并且在终端中<code>vim /etc/config/dhcp</code>，找到<code>config dhcp 'wan'</code>对应的选项，加入<code>option master '1'</code>这一行</li>
-</ul></li>
-</ul></li>
-<li><p>WiFi放大器</p>
-<ul>
-<li><p>无需网线</p></li>
-<li><p>&quot;网络-&gt;无线&quot;中的搜索，找到需要放大WiFi，加入网络。看情况选择放大2.4G还是5G的WiFi</p>
-<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/openwrt/1673357519480.png" /></p></li>
-<li><p>WPA密钥就是WiFi密码，新的网络名称可以默认也可以另起一个以便区分。</p></li>
-<li><p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/openwrt/1673357576678.png" /></p></li>
-<li><p>此时接口中会多一个接口</p></li>
-<li><p>其他同桥接</p></li>
-</ul></li>
-</ul>
-
+          <p>OpenWrt路由器折腾记录</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/hexo_blog/2023/01/10/OpenWrt%E8%B7%AF%E7%94%B1%E5%99%A8%E8%AE%B0%E5%BD%95/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -372,7 +291,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="Geändert am：2021-11-21 17:41:05" itemprop="dateModified" datetime="2021-11-21T17:41:05+08:00">2021-11-21</time>
+                <time title="عُدل：2021-11-21 17:41:05" itemprop="dateModified" datetime="2021-11-21T17:41:05+08:00">2021-11-21</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -447,7 +366,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建于：2021-07-21 21:36:28 / Geändert am：22:02:46" itemprop="dateCreated datePublished" datetime="2021-07-21T21:36:28+08:00">2021-07-21</time>
+              <time title="创建于：2021-07-21 21:36:28 / عُدل：22:02:46" itemprop="dateCreated datePublished" datetime="2021-07-21T21:36:28+08:00">2021-07-21</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -522,7 +441,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建于：2021-07-21 21:07:28 / Geändert am：21:37:39" itemprop="dateCreated datePublished" datetime="2021-07-21T21:07:28+08:00">2021-07-21</time>
+              <time title="创建于：2021-07-21 21:07:28 / عُدل：21:37:39" itemprop="dateCreated datePublished" datetime="2021-07-21T21:07:28+08:00">2021-07-21</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -597,7 +516,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建于：2021-07-21 20:44:28 / Geändert am：21:06:29" itemprop="dateCreated datePublished" datetime="2021-07-21T20:44:28+08:00">2021-07-21</time>
+              <time title="创建于：2021-07-21 20:44:28 / عُدل：21:06:29" itemprop="dateCreated datePublished" datetime="2021-07-21T20:44:28+08:00">2021-07-21</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -672,7 +591,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建于：2021-03-18 22:18:23 / Geändert am：23:35:55" itemprop="dateCreated datePublished" datetime="2021-03-18T22:18:23+08:00">2021-03-18</time>
+              <time title="创建于：2021-03-18 22:18:23 / عُدل：23:35:55" itemprop="dateCreated datePublished" datetime="2021-03-18T22:18:23+08:00">2021-03-18</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -753,7 +672,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="Geändert am：2021-03-29 16:01:38" itemprop="dateModified" datetime="2021-03-29T16:01:38+08:00">2021-03-29</time>
+                <time title="عُدل：2021-03-29 16:01:38" itemprop="dateModified" datetime="2021-03-29T16:01:38+08:00">2021-03-29</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -828,7 +747,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建于：2021-02-03 11:18:01 / Geändert am：11:23:18" itemprop="dateCreated datePublished" datetime="2021-02-03T11:18:01+08:00">2021-02-03</time>
+              <time title="创建于：2021-02-03 11:18:01 / عُدل：11:23:18" itemprop="dateCreated datePublished" datetime="2021-02-03T11:18:01+08:00">2021-02-03</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -909,7 +828,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="Geändert am：2020-09-18 11:14:19" itemprop="dateModified" datetime="2020-09-18T11:14:19+08:00">2020-09-18</time>
+                <time title="عُدل：2020-09-18 11:14:19" itemprop="dateModified" datetime="2020-09-18T11:14:19+08:00">2020-09-18</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -984,7 +903,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建于：2020-09-16 00:00:00 / Geändert am：19:05:15" itemprop="dateCreated datePublished" datetime="2020-09-16T00:00:00+08:00">2020-09-16</time>
+              <time title="创建于：2020-09-16 00:00:00 / عُدل：19:05:15" itemprop="dateCreated datePublished" datetime="2020-09-16T00:00:00+08:00">2020-09-16</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1033,7 +952,7 @@
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/hexo_blog/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/hexo_blog/page/5/">5</a><a class="extend next" rel="next" href="/hexo_blog/page/2/"><i class="fa fa-angle-right" aria-label="Nächste Seite"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/hexo_blog/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/hexo_blog/page/5/">5</a><a class="extend next" rel="next" href="/hexo_blog/page/2/"><i class="fa fa-angle-right" aria-label="الصفحة التالية"></i></a>
   </nav>
 
 
