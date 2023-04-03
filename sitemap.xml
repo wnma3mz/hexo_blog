@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://wnma3mz.github.io/2021/03/18/Birthday_in_Pi/</loc>
+    
+    <lastmod>2023-04-03</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/2020/09/16/ICS%E5%9C%A8%E7%BA%BF%E8%AF%BE%E8%A1%A8%E5%88%B6%E4%BD%9C/</loc>
+    
+    <lastmod>2023-04-03</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://wnma3mz.github.io/2017/08/14/%E9%A3%8E%E6%A0%BC%E8%BF%81%E7%A7%BB%E8%BD%AC%E6%8D%A2%E7%9A%84%E4%B8%A4%E7%A7%8D%E5%AE%9E%E7%8E%B0/</loc>
     
     <lastmod>2023-04-03</lastmod>
@@ -340,6 +354,27 @@
 
   
   <url>
+    <loc>https://wnma3mz.github.io/tags/Python/</loc>
+    <lastmod>2023-04-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/%E5%BE%AE%E4%BF%A1%E5%BC%80%E5%8F%91/</loc>
+    <lastmod>2023-04-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/Web%E5%BC%80%E5%8F%91/</loc>
+    <lastmod>2023-04-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://wnma3mz.github.io/tags/C/</loc>
     <lastmod>2023-04-03</lastmod>
     <changefreq>daily</changefreq>
@@ -397,6 +432,13 @@
   
   <url>
     <loc>https://wnma3mz.github.io/tags/python/</loc>
+    <lastmod>2023-04-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/ics/</loc>
     <lastmod>2023-04-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -480,13 +522,6 @@
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/Python/</loc>
-    <lastmod>2023-04-03</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://wnma3mz.github.io/tags/magic-methods/</loc>
     <lastmod>2023-04-03</lastmod>
     <changefreq>daily</changefreq>
@@ -508,6 +543,13 @@
   </url>
   
   <url>
+    <loc>https://wnma3mz.github.io/tags/NLP/</loc>
+    <lastmod>2023-04-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://wnma3mz.github.io/tags/Pytorch/</loc>
     <lastmod>2023-04-03</lastmod>
     <changefreq>daily</changefreq>
@@ -522,7 +564,7 @@
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/NLP/</loc>
+    <loc>https://wnma3mz.github.io/tags/pandas/</loc>
     <lastmod>2023-04-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -530,13 +572,6 @@
   
   <url>
     <loc>https://wnma3mz.github.io/tags/Hive/</loc>
-    <lastmod>2023-04-03</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/pandas/</loc>
     <lastmod>2023-04-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -678,6 +713,13 @@
 
   
   <url>
+    <loc>https://wnma3mz.github.io/categories/%E7%AC%94%E8%AE%B0/</loc>
+    <lastmod>2023-04-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://wnma3mz.github.io/categories/CUDA/</loc>
     <lastmod>2023-04-03</lastmod>
     <changefreq>daily</changefreq>
@@ -699,21 +741,14 @@
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
-    <lastmod>2023-04-03</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/categories/%E7%AC%94%E8%AE%B0/</loc>
-    <lastmod>2023-04-03</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://wnma3mz.github.io/categories/%E5%A5%87%E6%8A%80%E6%B7%AB%E5%B7%A7/</loc>
+    <lastmod>2023-04-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
     <lastmod>2023-04-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
