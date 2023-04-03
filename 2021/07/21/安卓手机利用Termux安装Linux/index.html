@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"wnma3mz.github.io","root":"/hexo_blog/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="在手机上利用Termux安装Linux，免root">
+  <meta name="description" content="本文介绍如何在安卓手机上安装和运行Ubuntu系统，并通过ssh连接进行操作，同时给出了一 些其他有用的命令和配置说明。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="安卓手机利用Termux安装Linux">
 <meta property="og:url" content="https://wnma3mz.github.io/2021/07/21/%E5%AE%89%E5%8D%93%E6%89%8B%E6%9C%BA%E5%88%A9%E7%94%A8Termux%E5%AE%89%E8%A3%85Linux/index.html">
 <meta property="og:site_name" content="Wnma&#39;s Blogs">
-<meta property="og:description" content="在手机上利用Termux安装Linux，免root">
+<meta property="og:description" content="本文介绍如何在安卓手机上安装和运行Ubuntu系统，并通过ssh连接进行操作，同时给出了一 些其他有用的命令和配置说明。">
 <meta property="og:locale">
 <meta property="article:published_time" content="2021-07-21T13:36:28.000Z">
-<meta property="article:modified_time" content="2021-07-21T14:02:46.995Z">
+<meta property="article:modified_time" content="2023-04-03T12:41:11.215Z">
 <meta property="article:author" content="wnma3mz">
 <meta property="article:tag" content="linux">
 <meta property="article:tag" content="安卓">
@@ -91,7 +91,7 @@
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="Navigationsleiste an/ausschalten">
+    <div class="toggle" aria-label="Cambiar a barra de navegación">
       <span class="toggle-line toggle-line-first"></span>
       <span class="toggle-line toggle-line-middle"></span>
       <span class="toggle-line toggle-line-last"></span>
@@ -221,11 +221,17 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建于：2021-07-21 21:36:28 / Geändert am：22:02:46" itemprop="dateCreated datePublished" datetime="2021-07-21T21:36:28+08:00">2021-07-21</time>
+              <time title="创建于：2021-07-21 21:36:28" itemprop="dateCreated datePublished" datetime="2021-07-21T21:36:28+08:00">2021-07-21</time>
 
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="Modificado por：2023-04-03 20:41:11" itemprop="dateModified" datetime="2023-04-03T20:41:11+08:00">2023-04-03</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -247,19 +253,19 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>在手机上利用Termux安装Linux，免root</p>
+        <p>本文介绍如何在安卓手机上安装和运行Ubuntu系统，并通过ssh连接进行操作，同时给出了一 些其他有用的命令和配置说明。</p>
 <a id="more"></a>
 <h3 id="安装">安装</h3>
 <p>不要从Google Play上安装，正确的安装包地址<a target="_blank" rel="noopener" href="https://f-droid.org/packages/com.termux/">f-droid</a></p>
 <p>下载完成后，正常安装，但需要额外的给存储空间权限。</p>
-<p>虽然说可以免root安装，但没有root权限，有些操作不能很好的完成，如<code>top</code></p>
+<p>虽然说可以免root安装，但没有root权限，有些操作不能很好的完成，如 <code>top</code></p>
 <h3 id="连接">连接</h3>
 <p>在手机上配置太麻烦，所以可以使用同一局域网下的电脑进行配置</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 手机上</span></span><br><span class="line"><span class="comment"># 安装ssh服务</span></span><br><span class="line">pkg install openssh -y</span><br><span class="line"><span class="comment"># 开启ssh服务器</span></span><br><span class="line">sshd</span><br><span class="line"><span class="comment"># 配置密码</span></span><br><span class="line">passwd</span><br><span class="line"><span class="comment"># 输入想要配置的密码</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 电脑终端, ip填写对应的手机ip，8022是termux默认的ssh端口</span></span><br><span class="line">ssh root@[ip] -p8022</span><br><span class="line"><span class="comment"># 输入刚刚的密码</span></span><br></pre></td></tr></table></figure>
 <p>至此，就能在电脑端进行配置</p>
 <h3 id="配置">配置</h3>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装第三方库</span></span><br><span class="line">pkg install proot git python wget -y</span><br><span class="line"></span><br><span class="line"><span class="comment"># 一键安装项目</span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/sqlsec/termux-install-linux.git</span><br><span class="line"><span class="built_in">cd</span> termux-install-linux</span><br><span class="line">python termux-linux-install.py</span><br><span class="line"><span class="comment"># 选择Ubuntu</span></span><br><span class="line"><span class="built_in">cd</span> ~/Termux-Linux/Ubuntu</span><br><span class="line">./start-ubuntu.sh</span><br><span class="line"></span><br><span class="line"><span class="comment"># 或者，ubuntu版本，最新支持20.04</span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/MFDGaming/ubuntu-in-termux</span><br><span class="line"><span class="built_in">cd</span> ubuntu-in-termux</span><br><span class="line">chmod +x ubuntu.sh</span><br><span class="line">./ubuntu.sh -y</span><br><span class="line">./startubuntu.sh</span><br></pre></td></tr></table></figure>
-<p>这样安装的Linux是与Termux共享文件目录的，所以可以直接将文件拷贝在<code>ubuntu-fs/root</code>文件夹中，启动<code>./startubuntu.sh</code>后，就能直接看到文件。</p>
+<p>这样安装的Linux是与Termux共享文件目录的，所以可以直接将文件拷贝在 <code>ubuntu-fs/root</code>文件夹中，启动 <code>./startubuntu.sh</code>后，就能直接看到文件。</p>
 <p>注：若进入系统后，无法更新软件源，可能是dns存在问题，可以在termux中更改dns解析（因为系统中不好编辑）。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">vim ubuntu-fs/etc/resolv.conf</span><br><span class="line"></span><br><span class="line">`</span><br><span class="line">nameserver 114.114.114.114</span><br><span class="line">nameserver 8.8.8.8</span><br><span class="line">`</span><br><span class="line"><span class="comment"># 若依旧不行，可尝试其他dns，如1.1.1.1等</span></span><br></pre></td></tr></table></figure>
 <h3 id="其他">其他</h3>
@@ -381,7 +387,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/hexo_blog/archives/">
         
-          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-count">45</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -394,7 +400,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/hexo_blog/tags/">
           
-        <span class="site-state-item-count">49</span>
+        <span class="site-state-item-count">48</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

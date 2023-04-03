@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"wnma3mz.github.io","root":"/hexo_blog/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="这篇文章主要记了Python的一些笔记，比如弱引用、GIL、type与object等">
+  <meta name="description" content="理解Python中的GIL(Global Interpreter Lock)，以及如何使用多线程和多进程，以及弱引用。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Python杂谈">
 <meta property="og:url" content="https://wnma3mz.github.io/2018/03/14/python%E6%9D%82%E8%B0%88/index.html">
 <meta property="og:site_name" content="Wnma&#39;s Blogs">
-<meta property="og:description" content="这篇文章主要记了Python的一些笔记，比如弱引用、GIL、type与object等">
+<meta property="og:description" content="理解Python中的GIL(Global Interpreter Lock)，以及如何使用多线程和多进程，以及弱引用。">
 <meta property="og:locale">
 <meta property="article:published_time" content="2018-03-14T07:24:02.000Z">
-<meta property="article:modified_time" content="2018-03-17T06:47:20.076Z">
+<meta property="article:modified_time" content="2023-04-03T12:39:04.050Z">
 <meta property="article:author" content="wnma3mz">
 <meta property="article:tag" content="Python">
 <meta property="article:tag" content="magic methods">
@@ -91,7 +91,7 @@
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="Navigationsleiste an/ausschalten">
+    <div class="toggle" aria-label="Cambiar a barra de navegación">
       <span class="toggle-line toggle-line-first"></span>
       <span class="toggle-line toggle-line-middle"></span>
       <span class="toggle-line toggle-line-last"></span>
@@ -230,7 +230,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="Geändert am：2018-03-17 14:47:20" itemprop="dateModified" datetime="2018-03-17T14:47:20+08:00">2018-03-17</time>
+                <time title="Modificado por：2023-04-03 20:39:04" itemprop="dateModified" datetime="2023-04-03T20:39:04+08:00">2023-04-03</time>
               </span>
 
           
@@ -244,7 +244,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>这篇文章主要记了Python的一些笔记，比如弱引用、GIL、type与object等</p>
+        <p>理解Python中的GIL(Global Interpreter Lock)，以及如何使用多线程和多进程，以及弱引用。</p>
 <a id="more"></a>
 <h2 id="gil">GIL</h2>
 <p>建议阅读文章</p>
@@ -256,7 +256,7 @@
 <p>形象的比方:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">我们把整个进程空间看做一个车间，把线程看成是多条不相交的流水线，把线程控制流中的字节码看作是流水线上待处理的物品。Python 解释器是工人，整个车间仅此一名。操作系统是一只上帝之手，会随时把工人从一条流水线调到另一条——这种“随时”是不由分说的，即不管处理完当前物品与否。</span><br><span class="line"></span><br><span class="line">若没有 GIL。假设工人正在流水线 A 处理 A1 物品，根据 A1 的需要将房间温度（一个全局对象）调到了 20 度。这时上帝之手发动了，工人被调到流水线 B 处理 B1 物品，根据 B1 的需要又将房间温度调到了 50 度。这时上帝之手又发动了，工人又调回 A 继续处理 A1。但此时 A1 暴露在了 50 度的环境中，安全问题就此产生了。</span><br><span class="line"></span><br><span class="line">而 GIL 相当于一条锁链，一旦工人开始处理某条流水线上的物品，GIL 便会将工人和该流水线锁在一起。而被锁住的工人只会处理该流水线上的物品。就算突然被调到另一条流水线，他也不会干活，而是干等至重新调回原来的流水线。这样每个物品在被处理的过程中便总是能保证全局环境不会突变。</span><br></pre></td></tr></table></figure>
 <p>在解释器解释python代码时，首先会获得这把锁，需要I/O操作就是释放这把锁。如果是纯计算程序，没有I/O操作，解释器会每隔100次操作释放一次锁（Python3.2之后使用固定时间(5ms)来释放）。</p>
-<p>GIL只会影响严重依赖CPU的程序（计算型）, 所以运行Python的时候，同一时间只能执行一个线程(单核CPU下的多线程都只是并发)。运行Python程序就只能占用一个核的CPU资源，哪怕使用了<code>threading</code>多线程也是一样。</p>
+<p>GIL只会影响严重依赖CPU的程序（计算型）, 所以运行Python的时候，同一时间只能执行一个线程(单核CPU下的多线程都只是并发)。运行Python程序就只能占用一个核的CPU资源，哪怕使用了 <code>threading</code>多线程也是一样。</p>
 <p>CPU密集性代码(循环)：不适用多线程。不断触发GIL，线程来回切换，消耗资源</p>
 <p>IO密集型代码(文件处理，网路爬虫)：多线程能够提高效率。在一个线程等待的同时，切换到另一个线程，不浪费CPU资源从而提升效率。</p>
 <p>多核多线程比单核多线程更差，单核下多线程每次释放GIL，唤醒的线程都能获取GIL锁，可以无缝执行。但是多核下，一个CPU释放完GIL之后，所有CPU的线程又开始竞争，可能会被原来的CPU获取，导致其他CPU线程唤醒之后必须等待到下一次释放。这样造成的结果称为线程颠簸(thrashing), 效率会更低下。</p>
@@ -265,14 +265,14 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#! /usr/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-   </span></span><br><span class="line"><span class="keyword">from</span> time <span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Thread</span><br><span class="line"><span class="keyword">from</span> multiprocessing <span class="keyword">import</span> Process</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">spawn_n_threads</span>(<span class="params">n, target</span>):</span></span><br><span class="line">    threads = []</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(n):</span><br><span class="line">        thread = Thread(target=target)</span><br><span class="line">        thread.start()</span><br><span class="line">        threads.append(thread)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> thread <span class="keyword">in</span> threads:</span><br><span class="line">        thread.join()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">spawn_n_processes</span>(<span class="params">n, target</span>):</span></span><br><span class="line">    threads = []</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(n):</span><br><span class="line">        thread = Process(target=target)</span><br><span class="line">        thread.start()</span><br><span class="line">        threads.append(thread)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> thread <span class="keyword">in</span> threads:</span><br><span class="line">        thread.join()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test</span>(<span class="params">target, number=<span class="number">10</span>, spawner=spawn_n_threads</span>):</span></span><br><span class="line">    <span class="keyword">for</span> n <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">5</span>):</span><br><span class="line">        start_time = time()</span><br><span class="line">        <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(number):</span><br><span class="line">            spawner(n, target)</span><br><span class="line">        end_time = time()</span><br><span class="line">        print(<span class="string">&quot;Time elapsed with &#123;&#125; branch(es): &#123;:.6f&#125; sec(s)&quot;</span>.<span class="built_in">format</span>(n, end_time - start_time))</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fib</span>():</span></span><br><span class="line">    a = b = <span class="number">1</span></span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">100000</span>):</span><br><span class="line">        a, b = b, a + b</span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    print(<span class="string">&quot;threads:&quot;</span>)</span><br><span class="line">    test(fib)</span><br><span class="line">    print(<span class="string">&quot;processes:&quot;</span>)</span><br><span class="line">    test(fib, spawner=spawn_n_processes)</span><br></pre></td></tr></table></figure>
 <p>P.S.</p>
 <ul>
-<li><p>并行：同时处理两个及以上的事件在同一时刻发生</p></li>
-<li><p>并发：同时处理两个及以上的事件在同一事件间隔内发生</p></li>
+<li>并行：同时处理两个及以上的事件在同一时刻发生</li>
+<li>并发：同时处理两个及以上的事件在同一事件间隔内发生</li>
 </ul>
 <h2 id="弱引用">弱引用</h2>
 <p>推荐阅读</p>
 <p><a target="_blank" rel="noopener" href="http://blog.soliloquize.org/2016/01/21/Python%E5%BC%B1%E5%BC%95%E7%94%A8%E7%9A%84%E4%BD%BF%E7%94%A8%E4%B8%8E%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/">Python弱引用的使用与注意事项</a></p>
 <p>弱引用与强引用相对，是指不能确保其引用的对象不会被垃圾回收器回收的引用。若一个对象若只被弱引用所引用，则被认为是不可访问（或弱可访问）的，病因此可能在任何时刻被回收。主要作用就是减少循环引用，减少内存中不必要的对象存在的数量。</p>
-<p>Python用<code>weakref</code>模块创建对象的弱引用，当引用计数为0或只存在对象的弱引用时将回收这个对象。</p>
+<p>Python用 <code>weakref</code>模块创建对象的弱引用，当引用计数为0或只存在对象的弱引用时将回收这个对象。</p>
 <p>内存管理时使用，cache编程，垃圾回收(GC)</p>
 <h2 id="while-1与while-true">while 1与while True</h2>
 <p><a target="_blank" rel="noopener" href="http://www.pythoner.com/356.html">Python天坑系列（一）：while 1比while True更快？</a></p>
@@ -284,7 +284,7 @@
 <h2 id="if-x-true与if-x">if x == True:与if x:</h2>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#! /usr/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> timeit</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">if_x_eq_true</span>():</span></span><br><span class="line">    x = <span class="literal">True</span></span><br><span class="line">    <span class="keyword">if</span> x == <span class="literal">True</span>:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">if_x</span>():</span></span><br><span class="line">    x = <span class="literal">True</span></span><br><span class="line">    <span class="keyword">if</span> x:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    if1 = timeit.timeit(if_x_eq_true, <span class="string">&quot;from __main__ import if_x_eq_true&quot;</span>, number = <span class="number">1000000</span>)</span><br><span class="line">    if2 = timeit.timeit(if_x, <span class="string">&quot;from __main__ import if_x&quot;</span>, number = <span class="number">1000000</span>)</span><br><span class="line"></span><br><span class="line">    print(<span class="string">&quot;if_x_eq_true: %s\nif_x: %s&quot;</span> % (if1, if2))</span><br></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># python2</span></span><br><span class="line">if_x_eq_true: 0.118808984756</span><br><span class="line">if_x: 0.0920550823212</span><br><span class="line"><span class="comment"># python3</span></span><br><span class="line">if_x_eq_true: 0.0951261969985353</span><br><span class="line">if_x: 0.07899275699855934</span><br></pre></td></tr></table></figure>
-<p>不管python2还是python3, <code>if x:</code>从各方面来说都会优于<code>if x == True</code>。后者会比前者多出一个检查True值和比较的操作。</p>
+<p>不管python2还是python3, <code>if x:</code>从各方面来说都会优于 <code>if x == True</code>。后者会比前者多出一个检查True值和比较的操作。</p>
 <h2 id="type与object">type与object</h2>
 <p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/38791962">Python 的 type 和 object 之间是怎么一种关系？</a></p>
 <h2 id="深刻理解python中的元类metaclass">深刻理解Python中的元类(metaclass)</h2>
@@ -406,7 +406,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/hexo_blog/archives/">
         
-          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-count">45</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -419,7 +419,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/hexo_blog/tags/">
           
-        <span class="site-state-item-count">49</span>
+        <span class="site-state-item-count">48</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
