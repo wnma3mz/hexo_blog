@@ -30,8 +30,8 @@
 <meta property="article:published_time" content="2020-08-08T07:15:23.000Z">
 <meta property="article:modified_time" content="2023-04-03T12:35:12.509Z">
 <meta property="article:author" content="wnma3mz">
-<meta property="article:tag" content="linux">
 <meta property="article:tag" content="windows">
+<meta property="article:tag" content="linux">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://wnma3mz.github.io/2020/08/08/firewall%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91/">
@@ -230,7 +230,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="Updated at：2023-04-03 20:35:12" itemprop="dateModified" datetime="2023-04-03T20:35:12+08:00">2023-04-03</time>
+                <time title="Modified：2023-04-03 20:35:12" itemprop="dateModified" datetime="2023-04-03T20:35:12+08:00">2023-04-03</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -256,28 +256,24 @@
         <p>如何通过防火墙本机端口转发来实现SSH跳板登录。继<a href="https://wnma3mz.github.io/hexo_blog/2018/02/11/ssh/">ssh端口转发</a>，根据新的需求衍生出新技巧</p>
 <a id="more"></a>
 <p>继<a href="https://wnma3mz.github.io/hexo_blog/2018/02/11/ssh/">ssh端口转发</a>，根据新的需求衍生出新技巧</p>
-<h3 id="需求">需求：</h3>
-<ol type="1">
+<h3 id="需求："><a href="#需求：" class="headerlink" title="需求："></a>需求：</h3><ol>
 <li>继跳板机中转登录后，觉得需要中转登录还是太麻烦，所以希望能够跟普通ssh一样登录</li>
 </ol>
-<h3 id="工具">工具：</h3>
-<ol type="1">
+<h3 id="工具："><a href="#工具：" class="headerlink" title="工具："></a>工具：</h3><ol>
 <li>防火墙配置（iptables/ufw/firewall）</li>
 <li>ssh</li>
 </ol>
-<h3 id="先验知识">先验知识：</h3>
-<ol type="1">
+<h3 id="先验知识："><a href="#先验知识：" class="headerlink" title="先验知识："></a>先验知识：</h3><ol>
 <li><a href="https://wnma3mz.github.io/hexo_blog/2018/02/11/ssh/">ssh端口转发</a></li>
-<li>防火墙配置
-<ol type="1">
+<li>防火墙配置<ol>
 <li>iptables（Centos7之前自带）</li>
 <li>firewall（Centos7之后自带）</li>
 <li>ufw（Ubuntu自带）</li>
 <li>netsh（Windows自带）</li>
-</ol></li>
 </ol>
-<h3 id="实验">实验：</h3>
-<ol type="1">
+</li>
+</ol>
+<h3 id="实验："><a href="#实验：" class="headerlink" title="实验："></a>实验：</h3><ol>
 <li><p>假设内网机器A，内网机器C，公网机器B。A通过将22端口转发至B的3000端口来进行跳板登录。所以C需要执行如下命令来登录A</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># C登录B</span></span><br><span class="line">ssh userB@ip_B</span><br><span class="line"><span class="comment"># B登录A</span></span><br><span class="line">ssh userA@127.0.0.1 -p 3000</span><br></pre></td></tr></table></figure></li>
 <li><p>通过防火墙本机端口转发，将本机的3000端口转发至3000端口</p>
@@ -311,8 +307,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/hexo_blog/tags/linux/" rel="tag"># linux</a>
               <a href="/hexo_blog/tags/windows/" rel="tag"># windows</a>
+              <a href="/hexo_blog/tags/linux/" rel="tag"># linux</a>
           </div>
 
         
@@ -386,7 +382,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9C%80%E6%B1%82"><span class="nav-text">需求：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7"><span class="nav-text">工具：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%88%E9%AA%8C%E7%9F%A5%E8%AF%86"><span class="nav-text">先验知识：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C"><span class="nav-text">实验：</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9C%80%E6%B1%82%EF%BC%9A"><span class="nav-text">需求：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%EF%BC%9A"><span class="nav-text">工具：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%88%E9%AA%8C%E7%9F%A5%E8%AF%86%EF%BC%9A"><span class="nav-text">先验知识：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%EF%BC%9A"><span class="nav-text">实验：</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
