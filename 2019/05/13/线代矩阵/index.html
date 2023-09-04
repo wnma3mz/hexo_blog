@@ -28,7 +28,7 @@
 <meta property="og:description" content="这篇文章主要介绍了线性代数的矩阵，仅作笔记。">
 <meta property="og:locale">
 <meta property="article:published_time" content="2019-05-13T13:13:22.000Z">
-<meta property="article:modified_time" content="2019-05-13T13:33:24.714Z">
+<meta property="article:modified_time" content="2023-09-04T01:14:21.862Z">
 <meta property="article:author" content="wnma3mz">
 <meta property="article:tag" content="数学">
 <meta name="twitter:card" content="summary">
@@ -90,7 +90,7 @@
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="Toggle navigation bar">
+    <div class="toggle" aria-label="تغییر ناوبری">
       <span class="toggle-line toggle-line-first"></span>
       <span class="toggle-line toggle-line-middle"></span>
       <span class="toggle-line toggle-line-last"></span>
@@ -220,11 +220,17 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建于：2019-05-13 21:13:22 / Modified：21:33:24" itemprop="dateCreated datePublished" datetime="2019-05-13T21:13:22+08:00">2019-05-13</time>
+              <time title="创建于：2019-05-13 21:13:22" itemprop="dateCreated datePublished" datetime="2019-05-13T21:13:22+08:00">2019-05-13</time>
 
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="تغییر یافته：2023-09-04 09:14:21" itemprop="dateModified" datetime="2023-09-04T09:14:21+08:00">2023-09-04</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -249,30 +255,30 @@
         <p>这篇文章主要介绍了线性代数的矩阵，仅作笔记。</p>
 <a id="more"></a>
 <p>方阵：行数列数相同的矩阵</p>
-<p>对称矩阵：$A=A^T$的矩阵，矩阵等于它自己的转置矩阵</p>
-<p>反对称矩阵：$A=-A^T$</p>
-<p>埃尔米特矩阵（Hermitian matrix）：$A=A^*$，矩阵等于它自己的共轭转置矩阵</p>
-<p>斜埃尔米特矩阵：反埃尔米特矩阵，$A = −A^*$</p>
-<p>正定矩阵：$Q(x)=x^T A x$，任意非零向量$x$，若满足$Q(x)&gt;0$，则$A$为正定矩阵</p>
-<p>半正定矩阵：同上，$Q(x) \geq 0$，则A为半正定矩阵</p>
-<p>半负定矩阵：同上，$Q(x) \leq 0$，则A为半负定矩阵</p>
+<p>对称矩阵：<span class="math inline">\(A=A^T\)</span>的矩阵，矩阵等于它自己的转置矩阵</p>
+<p>反对称矩阵：<span class="math inline">\(A=-A^T\)</span></p>
+<p>埃尔米特矩阵（Hermitian matrix）：<span class="math inline">\(A=A^*\)</span>，矩阵等于它自己的共轭转置矩阵</p>
+<p>斜埃尔米特矩阵：反埃尔米特矩阵，<span class="math inline">\(A = −A^*\)</span></p>
+<p>正定矩阵：<span class="math inline">\(Q(x)=x^T A x\)</span>，任意非零向量<span class="math inline">\(x\)</span>，若满足<span class="math inline">\(Q(x)&gt;0\)</span>，则<span class="math inline">\(A\)</span>为正定矩阵</p>
+<p>半正定矩阵：同上，<span class="math inline">\(Q(x) \geq 0\)</span>，则A为半正定矩阵</p>
+<p>半负定矩阵：同上，<span class="math inline">\(Q(x) \leq 0\)</span>，则A为半负定矩阵</p>
 <p>不定矩阵：若A既不是半正定矩阵，也不是半负定矩阵，则A为不定矩阵</p>
 <p>上三角矩阵：矩阵对角线左下方系数全为0</p>
 <p>下三角矩阵：矩阵对角线右上方系数全为0</p>
 <p>三对角矩阵：非零系数在主对角线上，也在比主对角线低和高一行的对角线上。</p>
-<p>单位矩阵：$I$, 矩阵对角线元素为1，其余为0</p>
+<p>单位矩阵：<span class="math inline">\(I\)</span>, 矩阵对角线元素为1，其余为0</p>
 <p>高斯矩阵：首先满足单位矩阵，其次某列系数非0</p>
-<p>逆矩阵：反矩阵，$AB=I$，A是可逆的，B是A的逆矩阵</p>
+<p>逆矩阵：反矩阵，<span class="math inline">\(AB=I\)</span>，A是可逆的，B是A的逆矩阵</p>
 <p>伴随矩阵：<strong>A</strong>关于第<em>i</em>行第<em>j</em>列的<strong>余子式</strong>，是去掉<strong>A</strong>的第<em>i</em>行第<em>j</em>列之后得到的(<em>n</em> − 1)×(<em>n</em> − 1)矩阵的行列式。</p>
-<p>阶梯型矩阵：从上至下，$A_{ii}$之前的元素为0</p>
-<p>酉矩阵：$UU^<em>=U^</em>U=I$，$U^*$为U矩阵的共轭转置，则U为酉矩阵</p>
+<p>阶梯型矩阵：从上至下，<span class="math inline">\(A_{ii}\)</span>之前的元素为0</p>
+<p>酉矩阵：<span class="math inline">\(UU^*=U^*U=I\)</span>，<span class="math inline">\(U^*\)</span>为U矩阵的共轭转置，则U为酉矩阵</p>
 <p>对角矩阵：只有矩阵中的对角线存在值，其他地方为0</p>
 <p>空矩阵：行数或列数为零的矩阵</p>
 <p>分块矩阵：是指一个大矩阵分割成“矩阵的矩阵“</p>
-<p>正交矩阵：满足方阵，$Q^T=Q^{-1}$，$Q^TQ=QQ^T=I$，正交矩阵的行列式为1</p>
+<p>正交矩阵：满足方阵，<span class="math inline">\(Q^T=Q^{-1}\)</span>，<span class="math inline">\(Q^TQ=QQ^T=I\)</span>，正交矩阵的行列式为1</p>
 <p>旋转矩阵：在乘以一个向量的时候改变向量的方向但不改变大小的效果并保持了手性的矩阵</p>
-<p>正规矩阵：$A^{<em>}A=AA^</em>$，$A^*$为$A$的共轭矩阵</p>
-<p>共轭矩阵：$A^*=(\bar{A})^T$，$\bar{A}$表示矩阵的复共轭</p>
+<p>正规矩阵：<span class="math inline">\(A^{*}A=AA^*\)</span>，<span class="math inline">\(A^*\)</span>为<span class="math inline">\(A\)</span>的共轭矩阵</p>
+<p>共轭矩阵：<span class="math inline">\(A^*=(\bar{A})^T\)</span>，<span class="math inline">\(\bar{A}\)</span>表示矩阵的复共轭</p>
 <p>奇异矩阵：满足方阵，矩阵的行列式是否等于0，若等于0，称矩阵A为奇异矩阵</p>
 <p>非奇异矩阵：同上，若不等于0，称矩阵A为非奇异矩阵。</p>
 <p>稀疏矩阵：若数值为0的元素数目远远多于非0元素的数目，并且非0元素分布没有规律时</p>
@@ -507,6 +513,59 @@
   
 
   
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
 
   
 
