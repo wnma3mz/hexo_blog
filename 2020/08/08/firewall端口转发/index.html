@@ -91,7 +91,7 @@
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="Thanh điều hướng chuyển đổi">
+    <div class="toggle" aria-label="Navigationsleiste an/ausschalten">
       <span class="toggle-line toggle-line-first"></span>
       <span class="toggle-line toggle-line-middle"></span>
       <span class="toggle-line toggle-line-last"></span>
@@ -230,7 +230,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="Được thay đổi：2023-04-03 20:35:12" itemprop="dateModified" datetime="2023-04-03T20:35:12+08:00">2023-04-03</time>
+                <time title="Geändert am：2023-04-03 20:35:12" itemprop="dateModified" datetime="2023-04-03T20:35:12+08:00">2023-04-03</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -256,33 +256,39 @@
         <p>如何通过防火墙本机端口转发来实现SSH跳板登录。继<a href="https://wnma3mz.github.io/hexo_blog/2018/02/11/ssh/">ssh端口转发</a>，根据新的需求衍生出新技巧</p>
 <a id="more"></a>
 <p>继<a href="https://wnma3mz.github.io/hexo_blog/2018/02/11/ssh/">ssh端口转发</a>，根据新的需求衍生出新技巧</p>
-<h3 id="需求">需求：</h3>
-<ol type="1">
+<h3 id="需求"><a class="markdownIt-Anchor" href="#需求"></a> 需求：</h3>
+<ol>
 <li>继跳板机中转登录后，觉得需要中转登录还是太麻烦，所以希望能够跟普通ssh一样登录</li>
 </ol>
-<h3 id="工具">工具：</h3>
-<ol type="1">
+<h3 id="工具"><a class="markdownIt-Anchor" href="#工具"></a> 工具：</h3>
+<ol>
 <li>防火墙配置（iptables/ufw/firewall）</li>
 <li>ssh</li>
 </ol>
-<h3 id="先验知识">先验知识：</h3>
-<ol type="1">
+<h3 id="先验知识"><a class="markdownIt-Anchor" href="#先验知识"></a> 先验知识：</h3>
+<ol>
 <li><a href="https://wnma3mz.github.io/hexo_blog/2018/02/11/ssh/">ssh端口转发</a></li>
 <li>防火墙配置
-<ol type="1">
+<ol>
 <li>iptables（Centos7之前自带）</li>
 <li>firewall（Centos7之后自带）</li>
 <li>ufw（Ubuntu自带）</li>
 <li>netsh（Windows自带）</li>
-</ol></li>
 </ol>
-<h3 id="实验">实验：</h3>
-<ol type="1">
-<li><p>假设内网机器A，内网机器C，公网机器B。A通过将22端口转发至B的3000端口来进行跳板登录。所以C需要执行如下命令来登录A</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># C登录B</span></span><br><span class="line">ssh userB@ip_B</span><br><span class="line"><span class="comment"># B登录A</span></span><br><span class="line">ssh userA@127.0.0.1 -p 3000</span><br></pre></td></tr></table></figure></li>
-<li><p>通过防火墙本机端口转发，将本机的3000端口转发至3000端口</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 两者的前提需要在/etc/sysctl.conf中，令net.ipv4.ip_forward = 1</span></span><br><span class="line"><span class="comment"># 使配置生效</span></span><br><span class="line">sysctl -p</span><br><span class="line"></span><br><span class="line"><span class="comment"># iptables</span></span><br><span class="line">iptables -t nat -A PREROUTING -p tcp -i eth0 -d 127.0.0.1 --dport 3000 -j DNAT --to 127.0.0.1:3000</span><br><span class="line"></span><br><span class="line"><span class="comment"># firewall</span></span><br><span class="line"><span class="comment"># 添加端口</span></span><br><span class="line">firewall-cmd --add-port=3000/tcp --permanent</span><br><span class="line"><span class="comment"># 端口转发</span></span><br><span class="line">firewall-cmd --permanent --add-forward-port=port=3000:proto=tcp:toport=3000 --permanent</span><br><span class="line"></span><br><span class="line"><span class="comment"># --permanent 永久生效</span></span><br><span class="line"><span class="comment"># firewall添加后，需要重启</span></span><br><span class="line">firewall-cmd --reload</span><br><span class="line"></span><br><span class="line"><span class="comment"># netsh</span></span><br><span class="line">netsh interface portproxy add v4tov4 listenaddress=127.0.0.1 listenport=2121 connectaddress=ip_B connectport=222</span><br></pre></td></tr></table></figure></li>
-<li><p>以上，即可通过如下命令直接登录A</p>
+</li>
+</ol>
+<h3 id="实验"><a class="markdownIt-Anchor" href="#实验"></a> 实验：</h3>
+<ol>
+<li>
+<p>假设内网机器A，内网机器C，公网机器B。A通过将22端口转发至B的3000端口来进行跳板登录。所以C需要执行如下命令来登录A</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># C登录B</span></span><br><span class="line">ssh userB@ip_B</span><br><span class="line"><span class="comment"># B登录A</span></span><br><span class="line">ssh userA@127.0.0.1 -p 3000</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>通过防火墙本机端口转发，将本机的3000端口转发至3000端口</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 两者的前提需要在/etc/sysctl.conf中，令net.ipv4.ip_forward = 1</span></span><br><span class="line"><span class="comment"># 使配置生效</span></span><br><span class="line">sysctl -p</span><br><span class="line"></span><br><span class="line"><span class="comment"># iptables</span></span><br><span class="line">iptables -t nat -A PREROUTING -p tcp -i eth0 -d 127.0.0.1 --dport 3000 -j DNAT --to 127.0.0.1:3000</span><br><span class="line"></span><br><span class="line"><span class="comment"># firewall</span></span><br><span class="line"><span class="comment"># 添加端口</span></span><br><span class="line">firewall-cmd --add-port=3000/tcp --permanent</span><br><span class="line"><span class="comment"># 端口转发</span></span><br><span class="line">firewall-cmd --permanent --add-forward-port=port=3000:proto=tcp:toport=3000 --permanent</span><br><span class="line"></span><br><span class="line"><span class="comment"># --permanent 永久生效</span></span><br><span class="line"><span class="comment"># firewall添加后，需要重启</span></span><br><span class="line">firewall-cmd --reload</span><br><span class="line"></span><br><span class="line"><span class="comment"># netsh</span></span><br><span class="line">netsh interface portproxy add v4tov4 listenaddress=127.0.0.1 listenport=2121 connectaddress=ip_B connectport=222</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>以上，即可通过如下命令直接登录A</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh userA@ip_B -p 3000</span><br></pre></td></tr></table></figure></li>
 </ol>
 
@@ -386,7 +392,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9C%80%E6%B1%82"><span class="nav-text">需求：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7"><span class="nav-text">工具：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%88%E9%AA%8C%E7%9F%A5%E8%AF%86"><span class="nav-text">先验知识：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C"><span class="nav-text">实验：</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9C%80%E6%B1%82"><span class="nav-text"> 需求：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7"><span class="nav-text"> 工具：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%88%E9%AA%8C%E7%9F%A5%E8%AF%86"><span class="nav-text"> 先验知识：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C"><span class="nav-text"> 实验：</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
