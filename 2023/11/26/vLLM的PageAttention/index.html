@@ -34,9 +34,9 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/vllm_pageattention/annimation3.gif">
 <meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/vllm_pageattention/annimation2.gif">
 <meta property="article:published_time" content="2023-11-26T11:21:32.000Z">
-<meta property="article:modified_time" content="2023-11-26T11:42:48.064Z">
+<meta property="article:modified_time" content="2023-11-26T11:50:57.822Z">
 <meta property="article:author" content="wnma3mz">
-<meta property="article:tag" content="Python">
+<meta property="article:tag" content="cuda">
 <meta property="article:tag" content="Attention">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/vllm_pageattention/annimation0.gif">
@@ -98,7 +98,7 @@
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="Cambiar a barra de navegación">
+    <div class="toggle" aria-label="تشغيل شريط التصفح">
       <span class="toggle-line toggle-line-first"></span>
       <span class="toggle-line toggle-line-middle"></span>
       <span class="toggle-line toggle-line-last"></span>
@@ -230,7 +230,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建于：2023-11-26 19:21:32 / Modificado por：19:42:48" itemprop="dateCreated datePublished" datetime="2023-11-26T19:21:32+08:00">2023-11-26</time>
+              <time title="创建于：2023-11-26 19:21:32 / عُدل：19:50:57" itemprop="dateCreated datePublished" datetime="2023-11-26T19:21:32+08:00">2023-11-26</time>
 
             </span>
             <span class="post-meta-item">
@@ -257,7 +257,8 @@
         <p>介绍 vLLM 的 PageAttention 加速</p>
 <p>https://blog.vllm.ai/2023/06/20/vllm.html</p>
 <a id="more"></a>
-<p>文中 GIF 图来源于 vLLM 博客 ## 动机</p>
+<p>文中 GIF 图来源于 vLLM 博客</p>
+<h2 id="动机">动机</h2>
 <h3 id="定义">定义</h3>
 <p>当前模型生成的机理是，给定 Prompt，输出 Completion。模型在生成时有一个参数 MAX_SEQ_LEN，以控制模型最大能处理的长度（Prompt + Completion）。</p>
 <h3 id="问题">问题</h3>
@@ -268,8 +269,8 @@
 <p>冗余的部分来自于，attention 计算中的空间。因此，借鉴操作系统中虚拟内存和分页的经典思想，将空间打碎，从而实现更高效的空间利用。</p>
 <p>翻译后的原句：PagedAttention 允许在非连续的内存空间中存储连续的键和值。具体来说，PagedAttention 将每个序列的 KV 缓存划分为块，每个块包含固定数量的标记的键和值。在注意力计算过程中，PagedAttention 内核有效地识别并获取这些块。</p>
 <p>kv cache 空间计算：</p>
-<p>2<em>5120</em>40<em>2</em>2048 / (1024 ** 3) GB = 1.5625 GB</p>
-<p>(k+v)<em>hidden_size</em>num_layers<em>FP16 bytes</em>tokens_num</p>
+<p><span class="math inline">\(2 \times 5120 \times 40 \times 2 \times 2048 / (1024 ** 3)\)</span> GB = 1.5625 GB</p>
+<p>(k+v) <span class="math inline">\(\times\)</span> hidden_size <span class="math inline">\(\times\)</span> num_layers <span class="math inline">\(\times\)</span> FP16 bytes <span class="math inline">\(\times\)</span> tokens_num</p>
 <p>对于 13B 模型 2048 的 seq_len 而言，需要申请 1.56 GB 的显存。而如果 Prompt + Completion 的长度只有 1024，那么将浪费 0.78 G 的显存（在没有其他 kv 优化的情况下）</p>
 <p>如下图所示，block 存储了所有可能的 token。在生成时，模型从 block 中进行计算。</p>
 <p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/vllm_pageattention/annimation0.gif" /></p>
@@ -358,7 +359,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/hexo_blog/tags/Python/" rel="tag"># Python</a>
+              <a href="/hexo_blog/tags/cuda/" rel="tag"># cuda</a>
               <a href="/hexo_blog/tags/Attention/" rel="tag"># Attention</a>
           </div>
 
@@ -430,7 +431,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-text">定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%98"><span class="nav-text">问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%8E%E4%B9%88%E5%81%9A"><span class="nav-text">怎么做</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%86%E8%8A%82%E5%AE%9E%E7%8E%B0"><span class="nav-text">细节实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-text">代码实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%83%8C%E6%99%AF%E7%9F%A5%E8%AF%86"><span class="nav-text">背景知识</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#next-step"><span class="nav-text">Next Step</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#system-message-%E9%A2%84%E7%94%9F%E6%88%90-kv-cache"><span class="nav-text">System Message 预生成 kv cache</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AD%96%E7%95%A5%E8%B5%8B%E5%80%BC%E6%9B%B4%E6%96%B0-kv-cache"><span class="nav-text">策略赋值更新 kv cache</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%9C%BA"><span class="nav-text">动机</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-text">定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%98"><span class="nav-text">问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%8E%E4%B9%88%E5%81%9A"><span class="nav-text">怎么做</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%86%E8%8A%82%E5%AE%9E%E7%8E%B0"><span class="nav-text">细节实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-text">代码实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%83%8C%E6%99%AF%E7%9F%A5%E8%AF%86"><span class="nav-text">背景知识</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#next-step"><span class="nav-text">Next Step</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#system-message-%E9%A2%84%E7%94%9F%E6%88%90-kv-cache"><span class="nav-text">System Message 预生成 kv cache</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AD%96%E7%95%A5%E8%B5%8B%E5%80%BC%E6%9B%B4%E6%96%B0-kv-cache"><span class="nav-text">策略赋值更新 kv cache</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -459,7 +460,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/hexo_blog/tags/">
           
-        <span class="site-state-item-count">53</span>
+        <span class="site-state-item-count">54</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
