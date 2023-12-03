@@ -37,7 +37,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/openwrt/1673357519480.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/openwrt/1673357576678.png">
 <meta property="article:published_time" content="2023-01-10T12:21:22.000Z">
-<meta property="article:modified_time" content="2023-04-03T12:37:21.596Z">
+<meta property="article:modified_time" content="2023-12-03T03:04:10.394Z">
 <meta property="article:author" content="wnma3mz">
 <meta property="article:tag" content="OpenWrt">
 <meta property="article:tag" content="路由器">
@@ -101,7 +101,7 @@
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="Показати/приховати меню">
+    <div class="toggle" aria-label="Basculer la barre de navigation">
       <span class="toggle-line toggle-line-first"></span>
       <span class="toggle-line toggle-line-middle"></span>
       <span class="toggle-line toggle-line-last"></span>
@@ -240,7 +240,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="Змінено：2023-04-03 20:37:21" itemprop="dateModified" datetime="2023-04-03T20:37:21+08:00">2023-04-03</time>
+                <time title="Mis à jour le：2023-12-03 11:04:10" itemprop="dateModified" datetime="2023-12-03T11:04:10+08:00">2023-12-03</time>
               </span>
 
           
@@ -270,11 +270,11 @@
 <p>能在线安装的可以直接在线安装。直接从"系统-&gt;软件包"里面找到需要安装的软件。</p>
 <p>但有时候在线安装会由于网络，软件源、软件版本等问题，无法自动安装。因此需要我们手动找到ipk文件进行安装。使用下面的命令进行安装。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">opkg install XXX</span><br></pre></td></tr></table></figure>
-<p>官方软件下载网页：https://downloads.openwrt.org/releases/</p>
+<p>官方软件下载网页：<a target="_blank" rel="noopener" href="https://downloads.openwrt.org/releases/">https://downloads.openwrt.org/releases/</a></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 系统版本可以直接从管理界面的概况中得知，这里是17.01.4</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 内核版本</span></span><br><span class="line">&gt;&gt;&gt; uname -a </span><br><span class="line">Linux dw33d 4.4.194 <span class="comment">#0 Tue Oct 17 17:46:20 2017 mips GNU/Linux</span></span><br><span class="line"><span class="comment"># 查看支持的架构</span></span><br><span class="line">&gt;&gt;&gt; opkg print-architecture</span><br><span class="line">arch all 1</span><br><span class="line">arch noarch 1</span><br><span class="line">arch mips_24kc 10</span><br></pre></td></tr></table></figure>
-<p>对应我这里的第三方包就是：https://downloads.openwrt.org/releases/17.01.4/packages/mips_24kc/packages/</p>
-<p>基础的库：https://downloads.openwrt.org/releases/17.01.4/packages/mips_24kc/base</p>
-<p>luci：https://downloads.openwrt.org/releases/17.01.4/packages/mips_24kc/luci/</p>
+<p>对应我这里的第三方包就是：<a target="_blank" rel="noopener" href="https://downloads.openwrt.org/releases/17.01.4/packages/mips_24kc/packages/">https://downloads.openwrt.org/releases/17.01.4/packages/mips_24kc/packages/</a></p>
+<p>基础的库：<a target="_blank" rel="noopener" href="https://downloads.openwrt.org/releases/17.01.4/packages/mips_24kc/base">https://downloads.openwrt.org/releases/17.01.4/packages/mips_24kc/base</a></p>
+<p>luci：<a target="_blank" rel="noopener" href="https://downloads.openwrt.org/releases/17.01.4/packages/mips_24kc/luci/">https://downloads.openwrt.org/releases/17.01.4/packages/mips_24kc/luci/</a></p>
 <h3 id="tmux">tmux</h3>
 <p>以tmux安装为例，该软件无法直接安装。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 从package里面下载tmux的ipkg文件</span></span><br><span class="line"><span class="comment"># 2. 执行安装命令</span></span><br><span class="line">&gt;&gt;&gt;opkg install tmux_2.3-1_mips_24kc.ipk</span><br><span class="line"><span class="comment"># 3. 报错信息，一些依赖文件没有。所以从base里面找到对应缺失的ipk文件。并进行安装</span></span><br><span class="line">&gt;&gt;&gt;opkg install terminfo_6.0-1_mips_24kc.ipk libncurses_6.0-1_mips_24kc.ipk</span><br><span class="line"><span class="comment"># 4. 此时，再安装tmux。安装成功</span></span><br><span class="line">&gt;&gt;&gt;opkg install tmux_2.3-1_mips_24kc.ipk</span><br><span class="line"></span><br><span class="line"><span class="comment"># 但安装libevent2这个库时，提示当前已安装，并且版本过高，并不会自动降级。所以需要手动卸载原有的软件</span></span><br><span class="line">&gt;&gt;&gt;opkg remove libevent2 --force-depends</span><br><span class="line"><span class="comment"># 卸载失败，提示已有软件依赖该库。所以我们需要强制进行卸载，将依赖软件也进行卸载。加上--force 命令</span></span><br><span class="line"><span class="comment"># 之后再安装低版本的libncurses</span></span><br><span class="line">&gt;&gt;&gt;opkg install libevent2_2.0.22-1_mips_24kc.ipk</span><br><span class="line"></span><br><span class="line"><span class="comment"># 最后再运行tmux，成功</span></span><br></pre></td></tr></table></figure>
@@ -331,7 +331,7 @@
 <li>将路由器WAN接入上一级路由器的LAN口，相当于把该路由器做一个新的入口。</li>
 <li>在WAN中，协议选择<strong>DHCP客户端</strong>或<strong>静态地址</strong>（需要额外配置）</li>
 <li>此时，接入该路由器的设备会独立上一级路由器的设备，即网段不同。</li>
-<li>注：如果此时还需要ipv6，可以参考这篇文件进行配置。https://www.lategege.com/?p=676
+<li>注：如果此时还需要ipv6，可以参考这篇文件进行配置。<a target="_blank" rel="noopener" href="https://www.lategege.com/?p=676">https://www.lategege.com/?p=676</a>
 <ul>
 <li>简单来说，就是需要选择静态IP，并在<strong>WAN口</strong>和<strong>LAN</strong>中的"DHCP服务器"中的IPv6设置中，路由器广告服务，DHCPv6服务，NDP-代理三个均选择中继模式</li>
 <li>并且在终端中 <code>vim /etc/config/dhcp</code>，找到 <code>config dhcp 'wan'</code>对应的选项，加入 <code>option master '1'</code>这一行</li>
