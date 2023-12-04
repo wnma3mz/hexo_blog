@@ -28,7 +28,7 @@
 <meta property="og:description" content="时序数据，使用简单的 HTML 对其进行展示。">
 <meta property="og:locale">
 <meta property="article:published_time" content="2023-12-02T17:09:07.000Z">
-<meta property="article:modified_time" content="2023-12-03T05:15:23.195Z">
+<meta property="article:modified_time" content="2023-12-03T06:35:21.115Z">
 <meta property="article:author" content="wnma3mz">
 <meta property="article:tag" content="树莓派">
 <meta property="article:tag" content="Google Charts">
@@ -91,7 +91,7 @@
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="Toggle navigation bar">
+    <div class="toggle" aria-label="切換導航欄">
       <span class="toggle-line toggle-line-first"></span>
       <span class="toggle-line toggle-line-middle"></span>
       <span class="toggle-line toggle-line-last"></span>
@@ -223,7 +223,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建于：2023-12-03 01:09:07 / Updated at：13:15:23" itemprop="dateCreated datePublished" datetime="2023-12-03T01:09:07+08:00">2023-12-03</time>
+              <time title="创建于：2023-12-03 01:09:07 / 修改時間：14:35:21" itemprop="dateCreated datePublished" datetime="2023-12-03T01:09:07+08:00">2023-12-03</time>
 
             </span>
             <span class="post-meta-item">
@@ -250,7 +250,7 @@
         <p>时序数据，使用简单的 HTML 对其进行展示。</p>
 <a id="more"></a>
 <h2 id="需求描述">需求描述</h2>
-<p>接 <a href="#">Post not found: IOT/树莓派/树莓派连接小米温湿度计</a>, 现在有了若干数据后，希望用一种直观的方式展示出来。</p>
+<p>接 <a href="/hexo_blog/2023/11/26/IOT/%E6%A0%91%E8%8E%93%E6%B4%BE/%E6%A0%91%E8%8E%93%E6%B4%BE%E6%8A%98%E8%85%BE%E8%AE%B0%E5%BD%95/" title="树莓派折腾记录">树莓派折腾记录</a> 中"获取小米温湿度计"的数据, 现在有了若干数据后，希望用一种直观的方式展示出来。</p>
 <h2 id="解决方案">解决方案</h2>
 <p>不想用复杂的前后端代码，希望用最简单的方式画一个折线图即可。所以解决方案是，用 Python 处理日志数据，将其保存到 json 中，最后用 HTML 结合现有的可视化库进行展示。为了有一定的实时性，所以在用 Python 处理日志时，也需要一个定时任务，以定期更新前端页面的数据。</p>
 <p>一种不太优雅的方案，可以用 Python 的画图库，将其导出为图片，然后用 HTML 的 img 标签进行展示。但是这样的话，图片的大小就不好控制了，而且也不太好看。所以还是用 HTML 的可视化库比较好。</p>
@@ -298,7 +298,10 @@
     <a href="/hexo_blog/2023/12/03/Python/Python%E8%87%AA%E5%8A%A8%E5%AF%BC%E5%85%A5%E5%8C%85/" rel="prev" title="Python 自动导入包">
       <i class="fa fa-chevron-left"></i> Python 自动导入包
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2023/12/03/pytorch_cpp_extension/" rel="next" title="用 Cpp 写 PyTorch 的插件">
+      用 Cpp 写 PyTorch 的插件 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -373,7 +376,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/hexo_blog/archives/">
         
-          <span class="site-state-item-count">60</span>
+          <span class="site-state-item-count">61</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -386,7 +389,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/hexo_blog/tags/">
           
-        <span class="site-state-item-count">87</span>
+        <span class="site-state-item-count">82</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
