@@ -28,7 +28,7 @@
 <meta property="og:description" content="想知道自己的生日在圆周率π的第几位出现吗？本文介绍了从思路到实现所遇到的问题，详细分析了如何使用迭代器优化性能，并改用Python语言实现了类似“ 锁”内存等操作。最终，将函数打包成了exe程序，在公众号内提供查询服务，还提供了一个不断更新的生日与位置的查表。">
 <meta property="og:locale">
 <meta property="article:published_time" content="2021-03-18T14:18:23.000Z">
-<meta property="article:modified_time" content="2023-12-03T05:58:40.106Z">
+<meta property="article:modified_time" content="2023-12-07T13:00:11.266Z">
 <meta property="article:author" content="wnma3mz">
 <meta property="article:tag" content="Python">
 <meta property="article:tag" content="微信开发">
@@ -92,7 +92,7 @@
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切換導航欄">
+    <div class="toggle" aria-label="Показать/скрыть меню">
       <span class="toggle-line toggle-line-first"></span>
       <span class="toggle-line toggle-line-middle"></span>
       <span class="toggle-line toggle-line-last"></span>
@@ -231,7 +231,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改時間：2023-12-03 13:58:40" itemprop="dateModified" datetime="2023-12-03T13:58:40+08:00">2023-12-03</time>
+                <time title="Изменено：2023-12-07 21:00:11" itemprop="dateModified" datetime="2023-12-07T21:00:11+08:00">2023-12-07</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -256,10 +256,10 @@
       
         <p>想知道自己的生日在圆周率π的第几位出现吗？本文介绍了从思路到实现所遇到的问题，详细分析了如何使用迭代器优化性能，并改用Python语言实现了类似“ 锁”内存等操作。最终，将函数打包成了exe程序，在公众号内提供查询服务，还提供了一个不断更新的生日与位置的查表。</p>
 <a id="more"></a>
-<p>完整的项目代码均开源: https://github.com/wnma3mz/birthday_in_pi</p>
+<p>完整的项目代码均开源: <a target="_blank" rel="noopener" href="https://github.com/wnma3mz/birthday_in_pi">https://github.com/wnma3mz/birthday_in_pi</a></p>
 <h2 id="想法">想法</h2>
 <p>于我而言，很多项目的出发点都是源于浏览东西时所想，觉得有意思就去实现。比如这次是在即刻上看到北大数院公众号，可以回复生日（如20000101）就可以知道这串数字在Pi的第多少位出现。更详细的例子：已知3.1415926...，那么1415就是出现在第1位（从1开始计数，小数点后开始计数）。但该公众号仅在Pi的2亿位数中进行查找，所以有即友回复，搜不到结果。故想到可以试试更长的数据集是否能够搜到。</p>
-<p><strong>Background Knowledge</strong></p>
+<p><strong>背景知识</strong></p>
 <p>理论上，Pi里面可以查找所有人的电话号码、生日、银行卡密码等等。</p>
 <h2 id="行动">行动</h2>
 <h3 id="数据">数据</h3>
@@ -454,8 +454,8 @@
       <i class="fa fa-chevron-left"></i> 最优化算法学习记录
     </a></div>
       <div class="post-nav-item">
-    <a href="/hexo_blog/2021/07/21/%E6%95%B0%E6%8D%AE%E5%BA%93/Mongodb%E4%BA%8C/" rel="next" title="Mongodb：">
-      Mongodb： <i class="fa fa-chevron-right"></i>
+    <a href="/hexo_blog/2021/07/21/%E6%95%B0%E6%8D%AE%E5%BA%93/Mongodb%E4%BA%8C/" rel="next" title="Mongodb：副本集配置">
+      Mongodb：副本集配置 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
