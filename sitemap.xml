@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://wnma3mz.github.io/2023/11/24/vLLM%E7%9A%84PageAttention/</loc>
+    
+    <lastmod>2023-12-07</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/2018/04/13/%E6%95%B0%E5%AD%A6/%E7%9F%A9%E9%98%B5%E5%88%86%E8%A7%A3%E4%BB%8B%E7%BB%8D%E5%8F%8APython%E5%AE%9E%E7%8E%B0%EF%BC%88QR%E3%80%81SVD%E3%80%81LU%EF%BC%89/</loc>
+    
+    <lastmod>2023-12-07</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://wnma3mz.github.io/2023/11/17/Tracing-Model-Outputs-to-the-Training-Data/</loc>
     
     <lastmod>2023-12-07</lastmod>
@@ -233,13 +247,6 @@
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/2023/11/24/vLLM%E7%9A%84PageAttention/</loc>
-    
-    <lastmod>2023-12-03</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://wnma3mz.github.io/2018/03/17/%E4%BC%98%E5%8C%96pandas%E5%86%85%E5%AD%98%E5%85%A5%E9%97%A8/</loc>
     
     <lastmod>2023-12-03</lastmod>
@@ -304,13 +311,6 @@
   
   <url>
     <loc>https://wnma3mz.github.io/2023/08/19/SPSA%E9%9A%8F%E6%9C%BA%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/</loc>
-    
-    <lastmod>2023-12-03</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/2018/04/13/%E6%95%B0%E5%AD%A6/%E7%9F%A9%E9%98%B5%E5%88%86%E8%A7%A3%E4%BB%8B%E7%BB%8D%E5%8F%8APython%E5%AE%9E%E7%8E%B0%EF%BC%88QR%E3%80%81SVD%E3%80%81LU%EF%BC%89/</loc>
     
     <lastmod>2023-12-03</lastmod>
     
@@ -452,6 +452,34 @@
 
   
   <url>
+    <loc>https://wnma3mz.github.io/tags/Note/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/PyTorch/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/Cpp/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/CUDA/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://wnma3mz.github.io/tags/%E6%95%B0%E5%AD%A6/</loc>
     <lastmod>2023-12-07</lastmod>
     <changefreq>daily</changefreq>
@@ -459,56 +487,7 @@
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/Optimization/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E4%B9%98%E5%AD%90%E6%B3%95/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/Python/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/DroidCam/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/GPU/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/NumPy/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/ICS/</loc>
+    <loc>https://wnma3mz.github.io/tags/%E4%BA%A4%E5%8F%89%E7%86%B5/</loc>
     <lastmod>2023-12-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -529,63 +508,7 @@
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/NLP/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/Interpretability/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/ipv6/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/test/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/Matplotlib/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/ssh/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/pandas/</loc>
+    <loc>https://wnma3mz.github.io/tags/Algorithm/</loc>
     <lastmod>2023-12-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -600,6 +523,90 @@
   
   <url>
     <loc>https://wnma3mz.github.io/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/Hive/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/ipv6/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/Python/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/pandas/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/test/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/NLP/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/Interpretability/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/ICS/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/ssh/</loc>
     <lastmod>2023-12-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -634,48 +641,6 @@
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/PyTorch/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/Cpp/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/CUDA/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/Tmux/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/Algorithm/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/Numpy/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://wnma3mz.github.io/tags/Ubuntu/</loc>
     <lastmod>2023-12-07</lastmod>
     <changefreq>daily</changefreq>
@@ -697,56 +662,49 @@
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/scheduler/</loc>
+    <loc>https://wnma3mz.github.io/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/</loc>
     <lastmod>2023-12-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/</loc>
+    <loc>https://wnma3mz.github.io/tags/Numpy/</loc>
     <lastmod>2023-12-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/Note/</loc>
+    <loc>https://wnma3mz.github.io/tags/Caffe/</loc>
     <lastmod>2023-12-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/%E7%88%AC%E8%99%AB/</loc>
+    <loc>https://wnma3mz.github.io/tags/%E9%A3%8E%E6%A0%BC%E8%BF%81%E7%A7%BB/</loc>
     <lastmod>2023-12-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/%E5%BE%AE%E4%BF%A1/</loc>
+    <loc>https://wnma3mz.github.io/tags/%E6%A0%91%E8%8E%93%E6%B4%BE/</loc>
     <lastmod>2023-12-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/Attention/</loc>
+    <loc>https://wnma3mz.github.io/tags/Google-Charts/</loc>
     <lastmod>2023-12-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/vLLM/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/Hive/</loc>
+    <loc>https://wnma3mz.github.io/tags/Tmux/</loc>
     <lastmod>2023-12-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -781,56 +739,77 @@
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/%E6%A0%91%E8%8E%93%E6%B4%BE/</loc>
+    <loc>https://wnma3mz.github.io/tags/Attention/</loc>
     <lastmod>2023-12-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/Google-Charts/</loc>
+    <loc>https://wnma3mz.github.io/tags/vLLM/</loc>
     <lastmod>2023-12-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/%E4%BA%A4%E5%8F%89%E7%86%B5/</loc>
+    <loc>https://wnma3mz.github.io/tags/Matplotlib/</loc>
     <lastmod>2023-12-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/Caffe/</loc>
+    <loc>https://wnma3mz.github.io/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/</loc>
     <lastmod>2023-12-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/%E9%A3%8E%E6%A0%BC%E8%BF%81%E7%A7%BB/</loc>
+    <loc>https://wnma3mz.github.io/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/</loc>
     <lastmod>2023-12-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/Tailscale/</loc>
+    <loc>https://wnma3mz.github.io/tags/NumPy/</loc>
     <lastmod>2023-12-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/Android/</loc>
+    <loc>https://wnma3mz.github.io/tags/Scripts/</loc>
     <lastmod>2023-12-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/Termux/</loc>
+    <loc>https://wnma3mz.github.io/tags/GPU/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/scheduler/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/%E7%88%AC%E8%99%AB/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/%E5%BE%AE%E4%BF%A1/</loc>
     <lastmod>2023-12-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -851,7 +830,77 @@
   </url>
   
   <url>
+    <loc>https://wnma3mz.github.io/tags/SQL/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/%E7%AC%94%E8%AE%B0/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/NLTK/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/Tailscale/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/Optimization/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E4%B9%98%E5%AD%90%E6%B3%95/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/mongodb/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/Magic-Methods/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://wnma3mz.github.io/tags/Windows/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/tags/Android/</loc>
     <lastmod>2023-12-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -879,42 +928,7 @@
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/ADB/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/GIL/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/%E5%85%83%E7%B1%BB/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://wnma3mz.github.io/tags/importlib/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/%E5%BE%AE%E4%BF%A1%E5%BC%80%E5%8F%91/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/Steaming/</loc>
     <lastmod>2023-12-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -935,49 +949,42 @@
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/Decorators/</loc>
+    <loc>https://wnma3mz.github.io/tags/%E7%9F%A9%E9%98%B5%E5%88%86%E8%A7%A3/</loc>
     <lastmod>2023-12-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/Scripts/</loc>
+    <loc>https://wnma3mz.github.io/tags/ADB/</loc>
     <lastmod>2023-12-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/Magic-Methods/</loc>
+    <loc>https://wnma3mz.github.io/tags/%E5%BE%AE%E4%BF%A1%E5%BC%80%E5%8F%91/</loc>
     <lastmod>2023-12-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/</loc>
+    <loc>https://wnma3mz.github.io/tags/Steaming/</loc>
     <lastmod>2023-12-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/%E7%AC%94%E8%AE%B0/</loc>
+    <loc>https://wnma3mz.github.io/tags/GIL/</loc>
     <lastmod>2023-12-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/NLTK/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/</loc>
+    <loc>https://wnma3mz.github.io/tags/%E5%85%83%E7%B1%BB/</loc>
     <lastmod>2023-12-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -998,28 +1005,21 @@
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/%E7%9F%A9%E9%98%B5%E5%88%86%E8%A7%A3/</loc>
+    <loc>https://wnma3mz.github.io/tags/Termux/</loc>
     <lastmod>2023-12-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/SQL/</loc>
+    <loc>https://wnma3mz.github.io/tags/Decorators/</loc>
     <lastmod>2023-12-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/tags/mongodb/</loc>
+    <loc>https://wnma3mz.github.io/tags/DroidCam/</loc>
     <lastmod>2023-12-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -1028,70 +1028,7 @@
 
   
   <url>
-    <loc>https://wnma3mz.github.io/categories/MachineLearning/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/categories/Raspberry/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/categories/CUDA/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/categories/DeepLearning/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/categories/Note/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/categories/Software/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://wnma3mz.github.io/categories/PaperReading/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/categories/test/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/categories/Visualization/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/categories/Environment/</loc>
     <lastmod>2023-12-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -1105,21 +1042,7 @@
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/categories/NLP/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/categories/Scrapy/</loc>
-    <lastmod>2023-12-07</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://wnma3mz.github.io/categories/Life/</loc>
+    <loc>https://wnma3mz.github.io/categories/DeepLearning/</loc>
     <lastmod>2023-12-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -1133,7 +1056,49 @@
   </url>
   
   <url>
-    <loc>https://wnma3mz.github.io/categories/Android/</loc>
+    <loc>https://wnma3mz.github.io/categories/Software/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/categories/Environment/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/categories/Note/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/categories/test/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/categories/NLP/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/categories/Life/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/categories/Visualization/</loc>
     <lastmod>2023-12-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -1147,7 +1112,42 @@
   </url>
   
   <url>
+    <loc>https://wnma3mz.github.io/categories/CUDA/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/categories/Scrapy/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://wnma3mz.github.io/categories/Database/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/categories/MachineLearning/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/categories/Android/</loc>
+    <lastmod>2023-12-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://wnma3mz.github.io/categories/Raspberry/</loc>
     <lastmod>2023-12-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>

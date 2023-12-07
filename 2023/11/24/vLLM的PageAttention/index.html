@@ -28,13 +28,11 @@
 <meta property="og:description" content="介绍 vLLM 的 PageAttention 加速 博客 论文 代码">
 <meta property="og:locale">
 <meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/vllm_pageattention/annimation0.gif">
-<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/vllm_pageattention/image-2023-11-22_11-48-27.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/vllm_pageattention/image-2023-11-22_11-48-48.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/vllm_pageattention/annimation1.gif">
 <meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/vllm_pageattention/annimation3.gif">
 <meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/vllm_pageattention/annimation2.gif">
 <meta property="article:published_time" content="2023-11-24T08:21:32.000Z">
-<meta property="article:modified_time" content="2023-12-03T05:58:40.079Z">
+<meta property="article:modified_time" content="2023-12-07T14:18:34.672Z">
 <meta property="article:author" content="wnma3mz">
 <meta property="article:tag" content="NLP">
 <meta property="article:tag" content="Attention">
@@ -99,7 +97,7 @@
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="Navigationsleiste an/ausschalten">
+    <div class="toggle" aria-label="Показати/приховати меню">
       <span class="toggle-line toggle-line-first"></span>
       <span class="toggle-line toggle-line-middle"></span>
       <span class="toggle-line toggle-line-last"></span>
@@ -238,7 +236,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="Geändert am：2023-12-03 13:58:40" itemprop="dateModified" datetime="2023-12-03T13:58:40+08:00">2023-12-03</time>
+                <time title="Змінено：2023-12-07 22:18:34" itemprop="dateModified" datetime="2023-12-07T22:18:34+08:00">2023-12-07</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -284,9 +282,9 @@
 <p>如下图所示，block 存储了所有可能的 token。在生成时，模型从 block 中进行计算。</p>
 <p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/vllm_pageattention/annimation0.gif" /></p>
 <p>Attention 计算公式</p>
-<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/vllm_pageattention/image-2023-11-22_11-48-27.png" /></p>
+<p><span class="math display">\[a _ { i j } = \frac { \operatorname { exp } ( q _ { i } ^ { T } k _ { j } / \sqrt { d } ) } { \sum _ { t = 1 } ^ { i } \operatorname { exp } ( q _ { i } ^ { T } k _ { t } / \sqrt { d } ) } , o _ { i } = \sum _ { j = 1 } ^ { i } a _ { i j } v _ { j }\]</span></p>
 <p>PageAttention 计算公式</p>
-<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/vllm_pageattention/image-2023-11-22_11-48-48.png" /></p>
+<p><span class="math display">\[A _ { i j } = \frac { \operatorname { exp } ( q _ { i } ^ { T } K _ { j } / \sqrt { d } ) } { \sum _ { t = 1 } ^ { \lceil i / B \rceil } \operatorname { exp } ( q _ { i } ^ { T } K _ { t } 1 / \sqrt { d } ) } , o _ { i } = \sum _ { j = 1 } ^ { \lceil i / B \rceil } V _ { j } A _ { i j } ^ { T }\]</span></p>
 <p>对于 query (q)，不需要改变，而 k 和 v 转变为 block 的形式。计算步骤如下</p>
 <ol type="1">
 <li>提取对应的 block</li>
@@ -386,8 +384,8 @@
       <i class="fa fa-chevron-left"></i> Tracing Model Outputs to the Training Data
     </a></div>
       <div class="post-nav-item">
-    <a href="/hexo_blog/2023/11/26/%E5%BE%85%E6%95%B4%E7%90%86%E8%84%9A%E6%9C%AC/" rel="next" title="待整理的脚本（持续更新ing）">
-      待整理的脚本（持续更新ing） <i class="fa fa-chevron-right"></i>
+    <a href="/hexo_blog/2023/11/26/IOT/%E6%A0%91%E8%8E%93%E6%B4%BE/%E6%A0%91%E8%8E%93%E6%B4%BE%E6%8E%A7%E5%88%B6%E6%89%8B%E6%9C%BA%E8%87%AA%E5%8A%A8%E6%8B%8D%E7%85%A7/" rel="next" title="树莓派控制手机自动拍照">
+      树莓派控制手机自动拍照 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
