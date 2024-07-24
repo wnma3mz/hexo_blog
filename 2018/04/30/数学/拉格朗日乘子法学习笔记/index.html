@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/hexo_blog/css/main.css">
+
+
+<link rel="stylesheet" href="/hexo_blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wnma3mz.github.io","root":"/hexo_blog/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="本篇文章简单梳理了关于拉格朗日乘子法的相关问题及一些相关概念的介绍。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="拉格朗日乘子法：从函数的求导到不等式约束的求解">
+<meta property="og:url" content="https://wnma3mz.github.io/2018/04/30/%E6%95%B0%E5%AD%A6/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E4%B9%98%E5%AD%90%E6%B3%95%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Wnma&#39;s Blogs">
+<meta property="og:description" content="本篇文章简单梳理了关于拉格朗日乘子法的相关问题及一些相关概念的介绍。">
+<meta property="og:locale">
+<meta property="article:published_time" content="2018-04-30T15:09:35.000Z">
+<meta property="article:modified_time" content="2023-12-03T05:55:51.297Z">
+<meta property="article:author" content="wnma3mz">
+<meta property="article:tag" content="数学">
+<meta property="article:tag" content="Optimization">
+<meta property="article:tag" content="拉格朗日乘子法">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://wnma3mz.github.io/2018/04/30/%E6%95%B0%E5%AD%A6/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E4%B9%98%E5%AD%90%E6%B3%95%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>拉格朗日乘子法：从函数的求导到不等式约束的求解 | Wnma's Blogs</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="تشغيل شريط التصفح">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hexo_blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Wnma's Blogs</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/hexo_blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/hexo_blog/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/hexo_blog/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/hexo_blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-bookmark">
+
+    <a href="https://wnma3mz.github.io/bookmark/index.html" rel="section"><i class="fa fa-bookmark fa-fw"></i>书签</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/2018/04/30/%E6%95%B0%E5%AD%A6/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E4%B9%98%E5%AD%90%E6%B3%95%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
+      <meta itemprop="name" content="wnma3mz">
+      <meta itemprop="description" content="Day Day Up">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wnma's Blogs">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          拉格朗日乘子法：从函数的求导到不等式约束的求解
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建于：2018-04-30 23:09:35" itemprop="dateCreated datePublished" datetime="2018-04-30T23:09:35+08:00">2018-04-30</time>
+
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="عُدل：2023-12-03 13:55:51" itemprop="dateModified" datetime="2023-12-03T13:55:51+08:00">2023-12-03</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/MachineLearning/" itemprop="url" rel="index"><span itemprop="name">MachineLearning</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本篇文章简单梳理了关于拉格朗日乘子法的相关问题及一些相关概念的介绍。</p>
+<a id="more"></a>
+<h3 id="基本概念">基本概念</h3>
+<p>拉格朗日乘子法（Lagrange Multiplier）在某些地方又叫做拉格朗日乘数法。在求解最优化问题中，这个方法是最常用的方法之一。最优化问题往往抽象为某个函数，即求函数的最大值或最小值。求解最大值和最小值的求解可以相互转换（对偶）。对于求解最优化问题分为以下三种情况（难度依此递增）：</p>
+<h3 id="无约束条件">无约束条件</h3>
+<p>一般情况下，只需要对给出的函数进行求导，令其导函数为0的点可能就是极值点，将可能的结果分别代回原函数进行验证即可。</p>
+<p>假设有这样一个函数<span class="math inline">\(f(x)\)</span>，令<span class="math inline">\(g(x)=f^{&#39;}(x)\)</span>，<span class="math inline">\(g(x)=0\)</span>的解有<span class="math inline">\(x_1,x_2,x_3,\cdots\)</span>。求函数<span class="math inline">\(f(x)\)</span>的最优解就只需要分别将<span class="math inline">\(x_1,x_2,x_3,\cdots\)</span>代入<span class="math inline">\(f(x)\)</span>，比较大小，得到最优解<span class="math inline">\(x_i\)</span>。</p>
+<p>从这里开始引出<strong>拉格朗日乘子法</strong></p>
+<h3 id="等式约束条件">等式约束条件</h3>
+<p>设目标函数为<span class="math inline">\(f(x)\)</span>, 约束条件为$h_k(x) $, <span class="math inline">\(k=1,2,\cdots,l\)</span>，即要求<span class="math inline">\(f(x)\)</span>的最优解，但是有<span class="math inline">\(l\)</span>个<span class="math inline">\(h(x)\)</span>等式约束（限制）求解。这里我们定义拉格朗日函数为</p>
+<p><span class="math display">\[
+F(x, \lambda)=f(x)+\sum\limits_{k=1}^{l}\lambda_kh_k(x)
+\]</span></p>
+<p><span class="math inline">\(\lambda_k\)</span>表示约束条件的待定系数。之后解变量的偏导方程，如下:</p>
+<p><span class="math display">\[
+\frac{\partial F}{\partial x_k}=0, \frac{\partial F}{\partial \lambda_k}=0, k=1,2,\cdots, l
+\]</span></p>
+<p>求解得到了<span class="math inline">\(l+1\)</span>个方程，将结果代回原方程验证即可得到解。</p>
+<p>举例：</p>
+<p>给定一个椭圆<span class="math inline">\(\frac{x^2}{a^2}+\frac{y^2}{b^2}+\frac{z^2}{c^2}=1\)</span>，求解<span class="math inline">\(f(x,y,z)=8xyz\)</span>的最大值。</p>
+<p>求解过程如下：</p>
+<ul>
+<li><p>通过拉格朗日乘子法的定义，得到如下方程</p>
+<p><span class="math display">\[
+\begin{array}{l}F(x,y,z,\lambda)&amp;=f(x,y,z)+\lambda\cdot h(x,y,z) \\ &amp;=8xyz+\lambda\cdot(\frac{x^2}{a^2}+\frac{y^2}{b^2}+\frac{z^2}{c^2}-1) \end{array}
+\]</span></p></li>
+<li><p>接下来对<span class="math inline">\(F(x,y,z,\lambda)\)</span>求偏导，分别得到</p>
+<p><span class="math display">\[
+\frac{\partial F(x,y,z,\lambda)}{\partial x}=8yz+\frac{2\lambda x}{a^2}=0
+\]</span></p>
+<p><span class="math display">\[
+\frac{\partial F(x,y,z,\lambda)}{\partial y}=8xz+\frac{2\lambda y}{b^2}=0
+\]</span></p>
+<p><span class="math display">\[
+\frac{\partial F(x,y,z,\lambda)}{\partial z}=8xy+\frac{2\lambda z}{c^2}=0
+\]</span></p>
+<p><span class="math display">\[
+\frac{\partial F(x,y,z,\lambda)}{\partial \lambda}=\frac{x^2}{a^2}+\frac{y^2}{b^2}+\frac{z^2}{c^2}-1=0
+\]</span></p></li>
+<li><p>联立前三个方程可以得到<span class="math inline">\(bx=ay\)</span>和<span class="math inline">\(az=cx\)</span>，代入最后一个方程，解得：</p>
+<p><span class="math display">\[
+x=\frac{\sqrt{3}}{3}a
+\]</span></p>
+<p><span class="math display">\[
+y=\frac{\sqrt{3}}{3}b
+\]</span></p>
+<p><span class="math display">\[
+z=\frac{\sqrt{3}}{3}c
+\]</span></p></li>
+<li><p>最后代入原方程，解得最大体积</p>
+<p><span class="math display">\[
+V_{max}=f(\frac{\sqrt{3}}{3}a,\frac{\sqrt{3}}{3}b,\frac{\sqrt{3}}{3}c)=\frac{8\sqrt{3}}{9}abc
+\]</span></p></li>
+</ul>
+<h3 id="不等式约束条件">不等式约束条件</h3>
+<p>设目标函数为<span class="math inline">\(f(x)\)</span>, 不等式约束条件为<span class="math inline">\(c_i(x)\)</span>,<span class="math inline">\(i=1,2,\cdots,k\)</span>，等式约束条件为$h_j(x) $, <span class="math inline">\(j=1,2,\cdots,l\)</span>，即要求<span class="math inline">\(f(x)\)</span>的最优解，但是有<span class="math inline">\(k\)</span>个<span class="math inline">\(g(x)\)</span>不等式和<span class="math inline">\(l\)</span>个<span class="math inline">\(h(x)\)</span>等式约束（限制）求解。这里我们定义拉格朗日函数为</p>
+<p><span class="math display">\[
+L(x,a,b)=f(x)+\sum\limits^{k}_{i=1}a_ic_i(x)+\sum\limits^{l}_{j=1}b_jh_j(x)
+\]</span></p>
+<p>这里用一个叫做KKT条件的方法，把所有的不等式约束、等式约束和目标函数全部写为一个式子<span class="math inline">\(L(a,b,x)=f(x)+a*c(x)+b*h(x)\)</span>。</p>
+<p>KKT条件是指最优解必须满足以下条件：</p>
+<ul>
+<li><span class="math inline">\(L(a,b,x)\)</span>求<span class="math inline">\(x\)</span>求导为0</li>
+<li><span class="math inline">\(h(x)=0\)</span></li>
+<li><span class="math inline">\(a*c(x)=0\)</span></li>
+</ul>
+<p>这样就可以将不等式约束转换为了等式约束，求<span class="math inline">\(L(a,b,x)\)</span>的偏导等于零即可求得最优参数。</p>
+<p><span class="math display">\[
+\min f(x)\Leftrightarrow \min\limits_x \max\limits_{a,b} L(x,a,b)
+\]</span></p>
+<p>经过对偶变换得：</p>
+<p><span class="math display">\[
+\max\limits_{a,b} \min L(x,a,b)
+\]</span></p>
+<p>因为<span class="math inline">\(c(x)&lt;0\)</span>，所以只有当<span class="math inline">\(a*c(x)=0\)</span>时，<span class="math inline">\(L(x,a,b)\)</span>才能取得最大值。以上就可以使用同等式约束的求解方法进行求解。</p>
+<h3 id="补充部分">补充部分</h3>
+<h4 id="定义不等式约束问题的标准写法">定义不等式约束问题的标准写法</h4>
+<p><span class="math inline">\(f(x), c_i(x),h_j(x)\)</span>是定义在<span class="math inline">\(R^n\)</span>上的连续可微函数，考虑约束最优化问题：</p>
+<p><span class="math inline">\(\min f(x) \quad x\in R^n\)</span></p>
+<p><span class="math inline">\(s.t. c_i(x) \leq 0 \quad i = 1...k\)</span></p>
+<pre><code>$h_j(x)=0 \quad j = 1...l$</code></pre>
+<p>即有<span class="math inline">\(k\)</span>个不等式约束<span class="math inline">\(c_i(x)\)</span>和<span class="math inline">\(l\)</span>个等式约束<span class="math inline">\(h_j(x)\)</span></p>
+<h4 id="拉格朗日函数">拉格朗日函数</h4>
+<p><span class="math inline">\(L(x,\alpha, \beta)=f(x)+\sum^{k}_{i=1}\alpha_ic_i(x)+\sum^{l}_{j=1}\beta_jh_j(x)\)</span></p>
+<p>其中的<span class="math inline">\(\alpha_i\)</span>和<span class="math inline">\(\beta_j\)</span>，称为<strong>拉格朗日乘子</strong>，<span class="math inline">\(\alpha_i \geq 0\)</span></p>
+<h4 id="几何意义">几何意义</h4>
+<p>对于一个二维空间来说，求解最短路径的问题。将维度升高，变为对于多维空间来说，求解最短路径问题。</p>
+<p>比较直观的解释，爬山的目标是到山顶，根据梯度上升（下降）的方法来寻求优解，即爬到山顶。</p>
+<h4 id="对偶概念的简单介绍">对偶概念的简单介绍</h4>
+<p>一对一的一种方式，把一种概念、公理或数学结构转换为另一种概念、公理或数学结构。如果A的对偶是B，那么B的对偶是A。A的对偶有时候是A的本身。</p>
+<p>有界线性泛函数：复杂对象映射到<strong>简单对象</strong>上</p>
+<p>群表示：简单对象具有类似线性结构的<strong>简单结构</strong></p>
+<p>范畴论：映射箭头所构成的集合</p>
+<p>（像集，映射）——&gt;原像集</p>
+<p>对联可以称为一种对偶，上联与下联有对应的关系（相似和取逆）。对偶是有一定要有自然合理的对应关系（或者说能够吹出来的自然合理关系）。</p>
+<p>常见的自然、合理法则首推：相似（包括同构）和取逆（包括互反）</p>
+<p>常见对偶的例子：</p>
+<ol type="1">
+<li>奇数和偶数</li>
+<li>洛必达法则和Stolz 定理（相当于离散洛必达法则）</li>
+<li>Fourier 系数与 Fourier 变换（傅里叶）</li>
+</ol>
+<p>对偶可以理解为，一个问题不好理解转换为另一个简单方式的问题来理解，二者在本质上是相同的。</p>
+<p>比如：某个函数的最大化不方便求解，那么就求这个函数的最小化。</p>
+<p>未完待续……</p>
+<ol type="1">
+<li>罚函数</li>
+<li>广义乘子法</li>
+<li>KKT的求导证明</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>wnma3mz
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wnma3mz.github.io/2018/04/30/%E6%95%B0%E5%AD%A6/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E4%B9%98%E5%AD%90%E6%B3%95%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="拉格朗日乘子法：从函数的求导到不等式约束的求解">https://wnma3mz.github.io/2018/04/30/数学/拉格朗日乘子法学习笔记/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hexo_blog/tags/%E6%95%B0%E5%AD%A6/" rel="tag"># 数学</a>
+              <a href="/hexo_blog/tags/Optimization/" rel="tag"># Optimization</a>
+              <a href="/hexo_blog/tags/%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E4%B9%98%E5%AD%90%E6%B3%95/" rel="tag"># 拉格朗日乘子法</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2018/04/14/%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%AC%94%E8%AE%B0%E2%85%A0/" rel="prev" title="神经网络笔记Ⅰ">
+      <i class="fa fa-chevron-left"></i> 神经网络笔记Ⅰ
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2018/05/05/CUDA/%E8%AE%B0%E8%A2%ABCUDA%E6%8A%98%E8%85%BE%E6%AD%BB%E5%8E%BB%E6%B4%BB%E6%9D%A5%E7%9A%84%E9%82%A3%E5%8D%81%E5%A4%A9/" rel="next" title="记被CUDA折腾死去活来的那十天">
+      记被CUDA折腾死去活来的那十天 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A0%E7%BA%A6%E6%9D%9F%E6%9D%A1%E4%BB%B6"><span class="nav-text">无约束条件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AD%89%E5%BC%8F%E7%BA%A6%E6%9D%9F%E6%9D%A1%E4%BB%B6"><span class="nav-text">等式约束条件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8D%E7%AD%89%E5%BC%8F%E7%BA%A6%E6%9D%9F%E6%9D%A1%E4%BB%B6"><span class="nav-text">不等式约束条件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A5%E5%85%85%E9%83%A8%E5%88%86"><span class="nav-text">补充部分</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E4%B8%8D%E7%AD%89%E5%BC%8F%E7%BA%A6%E6%9D%9F%E9%97%AE%E9%A2%98%E7%9A%84%E6%A0%87%E5%87%86%E5%86%99%E6%B3%95"><span class="nav-text">定义不等式约束问题的标准写法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E5%87%BD%E6%95%B0"><span class="nav-text">拉格朗日函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%87%A0%E4%BD%95%E6%84%8F%E4%B9%89"><span class="nav-text">几何意义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%B9%E5%81%B6%E6%A6%82%E5%BF%B5%E7%9A%84%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D"><span class="nav-text">对偶概念的简单介绍</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="wnma3mz"
+      src="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
+  <p class="site-author-name" itemprop="name">wnma3mz</p>
+  <div class="site-description" itemprop="description">Day Day Up</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/hexo_blog/archives/">
+        
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/hexo_blog/categories/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/hexo_blog/tags/">
+          
+        <span class="site-state-item-count">85</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wnma3mz" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wnma3mz" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wnma3mz@gmail.com" title="E-Mail → mailto:wnma3mz@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wnma3mz</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='99' src="/hexo_blog/lib/canvas-nest/canvas-nest-nomobile.min.js"></script>
+  <script src="/hexo_blog/lib/anime.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/hexo_blog/js/utils.js"></script>
+
+<script src="/hexo_blog/js/motion.js"></script>
+
+
+<script src="/hexo_blog/js/schemes/muse.js"></script>
+
+
+<script src="/hexo_blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/hexo_blog/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

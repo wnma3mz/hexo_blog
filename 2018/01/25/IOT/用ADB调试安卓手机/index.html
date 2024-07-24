@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/hexo_blog/css/main.css">
+
+
+<link rel="stylesheet" href="/hexo_blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wnma3mz.github.io","root":"/hexo_blog/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="使用adb工具实现对安卓手机的调试，包括安装应用、查看运行App、录屏、截图等功能。本文详细介绍了adb工具的安装、配置和使用方法，并列出了一些实用的命令，同时还介绍了无线网调试设备的方法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用ADB调试安卓手机">
+<meta property="og:url" content="https://wnma3mz.github.io/2018/01/25/IOT/%E7%94%A8ADB%E8%B0%83%E8%AF%95%E5%AE%89%E5%8D%93%E6%89%8B%E6%9C%BA/index.html">
+<meta property="og:site_name" content="Wnma&#39;s Blogs">
+<meta property="og:description" content="使用adb工具实现对安卓手机的调试，包括安装应用、查看运行App、录屏、截图等功能。本文详细介绍了adb工具的安装、配置和使用方法，并列出了一些实用的命令，同时还介绍了无线网调试设备的方法。">
+<meta property="og:locale">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/adb/20180125135305187.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/adb/20180125135319543.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/adb/20180125135348748.png">
+<meta property="article:published_time" content="2018-01-25T05:55:11.000Z">
+<meta property="article:modified_time" content="2023-12-03T04:28:37.992Z">
+<meta property="article:author" content="wnma3mz">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="ADB">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/adb/20180125135305187.png">
+
+<link rel="canonical" href="https://wnma3mz.github.io/2018/01/25/IOT/%E7%94%A8ADB%E8%B0%83%E8%AF%95%E5%AE%89%E5%8D%93%E6%89%8B%E6%9C%BA/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>用ADB调试安卓手机 | Wnma's Blogs</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="تشغيل شريط التصفح">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hexo_blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Wnma's Blogs</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/hexo_blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/hexo_blog/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/hexo_blog/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/hexo_blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-bookmark">
+
+    <a href="https://wnma3mz.github.io/bookmark/index.html" rel="section"><i class="fa fa-bookmark fa-fw"></i>书签</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/2018/01/25/IOT/%E7%94%A8ADB%E8%B0%83%E8%AF%95%E5%AE%89%E5%8D%93%E6%89%8B%E6%9C%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
+      <meta itemprop="name" content="wnma3mz">
+      <meta itemprop="description" content="Day Day Up">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wnma's Blogs">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          用ADB调试安卓手机
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建于：2018-01-25 13:55:11" itemprop="dateCreated datePublished" datetime="2018-01-25T13:55:11+08:00">2018-01-25</time>
+
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="عُدل：2023-12-03 12:28:37" itemprop="dateModified" datetime="2023-12-03T12:28:37+08:00">2023-12-03</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>使用adb工具实现对安卓手机的调试，包括安装应用、查看运行App、录屏、截图等功能。本文详细介绍了adb工具的安装、配置和使用方法，并列出了一些实用的命令，同时还介绍了无线网调试设备的方法。</p>
+<a id="more"></a>
+<p>写在开头，一些推荐阅读的博客文章</p>
+<p><a target="_blank" rel="noopener" href="http://blog.csdn.net/fasfaf454/article/details/51438743?locationNum=14">通过adb获取手机信息</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/5980c8c282ef">Android adb你真的会用吗?</a></p>
+<p><a target="_blank" rel="noopener" href="http://blog.csdn.net/qq_15364915/article/details/52369266">ADB调试命令大全</a></p>
+<h3 id="介绍">介绍</h3>
+<p>adb是安卓开发调试工具，接触到这个还是因为微信跳一跳的外挂原因。看文档说明之后得知需要adb工具，进行简单尝试后，发现这玩意还真的是挺好用的。填补了自己用代码控制安卓手机的空缺（之前也玩过按键精灵，但是需要Root权限）。</p>
+<p><a target="_blank" rel="noopener" href="https://developer.android.com/studio/command-line/adb.html?hl=zh-cn"><strong>adb官方说明</strong></a>：</p>
+<p>Android 调试桥 (adb) 是一个通用命令行工具，其允许您与模拟器实例或连接的 Android 设备进行通信。它可为各种设备操作提供便利，如安装和调试应用，并提供对 Unix shell（可用来在模拟器或连接的设备上运行各种命令）的访问。该工具作为一个客户端-服务器程序，包括三个组件：</p>
+<h3 id="安装">安装</h3>
+<p>可参考文章: <a target="_blank" rel="noopener" href="https://www.xda-developers.com/install-adb-windows-macos-linux/">How to Install ADB on Windows, macOS, and Linux</a></p>
+<h4 id="windows">Windows</h4>
+<p>这里我使用的是win10。如果以下操作不能成功配置，可以百度其他的安装教程</p>
+<ol type="1">
+<li><p>下载。<a target="_blank" rel="noopener" href="https://dl.google.com/android/repository/platform-tools-latest-windows.zip">下载链接</a></p></li>
+<li><p>移动目录</p>
+<ol type="1">
+<li>解压压缩包</li>
+<li>移动文件夹你想让它放置的位置</li>
+</ol></li>
+<li><p>环境配置</p>
+<ol type="1">
+<li>添加环境变量，这样可以在cmd或者powershell中直接使用adb</li>
+<li>右键"计算机"-&gt;"属性"-&gt;左边的"高级系统设置"-&gt;"环境变量"&gt;-在上面用户变量中的"Path"进行编辑-&gt;"添加"刚刚放置的文件夹目录，确认保存即可 <img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/adb/20180125135305187.png" /></li>
+<li>这样再打开cmd或者powershell，就可以直接使用adb命令了</li>
+</ol></li>
+</ol>
+<h4 id="linux">Linux</h4>
+<p>Linux系统安装adb工具还是很容易的，我使用的是Ubuntu17.10</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 下载</span></span><br><span class="line">&gt; sudo apt updagte</span><br><span class="line">&gt; sudo apt upgrade</span><br><span class="line">&gt; sudo apt install android-tools-adb</span><br></pre></td></tr></table></figure>
+<h3 id="配置">配置</h3>
+<p>手机需要打开USB调试模式，在实验的时候，市面上流行的大部分安卓手机USB调式模式开关默认关闭。当然如果手机默认开启了USB调试开关，自然可以省去下面一步。这里简单介绍一下如何手动打开USB调试模式开关，手机“设置”—&gt;"关于手机"—&gt;点击"版本号"7次。每个手机开启的方式大同小异，如果有不同，可以百度“xx手机如何开启USB调试”。</p>
+<p>在USB调试开关开启之后，进入USB调试，打开USB调试开关，如下图。</p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/adb/20180125135319543.png" width="300px" /></p>
+<p>之后使用USB数据线连接到电脑。</p>
+<p>连接成功后，手机需要信任电脑。电脑打开cmd/powershell（Windows）或者终端（Linux），输入 <code>adb devices</code>。查看输出。</p>
+<p>如果有输出设备名且无警告，则表示连接成功，否则需要进行下面一步的配置。</p>
+<p><strong>Windows</strong></p>
+<p>首先需要连接手机，确保手机能连接到电脑且打开了USB调试。</p>
+<p>第二步，右键"计算机"-&gt;"属性"-&gt;左边的"设备管理器"-&gt;"便携设备"-&gt;"详细信息"-&gt;"属性"下拉选择"硬件Id"，查看"值"中的内容。</p>
+<p>第三步，进入C盘用户目录下的隐藏文件夹".android"，编辑或者新建文件"adb_usb.ini"，用记事本打开，在里面写上内容。我这里需要写的是"0x2A45"，0x是前缀不需要更改，后面的字符串对应的更改"硬件Id"里面"值"的VID后面的四个字符。保存退出即可</p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/adb/20180125135348748.png" /></p>
+<p>第四步，断开USB连接，重新连接，再输入 <code>adb devices</code>。正常情况下应该会出现设备的成功连接的信息</p>
+<p><strong>Linux</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 先连接手机，输入下面命令，找到关于连接手机的那一行</span></span><br><span class="line">&gt; lsusb</span><br><span class="line"><span class="comment"># 输出形如下面，最后的&quot;Google Inc&quot;表示的是设备名，这里需要找到匹配自己手机的设备，并记录好ID</span></span><br><span class="line">...</span><br><span class="line">Bus 001 Device 017: ID 18d1:d002 Google Inc.</span><br><span class="line">...</span><br><span class="line"><span class="comment"># 在目录/etc/udev/rules.d/下，添加文件70-android.rules(名字貌似无所谓？？？)</span></span><br><span class="line">&gt; sudo vim /etc/udev/rules.d/70-android.rules</span><br><span class="line"><span class="comment"># 写入下面内容，idVendor表示ID冒号前的数字，idProduct表示的是ID冒号后的数字，MODE固定为&quot;0666&quot;，其他不变</span></span><br><span class="line">SUBSYSTEM==<span class="string">&quot;usb&quot;</span>, ATTRS&#123;idVendor&#125;==<span class="string">&quot;18d1&quot;</span>, ATTRS&#123;idProduct&#125;==<span class="string">&quot;d002&quot;</span>,MODE=<span class="string">&quot;0666&quot;</span></span><br><span class="line"><span class="comment"># 保存退出，修改权限</span></span><br><span class="line">&gt; sudo chmod 644   /etc/udev/rules.d/70-android.rules</span><br><span class="line">&gt; sudo chown root. /etc/udev/rules.d/70-android.rules</span><br><span class="line"><span class="comment"># 重启服务</span></span><br><span class="line">&gt; sudo service udev restart</span><br><span class="line">&gt; sudo killall adb</span><br><span class="line"></span><br><span class="line"><span class="comment"># 输入adb devices查看输出，是否有误</span></span><br><span class="line">&gt; adb devices</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="使用">使用</h3>
+<p>详细可参考这篇博客: <a target="_blank" rel="noopener" href="http://blog.csdn.net/qq_15364915/article/details/52369266">ADB调试命令大全</a></p>
+<p>在这里贴出一些我认为比较有意思且实用的功能</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看所有连接设备</span></span><br><span class="line">&gt; adb devices</span><br><span class="line"></span><br><span class="line"><span class="comment"># 进行截图保存在sd卡的根目录下，名字为screen.png</span></span><br><span class="line">&gt; adb shell screencap -p /sdcard/screen.png</span><br><span class="line"><span class="comment"># 将截图发送到本地（当前目录下），也可以发送其他文件</span></span><br><span class="line">&gt; adb pull /sdcard/screen.png</span><br><span class="line"><span class="comment"># 删除本地文件</span></span><br><span class="line">&gt; adb shell rm /sdcard/screen.png</span><br><span class="line"><span class="comment"># 发送电脑里的文件到设备</span></span><br><span class="line">&gt; adb shell push screen.png /sdcard/</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 进入手机的交互环境，操作类似linux终端，exit或者Ctrl+C退出</span></span><br><span class="line">&gt; adb shell</span><br><span class="line"></span><br><span class="line"><span class="comment"># 点击手机屏幕(1000,1000)的位置</span></span><br><span class="line">&gt; adb shell input tap 1000 1000</span><br><span class="line"><span class="comment"># 输入字符串&quot;helloworld&quot;，此处不能直接输入中文，且字符串不能有空格</span></span><br><span class="line">&gt; adb shell input text helloworld</span><br><span class="line"><span class="comment"># 滑动屏幕，从（100, 100)到（1000,1000)，经历10s(也可以当作长按屏幕来使用)</span></span><br><span class="line">&gt; adb shell input swipe 100 100 1000 1000 10</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看当前运行的App, 这里Windows没有grep所以会运行失败，可以进入先进入交互环境再输入下面去掉&quot;adb shell&quot;命令</span></span><br><span class="line">&gt; adb shell dumpsys window | grep mCurrentFocus</span><br><span class="line"><span class="comment"># 或者</span></span><br><span class="line">&gt; adb shell dumpsys activity activities | grep mFocusedActivity</span><br><span class="line"></span><br><span class="line"><span class="comment"># 按下电源键</span></span><br><span class="line">&gt; adb shell input keyevent 26</span><br><span class="line"><span class="comment"># 按下返回键</span></span><br><span class="line">&gt; adb shell input keyevent 4</span><br><span class="line"><span class="comment"># 按下HOME健</span></span><br><span class="line">&gt; adb shell input keyevent 3</span><br><span class="line"><span class="comment"># 点亮屏幕</span></span><br><span class="line">&gt; adb shell input keyevent 224</span><br><span class="line"><span class="comment"># 熄灭屏幕</span></span><br><span class="line">&gt; adb shell input keyevent 223</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看手机安装了哪些App，输出按行输出App的包名</span></span><br><span class="line">&gt; adb shell pm list packages</span><br><span class="line"><span class="comment"># 加&quot;-s&quot;表示只输出系统应用</span></span><br><span class="line"><span class="comment"># 加&quot;-3&quot;表示只输出第三方应用</span></span><br><span class="line"><span class="comment"># 加字符串表示过滤应用名称，当然也可以使用grep</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装apk</span></span><br><span class="line">&gt; adb install &lt;packagename&gt;</span><br><span class="line"><span class="comment"># 卸载apk</span></span><br><span class="line">&gt; adb uninstall &lt;packagename&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 从桌面启动app</span></span><br><span class="line">&gt; adb shell monkey -p &lt;packagename&gt; -c android.intent.category.LAUNCHER 1</span><br><span class="line"><span class="comment"># 关闭app</span></span><br><span class="line">&gt; adb shell am force-stop &lt;packagename&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="使用无线网调试设备">使用无线网调试设备</h3>
+<p>确保手机和电脑在同一局域网内</p>
+<p>如何查看手机的ip，由于每个设备的方法不大相同，在此不进行说明，请读者自行百度。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用USB连接设备，启动手机5555端口</span></span><br><span class="line">&gt; adb tcpip 5555</span><br><span class="line"><span class="comment"># adb连接命令，需要知道手机的ip</span></span><br><span class="line">&gt; adb connect 192.168.1.111</span><br><span class="line"><span class="comment"># 输入如下则表示连接成功</span></span><br><span class="line">connected to 192.168.1.111:5555</span><br><span class="line"><span class="comment"># 这里要注意的是，如果接下来的步骤未断掉数据线，则电脑是连接了两台设备的，进行操作会产生错误，所以可以拔掉数据线或者断开网络或者指定设备运行</span></span><br><span class="line"><span class="comment"># 断开无线网连接</span></span><br><span class="line">&gt; adb disconnect 192.168.1.111</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>wnma3mz
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wnma3mz.github.io/2018/01/25/IOT/%E7%94%A8ADB%E8%B0%83%E8%AF%95%E5%AE%89%E5%8D%93%E6%89%8B%E6%9C%BA/" title="用ADB调试安卓手机">https://wnma3mz.github.io/2018/01/25/IOT/用ADB调试安卓手机/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hexo_blog/tags/Python/" rel="tag"># Python</a>
+              <a href="/hexo_blog/tags/ADB/" rel="tag"># ADB</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2017/11/24/%E6%95%B0%E6%8D%AE%E5%BA%93/Mongodb%E4%BB%8E%E5%AE%89%E8%A3%85%E5%88%B0%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/" rel="prev" title="Mongodb从安装到基本操作">
+      <i class="fa fa-chevron-left"></i> Mongodb从安装到基本操作
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2018/01/30/Python/Python%E8%A3%85%E9%A5%B0%E5%99%A8/" rel="next" title="Python装饰器">
+      Python装饰器 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D"><span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#windows"><span class="nav-text">Windows</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#linux"><span class="nav-text">Linux</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE"><span class="nav-text">配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8"><span class="nav-text">使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%97%A0%E7%BA%BF%E7%BD%91%E8%B0%83%E8%AF%95%E8%AE%BE%E5%A4%87"><span class="nav-text">使用无线网调试设备</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="wnma3mz"
+      src="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
+  <p class="site-author-name" itemprop="name">wnma3mz</p>
+  <div class="site-description" itemprop="description">Day Day Up</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/hexo_blog/archives/">
+        
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/hexo_blog/categories/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/hexo_blog/tags/">
+          
+        <span class="site-state-item-count">85</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wnma3mz" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wnma3mz" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wnma3mz@gmail.com" title="E-Mail → mailto:wnma3mz@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wnma3mz</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='99' src="/hexo_blog/lib/canvas-nest/canvas-nest-nomobile.min.js"></script>
+  <script src="/hexo_blog/lib/anime.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/hexo_blog/js/utils.js"></script>
+
+<script src="/hexo_blog/js/motion.js"></script>
+
+
+<script src="/hexo_blog/js/schemes/muse.js"></script>
+
+
+<script src="/hexo_blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/hexo_blog/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

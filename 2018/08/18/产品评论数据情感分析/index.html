@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/hexo_blog/css/main.css">
+
+
+<link rel="stylesheet" href="/hexo_blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wnma3mz.github.io","root":"/hexo_blog/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="NLP处理问题的框图（知识点）。To Be Continue！">
+<meta property="og:type" content="article">
+<meta property="og:title" content="产品评论数据情感分析：从文本评论预处理到模型构建">
+<meta property="og:url" content="https://wnma3mz.github.io/2018/08/18/%E4%BA%A7%E5%93%81%E8%AF%84%E8%AE%BA%E6%95%B0%E6%8D%AE%E6%83%85%E6%84%9F%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="Wnma&#39;s Blogs">
+<meta property="og:description" content="NLP处理问题的框图（知识点）。To Be Continue！">
+<meta property="og:locale">
+<meta property="article:published_time" content="2018-08-18T14:28:12.000Z">
+<meta property="article:modified_time" content="2023-12-07T12:53:53.403Z">
+<meta property="article:author" content="wnma3mz">
+<meta property="article:tag" content="数据分析">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://wnma3mz.github.io/2018/08/18/%E4%BA%A7%E5%93%81%E8%AF%84%E8%AE%BA%E6%95%B0%E6%8D%AE%E6%83%85%E6%84%9F%E5%88%86%E6%9E%90/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>产品评论数据情感分析：从文本评论预处理到模型构建 | Wnma's Blogs</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="تشغيل شريط التصفح">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hexo_blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Wnma's Blogs</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/hexo_blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/hexo_blog/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/hexo_blog/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/hexo_blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-bookmark">
+
+    <a href="https://wnma3mz.github.io/bookmark/index.html" rel="section"><i class="fa fa-bookmark fa-fw"></i>书签</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/2018/08/18/%E4%BA%A7%E5%93%81%E8%AF%84%E8%AE%BA%E6%95%B0%E6%8D%AE%E6%83%85%E6%84%9F%E5%88%86%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
+      <meta itemprop="name" content="wnma3mz">
+      <meta itemprop="description" content="Day Day Up">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wnma's Blogs">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          产品评论数据情感分析：从文本评论预处理到模型构建
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建于：2018-08-18 22:28:12" itemprop="dateCreated datePublished" datetime="2018-08-18T22:28:12+08:00">2018-08-18</time>
+
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="عُدل：2023-12-07 20:53:53" itemprop="dateModified" datetime="2023-12-07T20:53:53+08:00">2023-12-07</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/NLP/" itemprop="url" rel="index"><span itemprop="name">NLP</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>NLP处理问题的框图（知识点）。To Be Continue！</p>
+<a id="more"></a>
+<h1 id="产品评论数据情感分析">产品评论数据情感分析</h1>
+<h2 id="数据获取">数据获取</h2>
+<h2 id="文本评论预处理">文本评论预处理</h2>
+<h4 id="编码问题可选">编码问题（可选）</h4>
+<h4 id="文本去重">文本去重</h4>
+<h6 id="基本解释">基本解释</h6>
+<p>大量重复且无实际意义的数据，需要删除</p>
+<h6 id="算法">算法</h6>
+<p>编辑距离去重 计算两条语料的编辑距离，与阈值（提前设定好的一个值）进行判断，小于阈值就进行去重 优点：有效去除了接近重复或完全重复的数据 缺点：错删语义相近的语料，两句话虽然相似但并不需要删除。由于阈值设定的原因可能会错删。 Simhash算法去重 k-shingle算法(用的不多) Minhash算法</p>
+<h6 id="选用的方法">选用的方法</h6>
+<p>最简单粗暴：完全重复的语料进行剔除。见 <code>programmer_2</code></p>
+<h4 id="机械压缩去词">机械压缩去词</h4>
+<h6 id="基本解释-1">基本解释</h6>
+<p>经过上面的处理之后，还有这样一部分数据并没有去除。如"好的好的好的好的好的好的好的好的好的"# 我们称之为连续重复语料，最常见的较长的无意义语料。</p>
+<h6 id="处理方法">处理方法</h6>
+<p>在某些情况下，重复词带有一定的情感倾向，如果直接进行处理，会影响情感倾向的判断。 所以这里需要对语料进行机械压缩去词处理，去除一些连续累赘的表达（不影响情感）。比如上面的句子，压缩为"好的" 一般情况下，这种词汇常出现在开头或者结尾。语料中间的重复词汇可能具有实际意义比如"滔滔不绝"中的滔滔是具有实际意义的。因此只对开头与结尾的连续重复词进行操作。</p>
+<h6 id="设定规则">设定规则</h6>
+<p>考虑因素：词法结构、文字表达特点 七个规则</p>
+<h4 id="短句删除">短句删除</h4>
+<h6 id="字数越少表达的意思就少所以需要过滤掉过短的评论文本数据">字数越少表达的意思就少，所以需要过滤掉过短的评论文本数据。</h6>
+<h2 id="文本评论分词">文本评论分词</h2>
+<h4 id="分词介绍">分词介绍</h4>
+<h6 id="python库jieba">python库：jieba</h6>
+<h6 id="引入停用词">引入停用词</h6>
+<h6 id="特征处理">特征处理</h6>
+<h6 id="中文分词方法">中文分词方法</h6>
+<p>基于规则的分词方法 基于统计的分词方法 基于语义的分词方法 基于理解的分词方法</p>
+<h2 id="模型构建">模型构建</h2>
+<h4 id="情感倾向性模型">情感倾向性模型</h4>
+<h6 id="训练生成词向量">训练生成词向量</h6>
+<p>One-hot# Representation Distributed# Representation word2vec</p>
+<h6 id="人工标注与映射">人工标注与映射</h6>
+<p>snownlp</p>
+<h6 id="训练模型">训练模型</h6>
+<p>栈式自编码网络 基本介绍</p>
+<h4 id="语义网络分析">语义网络分析</h4>
+<h6 id="语义网络">语义网络</h6>
+<p>介绍 步骤 优势</p>
+<h4 id="模型选择">模型选择</h4>
+<h6 id="lda模型的主题分析">LDA模型的主题分析</h6>
+<p>模型介绍 Bag Of Words（BOW，词袋模型） 模型估计 实现过程 拓展：ILDA</p>
+<h6 id="vsm与tf-idf">VSM与TF-IDF</h6>
+<h6 id="svd与lsa">SVD与LSA</h6>
+<h6 id="plsa与lda">PLSA与LDA</h6>
+<h4 id="构建模型">构建模型</h4>
+<h6 id="svm-rbf-pca">SVM (RBF) + PCA</h6>
+<h6 id="subtopic">Subtopic</h6>
+<h2 id="模型评价">模型评价</h2>
+<h4 id="应用层次分析法">应用层次分析法</h4>
+<h4 id="模糊综合评价">模糊综合评价</h4>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>wnma3mz
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wnma3mz.github.io/2018/08/18/%E4%BA%A7%E5%93%81%E8%AF%84%E8%AE%BA%E6%95%B0%E6%8D%AE%E6%83%85%E6%84%9F%E5%88%86%E6%9E%90/" title="产品评论数据情感分析：从文本评论预处理到模型构建">https://wnma3mz.github.io/2018/08/18/产品评论数据情感分析/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hexo_blog/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag"># 数据分析</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2018/08/05/%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/NLTK%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0%E2%85%A2/" rel="prev" title="NLTK阅读笔记Ⅲ">
+      <i class="fa fa-chevron-left"></i> NLTK阅读笔记Ⅲ
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2018/08/20/%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%AC%94%E8%AE%B0%E2%85%A1/" rel="next" title="神经网络笔记Ⅱ">
+      神经网络笔记Ⅱ <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%A7%E5%93%81%E8%AF%84%E8%AE%BA%E6%95%B0%E6%8D%AE%E6%83%85%E6%84%9F%E5%88%86%E6%9E%90"><span class="nav-text">产品评论数据情感分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E8%8E%B7%E5%8F%96"><span class="nav-text">数据获取</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E6%9C%AC%E8%AF%84%E8%AE%BA%E9%A2%84%E5%A4%84%E7%90%86"><span class="nav-text">文本评论预处理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%96%E7%A0%81%E9%97%AE%E9%A2%98%E5%8F%AF%E9%80%89"><span class="nav-text">编码问题（可选）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%87%E6%9C%AC%E5%8E%BB%E9%87%8D"><span class="nav-text">文本去重</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E8%A7%A3%E9%87%8A"><span class="nav-text">基本解释</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E7%AE%97%E6%B3%95"><span class="nav-text">算法</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E9%80%89%E7%94%A8%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-text">选用的方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%BA%E6%A2%B0%E5%8E%8B%E7%BC%A9%E5%8E%BB%E8%AF%8D"><span class="nav-text">机械压缩去词</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E8%A7%A3%E9%87%8A-1"><span class="nav-text">基本解释</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E6%96%B9%E6%B3%95"><span class="nav-text">处理方法</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E8%AE%BE%E5%AE%9A%E8%A7%84%E5%88%99"><span class="nav-text">设定规则</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%9F%AD%E5%8F%A5%E5%88%A0%E9%99%A4"><span class="nav-text">短句删除</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%AD%97%E6%95%B0%E8%B6%8A%E5%B0%91%E8%A1%A8%E8%BE%BE%E7%9A%84%E6%84%8F%E6%80%9D%E5%B0%B1%E5%B0%91%E6%89%80%E4%BB%A5%E9%9C%80%E8%A6%81%E8%BF%87%E6%BB%A4%E6%8E%89%E8%BF%87%E7%9F%AD%E7%9A%84%E8%AF%84%E8%AE%BA%E6%96%87%E6%9C%AC%E6%95%B0%E6%8D%AE"><span class="nav-text">字数越少表达的意思就少，所以需要过滤掉过短的评论文本数据。</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E6%9C%AC%E8%AF%84%E8%AE%BA%E5%88%86%E8%AF%8D"><span class="nav-text">文本评论分词</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E8%AF%8D%E4%BB%8B%E7%BB%8D"><span class="nav-text">分词介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#python%E5%BA%93jieba"><span class="nav-text">python库：jieba</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%BC%95%E5%85%A5%E5%81%9C%E7%94%A8%E8%AF%8D"><span class="nav-text">引入停用词</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E7%89%B9%E5%BE%81%E5%A4%84%E7%90%86"><span class="nav-text">特征处理</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E4%B8%AD%E6%96%87%E5%88%86%E8%AF%8D%E6%96%B9%E6%B3%95"><span class="nav-text">中文分词方法</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E6%9E%84%E5%BB%BA"><span class="nav-text">模型构建</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%83%85%E6%84%9F%E5%80%BE%E5%90%91%E6%80%A7%E6%A8%A1%E5%9E%8B"><span class="nav-text">情感倾向性模型</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83%E7%94%9F%E6%88%90%E8%AF%8D%E5%90%91%E9%87%8F"><span class="nav-text">训练生成词向量</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E4%BA%BA%E5%B7%A5%E6%A0%87%E6%B3%A8%E4%B8%8E%E6%98%A0%E5%B0%84"><span class="nav-text">人工标注与映射</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B"><span class="nav-text">训练模型</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%AD%E4%B9%89%E7%BD%91%E7%BB%9C%E5%88%86%E6%9E%90"><span class="nav-text">语义网络分析</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E8%AF%AD%E4%B9%89%E7%BD%91%E7%BB%9C"><span class="nav-text">语义网络</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E9%80%89%E6%8B%A9"><span class="nav-text">模型选择</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#lda%E6%A8%A1%E5%9E%8B%E7%9A%84%E4%B8%BB%E9%A2%98%E5%88%86%E6%9E%90"><span class="nav-text">LDA模型的主题分析</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#vsm%E4%B8%8Etf-idf"><span class="nav-text">VSM与TF-IDF</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#svd%E4%B8%8Elsa"><span class="nav-text">SVD与LSA</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#plsa%E4%B8%8Elda"><span class="nav-text">PLSA与LDA</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA%E6%A8%A1%E5%9E%8B"><span class="nav-text">构建模型</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#svm-rbf-pca"><span class="nav-text">SVM (RBF) + PCA</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#subtopic"><span class="nav-text">Subtopic</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BB%B7"><span class="nav-text">模型评价</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%B1%82%E6%AC%A1%E5%88%86%E6%9E%90%E6%B3%95"><span class="nav-text">应用层次分析法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A8%A1%E7%B3%8A%E7%BB%BC%E5%90%88%E8%AF%84%E4%BB%B7"><span class="nav-text">模糊综合评价</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="wnma3mz"
+      src="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
+  <p class="site-author-name" itemprop="name">wnma3mz</p>
+  <div class="site-description" itemprop="description">Day Day Up</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/hexo_blog/archives/">
+        
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/hexo_blog/categories/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/hexo_blog/tags/">
+          
+        <span class="site-state-item-count">85</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wnma3mz" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wnma3mz" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wnma3mz@gmail.com" title="E-Mail → mailto:wnma3mz@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wnma3mz</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='99' src="/hexo_blog/lib/canvas-nest/canvas-nest-nomobile.min.js"></script>
+  <script src="/hexo_blog/lib/anime.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/hexo_blog/js/utils.js"></script>
+
+<script src="/hexo_blog/js/motion.js"></script>
+
+
+<script src="/hexo_blog/js/schemes/muse.js"></script>
+
+
+<script src="/hexo_blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/hexo_blog/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

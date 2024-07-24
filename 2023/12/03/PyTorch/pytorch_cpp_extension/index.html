@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/hexo_blog/css/main.css">
+
+
+<link rel="stylesheet" href="/hexo_blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wnma3mz.github.io","root":"/hexo_blog/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="从零开始，用 Cpp 写 PyTorch 的插件，包括 CPU 和 GPU 的版本。 代码">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用 Cpp 写 PyTorch 的插件">
+<meta property="og:url" content="https://wnma3mz.github.io/2023/12/03/PyTorch/pytorch_cpp_extension/index.html">
+<meta property="og:site_name" content="Wnma&#39;s Blogs">
+<meta property="og:description" content="从零开始，用 Cpp 写 PyTorch 的插件，包括 CPU 和 GPU 的版本。 代码">
+<meta property="og:locale">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/pytorch_cuda_ext/setup-2d0f22ecd2e9b7c84af56792d14ba18a.gif?raw=true">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/pytorch_cuda_ext/block_matrix.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/pytorch_cuda_ext/tmm-59dd890f48435e692c47919d0df4a5e6.gif">
+<meta property="article:published_time" content="2023-12-03T11:42:25.000Z">
+<meta property="article:modified_time" content="2023-12-20T12:41:36.896Z">
+<meta property="article:author" content="wnma3mz">
+<meta property="article:tag" content="PyTorch">
+<meta property="article:tag" content="CUDA">
+<meta property="article:tag" content="Cpp">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/pytorch_cuda_ext/setup-2d0f22ecd2e9b7c84af56792d14ba18a.gif?raw=true">
+
+<link rel="canonical" href="https://wnma3mz.github.io/2023/12/03/PyTorch/pytorch_cpp_extension/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>用 Cpp 写 PyTorch 的插件 | Wnma's Blogs</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="تشغيل شريط التصفح">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hexo_blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Wnma's Blogs</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/hexo_blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/hexo_blog/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/hexo_blog/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/hexo_blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-bookmark">
+
+    <a href="https://wnma3mz.github.io/bookmark/index.html" rel="section"><i class="fa fa-bookmark fa-fw"></i>书签</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/2023/12/03/PyTorch/pytorch_cpp_extension/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
+      <meta itemprop="name" content="wnma3mz">
+      <meta itemprop="description" content="Day Day Up">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wnma's Blogs">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          用 Cpp 写 PyTorch 的插件
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建于：2023-12-03 19:42:25" itemprop="dateCreated datePublished" datetime="2023-12-03T19:42:25+08:00">2023-12-03</time>
+
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="عُدل：2023-12-20 20:41:36" itemprop="dateModified" datetime="2023-12-20T20:41:36+08:00">2023-12-20</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/DeepLearning/" itemprop="url" rel="index"><span itemprop="name">DeepLearning</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>从零开始，用 Cpp 写 PyTorch 的插件，包括 CPU 和 GPU 的版本。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/wnma3mz/pytorch_cuda_extension">代码</a></p>
+<a id="more"></a>
+<h2 id="为什么">为什么</h2>
+<p>一般来说，在原生功能不能满足需求的时候，插件可以作为补充。比如，PyTorch 的 <code>torch.nn.functional</code> 中没有 <code>softmax</code> 函数，但是 <code>torch.nn</code> 中有，所以可以用 <code>torch.nn.functional.softmax</code> 来代替。但是，如果要用 <code>softmax</code> 的导数，就需要用到 <code>softmax</code> 的原始定义，这个时候就需要自己写插件了。</p>
+<p>如果是比较简单的需求，则可以直接用 Python 完成。然而，当对性能要求较高时，往往会使用 Cpp 来写插件，最后甚至会优化为 CUDA 代码。</p>
+<h2 id="怎么写">怎么写</h2>
+<p>从例子出发，一步步来写。假设要实现一个最简单的 Attention 模块，输入为 <span class="math inline">\(q,k,v \in \mathbb{R}^{M \times N}\)</span>，输出为 <span class="math inline">\(out \in \mathbb{R}^{M \times N}\)</span>（不考虑 Batch Size 以及 Head 数量的情况）。Attention 模块的计算公式为：</p>
+<p><span class="math display">\[
+out = \text{softmax}(qk^T)v
+\]</span></p>
+<p>只实现 <code>forward</code> 函数，不实现 <code>backward</code> 函数。</p>
+<h3 id="cpu-版本">CPU 版本</h3>
+<p>类似于写 Python 的库，创建一个文件夹，目录结构如下所示：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">attention</span><br><span class="line">├── attention.cpp</span><br><span class="line">├── setup.py</span><br><span class="line">└── __init__.py</span><br></pre></td></tr></table></figure>
+<h4 id="python-部分">Python 部分</h4>
+<p>核心代码在 <code>attention.cpp</code> 中 ，首先在 <code>setup.py</code> 中添加如下代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> setuptools <span class="keyword">import</span> setup</span><br><span class="line"><span class="keyword">from</span> torch.utils.cpp_extension <span class="keyword">import</span> BuildExtension, CppExtension</span><br><span class="line"></span><br><span class="line">setup(</span><br><span class="line">    name=<span class="string">&#x27;attention&#x27;</span>,</span><br><span class="line">    ext_modules=[</span><br><span class="line">        CppExtension(<span class="string">&#x27;attention&#x27;</span>, [<span class="string">&#x27;attention.cpp&#x27;</span>]),</span><br><span class="line">    ],</span><br><span class="line">    cmdclass=&#123;</span><br><span class="line">        <span class="string">&#x27;build_ext&#x27;</span>: BuildExtension</span><br><span class="line">    &#125;)</span><br></pre></td></tr></table></figure>
+<p>这样，就可以用 <code>python setup.py install</code> 来安装插件了。或者用 <code>pip install -e attention</code> 以便于快速调试</p>
+<p>在 <code>__init__.py</code> 中导入 <code>attention</code> 模块，以在 Python 中调用 <code>forward</code> 函数，直接计算 attention。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> .attention <span class="keyword">import</span> forward</span><br></pre></td></tr></table></figure>
+<h4 id="cpp-部分">Cpp 部分</h4>
+<p>接下来，我们需要在 <code>attention.cpp</code> 中实现 <code>forward</code> 函数，为进行区分，这里使用这个函数名称 <code>attention_forward</code> ，这个函数的输入是 q、k、v 三个 <code>Tensor</code>，输出是 <code>torch::Tensor</code>。而具体的计算步骤可以拆解为三个步骤：</p>
+<ol type="1">
+<li>矩阵的乘法</li>
+<li>softmax</li>
+<li>矩阵的乘法</li>
+</ol>
+<p>使用 <code>PYBIND11_MODULE</code>把 <code>attention_forward</code>函数暴露出去，绑定到 <code>forward</code>上，这样就能用 <code>forward</code>函数来调用 <code>attention_forward</code>。整合后的完整代码如下，</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;torch/extension.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 参数：queries(Q)，keys(K)，values(V)</span></span><br><span class="line"><span class="comment">// 返回：方便起见，返回一个 vector，实际上只有一个元素，便于后续扩展</span></span><br><span class="line"><span class="function"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;torch::Tensor&gt; <span class="title">attention_forward</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    torch::Tensor&amp; q,</span></span></span><br><span class="line"><span class="function"><span class="params">    torch::Tensor&amp; k,</span></span></span><br><span class="line"><span class="function"><span class="params">    torch::Tensor&amp; v)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    torch::Tensor scores = torch::matmul(q, k.transpose(<span class="number">0</span>, <span class="number">1</span>));</span><br><span class="line">    scores = torch::softmax(scores, <span class="number">1</span>);</span><br><span class="line">    torch::Tensor attention = torch::matmul(scores, v);</span><br><span class="line">    <span class="keyword">return</span> &#123;attention&#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) &#123;</span><br><span class="line">    m.def(<span class="string">&quot;forward&quot;</span>, &amp;attention_forward, <span class="string">&quot;Attention forward (CPU)&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="测试">测试</h4>
+<p>用 Python 版本的实现来测试 Cpp 版本的实现是否正确，测试代码如下，</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> attention</span><br><span class="line"><span class="keyword">import</span> timeit</span><br><span class="line"></span><br><span class="line">torch.manual_seed(<span class="number">42</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">py_attention</span>(<span class="params">q, k, v</span>):</span></span><br><span class="line">    <span class="keyword">return</span> torch.softmax(q @ k.T, dim=<span class="number">1</span>) @ v</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">check_forward</span>(<span class="params">q, k, v</span>):</span></span><br><span class="line">    baseline_values = py_attention(q, k, v)</span><br><span class="line">    cpp_values = attention.forward(q, k, v)[-<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">    print(<span class="string">&quot;base o&quot;</span>, baseline_values)</span><br><span class="line">    print(<span class="string">&quot;cpp  o&quot;</span>, cpp_values)</span><br><span class="line">    print(torch.<span class="built_in">all</span>(torch.isclose(baseline_values, cpp_values)))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">compare_time</span>(<span class="params">q, k, v, loop=<span class="number">100</span></span>):</span></span><br><span class="line">    print(<span class="string">&quot;py&quot;</span>, timeit.timeit(<span class="keyword">lambda</span>: py_attention(q, k, v), number=loop))</span><br><span class="line">    print(<span class="string">&quot;cpp&quot;</span>, timeit.timeit(<span class="keyword">lambda</span>: attention.forward(q, k, v), number=loop))</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    m, n = <span class="number">2</span>, <span class="number">4</span></span><br><span class="line">    device = <span class="string">&quot;cuda&quot;</span> <span class="keyword">if</span> torch.cuda.is_available() <span class="keyword">else</span> <span class="string">&quot;cpu&quot;</span></span><br><span class="line">    q, k, v = torch.rand(size=(m, n), device=device), torch.rand(size=(m, n), device=device), torch.rand(size=(m, n), device=device)</span><br><span class="line">    print(<span class="string">&quot;q&quot;</span>, q)</span><br><span class="line">    print(<span class="string">&quot;k&quot;</span>, k)</span><br><span class="line">    print(<span class="string">&quot;v&quot;</span>, v)</span><br><span class="line">    print(<span class="string">&quot;=&quot;</span>*<span class="number">20</span>)</span><br><span class="line">    check_forward(q, k, v)</span><br><span class="line">    compare_time(q, k, v)</span><br></pre></td></tr></table></figure>
+<p>测试通过后，可以再使用 <code>compare_time</code> 函数对比一下二者的速度。理论上，二者的速度是相差无几的。因为均用的是 PyTorch 的矩阵乘法和 softmax 函数。</p>
+<p>但是，如果需要进行更进一步的优化技巧，那么就需要自己实现矩阵乘法和 softmax 函数了。这里，我们只实现最简单的矩阵乘法和 softmax 函数，然后再对比一下二者的速度。</p>
+<h4 id="矩阵乘法">矩阵乘法</h4>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">torch::Tensor <span class="title">my_matmul</span><span class="params">(<span class="keyword">const</span> torch::Tensor &amp;a, <span class="keyword">const</span> torch::Tensor &amp;b)</span> </span>&#123;</span><br><span class="line">    TORCH_CHECK(a.dim() == <span class="number">2</span> &amp;&amp; b.dim() == <span class="number">2</span>, <span class="string">&quot;Input tensors must be 2-dimensional&quot;</span>);</span><br><span class="line">    TORCH_CHECK(a.size(<span class="number">1</span>) == b.size(<span class="number">0</span>), <span class="string">&quot;Dimensions mismatch&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">auto</span> m = a.size(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">auto</span> n = b.size(<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">auto</span> p = a.size(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    torch::Tensor result = torch::zeros(&#123;m, n&#125;, torch::dtype(torch::kFloat32));</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; m; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n; j++) &#123;</span><br><span class="line">            <span class="keyword">float</span> sum = <span class="number">0.0</span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; p; k++) &#123;</span><br><span class="line">                sum += a[i][k].item&lt;<span class="keyword">float</span>&gt;() * b[k][j].item&lt;<span class="keyword">float</span>&gt;();</span><br><span class="line">            &#125;</span><br><span class="line">            result[i][j] = sum;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="softmax">softmax</h4>
+<p>由于 <code>softmax</code>函数比较特殊，后续会结合算子融合一起优化，所以简单的对其进行展开。用 <code>torch::exp</code>和 <code>torch::sum</code>实现了一遍，为了方便也可以直接使用 <code>torch::softmax(scores, 1)</code></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">torch::Tensor <span class="title">my_softmax</span><span class="params">(<span class="keyword">const</span> torch::Tensor&amp; scores)</span> </span>&#123;</span><br><span class="line">    torch::Tensor exponents = torch::<span class="built_in">exp</span>(scores);</span><br><span class="line">    torch::Tensor sum = torch::sum(exponents, <span class="number">1</span>, <span class="literal">true</span>);</span><br><span class="line">    <span class="keyword">return</span> exponents / sum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但把这两个函数替换到 <code>attention_forward</code>函数中后，再次运行 <code>compare_time</code>函数，发现手写的 Cpp 版本的实现要比 Python 版本的实现慢。为什么？因为，当前只是简单的实现了矩阵乘法和 softmax，而 PyTorch 中的矩阵乘法和 softmax 都是经过优化的，所以速度会更快。</p>
+<p>另外，使用原生的矩阵乘法和 softmax 函数，可以在 GPU 上运行，而手写的矩阵乘法和 softmax 函数，只能在 CPU 上运行。因此，接下来将其改造为 GPU 版本，然后再进行优化。</p>
+<h3 id="gpu-版本">GPU 版本</h3>
+<h4 id="python-部分-1">Python 部分</h4>
+<p>在 <code>setup.py</code> 中更改为如下代码，把 <code>CppExtension</code> 改为 <code>CUDAExtension</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> setuptools <span class="keyword">import</span> setup</span><br><span class="line"><span class="keyword">from</span> torch.utils.cpp_extension <span class="keyword">import</span> BuildExtension, CUDAExtension </span><br><span class="line"></span><br><span class="line">setup(</span><br><span class="line">    name=<span class="string">&#x27;attention&#x27;</span>,</span><br><span class="line">    ext_modules=[</span><br><span class="line">        CUDAExtension(<span class="string">&#x27;attention&#x27;</span>, [</span><br><span class="line">            <span class="string">&#x27;attention.cpp&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;attention_kernel.cu&#x27;</span>,</span><br><span class="line">        ])      </span><br><span class="line">    ],</span><br><span class="line">    cmdclass=&#123;</span><br><span class="line">        <span class="string">&#x27;build_ext&#x27;</span>: BuildExtension</span><br><span class="line">    &#125;)</span><br></pre></td></tr></table></figure>
+<h4 id="cpp-部分-1">Cpp 部分</h4>
+<p>为了兼容之前的代码，这里将之前的 <code>attention_forward</code>更新为 <code>attention_cpu_forward</code>，同时加了一个类型判断，如果输入的 <code>Tensor</code>不在同一个设备上，则抛出异常。而对于 <code>attention_cuda_forward</code>的实现需要在 <code>attention_kernel.cu</code>中实现。注意：这里需要提前定义好 <code>attention_cuda_forward</code>函数，否则会报错。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;torch/extension.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;torch::Tensor&gt; <span class="title">attention_cuda_forward</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    torch::Tensor q,</span></span></span><br><span class="line"><span class="function"><span class="params">    torch::Tensor k,</span></span></span><br><span class="line"><span class="function"><span class="params">    torch::Tensor v)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function">torch::Tensor <span class="title">my_matmul</span><span class="params">(<span class="keyword">const</span> torch::Tensor &amp;a, <span class="keyword">const</span> torch::Tensor &amp;b)</span> </span>&#123;</span><br><span class="line">    TORCH_CHECK(a.dim() == <span class="number">2</span> &amp;&amp; b.dim() == <span class="number">2</span>, <span class="string">&quot;Input tensors must be 2-dimensional&quot;</span>);</span><br><span class="line">    TORCH_CHECK(a.size(<span class="number">1</span>) == b.size(<span class="number">0</span>), <span class="string">&quot;Dimensions mismatch&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">auto</span> m = a.size(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">auto</span> n = b.size(<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">auto</span> p = a.size(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    torch::Tensor result = torch::zeros(&#123;m, n&#125;, torch::dtype(torch::kFloat32));</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; m; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n; j++) &#123;</span><br><span class="line">            <span class="keyword">float</span> sum = <span class="number">0.0</span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; p; k++) &#123;</span><br><span class="line">                sum += a[i][k].item&lt;<span class="keyword">float</span>&gt;() * b[k][j].item&lt;<span class="keyword">float</span>&gt;();</span><br><span class="line">            &#125;</span><br><span class="line">            result[i][j] = sum;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;torch::Tensor&gt; <span class="title">attention_cpu_forward</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    torch::Tensor q,</span></span></span><br><span class="line"><span class="function"><span class="params">    torch::Tensor k,</span></span></span><br><span class="line"><span class="function"><span class="params">    torch::Tensor v)</span> </span>&#123;</span><br><span class="line">    torch::Tensor scores = my_matmul(q, k);</span><br><span class="line">    torch::Tensor attention = my_matmul(torch::softmax(scores, <span class="number">1</span>), v);</span><br><span class="line">    <span class="keyword">return</span> &#123;scores, attention&#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 参数：queries(Q)，keys(K)，values(V)</span></span><br><span class="line"><span class="function"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;torch::Tensor&gt; <span class="title">attention_forward</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    torch::Tensor &amp;q,</span></span></span><br><span class="line"><span class="function"><span class="params">    torch::Tensor &amp;k,</span></span></span><br><span class="line"><span class="function"><span class="params">    torch::Tensor &amp;v)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!(q.device().type() == k.device().type() &amp;&amp; q.device().type() == v.device().type())) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="built_in">std</span>::runtime_error(<span class="string">&quot;Input tensors q, k, and v must be on the same device&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (q.is_cuda()) &#123;</span><br><span class="line">        <span class="keyword">return</span> attention_cuda_forward(q, k.transpose(<span class="number">0</span>, <span class="number">1</span>), v);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> attention_cpu_forward(q, k.transpose(<span class="number">0</span>, <span class="number">1</span>), v);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) &#123;</span><br><span class="line">    m.def(<span class="string">&quot;forward&quot;</span>, &amp;attention_forward, <span class="string">&quot;Attention forward (CUDA)&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="cu-部分">Cu 部分</h4>
+<p>在同级目录下，创建 <code>attention_kernel.cu</code>文件。首先实现 <code>attention_cuda_forward</code>函数的主要逻辑。其中，主要对矩阵乘法进行了优化，使用了 CUDA 的并行计算。然后，使用 <code>AT_DISPATCH_FLOATING_TYPES</code>宏来实现对不同类型的支持，这样就可以支持 <code>float</code>和 <code>double</code>类型了。</p>
+<p>对于 <code>matrix_multiply</code>函数，与一般写法不同的是，需要提前创建好输出的 <code>Tensor</code>，然后再传入到 CUDA 的函数中。并且需要创建好 <code>blocks</code>和 <code>threads</code>，然后再调用 CUDA 的函数。这里指定了每个 CUDA 是有 16 x 16 线程的块，而这些块是可以并行计算的，所以能够加速计算。可参考 <a target="_blank" rel="noopener" href="https://devblogs.nvidia.com/even-easier-introduction-cuda">An Even Easier Introduction to CUDA</a></p>
+<p>而在传递参数的时候，需要使用 <code>packed_accessor</code>。这里的 <code>packed_accessor</code>的第一个参数是 <code>Tensor</code>的类型，第二个参数是 <code>Tensor</code>的维度，第三个参数是 <code>Tensor</code>的类型，第四个参数是 <code>Tensor</code>的维度。这里的 <code>packed_accessor</code>的第三个参数和第四个参数，是为了支持 CUDA 的。</p>
+<p>接下来就是实现 <code>matrix_multiply_kernel</code>。矩阵的乘法中，如果要计算输出矩阵的第一个值，则需要用到输入矩阵的第一行和第一列。因此，这里需要根据 <code>block</code>和 <code>thread</code>的索引，来计算出对应的行和列。然后，就是普通的矩阵乘法的实现了。原来的矩阵乘法的实现是：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">out = [[<span class="number">0</span> <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(n)] <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(m)]</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(m):</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(n):</span><br><span class="line">        <span class="keyword">for</span> k <span class="keyword">in</span> <span class="built_in">range</span>(p):</span><br><span class="line">            out[i][j] += input1[i][k] * input2[k][j]</span><br></pre></td></tr></table></figure>
+<p>相当于把外面两个循环分别交给了 CUDA 的 <code>block</code>和 <code>thread</code>来计算。这样，就可以实现并行计算了。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;torch/extension.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cuda.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cuda_runtime.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Matrix multiply kernel</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> <span class="keyword">scalar_t</span>&gt;</span><br><span class="line"><span class="function">__global__ <span class="keyword">void</span> <span class="title">matrix_multiply_kernel</span><span class="params">(<span class="keyword">const</span> torch::PackedTensorAccessor&lt;<span class="keyword">scalar_t</span>,<span class="number">2</span>,torch::RestrictPtrTraits,<span class="keyword">size_t</span>&gt; input1,</span></span></span><br><span class="line"><span class="function"><span class="params">                                       <span class="keyword">const</span> torch::PackedTensorAccessor&lt;<span class="keyword">scalar_t</span>,<span class="number">2</span>,torch::RestrictPtrTraits,<span class="keyword">size_t</span>&gt; input2,</span></span></span><br><span class="line"><span class="function"><span class="params">                                       torch::PackedTensorAccessor&lt;<span class="keyword">scalar_t</span>,<span class="number">2</span>,torch::RestrictPtrTraits,<span class="keyword">size_t</span>&gt; output)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> row = blockIdx.y * blockDim.y + threadIdx.y;</span><br><span class="line">    <span class="keyword">int</span> col = blockIdx.x * blockDim.x + threadIdx.x;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (row &lt; input1.size(<span class="number">0</span>) &amp;&amp; col &lt; input2.size(<span class="number">1</span>)) &#123;</span><br><span class="line">        <span class="keyword">scalar_t</span> value = <span class="number">0.0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; input1.size(<span class="number">1</span>); ++k) &#123;</span><br><span class="line">            value += input1[row][k] * input2[k][col];</span><br><span class="line">        &#125;</span><br><span class="line">        output[row][col] = value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">torch::Tensor <span class="title">matrix_multiply</span><span class="params">(torch::Tensor input1, torch::Tensor input2)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> rows1 = input1.size(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">int</span> cols1 = input1.size(<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">int</span> cols2 = input2.size(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">auto</span> options = torch::TensorOptions().device(input1.device());</span><br><span class="line">    torch::Tensor output = torch::zeros(&#123;rows1, cols2&#125;, options);</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">const</span> dim3 <span class="title">threads</span><span class="params">(<span class="number">16</span>, <span class="number">16</span>)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">const</span> dim3 <span class="title">blocks</span><span class="params">((cols2 + threads.x - <span class="number">1</span>) / threads.x,</span></span></span><br><span class="line"><span class="function"><span class="params">                      (rows1 + threads.y - <span class="number">1</span>) / threads.y)</span></span>;</span><br><span class="line"></span><br><span class="line">    AT_DISPATCH_FLOATING_TYPES(input1.scalar_type(), <span class="string">&quot;matrix_multiply_kernel&quot;</span>, ([&amp;] &#123;</span><br><span class="line">        matrix_multiply_kernel&lt;&lt;&lt;blocks, threads&gt;&gt;&gt;(</span><br><span class="line">            input1.packed_accessor&lt;<span class="keyword">scalar_t</span>,<span class="number">2</span>,torch::RestrictPtrTraits,<span class="keyword">size_t</span>&gt;(),</span><br><span class="line">            input2.packed_accessor&lt;<span class="keyword">scalar_t</span>,<span class="number">2</span>,torch::RestrictPtrTraits,<span class="keyword">size_t</span>&gt;(),</span><br><span class="line">            output.packed_accessor&lt;<span class="keyword">scalar_t</span>,<span class="number">2</span>,torch::RestrictPtrTraits,<span class="keyword">size_t</span>&gt;());</span><br><span class="line">    &#125;));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> output;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;torch::Tensor&gt; <span class="title">attention_cuda_forward</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    torch::Tensor q,</span></span></span><br><span class="line"><span class="function"><span class="params">    torch::Tensor k,</span></span></span><br><span class="line"><span class="function"><span class="params">    torch::Tensor v)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    torch::Tensor scores = matrix_multiply(q, k);</span><br><span class="line">    torch::Tensor attention = matrix_multiply(torch::softmax(scores, <span class="number">1</span>), v);</span><br><span class="line">    <span class="keyword">return</span> &#123;scores, attention&#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>测试代码不变，依旧可以用上面的来进行检验。至此，最简单的实验就完成了。接下来，就是对其进行优化了。</p>
+<h2 id="矩阵乘法的优化">矩阵乘法的优化</h2>
+<h3 id="matmul">Matmul</h3>
+<p>重新回到矩阵乘法上，假设有两个矩阵 A1 和 A2，形状分别为 <span class="math inline">\(M \times N\)</span> 和 <span class="math inline">\(N \times K\)</span>，则矩阵乘法的计算公式为：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"></span><br><span class="line">M, N, K = <span class="number">4</span>, <span class="number">2</span>, <span class="number">4</span></span><br><span class="line"></span><br><span class="line">A1 = torch.rand(size=(M, N))</span><br><span class="line">A2 = torch.rand(size=(N, K))</span><br><span class="line"></span><br><span class="line">output = torch.zeros(size=(M, K))</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(M):</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(K):</span><br><span class="line">        sum_ = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> k <span class="keyword">in</span> <span class="built_in">range</span>(N):</span><br><span class="line">            sum_ += A1[i][k] * A2[k][j]</span><br><span class="line">        output[i][j] = sum_</span><br></pre></td></tr></table></figure>
+<p>一种朴素的优化手段是把最后一个循环并行计算。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(M):</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(K):</span><br><span class="line">        output[i][j] = <span class="built_in">sum</span>(<span class="built_in">map</span>(<span class="keyword">lambda</span> x: x[<span class="number">0</span>] * x[<span class="number">1</span>], <span class="built_in">zip</span>(A1[i], A2[:, j])))</span><br></pre></td></tr></table></figure>
+<p>利用多线程/进程（下文统称为job）进行并行计算可以提高程序的计算速度，但这样需要每个job都能访问到 A1 和 A2 的数据，所以这就引入了全局内存和共享内存的概念。</p>
+<blockquote>
+<ul>
+<li>全局内存（Global Memory）：全局内存是一种在计算机程序中可被所有线程或进程访问的内存空间。它通常用于存储全局变量、静态变量以及动态分配的内存等。全局内存的特点是可以在整个程序执行过程中进行读写操作，但它的访问速度相对较慢。</li>
+<li>共享内存（Shared Memory）：共享内存是一种特殊的内存区域，被多个线程或进程同时访问和共享。通过将数据存储在共享内存中，不同的线程或进程可以直接读取和写入这些数据，而无需使用其他的通信机制。共享内存的特点是高效的数据共享和访问速度，因为不需要进行复制或传输数据。</li>
+</ul>
+</blockquote>
+<p>CUDA 中依旧存在类似的概念</p>
+<blockquote>
+<ul>
+<li>全局内存（Global Memory）：在 CUDA 中，全局内存是一个设备（GPU）上可见的主机（CPU）内存空间。它可以由所有的线程块和线程访问，用于存储全局变量和动态分配的内存等。全局内存的读写操作相对较慢，因为涉及主机与设备之间的数据传输。</li>
+<li>共享内存（Shared Memory）：在 CUDA 中，共享内存是位于每个线程块中的一块高速缓存内存。它被同一个线程块内的线程共享，并且比全局内存具有更快的读写速度。共享内存通常用于优化算法的性能，通过在线程块内部共享数据来减少全局内存的访问。</li>
+</ul>
+</blockquote>
+<p>简而言之，全局内存可以很方便的存各种东西，但是速度慢；共享内存是一个好东西，速度块，但通常大小受限。所以，分别有两种优化：</p>
+<ul>
+<li>全局内存中，考虑如何加速访问</li>
+<li>共享内存中，考虑如何减小占用空间</li>
+</ul>
+<p>这就引入了 Tiled matmul 算法。</p>
+<h3 id="tiled-matmul">Tiled Matmul</h3>
+<ul>
+<li>对于加速访问，在无法控制硬件的前提下，只能通过并行的方式同时读取数据。</li>
+<li>对于减小占用空间，可以通过拆分矩阵，把大矩阵拆分成若干小矩阵，然后再进行计算。</li>
+</ul>
+<p>重新思考矩阵 <code>output</code>的计算过程，每个元素的计算其实是独立的，其本质可以拆成若干独立的小块，如下图所示：</p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/pytorch_cuda_ext/setup-2d0f22ecd2e9b7c84af56792d14ba18a.gif?raw=true" /> From https://penny-xu.github.io/blog/tiled-matrix-multiplication</p>
+<p>由于矩阵 <code>output</code>每个元素是完全独立的，可以将其拆成若干个小矩阵来计算。如上图所示，把矩阵 <code>output</code> 拆成了 4 个小矩阵。对应的代码如下所示：</p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/pytorch_cuda_ext/block_matrix.png" /></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"></span><br><span class="line">M, N, K = <span class="number">4</span>, <span class="number">2</span>, <span class="number">4</span></span><br><span class="line"></span><br><span class="line">A1 = torch.rand(size=(M, N))</span><br><span class="line">A2 = torch.rand(size=(N, K))</span><br><span class="line"></span><br><span class="line">block_size = <span class="number">2</span> <span class="comment"># 方便起见，这里设置为 N,M,K 的公约数。同时也拆成了 2x2 的 block</span></span><br><span class="line">block_M, block_N, block_K = M // block_size, N // block_size, K // block_size</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">matmul</span>(<span class="params">sub_A1, sub_A2</span>):</span></span><br><span class="line">    output = torch.zeros(size=(sub_A1.shape[<span class="number">0</span>], sub_A2.shape[<span class="number">1</span>]))</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(sub_A1.shape[<span class="number">0</span>]):</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(sub_A2.shape[<span class="number">1</span>]):</span><br><span class="line">            <span class="keyword">for</span> k <span class="keyword">in</span> <span class="built_in">range</span>(sub_A2.shape[<span class="number">0</span>]):</span><br><span class="line">                output[i][j] += sub_A1[i][k] * sub_A2[k][j]</span><br><span class="line">    <span class="keyword">return</span> output</span><br><span class="line"></span><br><span class="line">output11 = matmul(A1[:block_M, :], A2[:, :block_K])</span><br><span class="line">output12 = matmul(A1[:block_M, :], A2[:, block_K:])</span><br><span class="line">output21 = matmul(A1[block_M:, :], A2[:, :block_K])</span><br><span class="line">output22 = matmul(A1[block_M:, :], A2[:, block_K:])</span><br><span class="line">output = torch.cat([torch.cat([output11, output12], dim=<span class="number">1</span>), torch.cat([output21, output22], dim=<span class="number">1</span>)], dim=<span class="number">0</span>)</span><br><span class="line">print(output)</span><br><span class="line">print(A1 @ A2)</span><br><span class="line"><span class="keyword">assert</span> torch.allclose(output, A1 @ A2)</span><br></pre></td></tr></table></figure>
+<p>对于，左上角矩阵 <code>output11</code>，实际上是由 <code>block_size</code>个矩阵乘法，再求和得到的 <code>output11 = matmul(A1[:block_M, :block_N], A2[:block_N, :block_K]) + matmul(A1[:block_M, block_N:], A2[block_N:, :block_K])</code>。再把它扩展的灵活一点</p>
+<ol type="1">
+<li>不局限于只能扩展为 2 <span class="math inline">\(\times\)</span> 2 矩阵</li>
+<li>block_size 可以针对 M, N, K 进行调整</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"></span><br><span class="line">M, N, K = <span class="number">4</span>, <span class="number">6</span>, <span class="number">8</span></span><br><span class="line"></span><br><span class="line">A1 = torch.rand(size=(M, N))</span><br><span class="line">A2 = torch.rand(size=(N, K))</span><br><span class="line"></span><br><span class="line">block_size_M, block_size_N, block_size_K = <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span></span><br><span class="line">block_M, block_N, block_K = M // block_size_M, N // block_size_N, K // block_size_K</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">block_matmul</span>(<span class="params">sub_A1, sub_A2</span>):</span></span><br><span class="line">    output = torch.zeros(size=(sub_A1.shape[<span class="number">0</span>], sub_A2.shape[<span class="number">1</span>]))</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(sub_A1.shape[<span class="number">0</span>]):</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(sub_A2.shape[<span class="number">1</span>]):</span><br><span class="line">            <span class="keyword">for</span> k <span class="keyword">in</span> <span class="built_in">range</span>(sub_A2.shape[<span class="number">0</span>]):</span><br><span class="line">                output[i][j] += sub_A1[i][k] * sub_A2[k][j]</span><br><span class="line">    <span class="keyword">return</span> output</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">matmul</span>(<span class="params">A1, A2</span>):</span></span><br><span class="line">    output = torch.zeros(size=(A1.shape[<span class="number">0</span>], A2.shape[<span class="number">1</span>]))</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, A1.shape[<span class="number">0</span>], block_M):</span><br><span class="line">        start_i, end_i = i, i + block_M</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, A2.shape[<span class="number">1</span>], block_N):</span><br><span class="line">            start_j, end_j = j, j + block_N</span><br><span class="line">            <span class="keyword">for</span> k <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, A2.shape[<span class="number">0</span>], block_K):</span><br><span class="line">                start_k, end_k = k, k + block_K</span><br><span class="line">                <span class="comment"># 计算每个 block 的矩阵乘法</span></span><br><span class="line">                sub_A1 = A1[start_i:end_i, start_k:end_k]</span><br><span class="line">                sub_A2 = A2[start_k:end_k, start_j:end_j]</span><br><span class="line">                <span class="comment"># 把每个 block 的结果放到对应的位置</span></span><br><span class="line">                output[start_i:end_i, start_j:end_j] += block_matmul(sub_A1, sub_A2)</span><br><span class="line">    <span class="keyword">return</span> output</span><br><span class="line">print(matmul(A1, A2))</span><br><span class="line">print(A1 @ A2)</span><br><span class="line"><span class="keyword">assert</span> torch.allclose(matmul(A1, A2), A1 @ A2)</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/pytorch_cuda_ext/tmm-59dd890f48435e692c47919d0df4a5e6.gif" /> From https://penny-xu.github.io/blog/tiled-matrix-multiplication</p>
+<p>再次回顾这样做的目的，<a target="_blank" rel="noopener" href="https://penny-xu.github.io/blog/tiled-matrix-multiplication">原作者</a>是这么说的：</p>
+<blockquote>
+<ul>
+<li>With or without tiling, the same number of accesses into global memory occur. The difference is that, without tiling, each thread must sequentially (one after the other) access global memory 8 times.</li>
+<li>With tiling, we can parallelize the access to global memory so that each thread only sequentially accesses global memory 4 times.</li>
+<li>To summarize, the point is not to reduce the number of multiplications or even the total number of global memory accesses, but rather to reduce the number of sequential global memory accesses per thread. In other words, we better share the heavy load of memory access across threads.</li>
+</ul>
+</blockquote>
+<p>简而言之，作者的观点是通过拆成 block 的形式，能够并行的读取全局内存数据。个人观点，在某些情况下，拆分后的 block 可以恰好把数据放到共享内存中，以加速计算？</p>
+<p>最后，对于 <code>block size</code>大小的选择：</p>
+<ul>
+<li>越大的 <code>block size</code>表示拆分后的矩阵个数变少，这样访问全局内存的次数会更多。但是，每个矩阵比较大，这样线程的并行度会更高。即，IO变小，计算变快。</li>
+<li>越小的 <code>block size</code>表示拆分后的矩阵个数变多，这样访问全局内存的次数会更少。但是，每个矩阵比较小，这样线程的并行度会更低。即，IO变大，计算变慢。</li>
+</ul>
+<p>下一篇：<a href="/hexo_blog/2023/12/20/PyTorch/%E4%BB%A5Attention%E4%B8%BA%E4%BE%8B%E7%9A%84%E7%AE%97%E5%AD%90%E8%9E%8D%E5%90%88/" title="以Attention为例的算子融合">以Attention为例的算子融合</a></p>
+<h2 id="参考">参考</h2>
+<p>[1] <a target="_blank" rel="noopener" href="https://pytorch.org/tutorials/advanced/cpp_extension.html">https://pytorch.org/tutorials/advanced/cpp_extension.html</a>。</p>
+<p>[2] <a target="_blank" rel="noopener" href="https://github.com/ELS-RD/kernl/blob/main/tutorial/1%20-%20tiled%20matmul.ipynb">Tiled matmul</a></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>wnma3mz
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wnma3mz.github.io/2023/12/03/PyTorch/pytorch_cpp_extension/" title="用 Cpp 写 PyTorch 的插件">https://wnma3mz.github.io/2023/12/03/PyTorch/pytorch_cpp_extension/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hexo_blog/tags/PyTorch/" rel="tag"># PyTorch</a>
+              <a href="/hexo_blog/tags/CUDA/" rel="tag"># CUDA</a>
+              <a href="/hexo_blog/tags/Cpp/" rel="tag"># Cpp</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2023/12/03/%E6%B8%A9%E5%BA%A6%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="prev" title="温度可视化">
+      <i class="fa fa-chevron-left"></i> 温度可视化
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2023/12/20/PyTorch/%E4%BB%A5Attention%E4%B8%BA%E4%BE%8B%E7%9A%84%E7%AE%97%E5%AD%90%E8%9E%8D%E5%90%88/" rel="next" title="以Attention为例的算子融合">
+      以Attention为例的算子融合 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88"><span class="nav-text">为什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%8E%E4%B9%88%E5%86%99"><span class="nav-text">怎么写</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#cpu-%E7%89%88%E6%9C%AC"><span class="nav-text">CPU 版本</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#python-%E9%83%A8%E5%88%86"><span class="nav-text">Python 部分</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#cpp-%E9%83%A8%E5%88%86"><span class="nav-text">Cpp 部分</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95"><span class="nav-text">测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%9F%A9%E9%98%B5%E4%B9%98%E6%B3%95"><span class="nav-text">矩阵乘法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#softmax"><span class="nav-text">softmax</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gpu-%E7%89%88%E6%9C%AC"><span class="nav-text">GPU 版本</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#python-%E9%83%A8%E5%88%86-1"><span class="nav-text">Python 部分</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#cpp-%E9%83%A8%E5%88%86-1"><span class="nav-text">Cpp 部分</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#cu-%E9%83%A8%E5%88%86"><span class="nav-text">Cu 部分</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9F%A9%E9%98%B5%E4%B9%98%E6%B3%95%E7%9A%84%E4%BC%98%E5%8C%96"><span class="nav-text">矩阵乘法的优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#matmul"><span class="nav-text">Matmul</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tiled-matmul"><span class="nav-text">Tiled Matmul</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-text">参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="wnma3mz"
+      src="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
+  <p class="site-author-name" itemprop="name">wnma3mz</p>
+  <div class="site-description" itemprop="description">Day Day Up</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/hexo_blog/archives/">
+        
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/hexo_blog/categories/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/hexo_blog/tags/">
+          
+        <span class="site-state-item-count">85</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wnma3mz" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wnma3mz" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wnma3mz@gmail.com" title="E-Mail → mailto:wnma3mz@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wnma3mz</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='99' src="/hexo_blog/lib/canvas-nest/canvas-nest-nomobile.min.js"></script>
+  <script src="/hexo_blog/lib/anime.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/hexo_blog/js/utils.js"></script>
+
+<script src="/hexo_blog/js/motion.js"></script>
+
+
+<script src="/hexo_blog/js/schemes/muse.js"></script>
+
+
+<script src="/hexo_blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/hexo_blog/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

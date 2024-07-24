@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/hexo_blog/css/main.css">
+
+
+<link rel="stylesheet" href="/hexo_blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wnma3mz.github.io","root":"/hexo_blog/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="以 Attention 作为例子介绍算子融合的写法 代码">
+<meta property="og:type" content="article">
+<meta property="og:title" content="以Attention为例的算子融合">
+<meta property="og:url" content="https://wnma3mz.github.io/2023/12/20/PyTorch/%E4%BB%A5Attention%E4%B8%BA%E4%BE%8B%E7%9A%84%E7%AE%97%E5%AD%90%E8%9E%8D%E5%90%88/index.html">
+<meta property="og:site_name" content="Wnma&#39;s Blogs">
+<meta property="og:description" content="以 Attention 作为例子介绍算子融合的写法 代码">
+<meta property="og:locale">
+<meta property="article:published_time" content="2023-12-20T12:41:25.000Z">
+<meta property="article:modified_time" content="2023-12-21T01:39:17.787Z">
+<meta property="article:author" content="wnma3mz">
+<meta property="article:tag" content="PyTorch">
+<meta property="article:tag" content="CUDA">
+<meta property="article:tag" content="Cpp">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://wnma3mz.github.io/2023/12/20/PyTorch/%E4%BB%A5Attention%E4%B8%BA%E4%BE%8B%E7%9A%84%E7%AE%97%E5%AD%90%E8%9E%8D%E5%90%88/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>以Attention为例的算子融合 | Wnma's Blogs</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="تشغيل شريط التصفح">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hexo_blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Wnma's Blogs</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/hexo_blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/hexo_blog/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/hexo_blog/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/hexo_blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-bookmark">
+
+    <a href="https://wnma3mz.github.io/bookmark/index.html" rel="section"><i class="fa fa-bookmark fa-fw"></i>书签</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/2023/12/20/PyTorch/%E4%BB%A5Attention%E4%B8%BA%E4%BE%8B%E7%9A%84%E7%AE%97%E5%AD%90%E8%9E%8D%E5%90%88/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
+      <meta itemprop="name" content="wnma3mz">
+      <meta itemprop="description" content="Day Day Up">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wnma's Blogs">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          以Attention为例的算子融合
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建于：2023-12-20 20:41:25" itemprop="dateCreated datePublished" datetime="2023-12-20T20:41:25+08:00">2023-12-20</time>
+
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="عُدل：2023-12-21 09:39:17" itemprop="dateModified" datetime="2023-12-21T09:39:17+08:00">2023-12-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/DeepLearning/" itemprop="url" rel="index"><span itemprop="name">DeepLearning</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>以 Attention 作为例子介绍算子融合的写法</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/wnma3mz/pytorch_cuda_extension">代码</a></p>
+<a id="more"></a>
+<p>接 <a href="/hexo_blog/2023/12/03/PyTorch/pytorch_cpp_extension/" title="用 Cpp 写 PyTorch 的插件">用 Cpp 写 PyTorch 的插件</a></p>
+<h2 id="矩阵乘法softmax算子融合">矩阵乘法+Softmax算子融合</h2>
+<p>算子融合是将多个计算操作合并为一个计算操作，以减少计算量和内存访问次数，从而提高计算效率。比如，矩阵乘法和 softmax 的融合，可以减少一次内存访问。</p>
+<h3 id="online-softmax">Online softmax</h3>
+<p>softmax 的计算公式为：</p>
+<p><span class="math display">\[
+\text{softmax}(x_i) = \frac{e^{x_i}}{\sum_{j=1}^n e^{x_j}}
+\]</span></p>
+<p>而通常为了数值稳定性（避免溢出），会先计算最大值，再减去最大值，最后再计算 softmax。即：</p>
+<p><span class="math display">\[
+\text{softmax}(x_i) = \frac{e^{x_i - \max(x)}}{\sum_{j=1}^n e^{x_j - \max(x)}}
+\]</span></p>
+<p>在神经网络中，其值通常为一个矩阵（不只是一个维度），所以需要对每一行进行 softmax。示例代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"></span><br><span class="line">X = torch.rand(<span class="number">4</span>, <span class="number">4</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">my_softmax</span>(<span class="params">X, dim=<span class="number">1</span></span>):</span></span><br><span class="line">    X -= torch.<span class="built_in">max</span>(X, dim=dim, keepdim=<span class="literal">True</span>)[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">return</span> torch.exp(X) / torch.<span class="built_in">sum</span>(torch.exp(X), dim=dim, keepdim=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">print(torch.softmax(X, dim=<span class="number">1</span>))</span><br><span class="line">print(my_softmax(X, dim=<span class="number">1</span>))</span><br><span class="line"><span class="keyword">assert</span> torch.allclose(torch.softmax(X, dim=<span class="number">1</span>), my_softmax(X, dim=<span class="number">1</span>))</span><br></pre></td></tr></table></figure>
+<p>但这样跟矩阵乘法进行算子融合是没有优势的，两个函数还是独立计算的。算子融合是需要糅合两种计算操作。所以，需要把 softmax 函数放到矩阵乘法中进行计算。即将计算过程变成一个可迭代的过程，换而言之，随着元素的增加不断更新 softmax 的结果。</p>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1805.02867.pdf">Online normalizer calculation for softmax</a> 提供了这么一种方式。简单起见，从一个元素开始介绍。现在有一个列表，里面只有一个元素 <code>[1]</code>，其 softmax 计算过程为：</p>
+<ol type="1">
+<li>exp: 计算 <span class="math inline">\(e^{1}\)</span>，得到 <span class="math inline">\([e^{1}]\)</span></li>
+<li>max: 计算 <code>max(1)</code>，得到 <code>1</code></li>
+<li>-max: 计算 $e^{1 - 1} $，得到 <span class="math inline">\([e^{1 - 1} ]\)</span></li>
+<li>sum: 计算 $e^{1- 1} $ 的和，得到 $e^{1- 1} $</li>
+<li>softmax: 计算 <span class="math inline">\([e^{1- 1} ] / (e^{1- 1} )\)</span>，得到 <span class="math inline">\([1]\)</span></li>
+</ol>
+<p>现在增加一个元素，观察有哪些变化。假设增加的元素为 2，现在有一个列表，里面有两个元素 <code>[1, 2]</code>，新增的 softmax 计算过程为：</p>
+<ol type="1">
+<li>exp: 计算 <span class="math inline">\(e^{2}\)</span>，得到 <span class="math inline">\(e^{2}\)</span></li>
+<li>max: 与原来的 <code>max(1)=1</code> 比较，得到 <code>max(1, 2)</code>，得到 <code>2</code></li>
+<li>-max：所有元素更新一遍，均减去最新的 <code>max(1, 2)=2</code>，得到 <span class="math inline">\([e^{1- 2} , e^{2- 2} ]\)</span></li>
+<li>sum: 重新计算一遍结果</li>
+<li>softmax: 计算 <span class="math inline">\([e^{1- 2}, e^{2 - 2}] / (e^{1 - 2} + e^{2 - 2})\)</span></li>
+</ol>
+<p>对比发现，第 3 步会导致重新第 4 步计算一遍求和结果，但这个求和结果在第 5 步中作为分母是可以灵活调整的。原来是<span class="math inline">\(e^{1-1}\)</span>，现在更新为<span class="math inline">\(e^{1-2}+e^{2-2}\)</span>。假设原来的最大值为 <code>old_max</code>，新的最大值为 <code>new_max</code>，原来的元素为 <code>old_v</code>，则原来元素的 <code>exp</code>结果可以更新为</p>
+<p><span class="math display">\[
+e^{old\_v-old\_max} \rightarrow e^{old\_v-old\_max+old\_max-new\_max} = e^{old\_v-old\_max} \times e^{old\_max-new\_max}
+\]</span></p>
+<p>而对于新加的元素，则可以在求和部分直接加上<span class="math inline">\(e^{2-2}\)</span>，所以，代码如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">nums = [<span class="number">1</span>, <span class="number">2</span>]</span><br><span class="line">sum_, max_v = <span class="number">0.</span>, <span class="number">0.</span></span><br><span class="line">norm_v = <span class="number">0.</span></span><br><span class="line"><span class="keyword">for</span> i, num <span class="keyword">in</span> <span class="built_in">enumerate</span>(nums):</span><br><span class="line">    old_max_v = max_v</span><br><span class="line">    max_v = <span class="built_in">max</span>(max_v, num)</span><br><span class="line">    norm_v = norm_v*np.exp(old_max_v - max_v) + np.exp(num - max_v)</span><br><span class="line">softmax_nums = [np.exp(num-max_v)/ norm_v <span class="keyword">for</span> num <span class="keyword">in</span> nums] </span><br></pre></td></tr></table></figure>
+<p>对于两个元素这个公式是适用的，那么对于多个元素呢？答案自然也是同样适用的</p>
+<p><span class="math display">\[
+\begin{aligned}
+e^{v1-old\_max}+e^{v2-old\_max} &amp;\rightarrow e^{v1-new\_max}+e^{v2-new\_max} \\ &amp;= e^{v1-old\_max+old\_max-new\_max}+e^{v2-old\_max+old\_max-new\_max} \\  \\ &amp;= e^{v1-old\_max} \times e^{old\_max-new\_max} + e^{v2-old\_max} \times e^{old\_max-new\_max} \\ &amp;= (e^{v1-old\_max} - e^{v2-old\_max}) \times e^{old\_max-new\_max}
+\end{aligned}
+\]</span></p>
+<p>所以，将其更新为二维矩阵的形式，就有</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">X = torch.rand(<span class="number">4</span>, <span class="number">4</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">online_softmax</span>(<span class="params">X</span>):</span></span><br><span class="line">    value = torch.zeros_like(X)</span><br><span class="line">    <span class="keyword">for</span> row <span class="keyword">in</span> <span class="built_in">range</span>(X.shape[<span class="number">0</span>]):</span><br><span class="line">        row_max = <span class="number">0.0</span></span><br><span class="line">        normalizer_term = <span class="number">0.0</span></span><br><span class="line">        <span class="keyword">for</span> col <span class="keyword">in</span> <span class="built_in">range</span>(X.shape[<span class="number">1</span>]):</span><br><span class="line">            val = X[row, col]</span><br><span class="line">            old_row_max = row_max</span><br><span class="line">            row_max = <span class="built_in">max</span>(old_row_max, val)</span><br><span class="line">            normalizer_term = normalizer_term * np.exp(old_row_max - row_max) + np.exp(val - row_max)</span><br><span class="line">        value[row, :] = torch.exp(X[row, :] - row_max) / normalizer_term</span><br><span class="line">    <span class="keyword">return</span> value</span><br><span class="line"></span><br><span class="line">print(torch.softmax(X, dim=<span class="number">1</span>))</span><br><span class="line">print(online_softmax(X))</span><br><span class="line"><span class="keyword">assert</span> torch.allclose(torch.softmax(X, dim=<span class="number">1</span>), online_softmax(X))</span><br></pre></td></tr></table></figure>
+<h3 id="softmax-矩阵乘法">softmax + 矩阵乘法</h3>
+<p>一般的融合操作是需要在矩阵乘法后，计算结果的 softmax。即</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"></span><br><span class="line">M, N, K = <span class="number">4</span>, <span class="number">2</span>, <span class="number">4</span></span><br><span class="line">A1, A2 = torch.rand(size=(M, N)), torch.rand(size=(N, K))</span><br><span class="line">output = torch.softmax(A1 @ A2, dim=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>在结合上面的内容后，将其改造为</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">M, N, K = <span class="number">4</span>, <span class="number">2</span>, <span class="number">4</span></span><br><span class="line">A1, A2 = torch.rand(size=(M, N)), torch.rand(size=(N, K))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">matmul_softmax</span>(<span class="params">A1, A2</span>):</span></span><br><span class="line">    output = torch.zeros(size=(A1.shape[<span class="number">0</span>], A2.shape[<span class="number">1</span>]))</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(A1.shape[<span class="number">0</span>]):</span><br><span class="line">        row_max = <span class="number">0.0</span></span><br><span class="line">        normalizer_term = <span class="number">0.0</span>  </span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(A2.shape[<span class="number">1</span>]):</span><br><span class="line">            val = output[i, j] = <span class="built_in">sum</span>(<span class="built_in">map</span>(<span class="keyword">lambda</span> x: x[<span class="number">0</span>] * x[<span class="number">1</span>], <span class="built_in">zip</span>(A1[i], A2[:, j])))</span><br><span class="line">          </span><br><span class="line">            old_row_max = row_max</span><br><span class="line">            row_max = <span class="built_in">max</span>(old_row_max, val)</span><br><span class="line">            normalizer_term = normalizer_term * np.exp(old_row_max - row_max) + np.exp(val - row_max)</span><br><span class="line">        output[i, :] = torch.exp(output[i, :] - row_max) / normalizer_term</span><br><span class="line">    <span class="keyword">return</span> output</span><br><span class="line"></span><br><span class="line">print(torch.softmax(A1 @ A2, dim=<span class="number">1</span>))</span><br><span class="line">print(matmul_softmax(A1, A2))</span><br><span class="line"><span class="keyword">assert</span> torch.allclose(torch.softmax(A1 @ A2, dim=<span class="number">1</span>), matmul_softmax(A1, A2))</span><br></pre></td></tr></table></figure>
+<p>更进一步，结合 Tiled matmul，将其改造为：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">M, N, K = <span class="number">4</span>, <span class="number">6</span>, <span class="number">8</span></span><br><span class="line">A1, A2 = torch.rand(size=(M, N)), torch.rand(size=(N, K))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">block_matmul</span>(<span class="params">sub_A1, sub_A2</span>):</span></span><br><span class="line">    output = torch.zeros(size=(sub_A1.shape[<span class="number">0</span>], sub_A2.shape[<span class="number">1</span>]))</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(sub_A1.shape[<span class="number">0</span>]):</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(sub_A2.shape[<span class="number">1</span>]):</span><br><span class="line">            <span class="keyword">for</span> k <span class="keyword">in</span> <span class="built_in">range</span>(sub_A2.shape[<span class="number">0</span>]):</span><br><span class="line">                output[i][j] += sub_A1[i][k] * sub_A2[k][j]            </span><br><span class="line">    <span class="keyword">return</span> output</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">tiled_matmul_softmax</span>(<span class="params">A1, A2</span>):</span></span><br><span class="line">    block_size_M, block_size_N, block_size_K = <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span></span><br><span class="line">    block_M, block_N, block_K = M // block_size_M, N // block_size_N, K // block_size_K</span><br><span class="line"></span><br><span class="line">    output = torch.zeros(size=(A1.shape[<span class="number">0</span>], A2.shape[<span class="number">1</span>]))</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, A1.shape[<span class="number">0</span>], block_M):</span><br><span class="line">        start_i, end_i = i, i + block_M</span><br><span class="line">        row_max = torch.tensor([[<span class="number">0.</span> <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(block_N)] <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(block_M)])</span><br><span class="line">        old_row_max = torch.tensor([[<span class="number">0.</span> <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(block_N)] <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(block_M)])</span><br><span class="line">        normalizer_term = torch.tensor([[<span class="number">0.</span> <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(block_N)] <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(block_M)])</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, A2.shape[<span class="number">1</span>], block_N):</span><br><span class="line">            start_j, end_j = j, j + block_N</span><br><span class="line">            <span class="keyword">for</span> k <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, A2.shape[<span class="number">0</span>], block_K):</span><br><span class="line">                start_k, end_k = k, k + block_K</span><br><span class="line">                sub_A1 = A1[start_i:end_i, start_k:end_k]</span><br><span class="line">                sub_A2 = A2[start_k:end_k, start_j:end_j]</span><br><span class="line">                output[start_i:end_i, start_j:end_j] += block_matmul(sub_A1, sub_A2)</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 这里算完了每个block的结果，所以需要将其拆分成每个block，然后再计算softmax</span></span><br><span class="line">            <span class="keyword">for</span> ii, row <span class="keyword">in</span> <span class="built_in">enumerate</span>(<span class="built_in">range</span>(start_i, end_i)):            </span><br><span class="line">                <span class="keyword">for</span> jj, col <span class="keyword">in</span> <span class="built_in">enumerate</span>(<span class="built_in">range</span>(start_j, end_j)):</span><br><span class="line">                    val = output[row][col]</span><br><span class="line">                    old_row_max[ii][jj] = row_max[ii][jj]</span><br><span class="line">                    row_max[ii][jj] = <span class="built_in">max</span>(old_row_max[ii][jj], val)</span><br><span class="line">                    normalizer_term[ii][jj] = normalizer_term[ii][jj] * np.exp(old_row_max[ii][jj] - row_max[ii][jj]) + np.exp(val - row_max[ii][jj])</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> ii, row <span class="keyword">in</span> <span class="built_in">enumerate</span>(<span class="built_in">range</span>(start_i, end_i)):</span><br><span class="line">            row_max_v, _ = torch.<span class="built_in">max</span>(row_max, dim=<span class="number">1</span>)</span><br><span class="line">            <span class="comment"># 重算 sum, 代入公式 old_v*exp(old_max - new_max)</span></span><br><span class="line">            sum_ = torch.<span class="built_in">sum</span>(normalizer_term[ii] * torch.exp(row_max[ii] - row_max_v[ii]))</span><br><span class="line">            output[row, :] = torch.exp(output[row, :] - row_max_v[ii]) / sum_</span><br><span class="line">    <span class="keyword">return</span> output</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">print(torch.softmax(A1 @ A2, dim=<span class="number">1</span>))</span><br><span class="line">print(tiled_matmul_softmax(A1, A2))</span><br><span class="line"><span class="keyword">assert</span> torch.allclose(torch.softmax(A1 @ A2, dim=<span class="number">1</span>), tiled_matmul_softmax(A1, A2))</span><br></pre></td></tr></table></figure>
+<p>由于这里是每次计算出来是一个 block ，所以要把 block 拆分出每个元素，计算 block 中每行每列的最大值 row_max 以及分母 normalizer_term。</p>
+<p>最后在计算 softmax 时，要计算所有 block 的最大值 <code>torch.max(row_max, dim=1)</code>，还需要计算分母，这里需要考虑所有的 block，可以类比于合并计算 <code>[1, 2]</code>, <code>[3, 4]</code>两个列表的normalizer_term 。已知对应的 normalizer_term <span class="math inline">\(e^{1-2}+e^{2-2}\)</span> 和 <span class="math inline">\(e^{3-4}+e^{3-4}\)</span>，合并后的结果应当是 <span class="math inline">\(e^{1-4}+e^{2-4}+e^{3-4}+e^{3-4}\)</span>。将其公式化写作：</p>
+<p><span class="math display">\[
+\begin{aligned}
+\sum_{i=1}^{m} e^{x_i-max(x)} + \sum_{i=1}^{n} e^{y_i-max(y)} &amp; \rightarrow \sum_{i=1}^{m} e^{x_i-max(x,y)} + \sum_{i=1}^{n} e^{y_i-max(x,y)} \\ &amp;= \sum_{i=1}^{m} e^{x_i-max(x)}e^{max(x)-max(x,y)} + \sum_{i=1}^{n} e^{y_i-max(x,y)}e^{max(y)-max(x,y)}
+\end{aligned}
+\]</span></p>
+<p>假设 <code>max(x,y)=max(x)</code>，那么对应项将乘 1，这并不会对结果有任何影响。对应的代码为：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sum_ = torch.<span class="built_in">sum</span>(normalizer_term[ii] * torch.exp(row_max[ii] - row_max_v[ii]))</span><br></pre></td></tr></table></figure>
+<p>至此，完成了矩阵乘法和 softmax 的融合。接下来，会实现 cuda 版本以对比性能。</p>
+<h3 id="cuda-实现">CUDA 实现</h3>
+<p>首先，接着之前矩阵乘法的cuda实现，</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (row &lt; input1.size(<span class="number">0</span>) &amp;&amp; col &lt; input2.size(<span class="number">1</span>)) &#123;</span><br><span class="line">    <span class="keyword">scalar_t</span> value = <span class="number">0.0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; input1.size(<span class="number">1</span>); ++k) &#123;</span><br><span class="line">        value += input1[row][k] * input2[k][col];</span><br><span class="line">    &#125;</span><br><span class="line">    output[row][col] = value</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在循环之后，已经计算完了输出矩阵中的一项。需要继续算每行的 <code>row_max</code>和 <code>normalizer_term</code>。但由于这里是 cuda 中的某个 block，所以需要借助共享内存来通信每行的结果。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 使用共享内存，计算每个 row 的最大值</span></span><br><span class="line">__shared__ <span class="keyword">scalar_t</span> row_max[<span class="number">16</span>][<span class="number">16</span>];</span><br><span class="line">__shared__ <span class="keyword">scalar_t</span> normalizer_term[<span class="number">16</span>][<span class="number">16</span>];</span><br><span class="line">row_max[threadIdx.y][threadIdx.x] = value; <span class="comment">// 先把计算结果放到 row_max 中，以便于比较大小</span></span><br><span class="line">__syncthreads(); <span class="comment">// 这行代码是为了保证每个线程都已经计算完了，才能进行下一步的操作</span></span><br></pre></td></tr></table></figure>
+<p>计算过程分为三个步骤：1. 找到每行的最大值</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = blockDim.x / <span class="number">2</span>; i &gt; <span class="number">0</span>; i /= <span class="number">2</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (threadIdx.x &lt; i) &#123;</span><br><span class="line">        row_max[threadIdx.y][threadIdx.x] = max(row_max[threadIdx.y][threadIdx.x], row_max[threadIdx.y][threadIdx.x + i]);</span><br><span class="line">    &#125;</span><br><span class="line">    __syncthreads();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2" type="1">
+<li>计算每行的 softmax 的分母每项组成</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">normalizer_term[threadIdx.y][threadIdx.x] = <span class="built_in">exp</span>(value - row_max[threadIdx.y][<span class="number">0</span>]);</span><br><span class="line">__syncthreads();</span><br></pre></td></tr></table></figure>
+<ol start="3" type="1">
+<li>计算每行的 softmax 的每项之后</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = blockDim.x / <span class="number">2</span>; i &gt; <span class="number">0</span>; i /= <span class="number">2</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (threadIdx.x &lt; i) &#123;</span><br><span class="line">        normalizer_term[threadIdx.y][threadIdx.x] += normalizer_term[threadIdx.y][threadIdx.x + i];</span><br><span class="line">    &#125;</span><br><span class="line">    __syncthreads();</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 最后将其更新到输出矩阵中</span></span><br><span class="line">output[row][col] = <span class="built_in">exp</span>(value - row_max[threadIdx.y][<span class="number">0</span>]) / normalizer_term[threadIdx.y][<span class="number">0</span>];</span><br></pre></td></tr></table></figure>
+<p>完整代码如下（这里没有实现完整的attention，仅仅是一个矩阵乘法 + softmax 计算）：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;torch/extension.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cuda.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cuda_runtime.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Matrix multiply kernel</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> <span class="keyword">scalar_t</span>&gt;</span><br><span class="line"><span class="function">__global__ <span class="keyword">void</span> <span class="title">matrix_multiply_kernel</span><span class="params">(<span class="keyword">const</span> torch::PackedTensorAccessor&lt;<span class="keyword">scalar_t</span>,<span class="number">2</span>,torch::RestrictPtrTraits,<span class="keyword">size_t</span>&gt; input1,</span></span></span><br><span class="line"><span class="function"><span class="params">                                       <span class="keyword">const</span> torch::PackedTensorAccessor&lt;<span class="keyword">scalar_t</span>,<span class="number">2</span>,torch::RestrictPtrTraits,<span class="keyword">size_t</span>&gt; input2,</span></span></span><br><span class="line"><span class="function"><span class="params">                                       torch::PackedTensorAccessor&lt;<span class="keyword">scalar_t</span>,<span class="number">2</span>,torch::RestrictPtrTraits,<span class="keyword">size_t</span>&gt; output)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> row = blockIdx.y * blockDim.y + threadIdx.y;</span><br><span class="line">    <span class="keyword">int</span> col = blockIdx.x * blockDim.x + threadIdx.x;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (row &lt; input1.size(<span class="number">0</span>) &amp;&amp; col &lt; input2.size(<span class="number">1</span>)) &#123;</span><br><span class="line">        <span class="keyword">scalar_t</span> value = <span class="number">0.0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; input1.size(<span class="number">1</span>); ++k) &#123;</span><br><span class="line">            value += input1[row][k] * input2[k][col];</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 使用共享内存，计算每个 row 的最大值</span></span><br><span class="line">        __shared__ <span class="keyword">scalar_t</span> row_max[<span class="number">16</span>][<span class="number">16</span>];</span><br><span class="line">        __shared__ <span class="keyword">scalar_t</span> normalizer_term[<span class="number">16</span>][<span class="number">16</span>];</span><br><span class="line">        row_max[threadIdx.y][threadIdx.x] = value;</span><br><span class="line">        __syncthreads();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = blockDim.x / <span class="number">2</span>; i &gt; <span class="number">0</span>; i /= <span class="number">2</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (threadIdx.x &lt; i) &#123;</span><br><span class="line">                row_max[threadIdx.y][threadIdx.x] = max(row_max[threadIdx.y][threadIdx.x], row_max[threadIdx.y][threadIdx.x + i]);</span><br><span class="line">            &#125;</span><br><span class="line">            __syncthreads();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 计算每个 row 的 softmax 的分母</span></span><br><span class="line">        normalizer_term[threadIdx.y][threadIdx.x] = <span class="built_in">exp</span>(value - row_max[threadIdx.y][<span class="number">0</span>]);</span><br><span class="line"></span><br><span class="line">        __syncthreads();</span><br><span class="line">        <span class="comment">// 计算每个 row  normalizer_term之和</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = blockDim.x / <span class="number">2</span>; i &gt; <span class="number">0</span>; i /= <span class="number">2</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (threadIdx.x &lt; i) &#123;</span><br><span class="line">                normalizer_term[threadIdx.y][threadIdx.x] += normalizer_term[threadIdx.y][threadIdx.x + i];</span><br><span class="line">            &#125;</span><br><span class="line">            __syncthreads();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 计算每个 row 的 softmax</span></span><br><span class="line">        output[row][col] = <span class="built_in">exp</span>(value - row_max[threadIdx.y][<span class="number">0</span>]) / normalizer_term[threadIdx.y][<span class="number">0</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">torch::Tensor <span class="title">matrix_multiply</span><span class="params">(torch::Tensor input1, torch::Tensor input2)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> rows1 = input1.size(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">int</span> cols1 = input1.size(<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">int</span> cols2 = input2.size(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">auto</span> options = torch::TensorOptions().device(input1.device());</span><br><span class="line">    torch::Tensor output = torch::zeros(&#123;rows1, cols2&#125;, options);</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">const</span> dim3 <span class="title">threads</span><span class="params">(<span class="number">16</span>, <span class="number">16</span>)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">const</span> dim3 <span class="title">blocks</span><span class="params">((cols2 + threads.x - <span class="number">1</span>) / threads.x,</span></span></span><br><span class="line"><span class="function"><span class="params">                      (rows1 + threads.y - <span class="number">1</span>) / threads.y)</span></span>;</span><br><span class="line"></span><br><span class="line">    AT_DISPATCH_FLOATING_TYPES(input1.scalar_type(), <span class="string">&quot;matrix_multiply_kernel&quot;</span>, ([&amp;] &#123;</span><br><span class="line">        matrix_multiply_kernel&lt;&lt;&lt;blocks, threads&gt;&gt;&gt;(</span><br><span class="line">            input1.packed_accessor&lt;<span class="keyword">scalar_t</span>,<span class="number">2</span>,torch::RestrictPtrTraits,<span class="keyword">size_t</span>&gt;(),</span><br><span class="line">            input2.packed_accessor&lt;<span class="keyword">scalar_t</span>,<span class="number">2</span>,torch::RestrictPtrTraits,<span class="keyword">size_t</span>&gt;(),</span><br><span class="line">            output.packed_accessor&lt;<span class="keyword">scalar_t</span>,<span class="number">2</span>,torch::RestrictPtrTraits,<span class="keyword">size_t</span>&gt;());</span><br><span class="line">    &#125;));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> output;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 这里偷懒没有换名字</span></span><br><span class="line"><span class="function"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;torch::Tensor&gt; <span class="title">attention_cuda_forward</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    torch::Tensor q,</span></span></span><br><span class="line"><span class="function"><span class="params">    torch::Tensor k,</span></span></span><br><span class="line"><span class="function"><span class="params">    torch::Tensor v)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    torch::Tensor scores = matrix_multiply(q, k);</span><br><span class="line">    <span class="keyword">return</span> &#123;scores&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>测试代码如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> mulsoftmax</span><br><span class="line"><span class="keyword">import</span> timeit</span><br><span class="line"></span><br><span class="line">seed = <span class="number">42</span></span><br><span class="line">torch.manual_seed(seed)</span><br><span class="line">torch.cuda.manual_seed(seed)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">my_py_softmax</span>(<span class="params">x, dim</span>):</span></span><br><span class="line">    e = torch.exp(x)</span><br><span class="line">    s = torch.<span class="built_in">sum</span>(e, dim=dim, keepdim=<span class="literal">True</span>)</span><br><span class="line">    <span class="keyword">return</span> e / s</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">py_mulsoft</span>(<span class="params">q, k, v</span>):</span></span><br><span class="line">    <span class="comment"># print(q@k.T)</span></span><br><span class="line">    <span class="keyword">return</span> torch.softmax(q @ k.T, dim=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">check_forward</span>(<span class="params">q, k, v</span>):</span></span><br><span class="line">    baseline_values = py_mulsoft(q, k, v)</span><br><span class="line">    cpp_values = mulsoftmax.forward(q, k, v)[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">    print(<span class="string">&quot;base o&quot;</span>, baseline_values)</span><br><span class="line">    print(<span class="string">&quot;cpp  o&quot;</span>, cpp_values)</span><br><span class="line">    print(torch.<span class="built_in">all</span>(torch.isclose(baseline_values, cpp_values)))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">compare_time</span>(<span class="params">loop=<span class="number">100</span></span>):</span></span><br><span class="line">    q, k, v = torch.rand(size=(m, n), device=device), torch.rand(size=(m, n), device=device), torch.rand(size=(m, n), device=device)</span><br><span class="line">    print(<span class="string">&quot;py&quot;</span>, timeit.timeit(<span class="keyword">lambda</span>: py_mulsoft(q, k, v), number=loop))</span><br><span class="line">    print(<span class="string">&quot;cpp&quot;</span>, timeit.timeit(<span class="keyword">lambda</span>: mulsoftmax.forward(q, k, v)[<span class="number">0</span>], number=loop))</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    m, n = <span class="number">16</span>, <span class="number">40</span></span><br><span class="line">    device = <span class="string">&quot;cuda&quot;</span></span><br><span class="line">    q, k, v = torch.rand(size=(m, n), device=device), torch.rand(size=(m, n), device=device), torch.rand(size=(m, n), device=device)</span><br><span class="line">    <span class="comment"># 先检查结果是否正确</span></span><br><span class="line">    check_forward(q, k, v)</span><br><span class="line">    q, k, v = torch.rand(size=(m, n)), torch.rand(size=(m, n)), torch.rand(size=(m, n))</span><br><span class="line">    <span class="comment"># 循环1w次，对比性能差距</span></span><br><span class="line">    compare_time(<span class="number">10000</span>)</span><br></pre></td></tr></table></figure>
+<p>输出结果如下：</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th>py</th>
+<th>cuda</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>0.5136</td>
+<td>0.2909</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>0.6143</td>
+<td>0.3322</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>0.7300</td>
+<td>0.3608</td>
+</tr>
+</tbody>
+</table>
+<h3 id="其他实现">其他实现</h3>
+<h4 id="二维矩阵转一维矩阵实现矩阵乘法">二维矩阵转一维矩阵，实现矩阵乘法</h4>
+<p>在某些情况下，为了降低空间复杂度，会把二维矩阵展开为一维矩阵，再进行矩阵乘法。这里在这个基础上，再实现了 softmax 的计算。其本质上是把二维矩阵转为一维矩阵，再进行矩阵乘法。原来的<code>input1[row][k]</code> -&gt; <code>input1[row * K + k]</code>，<code>input2[k][col]</code> -&gt; <code>input2[k * N + col]</code>。但这里暂时不好实现 softmax 融合，因为 softmax 需要计算每行的最大值，这里的一维矩阵无法直接计算每行的最大值。所以这里偷懒先使用判断的方法，如果是最后一列，则计算 softmax。因此，导致算的速度会比较慢。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;torch/extension.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cuda.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cuda_runtime.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"></span><br><span class="line">#DEFINE BLOCK_SIZE <span class="number">256</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> <span class="keyword">scalar_t</span>&gt;</span><br><span class="line"><span class="function">__global__ <span class="keyword">void</span> <span class="title">matrix_multiply_vector_kernel</span><span class="params">(<span class="keyword">const</span> torch::PackedTensorAccessor&lt;<span class="keyword">scalar_t</span>,<span class="number">1</span>,torch::RestrictPtrTraits,<span class="keyword">size_t</span>&gt; input1,</span></span></span><br><span class="line"><span class="function"><span class="params">                                       <span class="keyword">const</span> torch::PackedTensorAccessor&lt;<span class="keyword">scalar_t</span>,<span class="number">1</span>,torch::RestrictPtrTraits,<span class="keyword">size_t</span>&gt; input2,</span></span></span><br><span class="line"><span class="function"><span class="params">                                       torch::PackedTensorAccessor&lt;<span class="keyword">scalar_t</span>,<span class="number">1</span>,torch::RestrictPtrTraits,<span class="keyword">size_t</span>&gt; output,</span></span></span><br><span class="line"><span class="function"><span class="params">                                       <span class="keyword">const</span> <span class="keyword">int</span> M, <span class="keyword">const</span> <span class="keyword">int</span> N, <span class="keyword">const</span> <span class="keyword">int</span> K</span></span></span><br><span class="line"><span class="function"><span class="params">                                       )</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> index = blockIdx.x * blockDim.x + threadIdx.x;</span><br><span class="line">    <span class="keyword">int</span> row = index / N;</span><br><span class="line">    <span class="keyword">int</span> col = index % N;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (row &lt; M &amp;&amp; col &lt; N) &#123;</span><br><span class="line">        <span class="keyword">float</span> value = <span class="number">0.0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; K; ++k) &#123;</span><br><span class="line">            value += input1[row * K + k] * input2[k * N + col];</span><br><span class="line">        &#125;</span><br><span class="line">        output[row * N + col] = value;</span><br><span class="line">        <span class="keyword">if</span> (col == N - <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">float</span> row_max = <span class="number">0.0</span>;</span><br><span class="line">            <span class="keyword">float</span> normalizer_term = <span class="number">0.0</span>;        </span><br><span class="line">            <span class="keyword">float</span> old_row_max = <span class="number">0.0</span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">                old_row_max = row_max;</span><br><span class="line">                row_max = max(row_max, output[row * N + i]);</span><br><span class="line">                normalizer_term = normalizer_term * <span class="built_in">exp</span>(old_row_max - row_max) + <span class="built_in">exp</span>(output[row * N + i] - row_max);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">                output[row * N + i] = <span class="built_in">exp</span>(output[row * N + i] - row_max) / normalizer_term;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;torch::Tensor&gt; <span class="title">matmul_vector</span><span class="params">(torch::Tensor input1, torch::Tensor input2)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> M = input1.size(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">int</span> K = input1.size(<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">int</span> N = input2.size(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">auto</span> options = torch::TensorOptions().device(input1.device());</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">const</span> dim3 <span class="title">threads</span><span class="params">(BLOCK_SIZE)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">const</span> dim3 <span class="title">blocks</span><span class="params">((M * N + threads.x - <span class="number">1</span>) / threads.x)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Reshape input tensors to vectors</span></span><br><span class="line">    <span class="keyword">auto</span> input1_vector = input1.reshape(&#123;<span class="number">-1</span>&#125;);</span><br><span class="line">    <span class="keyword">auto</span> input2_vector = input2.reshape(&#123;<span class="number">-1</span>&#125;);    </span><br><span class="line">    torch::Tensor output_vector = torch::zeros(&#123;M * N&#125;, options);</span><br><span class="line"></span><br><span class="line">    AT_DISPATCH_FLOATING_TYPES(input1_vector.scalar_type(), <span class="string">&quot;matrix_multiply_vector_kernel&quot;</span>, ([&amp;] &#123;</span><br><span class="line">        matrix_multiply_vector_kernel&lt;&lt;&lt;blocks, threads&gt;&gt;&gt;(</span><br><span class="line">            input1_vector.packed_accessor&lt;<span class="keyword">scalar_t</span>,<span class="number">1</span>,torch::RestrictPtrTraits,<span class="keyword">size_t</span>&gt;(),</span><br><span class="line">            input2_vector.packed_accessor&lt;<span class="keyword">scalar_t</span>,<span class="number">1</span>,torch::RestrictPtrTraits,<span class="keyword">size_t</span>&gt;(),</span><br><span class="line">            output_vector.packed_accessor&lt;<span class="keyword">scalar_t</span>,<span class="number">1</span>,torch::RestrictPtrTraits,<span class="keyword">size_t</span>&gt;(),</span><br><span class="line">            M, N, K</span><br><span class="line">        );</span><br><span class="line">    &#125;));</span><br><span class="line">    <span class="keyword">return</span> &#123;output_vector.reshape(&#123;M, N&#125;), output_vector.reshape(&#123;M, N&#125;)&#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;torch::Tensor&gt; <span class="title">attention_cuda_forward</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    torch::Tensor q,</span></span></span><br><span class="line"><span class="function"><span class="params">    torch::Tensor k,</span></span></span><br><span class="line"><span class="function"><span class="params">    torch::Tensor v)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> matmul_vector(q, k);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出结果如下：</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th>py</th>
+<th>cuda</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>0.4239</td>
+<td>0.4907</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>0.5069</td>
+<td>0.4388</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>0.5462</td>
+<td>0.5799</td>
+</tr>
+</tbody>
+</table>
+<p>尽管用了一种比较笨的方法，但是速度实际上与原生的 pytorch 相差无几。</p>
+<h4 id="单独实现-softmax">单独实现 softmax</h4>
+<p>相较于非算子融合的写法，这里实现了一维矩阵的 softmax。相当于在计算矩阵乘法后再算 softmax。比较朴素的写法。。。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> <span class="keyword">scalar_t</span>&gt;</span><br><span class="line"><span class="function">__global__ <span class="keyword">void</span> <span class="title">softmax_kernel</span><span class="params">(torch::PackedTensorAccessor&lt;<span class="keyword">scalar_t</span>,<span class="number">1</span>,torch::RestrictPtrTraits,<span class="keyword">size_t</span>&gt; output,</span></span></span><br><span class="line"><span class="function"><span class="params">                                 <span class="keyword">const</span> <span class="keyword">int</span> M, <span class="keyword">const</span> <span class="keyword">int</span> N)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> index = blockIdx.x * blockDim.x + threadIdx.x;</span><br><span class="line">    <span class="keyword">int</span> row = index / N;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (row &lt; M) &#123;</span><br><span class="line">        <span class="keyword">float</span> row_max = <span class="number">0.0</span>;</span><br><span class="line">        <span class="keyword">float</span> normalizer_term = <span class="number">0.0</span>;        </span><br><span class="line">        <span class="keyword">float</span> old_row_max = <span class="number">0.0</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">            old_row_max = row_max;</span><br><span class="line">            row_max = max(row_max, output[row * N + i]);</span><br><span class="line">            normalizer_term = normalizer_term * <span class="built_in">exp</span>(old_row_max - row_max) + <span class="built_in">exp</span>(output[row * N + i] - row_max);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">            output[row * N + i] = <span class="built_in">exp</span>(output[row * N + i] - row_max) / normalizer_term;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">torch::Tensor <span class="title">matrix_softmax_vector_softmax</span><span class="params">(torch::Tensor input1, torch::Tensor input2)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> M = input1.size(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">int</span> K = input1.size(<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">int</span> N = input2.size(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">auto</span> options = torch::TensorOptions().device(input1.device());</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">const</span> dim3 <span class="title">threads</span><span class="params">(BLOCK_SIZE_VECTOR)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">const</span> dim3 <span class="title">blocks</span><span class="params">((M * N + threads.x - <span class="number">1</span>) / threads.x)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Reshape input tensors to vectors</span></span><br><span class="line">    <span class="keyword">auto</span> input1_vector = input1.reshape(&#123;<span class="number">-1</span>&#125;);</span><br><span class="line">    <span class="keyword">auto</span> input2_vector = input2.reshape(&#123;<span class="number">-1</span>&#125;);    </span><br><span class="line">    torch::Tensor output_vector = torch::zeros(&#123;M * N&#125;, options);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 普通一维的矩阵乘法</span></span><br><span class="line">    AT_DISPATCH_FLOATING_TYPES(input1_vector.scalar_type(), <span class="string">&quot;matrix_multiply_vector_softmax_kernel&quot;</span>, ([&amp;] &#123;</span><br><span class="line">        matrix_multiply_vector_softmax_kernel&lt;&lt;&lt;blocks, threads&gt;&gt;&gt;(</span><br><span class="line">            input1_vector.packed_accessor&lt;<span class="keyword">scalar_t</span>,<span class="number">1</span>,torch::RestrictPtrTraits,<span class="keyword">size_t</span>&gt;(),</span><br><span class="line">            input2_vector.packed_accessor&lt;<span class="keyword">scalar_t</span>,<span class="number">1</span>,torch::RestrictPtrTraits,<span class="keyword">size_t</span>&gt;(),</span><br><span class="line">            output_vector.packed_accessor&lt;<span class="keyword">scalar_t</span>,<span class="number">1</span>,torch::RestrictPtrTraits,<span class="keyword">size_t</span>&gt;(),</span><br><span class="line">            M, N, K</span><br><span class="line">        );</span><br><span class="line">    &#125;));</span><br><span class="line"></span><br><span class="line">    cudaDeviceSynchronize();</span><br><span class="line"></span><br><span class="line">    AT_DISPATCH_FLOATING_TYPES(output_vector.scalar_type(), <span class="string">&quot;softmax_kernel&quot;</span>, ([&amp;] &#123;</span><br><span class="line">        softmax_kernel&lt;&lt;&lt;blocks, threads&gt;&gt;&gt;(</span><br><span class="line">            output_vector.packed_accessor&lt;<span class="keyword">scalar_t</span>,<span class="number">1</span>,torch::RestrictPtrTraits,<span class="keyword">size_t</span>&gt;(),</span><br><span class="line">            M, N</span><br><span class="line">        );</span><br><span class="line">    &#125;));</span><br><span class="line">    <span class="keyword">return</span> output_vector.reshape(&#123;M, N&#125;);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出结果如下：</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th>py</th>
+<th>cuda</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>0.4239</td>
+<td>1.1874</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>0.5069</td>
+<td>1.1101</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>0.5462</td>
+<td>1.3238</td>
+</tr>
+</tbody>
+</table>
+<p>对比发现，这里的cuda还是会比pytorch的慢一些，这是因为没有用自带的softmax，且没有使用算子融合。所以就算速度会更慢。</p>
+<h2 id="attention-的算子融合写法">Attention 的算子融合写法</h2>
+<p>Attention 的公式如下所示，在上面已经是实现了一次矩阵乘法 + softmax 计算的融合，接下来需要再将其与新的矩阵乘法融合。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">py_attention</span>(<span class="params">q, k, v</span>):</span></span><br><span class="line">    <span class="keyword">return</span> torch.softmax(q @ k.T, dim=<span class="number">1</span>) @ v</span><br></pre></td></tr></table></figure>
+<p>相较于之前的先计算矩阵乘法再计算 softmax，这里是先计算 softmax 再计算矩阵乘法。重新回到开始，假设<code>q @ v.T=out</code>矩阵乘法结果为</p>
+<p><span class="math display">\[
+[[1, 2, 3, 4],
+ [1, 2, 3, 4]]
+\]</span></p>
+<p>在计算过程中，往往是先计算得到前半部分，再得到后半部分，即</p>
+<p><span class="math display">\[
+[[1, 2],
+ [1, 2]]
+\]</span> 和 <span class="math display">\[
+[[3, 4],
+ [3, 4]]
+\]</span></p>
+<h3 id="第一次计算">第一次计算</h3>
+<p>对于<code>out</code>，每行的计算过程是独立的，所以可以只模拟一行一列的情况来表示所有行的计算过程。假设<code>k</code>的第一列全为<code>1</code>。第一次计算为</p>
+<p><span class="math display">\[
+[1, 2]
+\]</span></p>
+<ol type="1">
+<li><span class="math inline">\(v_1 = \max(1, 2)\)</span></li>
+<li><span class="math inline">\(\text{denominator1} = \exp(1-v_1) + \exp(2-v_1)\)</span></li>
+<li><span class="math inline">\([\exp(1-v_1) / \text{denominator1}, \exp(2-v_1) / \text{denominator1}]\)</span></li>
+<li>此时，再乘上<code>k</code>的第一列前两项（因为这里只有两项）</li>
+</ol>
+<p><span class="math display">\[
+[[1],
+ [1]]
+\]</span></p>
+<ol start="5" type="1">
+<li>有<span class="math inline">\(\exp(1-v_1) / \text{denominator1} * 1 + \exp(2-v_1) / \text{denominator1} * 1\)</span></li>
+</ol>
+<h3 id="第二次计算">第二次计算</h3>
+<p><span class="math display">\[
+[3, 4]
+\]</span></p>
+<ol type="1">
+<li><span class="math inline">\(v_2 = \max(3, 4, v_1)\)</span></li>
+<li><span class="math inline">\(\text{denominator2} = \text{denominator1}*(exp(v_1-v_2))+d_t\)</span>，其中，<span class="math inline">\(d_t=\exp(3-v_2) + \exp(4-v_2)\)</span>， 见上文的 Online Softmax</li>
+<li><span class="math inline">\([\exp(3-v_2) / \text{denominator2}, \exp(4-v_2) / \text{denominator2}]\)</span></li>
+<li>此时，再乘上<code>k</code>的第一列后两项</li>
+</ol>
+<p><span class="math display">\[
+[[1],
+ [1]]
+\]</span></p>
+<ol start="5" type="1">
+<li>有<span class="math inline">\(\exp(3-v2) / \text{denominator2} * 1 + \exp(4-v2) / \text{denominator2} * 1\)</span></li>
+</ol>
+<p>所以现在计算的结果是</p>
+<p><span class="math display">\[
+\begin{aligned}
+ \exp(1-v_1) / \text{denominator1} * 1 + \exp(2-v_1) / \text{denominator1} * 1 \\ 
++ \exp(3-v_2) / \text{denominator2} * 1 + \exp(4-v_2) / \text{denominator2} * 1
+\end{aligned}
+\]</span></p>
+<p>然而，正确的结果应当是</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp; \exp(1-v_2) / \text{denominator2} * 1 + \exp(2-v_2) / \text{denominator2} * 1 \\ 
+&amp; + \exp(3-v_2) / \text{denominator2} * 1 + \exp(4-v_2) / \text{denominator2} * 1
+\end{aligned}
+\]</span></p>
+<h3 id="校准之前的结果">校准之前的结果</h3>
+<p>对比发现，只有之前的结果是有偏差的，所以只需要对之前的结果进行校准，即乘上一个系数。这个系数怎么计算呢？以第一项为例，用实际的结果除以之前的结果，有</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;  \frac{\exp(1-v_1)}{\text{denominator1}}\times \frac{\text{denominator1}}{\text{denominator2}} \times \exp(v_1-v_2) = \frac{\exp(1-v_2)}{\text{denominator2}} \\
+\end{aligned}
+\]</span></p>
+<p>并且，对于第二项，也是一样的，所以这个系数为</p>
+<p><span class="math display">\[
+\frac{\text{denominator1}*\exp(v_1-v_2)}{\text{denominator2}}
+\]</span></p>
+<p>因此，对于每次校准结果，只需要先乘上这个系数（当前的<code>denominator</code>除以上一轮的<code>denominator</code>），最后再计算第五步。</p>
+<p>在计算过程中，需要存<code>denominator</code>这个变量，同时还需要额外存一次之前的最大值，以进行校准。</p>
+<h3 id="python-代码实现">Python 代码实现</h3>
+<p>为了便于理解，约定变量名为</p>
+<ul>
+<li><code>old_row_max</code>：之前的最大值</li>
+<li><code>row_max</code>：最新的最大值</li>
+<li><code>denominator</code>：之前的分母</li>
+<li><code>mod_denominator</code>：之前的分母进行校准后的结果</li>
+<li><code>new_molecule</code>：最新的分子</li>
+<li><code>cur_denominator</code>：分母</li>
+</ul>
+<p>所以，校准公式为</p>
+<p><span class="math display">\[
+\begin{aligned}
+\frac{\text{denominator1}*\exp(v_1-v_2)}{\text{denominator2}} &amp;= \frac{\text{denominator} * \exp(\text{row\text{max}}-\text{old\_row\_max})}{\text{cur\_denominator}} \\
+&amp;= \frac{\text{mod\_denominator}}{\text{cur\_denominator}}
+\end{aligned}
+\]</span></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"></span><br><span class="line">M = <span class="number">4</span></span><br><span class="line">N = <span class="number">6</span></span><br><span class="line"></span><br><span class="line">q = torch.rand((M, N))</span><br><span class="line">k = torch.rand((M, N))</span><br><span class="line">v = torch.rand((M, N))</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">flash_attention</span>(<span class="params">q, k, v</span>):</span></span><br><span class="line">    output = torch.zeros(q.shape)</span><br><span class="line"></span><br><span class="line">    block_m = <span class="number">2</span></span><br><span class="line">    block_n = <span class="number">2</span></span><br><span class="line">    block_head = N</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, M, block_m):</span><br><span class="line">        start_i, end_i = i, i + block_m</span><br><span class="line"></span><br><span class="line">        old_row_max = torch.zeros([block_m]) - <span class="built_in">float</span>(<span class="string">&quot;inf&quot;</span>)</span><br><span class="line">        denominator = torch.zeros([block_m]) <span class="comment"># 用于存储分母</span></span><br><span class="line">        acc = torch.zeros([block_m, block_head])</span><br><span class="line">        q_sub = q[start_i:end_i, :]</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, M, block_n):</span><br><span class="line">            start_j, end_j = j, j + block_n</span><br><span class="line">            k_sub = k[start_j:end_j, :]</span><br><span class="line">            v_sub = v[start_j:end_j, :]</span><br><span class="line">            qk = q_sub @ k_sub.T</span><br><span class="line">            <span class="comment"># online softmax</span></span><br><span class="line">            row_max = torch.<span class="built_in">max</span>(</span><br><span class="line">                torch.stack((torch.<span class="built_in">max</span>(qk, dim=<span class="number">1</span>).values, old_row_max), dim=<span class="number">0</span>), dim=<span class="number">0</span></span><br><span class="line">            ).values</span><br><span class="line">            mod_denominator = denominator * torch.exp(old_row_max - row_max)    <span class="comment"># 对之前的分母进行校准</span></span><br><span class="line">            new_molecule = torch.exp(qk - row_max.reshape(-<span class="number">1</span>, <span class="number">1</span>))            <span class="comment"># 最新的分子</span></span><br><span class="line">            cur_denominator = torch.<span class="built_in">sum</span>(new_molecule, -<span class="number">1</span>) + mod_denominator  <span class="comment"># 对分母进行更新</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># 分子 / 分母，当前block的softmax</span></span><br><span class="line">            new_softmax = new_molecule / torch.unsqueeze(cur_denominator, dim=<span class="number">1</span>)</span><br><span class="line">            <span class="comment"># 校准系数</span></span><br><span class="line">            acc *= torch.unsqueeze(mod_denominator / cur_denominator, dim=<span class="number">1</span>)</span><br><span class="line">            acc += new_softmax @ v_sub</span><br><span class="line">            <span class="comment"># 更新需要存的值</span></span><br><span class="line">            old_row_max = row_max</span><br><span class="line">            denominator = cur_denominator</span><br><span class="line"></span><br><span class="line">        output[start_i:end_i, :] = acc</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> output</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">naive_attention</span>(<span class="params">q, k, v</span>):</span></span><br><span class="line">    <span class="keyword">return</span> torch.softmax(q @ k.T, dim=<span class="number">1</span>) @ v</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    desired = naive_attention(q, k, v)</span><br><span class="line">    actual = flash_attention(q, k, v)</span><br><span class="line">    print(desired)</span><br><span class="line">    print(actual)</span><br><span class="line">    <span class="keyword">assert</span> torch.allclose(desired, actual)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="cuda-实现-1">CUDA 实现</h3>
+<h2 id="参考">参考</h2>
+<p>[1] <a target="_blank" rel="noopener" href="https://github.com/ELS-RD/kernl/blob/main/tutorial/3%20-%20online%20softmax.ipynb">Online softmax</a></p>
+<p>[2] <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1805.02867.pdf">Online normalizer calculation for softmax</a></p>
+<p>[3] <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/607364156">Flash Attention on INTEL GPU</a></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>wnma3mz
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wnma3mz.github.io/2023/12/20/PyTorch/%E4%BB%A5Attention%E4%B8%BA%E4%BE%8B%E7%9A%84%E7%AE%97%E5%AD%90%E8%9E%8D%E5%90%88/" title="以Attention为例的算子融合">https://wnma3mz.github.io/2023/12/20/PyTorch/以Attention为例的算子融合/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hexo_blog/tags/PyTorch/" rel="tag"># PyTorch</a>
+              <a href="/hexo_blog/tags/CUDA/" rel="tag"># CUDA</a>
+              <a href="/hexo_blog/tags/Cpp/" rel="tag"># Cpp</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2023/12/03/PyTorch/pytorch_cpp_extension/" rel="prev" title="用 Cpp 写 PyTorch 的插件">
+      <i class="fa fa-chevron-left"></i> 用 Cpp 写 PyTorch 的插件
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2024/06/15/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F/" rel="next" title="LLM的推理加速">
+      LLM的推理加速 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9F%A9%E9%98%B5%E4%B9%98%E6%B3%95softmax%E7%AE%97%E5%AD%90%E8%9E%8D%E5%90%88"><span class="nav-text">矩阵乘法+Softmax算子融合</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#online-softmax"><span class="nav-text">Online softmax</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#softmax-%E7%9F%A9%E9%98%B5%E4%B9%98%E6%B3%95"><span class="nav-text">softmax + 矩阵乘法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cuda-%E5%AE%9E%E7%8E%B0"><span class="nav-text">CUDA 实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E5%AE%9E%E7%8E%B0"><span class="nav-text">其他实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C%E7%BB%B4%E7%9F%A9%E9%98%B5%E8%BD%AC%E4%B8%80%E7%BB%B4%E7%9F%A9%E9%98%B5%E5%AE%9E%E7%8E%B0%E7%9F%A9%E9%98%B5%E4%B9%98%E6%B3%95"><span class="nav-text">二维矩阵转一维矩阵，实现矩阵乘法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%95%E7%8B%AC%E5%AE%9E%E7%8E%B0-softmax"><span class="nav-text">单独实现 softmax</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#attention-%E7%9A%84%E7%AE%97%E5%AD%90%E8%9E%8D%E5%90%88%E5%86%99%E6%B3%95"><span class="nav-text">Attention 的算子融合写法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AC%A1%E8%AE%A1%E7%AE%97"><span class="nav-text">第一次计算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AC%A1%E8%AE%A1%E7%AE%97"><span class="nav-text">第二次计算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%A1%E5%87%86%E4%B9%8B%E5%89%8D%E7%9A%84%E7%BB%93%E6%9E%9C"><span class="nav-text">校准之前的结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#python-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-text">Python 代码实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cuda-%E5%AE%9E%E7%8E%B0-1"><span class="nav-text">CUDA 实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-text">参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="wnma3mz"
+      src="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
+  <p class="site-author-name" itemprop="name">wnma3mz</p>
+  <div class="site-description" itemprop="description">Day Day Up</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/hexo_blog/archives/">
+        
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/hexo_blog/categories/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/hexo_blog/tags/">
+          
+        <span class="site-state-item-count">85</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wnma3mz" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wnma3mz" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wnma3mz@gmail.com" title="E-Mail → mailto:wnma3mz@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wnma3mz</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='99' src="/hexo_blog/lib/canvas-nest/canvas-nest-nomobile.min.js"></script>
+  <script src="/hexo_blog/lib/anime.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/hexo_blog/js/utils.js"></script>
+
+<script src="/hexo_blog/js/motion.js"></script>
+
+
+<script src="/hexo_blog/js/schemes/muse.js"></script>
+
+
+<script src="/hexo_blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/hexo_blog/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

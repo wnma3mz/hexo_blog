@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/hexo_blog/css/main.css">
+
+
+<link rel="stylesheet" href="/hexo_blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wnma3mz.github.io","root":"/hexo_blog/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="这篇文章主要介绍了Hive在Hadoop上的安装及一些基本的Hive操作">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在Hadoop基础上Hive的安装">
+<meta property="og:url" content="https://wnma3mz.github.io/2017/05/07/%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/%E5%9C%A8Hadoop%E5%9F%BA%E7%A1%80%E4%B8%8AHive%E7%9A%84%E5%AE%89%E8%A3%85/index.html">
+<meta property="og:site_name" content="Wnma&#39;s Blogs">
+<meta property="og:description" content="这篇文章主要介绍了Hive在Hadoop上的安装及一些基本的Hive操作">
+<meta property="og:locale">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/hadoop/20170612195815151.png">
+<meta property="article:published_time" content="2017-05-07T05:03:12.000Z">
+<meta property="article:modified_time" content="2023-12-05T01:50:48.963Z">
+<meta property="article:author" content="wnma3mz">
+<meta property="article:tag" content="Hadoop">
+<meta property="article:tag" content="大数据">
+<meta property="article:tag" content="Hive">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/hadoop/20170612195815151.png">
+
+<link rel="canonical" href="https://wnma3mz.github.io/2017/05/07/%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/%E5%9C%A8Hadoop%E5%9F%BA%E7%A1%80%E4%B8%8AHive%E7%9A%84%E5%AE%89%E8%A3%85/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>在Hadoop基础上Hive的安装 | Wnma's Blogs</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="تشغيل شريط التصفح">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hexo_blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Wnma's Blogs</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/hexo_blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/hexo_blog/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/hexo_blog/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/hexo_blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-bookmark">
+
+    <a href="https://wnma3mz.github.io/bookmark/index.html" rel="section"><i class="fa fa-bookmark fa-fw"></i>书签</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/2017/05/07/%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/%E5%9C%A8Hadoop%E5%9F%BA%E7%A1%80%E4%B8%8AHive%E7%9A%84%E5%AE%89%E8%A3%85/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
+      <meta itemprop="name" content="wnma3mz">
+      <meta itemprop="description" content="Day Day Up">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wnma's Blogs">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          在Hadoop基础上Hive的安装
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建于：2017-05-07 13:03:12" itemprop="dateCreated datePublished" datetime="2017-05-07T13:03:12+08:00">2017-05-07</time>
+
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="عُدل：2023-12-05 09:50:48" itemprop="dateModified" datetime="2023-12-05T09:50:48+08:00">2023-12-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/Environment/" itemprop="url" rel="index"><span itemprop="name">Environment</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>这篇文章主要介绍了Hive在Hadoop上的安装及一些基本的Hive操作</p>
+<a id="more"></a>
+<p>写在开头 环境 Hadoop单机 Centos7 Hadoop-2.7.3 hadoop位置：/usr/loacl/hadoop</p>
+<p>参考文章 <a target="_blank" rel="noopener" href="http://yanliu.org/2015/08/13/Hadoop%E9%9B%86%E7%BE%A4%E4%B9%8BHive%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/">Hadoop集群之Hive安装配置</a></p>
+<h2 id="下载hive">下载Hive</h2>
+<p>下载源码包 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#在hadoop目录下操作</span></span><br><span class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/hadoop</span><br><span class="line"></span><br><span class="line"><span class="comment">#用wget下载</span></span><br><span class="line">wget http://mirrors.cnnic.cn/apache/hive/hive-1.2.1/apache-hive-1.2.1-bin.tar.gz</span><br><span class="line"></span><br><span class="line"><span class="comment">#也可以在图形界面下下载之后，上传压缩包</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#解压缩包</span></span><br><span class="line">tar -zxvf apache-hive-1.2.1-bin.tar.gz</span><br><span class="line"></span><br><span class="line"><span class="comment">#配置环境变量</span></span><br><span class="line">vim /etc/profile</span><br><span class="line"><span class="comment">#位置在之前配置的变量之后，大概12行左右，因为之前配置了jdk和hadoop变量</span></span><br><span class="line"><span class="built_in">export</span> HIVE_HOME=/usr/<span class="built_in">local</span>/hadoop/apache-hive-1.2.2-bin</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$HIVE_HOME</span>/bin:<span class="variable">$PATH</span></span><br><span class="line"><span class="comment">#适当位置添加&quot;$HIVE_HOME/bin:&quot;</span></span><br><span class="line"><span class="comment">#保存退出</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#使文件生效</span></span><br><span class="line"><span class="built_in">source</span> /etc/profile</span><br></pre></td></tr></table></figure></p>
+<h2 id="安装mysql">安装MySQL</h2>
+<p>MariaDB数据库管理系统是MySQL的一个分支，主要由开源社区在维护，采用GPL授权许可。开发这个分支的原因之一是：甲骨文公司收购了MySQL后，有将MySQL闭源的潜在风险，因此社区采用分支的方式来避开这个风险。MariaDB的目的是完全兼容MySQL，包括API和命令行，使之能轻松成为MySQL的代替品。</p>
+<p>在Centos7下，使用命令安装mysql，会安装成mariadb。</p>
+<p>在这里先介绍安装MariaDB，原因如上。</p>
+<h3 id="安装mariadb">安装MariaDB</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#安装</span></span><br><span class="line">yum install mariadb-server mariadb</span><br><span class="line"></span><br><span class="line"><span class="comment">#启动</span></span><br><span class="line">systemctl start mariadb</span><br><span class="line"></span><br><span class="line"><span class="comment">#进入MySQL</span></span><br><span class="line">mysql -u root -p</span><br><span class="line"></span><br><span class="line"><span class="comment">#命令行变成如下，可能有点不习惯</span></span><br><span class="line">MariaDB [(none)]&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#P.S.</span></span><br><span class="line"><span class="comment">#相关命令</span></span><br><span class="line">systemctl start mariadb <span class="comment">#启动MariaDB</span></span><br><span class="line">systemctl stop mariadb <span class="comment">#停止MariaDB</span></span><br><span class="line">systemctl restart mariadb <span class="comment">#重启MariaDB</span></span><br><span class="line">systemctl <span class="built_in">enable</span> mariadb <span class="comment">#设置开机启动</span></span><br></pre></td></tr></table></figure>
+<h3 id="正式安装mysql">正式安装MySQL</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#下载，在这里使用的是命令行下载，也建议在图形界面下载，然后上传至服务器</span></span><br><span class="line">wget http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm</span><br><span class="line"></span><br><span class="line"><span class="comment">#使用rpm安装</span></span><br><span class="line">rpm -ivh mysql-community-release-el7-5.noarch.rpm</span><br><span class="line"></span><br><span class="line"><span class="comment">#使用yum安装mysql-community-server</span></span><br><span class="line">yum install mysql-community-server</span><br><span class="line"></span><br><span class="line"><span class="comment">#启动服务</span></span><br><span class="line">service mysqld start</span><br><span class="line"></span><br><span class="line"><span class="comment">#进入mysql，第一次进入无密码</span></span><br><span class="line">mysql -u root -p</span><br><span class="line"></span><br><span class="line"><span class="comment">#命令行变成如下</span></span><br><span class="line">mysql&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="配置mysql">配置MySQL</h3>
+<p>编码配置 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#进入配置文件，若未安装vim，建议先使用命令yum install vim安装vim</span></span><br><span class="line">vim /etc/my.cnf</span><br><span class="line"></span><br><span class="line"><span class="comment">#最后加上编码配置</span></span><br><span class="line">[mysql]</span><br><span class="line">default-character-set =utf8</span><br><span class="line"></span><br><span class="line"><span class="comment">#此处字符编码必须和/usr/share/mysql/charsets/Index.xml中一致。</span></span><br><span class="line"><span class="comment">#不过一般情况下使用的都是utf8</span></span><br></pre></td></tr></table></figure> 设置密码 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#下面三种方法需要进入mysql</span></span><br><span class="line">mysql -u root -p</span><br><span class="line"></span><br><span class="line"><span class="comment">#方法一</span></span><br><span class="line">mysql&gt;insert into user(host,user,password) values(<span class="string">&#x27;%&#x27;</span>,<span class="string">&#x27;user_name&#x27;</span>,password(<span class="string">&quot;password&quot;</span>);</span><br><span class="line"><span class="comment">#方法二</span></span><br><span class="line">mysql&gt;<span class="built_in">set</span> password <span class="keyword">for</span> user_name = password(<span class="string">&quot;password&quot;</span>);</span><br><span class="line"><span class="comment">#方法三</span></span><br><span class="line">mysql&gt;grant all on *.* to user_name@% identified by <span class="string">&quot;password&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">#下面这一种方法可直接在shell下设置密码</span></span><br><span class="line">mysqladmin -u root password <span class="string">&quot;password&quot;</span></span><br></pre></td></tr></table></figure> 远程连接</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#进入mysql</span></span><br><span class="line">mysql -u root -p</span><br><span class="line"></span><br><span class="line"><span class="comment">#把在所有数据库的所有表的所有权限赋值给位于所有IP地址的root用户。</span></span><br><span class="line">mysql&gt; grant all privileges on *.* to root@<span class="string">&#x27;%&#x27;</span>identified by <span class="string">&quot;password&quot;</span>;</span><br></pre></td></tr></table></figure>
+<p>P.S.上文引号中的user_name表示数据库的用户名，password表示对应用户的密码。即这两项是由读者自行定义的。</p>
+<h3 id="常见问题及解决方案">常见问题及解决方案</h3>
+<h4 id="mysql创建用户失败">Mysql创建用户失败</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># mysql在my.ini的配置文件中设置了严格模式，所以我们需要进行修改</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 第一步，寻找配置文件</span></span><br><span class="line">whereis my.ini</span><br><span class="line"></span><br><span class="line"><span class="comment"># 第二步，根据上一步结果进行vim编辑</span></span><br><span class="line">vim /../my.ini</span><br><span class="line"></span><br><span class="line"><span class="comment"># 第三步，在vim里面搜索sql-mode,删除STRICT_TRANS_TABLES，保存退出即可</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 第四步，保险起见，使刚刚的配置文件立即生效</span></span><br><span class="line"><span class="built_in">source</span> /../my.ini</span><br></pre></td></tr></table></figure>
+<h4 id="支持中文">支持中文</h4>
+<ul>
+<li><p>Centos7</p>
+<p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 编辑文件</span></span><br><span class="line">vim /etc/my.cnf</span><br><span class="line"><span class="comment"># 在对应[xx]下增加修改如下代码</span></span><br><span class="line">[client]</span><br><span class="line">port = 3306</span><br><span class="line">socket = /var/lib/mysql/mysql.sock</span><br><span class="line">default-character-set=utf8</span><br><span class="line"></span><br><span class="line">[mysqld]</span><br><span class="line">port = 3306</span><br><span class="line">socket = /var/lib/mysql/mysql.sock</span><br><span class="line">default-storage-engine=INNODB</span><br><span class="line">character-set-server=utf8</span><br><span class="line">collation-server=utf8_general_ci</span><br><span class="line"></span><br><span class="line">[mysql]</span><br><span class="line">no-auto-rehash</span><br><span class="line">default-character-set=utf8</span><br><span class="line"><span class="comment"># 保存退出，重启服务</span></span><br><span class="line"><span class="comment"># 重新登陆mysql检查是否成功，方法见下</span></span><br></pre></td></tr></table></figure></p></li>
+<li><p>Ubuntu16.04</p>
+<p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/mysql/mysql.conf.d/mysqld.cnf</span><br><span class="line"><span class="comment"># 在对应[xx]下增加以下内容，如果不存在[xx]自行增加</span></span><br><span class="line">[mysqld]</span><br><span class="line">character_set_server=utf8</span><br><span class="line">[mysql]</span><br><span class="line">default-character-set=utf8</span><br><span class="line">[mysql.server]</span><br><span class="line">default-character-set=utf8</span><br><span class="line">[mysqld_safe]</span><br><span class="line">default-character-set=utf8</span><br><span class="line">[client]</span><br><span class="line">default-character-set=utf8</span><br><span class="line"><span class="comment"># 重启mysql</span></span><br><span class="line">service mysql restart</span><br><span class="line"><span class="comment"># 进入mysql查看配置参数</span></span><br><span class="line">mysql -uroot -p</span><br><span class="line"><span class="comment"># 查看database 的value变为utf8即可</span></span><br><span class="line">&gt;show variables like <span class="string">&#x27;%character%&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># p.s.如果之前创建了表，表编码不会改变</span></span><br></pre></td></tr></table></figure></p></li>
+</ul>
+<h4 id="mysql报错1366---incorrect-integer-value-xxxxxxx-at-row-1">MySQL报错“1366 - Incorrect integer value: '' XXXXXXX' at row 1 ”</h4>
+<p>修改方法:（两种,建议第二种）</p>
+<ol type="1">
+<li><p>命令行。set names gbk；(此为设置通信编码)</p></li>
+<li><p><code>my.cnf</code> 中查找sql-mode</p></li>
+</ol>
+<p>将 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sql-mode=<span class="string">&quot;STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION&quot;</span>，</span><br></pre></td></tr></table></figure> 修改为 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sql-mode=<span class="string">&quot;NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION&quot;</span>，</span><br></pre></td></tr></table></figure> 重启mysql后即可</p>
+<h4 id="关于my.cnf和my.ini的说明">关于my.cnf和my.ini的说明</h4>
+<p>my.cnf常见于Linux系统，my.ini常见与windows系统，二者都是属于mysql的配置文件。一般好像在一个系统下就是只出现一种配置文件，具体区别没有深入了解，修改配置文件，根据自己的系统进行查找修改配置文件即可</p>
+<h4 id="mysql交互环境自动补全">Mysql交互环境自动补全</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 修改配置文件</span></span><br><span class="line">vim /etc/my.cnf</span><br><span class="line"><span class="comment"># 在[mysql]部分添加auto-rehash</span></span><br><span class="line"><span class="comment"># 保存退出，重启</span></span><br><span class="line">service mysqld restart</span><br></pre></td></tr></table></figure>
+<h2 id="配置hive">配置Hive</h2>
+<p>我们之前在hadoop目录下安装了Hive，位置为<code>/usr/local/hadoop/apache-hive-1.2.1-bin</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#进入hive配置目录下</span></span><br><span class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/hadoop/apache-hive-1.2.1-bin/conf</span><br><span class="line"></span><br><span class="line"><span class="comment">#修改hive-default.xml.template</span></span><br><span class="line"><span class="comment">#首先复制</span></span><br><span class="line">cp hive-default.xml.template hive-default.xml</span><br><span class="line"><span class="comment">#修改文件</span></span><br><span class="line">vim hive-default.xml</span><br><span class="line"></span><br><span class="line"><span class="comment"># 1. 第一步将&lt;configuration&gt;&lt;/configuration&gt;中内容删除大概是18-3908行</span></span><br><span class="line"><span class="comment"># vim删除命令--&gt;:18,3908d</span></span><br><span class="line"><span class="comment"># 2.将下面&lt;configuration&gt;&lt;/configuration&gt;中内容复制进去,分别将3306喝9083前的user_name改为当前的用户名</span></span><br><span class="line">&lt;configuration&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;javax.jdo.option.ConnectionURL&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;jdbc:mysql://user_name:3306/hive?createDatabaseIfNotExist=<span class="literal">true</span>&lt;/value&gt;</span><br><span class="line">        &lt;description&gt;JDBC connect string <span class="keyword">for</span> a JDBC metastore&lt;/description&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;javax.jdo.option.ConnectionDriverName&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;com.mysql.jdbc.Driver&lt;/value&gt;</span><br><span class="line">        &lt;description&gt;Driver class name <span class="keyword">for</span> a JDBC metastore&lt;/description&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line"></span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;javax.jdo.option.ConnectionUserName&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;hive&lt;value&gt;</span><br><span class="line">        &lt;description&gt;username to use against metastore database&lt;/description&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;javax.jdo.option.ConnectionPassword&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;hive&lt;/value&gt;</span><br><span class="line">        &lt;description&gt;password to use against metastore database&lt;/description&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line"></span><br><span class="line">    &lt;property&gt;</span><br><span class="line">    &lt;name&gt;hive.metastore.uris&lt;/name&gt;</span><br><span class="line">    &lt;value&gt;thrift://user_name:9083&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="下载jdbc">下载JDBC</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#命令行下载,也可以使用图形界面上传文件</span></span><br><span class="line"> wget http://cdn.mysql.com/Downloads/Connector-J/mysql-connector-java-5.1.36.tar.gz</span><br><span class="line"></span><br><span class="line"><span class="comment">#将文件复制进Hive的lib目录下，原因，Hive的自带的那个版本低，可能失效</span></span><br><span class="line"> cp mysql-connector-java-5.1.33-bin.jar /usr/<span class="built_in">local</span>/hadoop/apache-hive-1.2.1-bin/lib/</span><br></pre></td></tr></table></figure>
+<p>启动Hive <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">hive --service metastore &amp;</span><br><span class="line">jps</span><br><span class="line"><span class="comment">#结果会多出一个进程</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#进入hive目录</span></span><br><span class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/hadoop/apache-hive-1.2.1-bin/bin</span><br><span class="line"><span class="comment">#启动hive，可能有点慢</span></span><br><span class="line">hive</span><br><span class="line"></span><br><span class="line"><span class="comment">#若出现hive的命令行即代表成功，如下</span></span><br><span class="line">hive&gt;</span><br></pre></td></tr></table></figure></p>
+<h2 id="常见问题及解决方案-1">常见问题及解决方案</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Logging initialized using configuration <span class="keyword">in</span> jar:file:/home/hadoop/apache-hive-1.2.1-bin/lib/hive-common-1.2.1.jar!/hive-log4j.properties</span><br><span class="line">Exception <span class="keyword">in</span> thread <span class="string">&quot;main&quot;</span> java.lang.RuntimeException: java.lang.RuntimeException: Unable to instantiate org.apache.hadoop.hive.ql.metadata.SessionHiveMetaStoreClient</span><br><span class="line">        at org.apache.hadoop.hive.ql.session.SessionState.start(SessionState.java:522)</span><br></pre></td></tr></table></figure>
+<p>解决方法，直接关闭防火墙</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#这里的系统为Centos7，所以使用此命令</span></span><br><span class="line">systemctl stop firewalld</span><br></pre></td></tr></table></figure>
+<p>hive metastore 启动出错解决 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看与hive相关进程是否启动</span></span><br><span class="line">ps -ef | grep hive</span><br><span class="line"><span class="comment"># kill相关进程，为进程号</span></span><br><span class="line"><span class="built_in">kill</span> num</span><br><span class="line"><span class="comment"># 重新启动</span></span><br><span class="line">./hive</span><br></pre></td></tr></table></figure> 更多问题见此文章 <a target="_blank" rel="noopener" href="http://blog.csdn.net/freedomboy319/article/details/44828337">Hive常见问题汇总</a></p>
+<h2 id="hive的学习笔记">Hive的学习笔记</h2>
+<h3 id="新建表">新建表</h3>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 新建一张表，名为“test”，里面有“name”、“id”两类，分别是“string”、“int”的数据类型，以“|”隔开一列，表是作为textfile的。</span></span><br><span class="line">hive<span class="operator">&gt;</span> <span class="keyword">CREATE</span> <span class="keyword">TABLE</span> test (name String, id <span class="type">int</span>) <span class="type">ROW</span> FORMAT DELIMITED FIELDS TERMINATED <span class="keyword">BY</span> <span class="string">&#x27;|&#x27;</span> STORED <span class="keyword">AS</span> TEXTFILE;</span><br></pre></td></tr></table></figure>
+<h3 id="加载表">加载表</h3>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 从本地的/home/user/test.txt文件，将数据加载进test这个表</span></span><br><span class="line">hive<span class="operator">&gt;</span> LOAD DATA <span class="keyword">LOCAL</span> INPATH <span class="string">&#x27;/home/user/test.txt&#x27;</span> OVERWRITE <span class="keyword">INTO</span> <span class="keyword">TABLE</span> test;</span><br></pre></td></tr></table></figure>
+<h3 id="关联表">关联表</h3>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 将两张表通过一个或多个字段关联在一起</span></span><br><span class="line"><span class="comment">-- 将test_a和test_b表的id字段关联在一起，再加上“name”字段，组成一个新表</span></span><br><span class="line">hive<span class="operator">&gt;</span> <span class="keyword">SELECT</span> test_a.id, test_b.name <span class="keyword">FROM</span> test_a, test_b <span class="keyword">JOIN</span> test_b <span class="keyword">ON</span> (test_a.id <span class="operator">=</span> test_b.id);</span><br></pre></td></tr></table></figure>
+<h3 id="保存表">保存表</h3>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 由于hive下执行任务之后，并不会保存数据，所以我们使用INSERT命令来保存命令</span></span><br><span class="line"><span class="comment">-- 插入数据到test表中</span></span><br><span class="line">hive<span class="operator">&gt;</span> <span class="keyword">INSERT</span> OVERWRITE <span class="keyword">TABLE</span> test</span><br><span class="line">     <span class="operator">&gt;</span> ...</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 保存表到hdfs上,保存输出结果到hdfs下的/out/目录下</span></span><br><span class="line">hive<span class="operator">&gt;</span> <span class="keyword">INSERT</span> OVERWRITE <span class="keyword">LOCAL</span> DIRECTORY &quot;/out/&quot;</span><br><span class="line">    <span class="operator">&gt;</span> ...</span><br></pre></td></tr></table></figure>
+<h3 id="排序问题">排序问题</h3>
+<ol type="1">
+<li>order by</li>
+</ol>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hive<span class="operator">&gt;</span> <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> test <span class="keyword">ORDER</span> <span class="keyword">BY</span> id;</span><br></pre></td></tr></table></figure>
+<ol start="2" type="1">
+<li><p>sort by <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hive<span class="operator">&gt;</span> <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> test SORT <span class="keyword">BY</span> id;</span><br></pre></td></tr></table></figure></p></li>
+<li><p>distribute by <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hive<span class="operator">&gt;</span> <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> test <span class="keyword">ORDER</span> <span class="keyword">BY</span> name DISTRIBUTE <span class="keyword">BY</span> id;</span><br></pre></td></tr></table></figure></p></li>
+<li><p>DISTRIBUTE BY with SORT BY DISTRIBUTE BY 和 GROUP BY 有点类似，DISTRIBUTE BY控制reduce如何处理数据，而SORT BY控制reduce中的数据如何排序。 注意：hive要求DISTRIBUTE BY语句出现在SORT BY语句之前。</p></li>
+<li><p>Cluster By</p></li>
+</ol>
+<p>cluster by 除了具有 distribute by 的功能外还兼具 sort by 的功能。 默认升序排序，但DISTRIBUTE BY的字段和SORT BY的字段必须相同，且不能指定排序规则。</p>
+<p>总结：</p>
+<ul>
+<li><code>ORDER BY</code>是全局排序，但在数据量大的情况下，花费时间会很长</li>
+<li><code>SORT BY</code>是将<code>reduce</code>的单个输出进行排序，不能保证全局有序</li>
+<li><code>DISTRIBUTE BY</code> 可以按指定字段将数据划分到不同的<code>reduce</code>中</li>
+<li>当<code>DISTRIBUTE BY</code> 的字段和 <code>SORT BY</code>的字段相同时，可以用<code>CLUSTER BY</code>来代替<code>DISTRIBUTE BY with SORT BY</code>。</li>
+</ul>
+<h3 id="hive常用函数">hive常用函数</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 以下无特殊说明，返回值皆为string</span></span><br><span class="line"><span class="comment"># 字符串连接</span></span><br><span class="line">hive&gt;concat(strA, strB, ...)</span><br><span class="line"><span class="comment"># 带分隔符的字符串连接，即连接之后字符串存在分隔符，strSEP表示分隔符</span></span><br><span class="line">hive&gt;concat_wd(strSEP, strA, strB, ...)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 字符串截取</span></span><br><span class="line"><span class="comment"># 从整型数num0开始截取，截取到结尾为止</span></span><br><span class="line">hive&gt;substr(strA, num0)</span><br><span class="line"><span class="comment"># 从整型数num0开始截取，截取到num1为止</span></span><br><span class="line">hive&gt;substr(strA, num0, num1)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 字符串转大写</span></span><br><span class="line">hive&gt;upper(str)</span><br><span class="line"><span class="comment"># 字符串转小写</span></span><br><span class="line">hive&gt;lower(str)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 除去字符串中空格</span></span><br><span class="line">hive&gt;trim(str)</span><br><span class="line"><span class="comment"># 除去字符串左边空格</span></span><br><span class="line">hive&gt;ltrim(str)</span><br><span class="line"><span class="comment"># 除去字符串右边空格</span></span><br><span class="line">hive&gt;rtrim(str)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 正则替换字符</span></span><br><span class="line"><span class="comment"># 将strA中符合strRE的部分替换为strB</span></span><br><span class="line">hive&gt;regexp_replace(strA, strRE, strB)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重复字符串</span></span><br><span class="line"><span class="comment"># str为字符串，num为重复次数</span></span><br><span class="line">hive&gt;repeat(str, num)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 分割字符串</span></span><br><span class="line"><span class="comment"># 以strpat为分割符，返回字符串数组</span></span><br><span class="line">hive&gt;spilt(str, strpat)</span><br></pre></td></tr></table></figure>
+<h3 id="hive导出数据">hive导出数据</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 导出至本地，content表示本地目录</span></span><br><span class="line">hive&gt;insert overwrite <span class="built_in">local</span> directory <span class="string">&#x27;content&#x27;</span></span><br><span class="line">    &gt;select * from table_name;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 导出至hdfs，content表示hdfs目录</span></span><br><span class="line">hive&gt;insert overwrite directory <span class="string">&#x27;content&#x27;</span></span><br><span class="line">    &gt;select * from table_name;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 导出至hive另一张表othertable，前提hive中存在这张表</span></span><br><span class="line">hive&gt;insert overwrite othertable</span><br><span class="line">    &gt;select * from table_name;</span><br></pre></td></tr></table></figure>
+<h3 id="转换类型">转换类型</h3>
+<p>cast(xxx as xx) 将xxx类型转换为xx类型</p>
+<p>下表为是否可转换类型的说明 <img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/hadoop/20170612195815151.png" /></p>
+<p>注：由于表格比较大，这里对一些比较长的字符串进行缩写，ts是timestamp的缩写,bl是boolean的缩写,sl是smallint的缩写,dm是decimal的缩写,vc是varchar的缩写,ba是binary的缩写。</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>wnma3mz
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wnma3mz.github.io/2017/05/07/%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/%E5%9C%A8Hadoop%E5%9F%BA%E7%A1%80%E4%B8%8AHive%E7%9A%84%E5%AE%89%E8%A3%85/" title="在Hadoop基础上Hive的安装">https://wnma3mz.github.io/2017/05/07/环境安装/在Hadoop基础上Hive的安装/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hexo_blog/tags/Hadoop/" rel="tag"># Hadoop</a>
+              <a href="/hexo_blog/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag"># 大数据</a>
+              <a href="/hexo_blog/tags/Hive/" rel="tag"># Hive</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2017/04/09/%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/Hadoop%E4%BC%AA%E5%88%86%E5%B8%83%E5%BC%8F%E5%AE%89%E8%A3%85%EF%BC%88Centos7%EF%BC%89/" rel="prev" title="Hadoop伪分布式安装（Centos7）">
+      <i class="fa fa-chevron-left"></i> Hadoop伪分布式安装（Centos7）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2017/08/14/%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/%E9%A3%8E%E6%A0%BC%E8%BF%81%E7%A7%BB%E8%BD%AC%E6%8D%A2%E7%9A%84%E4%B8%A4%E7%A7%8D%E5%AE%9E%E7%8E%B0/" rel="next" title="风格迁移转换的两种实现">
+      风格迁移转换的两种实现 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BDhive"><span class="nav-text">下载Hive</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85mysql"><span class="nav-text">安装MySQL</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85mariadb"><span class="nav-text">安装MariaDB</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A3%E5%BC%8F%E5%AE%89%E8%A3%85mysql"><span class="nav-text">正式安装MySQL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEmysql"><span class="nav-text">配置MySQL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E5%8F%8A%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-text">常见问题及解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#mysql%E5%88%9B%E5%BB%BA%E7%94%A8%E6%88%B7%E5%A4%B1%E8%B4%A5"><span class="nav-text">Mysql创建用户失败</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%94%AF%E6%8C%81%E4%B8%AD%E6%96%87"><span class="nav-text">支持中文</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mysql%E6%8A%A5%E9%94%991366---incorrect-integer-value-xxxxxxx-at-row-1"><span class="nav-text">MySQL报错“1366 - Incorrect integer value: &#39;&#39; XXXXXXX&#39; at row 1 ”</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B3%E4%BA%8Emy.cnf%E5%92%8Cmy.ini%E7%9A%84%E8%AF%B4%E6%98%8E"><span class="nav-text">关于my.cnf和my.ini的说明</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mysql%E4%BA%A4%E4%BA%92%E7%8E%AF%E5%A2%83%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8"><span class="nav-text">Mysql交互环境自动补全</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEhive"><span class="nav-text">配置Hive</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BDjdbc"><span class="nav-text">下载JDBC</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E5%8F%8A%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88-1"><span class="nav-text">常见问题及解决方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hive%E7%9A%84%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0"><span class="nav-text">Hive的学习笔记</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B0%E5%BB%BA%E8%A1%A8"><span class="nav-text">新建表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A0%E8%BD%BD%E8%A1%A8"><span class="nav-text">加载表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E8%81%94%E8%A1%A8"><span class="nav-text">关联表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%9D%E5%AD%98%E8%A1%A8"><span class="nav-text">保存表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%92%E5%BA%8F%E9%97%AE%E9%A2%98"><span class="nav-text">排序问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hive%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0"><span class="nav-text">hive常用函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hive%E5%AF%BC%E5%87%BA%E6%95%B0%E6%8D%AE"><span class="nav-text">hive导出数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AC%E6%8D%A2%E7%B1%BB%E5%9E%8B"><span class="nav-text">转换类型</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="wnma3mz"
+      src="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
+  <p class="site-author-name" itemprop="name">wnma3mz</p>
+  <div class="site-description" itemprop="description">Day Day Up</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/hexo_blog/archives/">
+        
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/hexo_blog/categories/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/hexo_blog/tags/">
+          
+        <span class="site-state-item-count">85</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wnma3mz" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wnma3mz" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wnma3mz@gmail.com" title="E-Mail → mailto:wnma3mz@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wnma3mz</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='99' src="/hexo_blog/lib/canvas-nest/canvas-nest-nomobile.min.js"></script>
+  <script src="/hexo_blog/lib/anime.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/hexo_blog/js/utils.js"></script>
+
+<script src="/hexo_blog/js/motion.js"></script>
+
+
+<script src="/hexo_blog/js/schemes/muse.js"></script>
+
+
+<script src="/hexo_blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/hexo_blog/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

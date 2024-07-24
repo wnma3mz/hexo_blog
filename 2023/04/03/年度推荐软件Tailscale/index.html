@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/hexo_blog/css/main.css">
+
+
+<link rel="stylesheet" href="/hexo_blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wnma3mz.github.io","root":"/hexo_blog/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="本文介绍了 Tailscale 这款软件可以轻松架设异地组网，解决调试难题、实现流量转发和开放服务等多个需求。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="年度推荐软件Tailscale：连接团队设备和开发环境的利器">
+<meta property="og:url" content="https://wnma3mz.github.io/2023/04/03/%E5%B9%B4%E5%BA%A6%E6%8E%A8%E8%8D%90%E8%BD%AF%E4%BB%B6Tailscale/index.html">
+<meta property="og:site_name" content="Wnma&#39;s Blogs">
+<meta property="og:description" content="本文介绍了 Tailscale 这款软件可以轻松架设异地组网，解决调试难题、实现流量转发和开放服务等多个需求。">
+<meta property="og:locale">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/tailscale/1680514288836.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/tailscale/170356.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/tailscale/171953.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/tailscale/172831.png">
+<meta property="og:image" content="https://tailscale.com/kb/1019/subnets/subnets.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/tailscale/1680522033220.png">
+<meta property="og:image" content="https://tailscale.com/kb/1103/exit-nodes/exit-node-windows-menu.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/tailscale/1680523192944.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/tailscale/1680523204260.png">
+<meta property="article:published_time" content="2023-04-03T08:41:22.000Z">
+<meta property="article:modified_time" content="2023-12-07T13:14:23.165Z">
+<meta property="article:author" content="wnma3mz">
+<meta property="article:tag" content="Tailscale">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/tailscale/1680514288836.png">
+
+<link rel="canonical" href="https://wnma3mz.github.io/2023/04/03/%E5%B9%B4%E5%BA%A6%E6%8E%A8%E8%8D%90%E8%BD%AF%E4%BB%B6Tailscale/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>年度推荐软件Tailscale：连接团队设备和开发环境的利器 | Wnma's Blogs</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="تشغيل شريط التصفح">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hexo_blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Wnma's Blogs</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/hexo_blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/hexo_blog/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/hexo_blog/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/hexo_blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-bookmark">
+
+    <a href="https://wnma3mz.github.io/bookmark/index.html" rel="section"><i class="fa fa-bookmark fa-fw"></i>书签</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/2023/04/03/%E5%B9%B4%E5%BA%A6%E6%8E%A8%E8%8D%90%E8%BD%AF%E4%BB%B6Tailscale/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
+      <meta itemprop="name" content="wnma3mz">
+      <meta itemprop="description" content="Day Day Up">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wnma's Blogs">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          年度推荐软件Tailscale：连接团队设备和开发环境的利器
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建于：2023-04-03 16:41:22" itemprop="dateCreated datePublished" datetime="2023-04-03T16:41:22+08:00">2023-04-03</time>
+
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="عُدل：2023-12-07 21:14:23" itemprop="dateModified" datetime="2023-12-07T21:14:23+08:00">2023-12-07</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/Software/" itemprop="url" rel="index"><span itemprop="name">Software</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文介绍了 Tailscale 这款软件可以轻松架设异地组网，解决调试难题、实现流量转发和开放服务等多个需求。</p>
+<a id="more"></a>
+<p><a target="_blank" rel="noopener" href="https://tailscale.com/">Tailscale</a> connects your team's devices and development environments for easy access to remote resources. （摘自官网）</p>
+<p>于笔者而言，Tailscale 能够用一个软件轻松的解决三大需求。</p>
+<ul>
+<li>异地组网：软件主打功能。就是将物理位置不同的机器通过该软件，能够使它们处于同一网络环境下，方便远程调试。</li>
+<li>流量转发：A机器在A地，可以借助B机器在B地的网络进行上网。</li>
+<li>开放服务：A机器自建Web服务，不仅可以在组网环境下使用，甚至官方提供了公网的链接（https），即可以不在组网环境下也能够访问。</li>
+</ul>
+<p>写在开头，免费版的权益如下图所示，支持20个设备，且域名不可自定义（子域名可以），速度在100-300k/s左右。在Android和iOS设备上不支持同时开启两个 VPN，即 Clash 无法和 Tailscale 同时使用。</p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/tailscale/1680514288836.png" /></p>
+<h2 id="安装">安装</h2>
+<p>首先需要在官网进行注册，值得一提的是注册方式最好选用能够在日常网络环境下能打开的账号。比如选用Github注册的话，之后所有的设备都需要使用Github登录才能组网。其目前无法在一个账号上绑定多种登录方式。</p>
+<p>官网提供了详尽的<a target="_blank" rel="noopener" href="https://tailscale.com/download">下载</a>安装说明，移动端可以直接下载对应的App，个人电脑和服务器可以使用常规的命令和软件包的方式进行下载安装。故对于一般的机器不做介绍，本节主要介绍路由器、树莓派、群晖的安装方法。其他机型，可以查看这个<a target="_blank" rel="noopener" href="https://pkgs.tailscale.com/stable/">地址</a>。</p>
+<p>对于Linux设备，安装步骤主要分两步：</p>
+<ol type="1">
+<li>启动服务，<code>sudo tailscale up</code></li>
+<li>加入组网，<code>tailscale ip -4</code></li>
+</ol>
+<p>对于第二步，输入完成后会有一个链接需要使用对应账号进行登录，可以将链接复制到其他设备用浏览器打开登录。在非常规机器上，首先需要确认机器的CPU架构，命令 <code>uname -a</code>。</p>
+<h3 id="群晖">群晖</h3>
+<p>群晖的<a target="_blank" rel="noopener" href="https://pkgs.tailscale.com/stable/#spks">下载地址</a>，需要根据系统版本以及CPU架构选择下载。下载完成后，打开群晖的<strong>套件中心</strong>，右上角的<strong>手动安装</strong>，上传安装包，按照步骤完成安装即可。</p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/tailscale/170356.png" /></p>
+<p>安装完成后，点击对应的图标，安装对应的步骤即可启动。</p>
+<h3 id="路由器">路由器</h3>
+<p>路由器的<a target="_blank" rel="noopener" href="https://pkgs.tailscale.com/stable/#static">下载地址</a>，根据CPU架构选择下载。并将安装包上传至路由器，根据对应的路由器安装命令进行解压安装。</p>
+<h3 id="树莓派">树莓派</h3>
+<p>树莓派的<a target="_blank" rel="noopener" href="https://pkgs.tailscale.com/stable/#raspbian-stretch">下载地址</a>，根据型号三选一下载。解压安装。树莓派Zero的是Raspbian Stretch</p>
+<h2 id="异地组网">异地组网</h2>
+<p>当设备安装完成，并登录后，该设备会自动加入组网。可以在<a target="_blank" rel="noopener" href="https://login.tailscale.com/admin/machines">设备管理</a>界面查看所有的设备，如下图所示。</p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/tailscale/171953.png" /></p>
+<p>第一列的设备名称可以根据自己的喜好进行更改，并且可以直接作为域名使用。假设有个机器叫做AAA且用户名为root，那么可以直接 <code>ssh root@AAA</code>进行登录。或者群晖名为AAA，那么浏览器直接打开AAA就能访问。</p>
+<p>登录的设备默认是若干天（最长180）后需要重新登录一次，可以在最后一列三个点进行编辑，对该功能进行禁用。禁用成功后，会在第一列显示 <code>Expiry disabled</code></p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/tailscale/172831.png" /></p>
+<h2 id="流量转发">流量转发</h2>
+<p>本节参考<a target="_blank" rel="noopener" href="https://tailscale.com/kb/1019/subnets/">文档</a></p>
+<p>正如开头的图显示的，该功能仅支持以一个设备作为流量出口。当有一个局域网的所有设备不方便接入组网时，可以通过接入该局域网的一个设备（如路由器），再访问该局域网的其他设备。如下图，<code>Subnet Router</code>相当于桥梁，承接了组网和本地组网。组网内的设备可以通过Router访问局域网内的设备，反之亦可。接下来在 <code>Router</code>设备上操作。</p>
+<p><img src="https://tailscale.com/kb/1019/subnets/subnets.png" /></p>
+<h3 id="step-1">Step 1</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 开启端口转发。有的机器可能默认开启，无需操作。</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;net.ipv4.ip_forward = 1&#x27;</span> | sudo tee -a /etc/sysctl.d/99-tailscale.conf</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;net.ipv6.conf.all.forwarding = 1&#x27;</span> | sudo tee -a /etc/sysctl.d/99-tailscale.conf</span><br><span class="line">sudo sysctl -p /etc/sysctl.d/99-tailscale.conf</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建Subnet，192.168.x.y可以换成10.0这种。可以只写一个，x.y替换任意数字</span></span><br><span class="line">sudo tailscale up --advertise-routes=192.168.x.y/24,192.168.x.z/24</span><br></pre></td></tr></table></figure>
+<h3 id="step-2">Step 2</h3>
+<p>在机器管理界面，点击对应机器的右侧三个点，再点击 <code>Edit route settings</code>。如下图所示，两个功能均开启。若仅需实现设备访问，不需要流量转发，则可以不开启第二个。</p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/tailscale/1680522033220.png" /></p>
+<h3 id="step-3">Step 3</h3>
+<p>自此，完成了桥接局域网和组网的功能。要实现流量转发，在Tailscale中叫做Exit Node。一方面需要在上一步开启第二个功能，此时Router就具备了作为流量出口的能力。另一方面，假设此时组网内的A设备需要借助Router的流量出口，就需要在A设备上进行操作。</p>
+<p>在Router设备上，</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建Subnet，192.168.x.y可以换成10.0这种。可以只写一个，x.y替换任意数字</span></span><br><span class="line">sudo tailscale up --advertise-exit-node --advertise-routes=192.168.x.y/24</span><br></pre></td></tr></table></figure>
+<p>一般有图形化界面的机器，可以直接在软件层面完成。如Windows，此时系统的所有流量均为走这个接口。</p>
+<p><strong>Windows</strong> <img src="https://tailscale.com/kb/1103/exit-nodes/exit-node-windows-menu.png" /></p>
+<p><strong>Linux</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo tailscale up --exit-node=&lt;exit-node-ip&gt;</span><br></pre></td></tr></table></figure>
+<p>该功能主要的用途有以下几点</p>
+<ul>
+<li>本节开头所提到的，通过一个Router，从而无需所有设备参与链接。</li>
+<li>流量转发，如果有一个节点在海外。那么可以以此来做跳板</li>
+<li>本文开头所提到的，移动设备上无法与其他VPN并存，那么此时通过这种方式，在Router设备上做分流。</li>
+</ul>
+<h2 id="开放服务">开放服务</h2>
+<p>截至本文完成日期，该功能还在Beta阶段，并且要求版本&gt;=1.38.3。<a target="_blank" rel="noopener" href="https://tailscale.com/kb/1223/tailscale-funnel/">详细文档</a></p>
+<h3 id="step-1-1">Step 1</h3>
+<p>如果仅需在组网内访问，则可以跳过该步骤。</p>
+<p>在<a target="_blank" rel="noopener" href="https://login.tailscale.com/admin/acls">Access controls</a>控制页面加入配置，新增 <code>nodeAttrs</code>和修改 <code>groups</code>，其中 <code>wnma3mz@github</code>替换为对应账号。</p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/tailscale/1680523192944.png" /> <img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/tailscale/1680523204260.png" /></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&quot;groups&quot;: &#123;</span><br><span class="line">     &quot;group:can-funnel&quot;: [</span><br><span class="line">     &quot;wnma3mz@github&quot;,</span><br><span class="line">     ],</span><br><span class="line"> &#125;,</span><br><span class="line"> &quot;nodeAttrs&quot;: [</span><br><span class="line">     &#123;</span><br><span class="line">         <span class="attr">&quot;target&quot;</span>: [<span class="string">&quot;group:can-funnel&quot;</span>],</span><br><span class="line">         <span class="attr">&quot;attr&quot;</span>:   [<span class="string">&quot;funnel&quot;</span>],</span><br><span class="line">     &#125;,</span><br><span class="line"> ],</span><br></pre></td></tr></table></figure>
+<h3 id="step-2-1">Step 2</h3>
+<p>此时，需要在A机器上开启服务。申请<a target="_blank" rel="noopener" href="https://tailscale.com/kb/1153/enabling-https/">HTTPS证书</a>，下面的命令会提示后面需要加入什么域名。按照提示复制再执行即可。可能会有一些报错，需要根据不同情况进行更改。该功能可能会影响提供公网服务，但不影响组网服务。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tailscale cert</span><br></pre></td></tr></table></figure>
+<p>在开放服务前有两个命令需要进行区分，<code>tailscale serve</code>和<code>tailscale funnle</code>前者是开放服务到组网环境，后者是开放到整个互联网环境。</p>
+<p>常用有两个技巧</p>
+<ul>
+<li>把已经开放服务的端口转发到其他端口，或者主域名下。比如这里可以把5000端口转发到主域名下的/api路由下，即可以通过 <code>http://A/api</code>访问A机器的5000端口服务。<code>--bg</code>表示后台运行，默认是在前台启动，便于<code>Ctrl+C</code>关闭。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tailscale serve --<span class="built_in">bg</span> --set-path /api http://127.0.0.1:5000/</span><br></pre></td></tr></table></figure>
+<p>把 4747 端口转发到 8443 端口，即可以通过 <code>https://A:8443</code>访问A机器的 4747 端口服务。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tailscale serve https:8443 / http://localhost:4747</span><br></pre></td></tr></table></figure>
+<ul>
+<li>部署静态服务</li>
+</ul>
+<p>假设本地有一个<code>/data/index.html</code>文件，想要开放访问。则运行下面的命令，可以通过<code>http://A/index</code>访问A机器的<code>/data/index.html</code>文件。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tailscale serve --<span class="built_in">bg</span> --set-path /index /data/index.html</span><br></pre></td></tr></table></figure>
+<p>如果<code>index.html</code>文件用了本机其他静态资源，同样需要进行挂载，比如挂载<code>/data/static</code>文件夹</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tailscale serve --<span class="built_in">bg</span> --set-path /static/ /data/static</span><br></pre></td></tr></table></figure>
+<p>如果要关闭服务，可以使用下面的命令，仅关闭这一条。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tailscale serve --<span class="built_in">bg</span> --set-path /api off</span><br></pre></td></tr></table></figure>
+<p>如果希望指定端口，则可以用下面命令，默认端口为 80。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 带端口开放</span></span><br><span class="line">tailscale serve --<span class="built_in">bg</span> --http 10001 --set-path /index /data/index.html</span><br><span class="line"><span class="comment"># 带端口关闭</span></span><br><span class="line">tailscale serve --<span class="built_in">bg</span> --http 10001 --set-path /index off</span><br></pre></td></tr></table></figure>
+<h3 id="step-3-1">Step 3</h3>
+<p>对外开放服务，下面的命令会直接把原本仅能在局域网内访问的服务提供到公网。实测下载速度200-300k/s，有些地方不能直接访问，可能要挂梯子。目前 tailscale 仅支持三个端口可以dui外开放，分别是 443、8443、10000。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tailscale funnel --<span class="built_in">bg</span> https+insecure://localhost:443</span><br><span class="line">tailscale funnel --<span class="built_in">bg</span> https+insecure://localhost:8443</span><br><span class="line">tailscale funnel --<span class="built_in">bg</span> https+insecure://localhost:10000</span><br></pre></td></tr></table></figure>
+<p>使用方法同 <code>serve</code>，换成 <code>funnel</code> 即可。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看状态的命令</span></span><br><span class="line">tailscale funnel status</span><br><span class="line"><span class="comment"># 关闭状态的命令</span></span><br><span class="line">tailscale funnel 443 off</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>wnma3mz
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wnma3mz.github.io/2023/04/03/%E5%B9%B4%E5%BA%A6%E6%8E%A8%E8%8D%90%E8%BD%AF%E4%BB%B6Tailscale/" title="年度推荐软件Tailscale：连接团队设备和开发环境的利器">https://wnma3mz.github.io/2023/04/03/年度推荐软件Tailscale/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hexo_blog/tags/Tailscale/" rel="tag"># Tailscale</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2023/01/10/IOT/OpenWrt%E8%B7%AF%E7%94%B1%E5%99%A8%E8%AE%B0%E5%BD%95/" rel="prev" title="OpenWrt路由器折腾记录">
+      <i class="fa fa-chevron-left"></i> OpenWrt路由器折腾记录
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2023/08/13/%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/%E6%A8%A1%E4%BB%BF%E6%B8%B8%E6%88%8F%E2%80%94%E2%80%94%E6%9C%BA%E5%99%A8%E4%BC%9A%E6%80%9D%E8%80%83%E5%90%97/" rel="next" title="模仿游戏——机器会思考吗？">
+      模仿游戏——机器会思考吗？ <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BE%A4%E6%99%96"><span class="nav-text">群晖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E5%99%A8"><span class="nav-text">路由器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%91%E8%8E%93%E6%B4%BE"><span class="nav-text">树莓派</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%82%E5%9C%B0%E7%BB%84%E7%BD%91"><span class="nav-text">异地组网</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E9%87%8F%E8%BD%AC%E5%8F%91"><span class="nav-text">流量转发</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step-1"><span class="nav-text">Step 1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step-2"><span class="nav-text">Step 2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step-3"><span class="nav-text">Step 3</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E6%94%BE%E6%9C%8D%E5%8A%A1"><span class="nav-text">开放服务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#step-1-1"><span class="nav-text">Step 1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step-2-1"><span class="nav-text">Step 2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#step-3-1"><span class="nav-text">Step 3</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="wnma3mz"
+      src="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
+  <p class="site-author-name" itemprop="name">wnma3mz</p>
+  <div class="site-description" itemprop="description">Day Day Up</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/hexo_blog/archives/">
+        
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/hexo_blog/categories/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/hexo_blog/tags/">
+          
+        <span class="site-state-item-count">85</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wnma3mz" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wnma3mz" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wnma3mz@gmail.com" title="E-Mail → mailto:wnma3mz@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wnma3mz</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='99' src="/hexo_blog/lib/canvas-nest/canvas-nest-nomobile.min.js"></script>
+  <script src="/hexo_blog/lib/anime.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/hexo_blog/js/utils.js"></script>
+
+<script src="/hexo_blog/js/motion.js"></script>
+
+
+<script src="/hexo_blog/js/schemes/muse.js"></script>
+
+
+<script src="/hexo_blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/hexo_blog/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
