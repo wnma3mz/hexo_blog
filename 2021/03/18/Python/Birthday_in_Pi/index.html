@@ -28,7 +28,7 @@
 <meta property="og:description" content="想知道自己的生日在圆周率π的第几位出现吗？本文介绍了从思路到实现所遇到的问题，详细分析了如何使用迭代器优化性能，并改用Python语言实现了类似“ 锁”内存等操作。最终，将函数打包成了exe程序，在公众号内提供查询服务，还提供了一个不断更新的生日与位置的查表。">
 <meta property="og:locale">
 <meta property="article:published_time" content="2021-03-18T14:18:23.000Z">
-<meta property="article:modified_time" content="2023-12-07T13:00:11.266Z">
+<meta property="article:modified_time" content="2024-06-15T08:01:01.797Z">
 <meta property="article:author" content="wnma3mz">
 <meta property="article:tag" content="Python">
 <meta property="article:tag" content="微信开发">
@@ -231,7 +231,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="عُدل：2023-12-07 21:00:11" itemprop="dateModified" datetime="2023-12-07T21:00:11+08:00">2023-12-07</time>
+                <time title="عُدل：2024-06-15 16:01:01" itemprop="dateModified" datetime="2024-06-15T16:01:01+08:00">2024-06-15</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -254,9 +254,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>想知道自己的生日在圆周率π的第几位出现吗？本文介绍了从思路到实现所遇到的问题，详细分析了如何使用迭代器优化性能，并改用Python语言实现了类似“ 锁”内存等操作。最终，将函数打包成了exe程序，在公众号内提供查询服务，还提供了一个不断更新的生日与位置的查表。</p>
-<a id="more"></a>
-<p>完整的项目代码均开源: <a target="_blank" rel="noopener" href="https://github.com/wnma3mz/birthday_in_pi">https://github.com/wnma3mz/birthday_in_pi</a></p>
+        <p>想知道自己的生日在圆周率π的第几位出现吗？本文介绍了从思路到实现所遇到的问题，详细分析了如何使用迭代器优化性能，并改用Python语言实现了类似“
+锁”内存等操作。最终，将函数打包成了exe程序，在公众号内提供查询服务，还提供了一个不断更新的生日与位置的查表。</p>
+<span id="more"></span>
+<p>完整的项目代码均开源: <a
+target="_blank" rel="noopener" href="https://github.com/wnma3mz/birthday_in_pi">https://github.com/wnma3mz/birthday_in_pi</a></p>
 <h2 id="想法">想法</h2>
 <p>于我而言，很多项目的出发点都是源于浏览东西时所想，觉得有意思就去实现。比如这次是在即刻上看到北大数院公众号，可以回复生日（如20000101）就可以知道这串数字在Pi的第多少位出现。更详细的例子：已知3.1415926...，那么1415就是出现在第1位（从1开始计数，小数点后开始计数）。但该公众号仅在Pi的2亿位数中进行查找，所以有即友回复，搜不到结果。故想到可以试试更长的数据集是否能够搜到。</p>
 <p><strong>背景知识</strong></p>
@@ -269,12 +271,14 @@
 <li>计算Pi（生成超过2亿数的文本）
 <ol type="1">
 <li>自己手写</li>
-<li>找程序。对于计算Pi的项目，本身就是一个科学问题，故一定有现有程序可以辅助完成。所以找到了<a target="_blank" rel="noopener" href="http://www.numberworld.org/y-cruncher/">y-cruncher</a>项目。具体是否为当前最快的生成程序，未深究，不过实际测试，效率已经可以满足需求。（用i5-1035G1的CPU，生成25亿数，8个线程计算用了10分钟不到，文本大小2.4G）</li>
+<li>找程序。对于计算Pi的项目，本身就是一个科学问题，故一定有现有程序可以辅助完成。所以找到了<a
+target="_blank" rel="noopener" href="http://www.numberworld.org/y-cruncher/">y-cruncher</a>项目。具体是否为当前最快的生成程序，未深究，不过实际测试，效率已经可以满足需求。（用i5-1035G1的CPU，生成25亿数，8个线程计算用了10分钟不到，文本大小2.4G）</li>
 </ol></li>
 </ol>
 <h3 id="编码">编码</h3>
 <p>该问题本身简单来看就是一个字符串查找问题，所以用Python的话，<code>find</code>函数可以直接完成这项任务。但一旦问题变"大"（数据集变大、机器变多......），就是一个"难"题了。</p>
-<p>当然，先不管如何，试试最粗暴的解法看看性能如何。根据测试结果，有两个问题，时间超过5s, 内存占用2G（文本大小2G）。就算时间可以接受，那么这个空间占用也很难接受。试想，每查询一次都需要占用2G内存，查询完再释放。所以直接想到的优化点有以下几个</p>
+<p>当然，先不管如何，试试最粗暴的解法看看性能如何。根据测试结果，有两个问题，时间超过5s,
+内存占用2G（文本大小2G）。就算时间可以接受，那么这个空间占用也很难接受。试想，每查询一次都需要占用2G内存，查询完再释放。所以直接想到的优化点有以下几个</p>
 <ol type="1">
 <li>"锁"内存，即每次查询完不释放这个内存，这样IO时间就可以大大减小</li>
 <li>"做表"，查询的生日数字是有限的，无非就是(19700101-20101231有限数据)，就算100年，也只是36500个数据（实际会略高，因为有闰年）。查表的效率就非常快了</li>
@@ -285,122 +289,135 @@
 <p>其次对于1，如果考虑对外开放，服务器占用2G内存空间，实在是太"奢侈"了</p>
 <p>所以最后就只能考虑3。</p>
 <h4 id="迭代器">迭代器</h4>
-<p>Python有个关键词是 <code>yield</code>，它可以实现迭代器这个功能。说人话就是，它不是一次性把数据加载出来，而且每次只加载一部分。下面是一个简单的例子</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">yield_func</span>(<span class="params">lst</span>):</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> lst:</span><br><span class="line">        <span class="keyword">yield</span> i</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">for_return_func</span>(<span class="params">lst</span>):</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> lst:</span><br><span class="line">        <span class="keyword">return</span> i</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">return_func</span>(<span class="params">lst</span>):</span></span><br><span class="line">    <span class="keyword">return</span> lst</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    lst = <span class="built_in">list</span>(<span class="built_in">range</span>(<span class="number">10</span>))</span><br><span class="line">    print(yield_func(lst))</span><br><span class="line">    print(for_return_func(lst))</span><br><span class="line">    print(return_func(lst))</span><br><span class="line">    <span class="keyword">for</span> x <span class="keyword">in</span> yield_func(lst):</span><br><span class="line">        print(x, end=<span class="string">&quot; &quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>Python有个关键词是
+<code>yield</code>，它可以实现迭代器这个功能。说人话就是，它不是一次性把数据加载出来，而且每次只加载一部分。下面是一个简单的例子</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">yield_func</span>(<span class="params">lst</span>):</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> lst:</span><br><span class="line">        <span class="keyword">yield</span> i</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">for_return_func</span>(<span class="params">lst</span>):</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> lst:</span><br><span class="line">        <span class="keyword">return</span> i</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">return_func</span>(<span class="params">lst</span>):</span><br><span class="line">    <span class="keyword">return</span> lst</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    lst = <span class="built_in">list</span>(<span class="built_in">range</span>(<span class="number">10</span>))</span><br><span class="line">    <span class="built_in">print</span>(yield_func(lst))</span><br><span class="line">    <span class="built_in">print</span>(for_return_func(lst))</span><br><span class="line">    <span class="built_in">print</span>(return_func(lst))</span><br><span class="line">    <span class="keyword">for</span> x <span class="keyword">in</span> yield_func(lst):</span><br><span class="line">        <span class="built_in">print</span>(x, end=<span class="string">&quot; &quot;</span>)</span><br></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 输出如下</span></span><br><span class="line">&lt;generator object yield_func at 0x000001644AF624F8&gt;</span><br><span class="line">0</span><br><span class="line">[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]</span><br><span class="line">0 1 2 3 4 5 6 7 8 9</span><br></pre></td></tr></table></figure>
-<p>所以肯定是要利用这个方法来帮助优化程序。在Python操作文件的时候 <code>readline()</code>函数就是一个生成器，一行一行的返回，查找速度比直接 <code>read()</code>或者 <code>readlines()</code>更快。</p>
-<p>但这里的问题是，输出的Pi文本是一行。。。所以没法直接使用。当然也可以手动把这个文本按行切割后，再用 <code>readline()</code>函数。</p>
+<p>所以肯定是要利用这个方法来帮助优化程序。在Python操作文件的时候
+<code>readline()</code>函数就是一个生成器，一行一行的返回，查找速度比直接
+<code>read()</code>或者 <code>readlines()</code>更快。</p>
+<p>但这里的问题是，输出的Pi文本是一行。。。所以没法直接使用。当然也可以手动把这个文本按行切割后，再用
+<code>readline()</code>函数。</p>
 <p>这里我找到的解决方案[1]可以更方便的解决这个问题，详见博客or项目源码。</p>
 <h4 id="bug">bug</h4>
-<p>把程序写好之后，可以发现一个很明显的bug，就是查询的字符串如果在两个 <code>chunk</code>之间，是会直接跳过。比如 <code>12345678</code>，<code>block_size=4</code>，那么就是 <code>1234</code>和 <code>5678</code>。如果查找 <code>45</code>是找不到的。</p>
+<p>把程序写好之后，可以发现一个很明显的bug，就是查询的字符串如果在两个
+<code>chunk</code>之间，是会直接跳过。比如
+<code>12345678</code>，<code>block_size=4</code>，那么就是
+<code>1234</code>和 <code>5678</code>。如果查找
+<code>45</code>是找不到的。</p>
 <p>所以这里需要做两个额外的处理</p>
 <ol type="1">
-<li>加上上一个 <code>block_size</code>的字符串 <code>old_chunk = copy.deepcopy(chunk[-len(target_str) :])</code>。这里为了省空间和时间，只加上了需要查询字符串的长度，就可以满足需求</li>
-<li>返回查找位数时需要额外 <code>-len(old_chunk)</code>。（注：这里一开始忘了操作，故前几位查询的既有会发现结果与北大数院查询的结果差10位，在这里致歉）</li>
+<li>加上上一个 <code>block_size</code>的字符串
+<code>old_chunk = copy.deepcopy(chunk[-len(target_str) :])</code>。这里为了省空间和时间，只加上了需要查询字符串的长度，就可以满足需求</li>
+<li>返回查找位数时需要额外
+<code>-len(old_chunk)</code>。（注：这里一开始忘了操作，故前几位查询的既有会发现结果与北大数院查询的结果差10位，在这里致歉）</li>
 </ol>
 <p>最后经过测试后，性能基本达到预期（见项目README，有说明具体结果）。</p>
 <h2 id="部署">部署</h2>
 <p>至此，核心程序已经完成，接下来需要考虑一种方式来给其他人方便使用了。最直接的其实就是写一个Web，前端去调用后端返回结果。但同样的，这里还是考虑到网站流量等原因，跟北大数院一样放到公众号上也很方便，开发上也只需要完成后端即可，无需考虑前端UI啥的。</p>
-<p>查询公众号文档后，一通操作，就把功能完成了（文案直接"抄"了北大数院的文案）。代码见<a target="_blank" rel="noopener" href="https://github.com/wnma3mz/birthday_in_pi/blob/master/flask_server.py">flask_server.py</a></p>
+<p>查询公众号文档后，一通操作，就把功能完成了（文案直接"抄"了北大数院的文案）。代码见<a
+target="_blank" rel="noopener" href="https://github.com/wnma3mz/birthday_in_pi/blob/master/flask_server.py">flask_server.py</a></p>
 <p>这里需要在微信公众号后台配置开发者模式，然后把token复制进代码。</p>
 <h3 id="tip">Tip</h3>
 <p>公众号开发要求是80端口，但这里通过子域名的方式+nginx反代就可以直接用域名访问，而无需80端口。nginx配置见下</p>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">listen</span>       <span class="number">80</span>;</span><br><span class="line">    <span class="attribute">server_name</span>  xxx.yyy.zzz;</span><br><span class="line"></span><br><span class="line">    <span class="attribute">location</span> / &#123;</span><br><span class="line">        <span class="attribute">uwsgi_pass</span> <span class="number">0.0.0.0</span>:port;</span><br><span class="line">        <span class="attribute">proxy_pass</span> http://0.0.0.0:port/wx_api;</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这里的 <code>xxx.yyy.zzz</code>就是域名，port就是 <code>flask</code>开启的端口</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">listen</span>       <span class="number">80</span>;</span><br><span class="line">    <span class="attribute">server_name</span>  xxx.yyy.zzz;</span><br><span class="line"></span><br><span class="line">    <span class="section">location</span> / &#123;</span><br><span class="line">        <span class="attribute">uwsgi_pass</span> <span class="number">0.0.0.0</span>:port;</span><br><span class="line">        <span class="attribute">proxy_pass</span> http://0.0.0.0:port/wx_api;</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里的 <code>xxx.yyy.zzz</code>就是域名，port就是
+<code>flask</code>开启的端口</p>
 <h2 id="其他">其他</h2>
 <h3 id="查表">查表</h3>
 <p>当然，查表的方式还是最快的，所以还是建了一个表，并且做了一个简单的分析。分析内容如下</p>
-<p>最近只需246位能够找到, 最远需要近9亿位。列出Top10（左侧为年月日，右侧为第x位）</p>
+<p>最近只需246位能够找到,
+最远需要近9亿位。列出Top10（左侧为年月日，右侧为第x位）</p>
 <p>日期范围为19700101-20091231</p>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>日期</th>
 <th>位数</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>20190914</td>
 <td>246</td>
 </tr>
-<tr class="even">
+<tr>
 <td>20190516</td>
 <td>5364</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>19910403</td>
 <td>8365</td>
 </tr>
-<tr class="even">
+<tr>
 <td>20141020</td>
 <td>9813</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>19950728</td>
 <td>1,3874</td>
 </tr>
-<tr class="even">
+<tr>
 <td>20121031</td>
 <td>1,4538</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>19990814</td>
 <td>2,5593</td>
 </tr>
-<tr class="even">
+<tr>
 <td>19810705</td>
 <td>2,7202</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>19921122</td>
 <td>3,0884</td>
 </tr>
-<tr class="even">
+<tr>
 <td>19930509</td>
 <td>3,6615</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>..........</td>
 <td>..........</td>
 </tr>
-<tr class="even">
+<tr>
 <td>19941227</td>
 <td>7,1993,2960</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>20080923</td>
 <td>7,2930,2729</td>
 </tr>
-<tr class="even">
+<tr>
 <td>19911201</td>
 <td>7,2985,0775</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>20071206</td>
 <td>7,3782,1997</td>
 </tr>
-<tr class="even">
+<tr>
 <td>20090220</td>
 <td>7,5402,4215</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>19730829</td>
 <td>7,7357,0338</td>
 </tr>
-<tr class="even">
+<tr>
 <td>20070526</td>
 <td>7,8655,8038</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>19951122</td>
 <td>8,2582,0139</td>
 </tr>
-<tr class="even">
+<tr>
 <td>20140407</td>
 <td>8,7320,8091</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>19730521</td>
 <td>8,8950,7619</td>
 </tr>
@@ -409,10 +426,12 @@
 <p>为什么4位分隔，而不是3位？</p>
 <p>因为我觉得这样看的更舒服，读万、亿更方便。。。</p>
 <h3 id="程序打包">程序打包</h3>
-<p>为方便没有Python程序的用户，同时也不想使用公众号。在Windows上打包了一份exe程序。命令也很简单 <code>pyinstaller -F .\read_large_pi.py</code>。</p>
+<p>为方便没有Python程序的用户，同时也不想使用公众号。在Windows上打包了一份exe程序。命令也很简单
+<code>pyinstaller -F .\read_large_pi.py</code>。</p>
 <p>最后的最后，该程序尚存在优化空间，当查询数字较长（超过8位）时，时间花费也更久（超过1s）。</p>
 <h2 id="参考文章">参考文章</h2>
-<p>[1] <a target="_blank" rel="noopener" href="https://lovemma.github.io/posts/python-%E5%A6%82%E4%BD%95%E6%B5%81%E5%BC%8F%E8%AF%BB%E5%8F%96%E5%A4%A7%E6%96%87%E4%BB%B6/">python-如何流式读取大文件</a></p>
+<p>[1] <a
+target="_blank" rel="noopener" href="https://lovemma.github.io/posts/python-%E5%A6%82%E4%BD%95%E6%B5%81%E5%BC%8F%E8%AF%BB%E5%8F%96%E5%A4%A7%E6%96%87%E4%BB%B6/">python-如何流式读取大文件</a></p>
 
     </div>
 
@@ -544,7 +563,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/hexo_blog/tags/">
           
-        <span class="site-state-item-count">85</span>
+        <span class="site-state-item-count">86</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
