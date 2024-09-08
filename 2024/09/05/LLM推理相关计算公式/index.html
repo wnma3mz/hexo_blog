@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/hexo_blog/css/main.css">
+
+
+<link rel="stylesheet" href="/hexo_blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wnma3mz.github.io","root":"/hexo_blog/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="记录 LLM 在推理上的理论计算公式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LLM的推理相关计算公式">
+<meta property="og:url" content="https://wnma3mz.github.io/2024/09/05/LLM%E6%8E%A8%E7%90%86%E7%9B%B8%E5%85%B3%E8%AE%A1%E7%AE%97%E5%85%AC%E5%BC%8F/index.html">
+<meta property="og:site_name" content="Wnma&#39;s Blogs">
+<meta property="og:description" content="记录 LLM 在推理上的理论计算公式">
+<meta property="og:locale">
+<meta property="article:published_time" content="2024-09-05T05:45:43.000Z">
+<meta property="article:modified_time" content="2024-09-08T06:33:58.222Z">
+<meta property="article:author" content="wnma3mz">
+<meta property="article:tag" content="NLP">
+<meta property="article:tag" content="Inference">
+<meta property="article:tag" content="Math">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://wnma3mz.github.io/2024/09/05/LLM%E6%8E%A8%E7%90%86%E7%9B%B8%E5%85%B3%E8%AE%A1%E7%AE%97%E5%85%AC%E5%BC%8F/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>LLM的推理相关计算公式 | Wnma's Blogs</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hexo_blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Wnma's Blogs</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/hexo_blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/hexo_blog/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/hexo_blog/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/hexo_blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-bookmark">
+
+    <a href="https://wnma3mz.github.io/bookmark/index.html" rel="section"><i class="fa fa-bookmark fa-fw"></i>书签</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/2024/09/05/LLM%E6%8E%A8%E7%90%86%E7%9B%B8%E5%85%B3%E8%AE%A1%E7%AE%97%E5%85%AC%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
+      <meta itemprop="name" content="wnma3mz">
+      <meta itemprop="description" content="Day Day Up">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wnma's Blogs">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          LLM的推理相关计算公式
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建于：2024-09-05 13:45:43" itemprop="dateCreated datePublished" datetime="2024-09-05T13:45:43+08:00">2024-09-05</time>
+
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="Modified：2024-09-08 14:33:58" itemprop="dateModified" datetime="2024-09-08T14:33:58+08:00">2024-09-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/Note/" itemprop="url" rel="index"><span itemprop="name">Note</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>记录 LLM 在推理上的理论计算公式</p>
+<span id="more"></span>
+<h3 id="参数量">参数量</h3>
+<p>embedding + lm head + transformer block <span
+class="math inline">\(\times\)</span> N</p>
+<ul>
+<li>Embedding / LM Head 的参数量：vocab_size <span
+class="math inline">\(\times\)</span> hidden_size</li>
+<li>transformer block 的参数量
+<ul>
+<li>self-attention：qkvo 四个线性层，需要分别考虑两种 Attention
+<ul>
+<li>multi-head attention（MHA）：4 <span
+class="math inline">\(\times\)</span> hidden_size <span
+class="math inline">\(^2\)</span></li>
+<li>grouped query attention（GQA）：
+<ul>
+<li><p>q 和 o，2 $$ hidden_size <span
+class="math inline">\(^2\)</span></p></li>
+<li><p>k 和 v，2 $$ hidden_size <span class="math inline">\(^2\)</span>
+/ num_attention_heads $$ num_key_value_heads</p></li>
+</ul></li>
+</ul></li>
+<li>FFN：三个线性层，3 <span class="math inline">\(\times\)</span>
+hidden_size <span class="math inline">\(\times\)</span>
+intermediate_size</li>
+<li>layer norm：2 <span class="math inline">\(\times\)</span> 2 <span
+class="math inline">\(\times\)</span> hidden_size</li>
+</ul></li>
+</ul>
+<p>以 <a
+target="_blank" rel="noopener" href="https://huggingface.co/meta-llama/Llama-2-13b-hf/blob/main/config.json">llama2-13B</a>
+为例，关键参数</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;hidden_size&quot;</span><span class="punctuation">:</span> <span class="number">5120</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;intermediate_size&quot;</span><span class="punctuation">:</span> <span class="number">13824</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;mlp_bias&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;num_attention_heads&quot;</span><span class="punctuation">:</span> <span class="number">40</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;num_hidden_layers&quot;</span><span class="punctuation">:</span> <span class="number">40</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;num_key_value_heads&quot;</span><span class="punctuation">:</span> <span class="number">40</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;vocab_size&quot;</span><span class="punctuation">:</span> <span class="number">32000</span><span class="punctuation">,</span></span><br></pre></td></tr></table></figure>
+<p>由于 num_attention_heads == num_key_value_heads，所以是 MHA</p>
+<ul>
+<li>Embedding/LM Head： <span class="math inline">\(32000\times
+5120\)</span></li>
+<li>transformer block
+<ul>
+<li>self-attention：<span class="math inline">\(4\times 5120\times
+5120\)</span></li>
+<li>FFN: <span class="math inline">\(3\times 5120\times
+13824\)</span></li>
+<li>layer norm: <span class="math inline">\(4\times 5120\)</span></li>
+</ul></li>
+</ul>
+<p>综上，列出计算</p>
+<p><span class="math display">\[2\times 32000\times 5120 + 40\times
+(4\times 5120\times 5120 + 3\times 5120\times 13824 + 4\times 5120) =
+13,016,268,800 \approx 13B\]</span></p>
+<p>如果是 (b)float16，则占用空间/显存为 13 $$ 2 = 26G</p>
+<p>如果是 GQA，self-attn 参数量公式为</p>
+<h3 id="kv-cache-显存计算公式">KV cache 显存计算公式</h3>
+<p><span class="math inline">\(4\times b\times l\times num\_heads\times
+embed\_size\_per\_head \times (s+n)\)</span></p>
+<p>参数说明</p>
+<ul>
+<li>b: 句子条数</li>
+<li>l：层数</li>
+<li>num_heads：隐层大小 (num_key_value_heads)</li>
+<li>embed_size_per_head：每个头的大小 (hidden_size /
+num_attention_heads)</li>
+<li>s：输入长度</li>
+<li>n：输出长度</li>
+<li>4：k cache+v cache，均为 float16，所以是(1+1)*2</li>
+</ul>
+<p>如果只有1条句子，输入+输出 token 长度由 512 -&gt; 1024，则会增加
+<span class="math inline">\(4\times 512 \times l\times h\)</span>：</p>
+<p>Llama3-8B：$4 / 1024 / 1024 = 64 $ M</p>
+<p>Llama3-70B：<span class="math inline">\(4\times 512\times 1024\times
+80 / 1024 / 1024 = 160\)</span> M</p>
+<p>简单来说，每增加一个 token</p>
+<p>8B 就会增加 0.125 M 的显存</p>
+<p>70B 就会增加 0.3125 M 的显存</p>
+<h3 id="计算量">计算量</h3>
+<p>Embedding 可以视作一个哈希表，没有计算量</p>
+<ul>
+<li>LM Head：<span class="math inline">\(2 \times b \times s\times
+hidden\_size\times V\)</span></li>
+<li>Self-attention：
+<ul>
+<li>q_proj: <span class="math inline">\(2 \times b \times s \times
+hidden\_size^2\)</span></li>
+<li>k_proj和v_proj:
+<ul>
+<li>MHA: <span class="math inline">\(2\times(2 \times b \times s \times
+hidden\_size^2)\)</span></li>
+<li>GQA: <span class="math inline">\(2\times(2 \times b \times s \times
+hidden\_size^2 / (num\_attention\_heads
+\times  num\_key\_value\_heads)^2 )\)</span></li>
+</ul></li>
+<li>attn_weights: <span class="math inline">\(2 \times b \times s^2
+\times hidden\_size\)</span></li>
+<li>attn_output: <span class="math inline">\(2 \times b \times s^2
+\times hidden\_size\)</span></li>
+<li>o_proj: <span class="math inline">\(2 \times b \times s \times
+hidden\_size^2\)</span></li>
+</ul></li>
+<li>FFN:
+<ul>
+<li>gate_proj 和 up_proj: <span class="math inline">\(2\times (b \times
+s\times hidden\_size)\times (hidden\_size\times
+intermediate\_size)\)</span></li>
+<li>down_proj: <span class="math inline">\((b \times s\times
+intermediate\_size)\times (intermediate\_size\times
+hidden\_size)\)</span></li>
+</ul></li>
+<li>b: 句子条数</li>
+<li>s：输入长度</li>
+</ul>
+<p>还是以 <a
+target="_blank" rel="noopener" href="https://huggingface.co/meta-llama/Llama-2-13b-hf/blob/main/config.json">llama2-13B</a>
+为例，关键参数</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;hidden_size&quot;</span><span class="punctuation">:</span> <span class="number">5120</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;intermediate_size&quot;</span><span class="punctuation">:</span> <span class="number">13824</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;mlp_bias&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;num_attention_heads&quot;</span><span class="punctuation">:</span> <span class="number">40</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;num_hidden_layers&quot;</span><span class="punctuation">:</span> <span class="number">40</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;num_key_value_heads&quot;</span><span class="punctuation">:</span> <span class="number">40</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;vocab_size&quot;</span><span class="punctuation">:</span> <span class="number">32000</span><span class="punctuation">,</span></span><br></pre></td></tr></table></figure>
+<p>假设 b=1，s=1，则整体计算量有</p>
+<ul>
+<li>LM Head: <span class="math inline">\(2\times 5120\times
+32000\)</span></li>
+<li>self-attention:
+<ul>
+<li><span class="math inline">\(2\times 5120\times 5120\)</span></li>
+<li><span class="math inline">\(4\times 5120\times 5120\)</span></li>
+<li><span class="math inline">\(2\times 5120\)</span></li>
+<li><span class="math inline">\(2\times 5120\)</span></li>
+<li><span class="math inline">\(2\times 5120\times 5120\)</span></li>
+</ul></li>
+<li>MLP:
+<ul>
+<li><span class="math inline">\(2\times 5120\times 5120\times
+13824\)</span></li>
+<li><span class="math inline">\(2\times 13824\times 13824\times
+5120\)</span></li>
+</ul></li>
+</ul>
+<p>模型有 40 层，所以</p>
+<p><span class="math inline">\(2\times 5120\times 32000+ 40*(8\times
+5120\times 5120+4\times 5120+ 2\times 5120\times 5120 \times
+13824+2\times 13824\times 13824\times 5120) = 1.0727553e+14\)</span></p>
+<p>参考资料：</p>
+<p>https://blog.csdn.net/wxc971231/article/details/135434478</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>wnma3mz
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wnma3mz.github.io/2024/09/05/LLM%E6%8E%A8%E7%90%86%E7%9B%B8%E5%85%B3%E8%AE%A1%E7%AE%97%E5%85%AC%E5%BC%8F/" title="LLM的推理相关计算公式">https://wnma3mz.github.io/2024/09/05/LLM推理相关计算公式/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hexo_blog/tags/NLP/" rel="tag"># NLP</a>
+              <a href="/hexo_blog/tags/Inference/" rel="tag"># Inference</a>
+              <a href="/hexo_blog/tags/Math/" rel="tag"># Math</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2024/08/08/Knowledge-Distillation-in-LLM/" rel="prev" title="Knowledge Distillation in LLM">
+      <i class="fa fa-chevron-left"></i> Knowledge Distillation in LLM
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E6%95%B0%E9%87%8F"><span class="nav-text">参数量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kv-cache-%E6%98%BE%E5%AD%98%E8%AE%A1%E7%AE%97%E5%85%AC%E5%BC%8F"><span class="nav-text">KV cache 显存计算公式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E9%87%8F"><span class="nav-text">计算量</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="wnma3mz"
+      src="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
+  <p class="site-author-name" itemprop="name">wnma3mz</p>
+  <div class="site-description" itemprop="description">Day Day Up</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/hexo_blog/archives/">
+        
+          <span class="site-state-item-count">67</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/hexo_blog/categories/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/hexo_blog/tags/">
+          
+        <span class="site-state-item-count">88</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wnma3mz" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wnma3mz" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wnma3mz@gmail.com" title="E-Mail → mailto:wnma3mz@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wnma3mz</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='99' src="/hexo_blog/lib/canvas-nest/canvas-nest-nomobile.min.js"></script>
+  <script src="/hexo_blog/lib/anime.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/hexo_blog/js/utils.js"></script>
+
+<script src="/hexo_blog/js/motion.js"></script>
+
+
+<script src="/hexo_blog/js/schemes/muse.js"></script>
+
+
+<script src="/hexo_blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/hexo_blog/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
