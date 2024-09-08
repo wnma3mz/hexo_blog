@@ -28,7 +28,7 @@
 <meta property="og:description" content="记录 LLM 在推理上的理论计算公式">
 <meta property="og:locale">
 <meta property="article:published_time" content="2024-09-05T05:45:43.000Z">
-<meta property="article:modified_time" content="2024-09-08T06:33:58.222Z">
+<meta property="article:modified_time" content="2024-09-08T07:29:21.754Z">
 <meta property="article:author" content="wnma3mz">
 <meta property="article:tag" content="NLP">
 <meta property="article:tag" content="Inference">
@@ -92,7 +92,7 @@
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="Toggle navigation bar">
+    <div class="toggle" aria-label="تشغيل شريط التصفح">
       <span class="toggle-line toggle-line-first"></span>
       <span class="toggle-line toggle-line-middle"></span>
       <span class="toggle-line toggle-line-last"></span>
@@ -231,7 +231,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="Modified：2024-09-08 14:33:58" itemprop="dateModified" datetime="2024-09-08T14:33:58+08:00">2024-09-08</time>
+                <time title="عُدل：2024-09-08 15:29:21" itemprop="dateModified" datetime="2024-09-08T15:29:21+08:00">2024-09-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -355,16 +355,14 @@ hidden\_size^2\)</span></li>
 </ul></li>
 <li>FFN:
 <ul>
-<li>gate_proj 和 up_proj: <span class="math inline">\(2\times (b \times
-s\times hidden\_size)\times (hidden\_size\times
-intermediate\_size)\)</span></li>
-<li>down_proj: <span class="math inline">\((b \times s\times
-intermediate\_size)\times (intermediate\_size\times
-hidden\_size)\)</span></li>
+<li>gate_proj 和 up_proj: <span class="math inline">\(2\times 2\times b
+\times s\times (hidden\_size\times intermediate\_size)\)</span></li>
+<li>down_proj: <span class="math inline">\(2\times b \times s\times
+(intermediate\_size\times hidden\_size)\)</span></li>
 </ul></li>
-<li>b: 句子条数</li>
-<li>s：输入长度</li>
 </ul>
+<p>参数说明 - b: 句子条数 - s: 输入长度 - 2:
+一次乘法操作和一次加法操作</p>
 <p>还是以 <a
 target="_blank" rel="noopener" href="https://huggingface.co/meta-llama/Llama-2-13b-hf/blob/main/config.json">llama2-13B</a>
 为例，关键参数</p>
@@ -383,16 +381,14 @@ target="_blank" rel="noopener" href="https://huggingface.co/meta-llama/Llama-2-1
 </ul></li>
 <li>MLP:
 <ul>
-<li><span class="math inline">\(2\times 5120\times 5120\times
-13824\)</span></li>
-<li><span class="math inline">\(2\times 13824\times 13824\times
-5120\)</span></li>
+<li><span class="math inline">\(4\times 5120\times 13824\)</span></li>
+<li><span class="math inline">\(2\times 13824\times 5120\)</span></li>
 </ul></li>
 </ul>
 <p>模型有 40 层，所以</p>
-<p><span class="math inline">\(2\times 5120\times 32000+ 40*(8\times
-5120\times 5120+4\times 5120+ 2\times 5120\times 5120 \times
-13824+2\times 13824\times 13824\times 5120) = 1.0727553e+14\)</span></p>
+<p><span class="math inline">\(2\times 5120\times 32000+
+40\times(8\times 5120\times 5120+4\times 5120+ 2\times 5120\times
+13824+2\times 13824\times 5120) = 20,041,728,000\)</span></p>
 <p>参考资料：</p>
 <p>https://blog.csdn.net/wxc971231/article/details/135434478</p>
 
