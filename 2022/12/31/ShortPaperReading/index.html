@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/hexo_blog/css/main.css">
+
+
+<link rel="stylesheet" href="/hexo_blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wnma3mz.github.io","root":"/hexo_blog/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="读研期间，短时 paper reading">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Short Paper Reading">
+<meta property="og:url" content="https://wnma3mz.github.io/2022/12/31/ShortPaperReading/index.html">
+<meta property="og:site_name" content="Wnma&#39;s Blogs">
+<meta property="og:description" content="读研期间，短时 paper reading">
+<meta property="og:locale">
+<meta property="article:published_time" content="2022-12-31T13:12:43.000Z">
+<meta property="article:modified_time" content="2024-09-13T14:14:36.615Z">
+<meta property="article:author" content="wnma3mz">
+<meta property="article:tag" content="Federated Learning">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://wnma3mz.github.io/2022/12/31/ShortPaperReading/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>Short Paper Reading | Wnma's Blogs</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="تشغيل شريط التصفح">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hexo_blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Wnma's Blogs</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/hexo_blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/hexo_blog/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/hexo_blog/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/hexo_blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-bookmark">
+
+    <a href="https://wnma3mz.github.io/bookmark/index.html" rel="section"><i class="fa fa-bookmark fa-fw"></i>书签</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/2022/12/31/ShortPaperReading/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
+      <meta itemprop="name" content="wnma3mz">
+      <meta itemprop="description" content="Day Day Up">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wnma's Blogs">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Short Paper Reading
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建于：2022-12-31 21:12:43" itemprop="dateCreated datePublished" datetime="2022-12-31T21:12:43+08:00">2022-12-31</time>
+
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="عُدل：2024-09-13 22:14:36" itemprop="dateModified" datetime="2024-09-13T22:14:36+08:00">2024-09-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/PaperReading/" itemprop="url" rel="index"><span itemprop="name">PaperReading</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>读研期间，短时 paper reading</p>
+<span id="more"></span>
+<h1 id="what-does-the-gradient-represent">What does the gradient
+represent?</h1>
+<p>2020.10.16</p>
+<h2 id="motivation">Motivation</h2>
+<p>The communication in distributed gradient descent. Dense &lt;&lt;
+Sparse</p>
+<h2 id="method">Method</h2>
+<p>Gradient Dropping: removing the R% smallest gradients by absolute
+value</p>
+<h2 id="result">Result</h2>
+<p>Reduce 50x communication size，speed up 22%</p>
+<h2 id="inspirer">Inspirer</h2>
+<p>Gradient value could show the importance of client/model</p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image2.png" /></p>
+<p>作者发现分布式机器学习中，梯度大多为稀疏的（大部分接近0），即意味着大部分客户端对梯度更新贡献很小，故可以通过剔除这部分梯度来提升通信效率。</p>
+<p>对R%小的梯度值不进行通信，换而言之，只有满足条件的梯度才会进行通信。</p>
+<p>实验结果证明，该方法能够在精度不变的前提下，减少50倍的通信规模，并且提升了22%的速度</p>
+<p>这篇文章可以间接为受控共享学习中，之前的实验结果做一个解释，只接受梯度值较大的客户端，即表明该客户端的贡献较大。</p>
+<p>问题：分布式机器学习的任务，数据可能都是来源同一个域内的，甚至就是相同的数据；从该文中的图来看，不能证明之前实验收敛速度加快的原因</p>
+<p>Alham Fikri Aji and Kenneth Heafield. Sparse communication for
+distributed gradient descent. In Empirical Methods in Natural Language
+Processing (EMNLP), 2017.</p>
+<h1 id="knowledge-distillation-with-svd">Knowledge Distillation with
+SVD</h1>
+<p>2020.10.23</p>
+<p>Knowledge Distillation (KD) - Fully Connected Layers-&gt;L2 loss</p>
+<p>KD-FSP - Feature Map-&gt;L2 loss</p>
+<p>KD-SVD - Feature Map-&gt;SVD</p>
+<p>KD-EID - KD-SVD(Adaptively)</p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image3.png" /></p>
+<p>基于SVD对模型进行压缩的新改进。</p>
+<p>首先对知识蒸馏进行简单的回顾，知识蒸馏是利用教师模型与学生模型在最后输出的全连接层上计算L2损失，以此来达到知识迁移、模型压缩、模型防御等目的。基于KD的改进之一，就是对教师与学生模型中的网络中间层的Feature
+Map进行损失计算。作者基于FSP此类思想，提出对Feature
+Map进行SVD，这样可以有效提取教师模型中的知识，更准确地传递给学生信息。</p>
+<p>新发表的文章，则是对这种方法进行了改进，无需人工干预参数设计。实验证明该方法也是有效的（在TinyImageNet对比原始的学生模型提高了2.89%）。文章大部分内容都还是ECCV那篇文章的内容，增加的自适应部分是判断教师与学生模型的Feature
+Map大小差异，来决定使用SVD还是特征分解。</p>
+<p>Lee S, Song B C. Knowledge Transfer via Decomposing Essential
+Information in Convolutional Neural Networks[J]. IEEE transactions on
+neural networks and learning systems.</p>
+<h1 id="knowledge-distillation-in-federated-learning">Knowledge
+Distillation in Federated Learning</h1>
+<p>2020.10.30</p>
+<h2 id="contributions">Contributions</h2>
+<ul>
+<li><p>distillation framework for robust federated model fusion</p></li>
+<li><p>CV/NLP datasets</p></li>
+<li><p>heterogeneous models and/or data</p></li>
+</ul>
+<h2 id="understanding">Understanding</h2>
+<ul>
+<li><p>Generalization bound.</p></li>
+<li><p>Source, diversity and size of the distillation dataset.</p></li>
+<li><p>Distillation steps.</p></li>
+</ul>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/custom_img1.png" /></p>
+<p>这篇文章是NIPS2020的工作，主要是基于知识蒸馏聚合的联邦学习。作者是来自洛桑联邦理工学院</p>
+<p>主要贡献是提出了鲁棒性的联邦蒸馏框架，并且在CV和NLP任务上都得到了验证，还对异质模型，无标签数据等进行了大量实验。</p>
+<p>右图是文章提出的算法（图是自己画的，原文并没有给方法图）,首先是根据不同的客户端在本地训练得到梯度值后，上传至服务端进行聚合，后发回给客户端进行作为教师模型进行KL散度计算，对比于之前的FedMD的方法是不加入公开数据集部分。FedDF这个方法跟之前三室的一位师姐介绍在物联网中的应用，框架基本一致。</p>
+<p>FedDF is designed for effective model fusion on the server,
+considering the accuracy of the global model on the test dataset.
+FedDF是为了有效融合模型，考虑了全局模型在测试集上的准确性，所以未对一些实验进行比较（比如FedMD）。我觉得在找借口，FedMD是有这部分实验的。</p>
+<p>文章为了辅助理解这个框架，还加入了泛化边界，数据集的分布与大小，蒸馏的实验（类似于消融实验）</p>
+<p>Lin T, Kong L, Stich S U, et al. Ensemble Distillation for Robust
+Model Fusion in Federated Learning[J]. arXiv preprint arXiv:2006.07242,
+2020.</p>
+<p>洛桑联邦理工学院</p>
+<h2 id="feddf-experiments">FedDF Experiments</h2>
+<p>2020.12.04</p>
+<ul>
+<li>基本设置
+<ul>
+<li>Local epochs(1、20、40)</li>
+<li>C(0.2、0.4、0.8)</li>
+<li>达到目标性能T（0.8、0.75）</li>
+<li>数据异质程度alpha(1、0.1)</li>
+</ul></li>
+<li>固定设置
+<ul>
+<li>客户端数目：20</li>
+<li>模型架构：Resnet-8</li>
+<li>数据集：CIFAR-10</li>
+</ul></li>
+<li>对比方法：FEDAVG、FEDPROX、FEDAVGM、FEDDF</li>
+</ul>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image4.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image5.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image6.png" /></p>
+<p>Lin T, Kong L, Stich S U, et al. Ensemble Distillation for Robust
+Model Fusion in Federated Learning[J]. arXiv preprint arXiv:2006.07242,
+2020.</p>
+<h1
+id="ensemble-distillation-for-robust-model-fusion-in-federated-learning">Ensemble
+Distillation for Robust Model Fusion in Federated Learning</h1>
+<p>2021.01.15</p>
+<h2 id="联邦学习知识蒸馏">联邦学习——知识蒸馏</h2>
+<ul>
+<li>Zero-Shot（无标签）
+<ul>
+<li>利用公开数据集，训练GAN生成无标签的数据</li>
+</ul></li>
+<li>常规迁移学习
+<ul>
+<li>利用客户端模型分类层权重生成数据（Dirichlet分布）</li>
+</ul></li>
+<li>噪声迁移学习
+<ul>
+<li>差分隐私+联邦学习</li>
+</ul></li>
+<li>SWA迁移学习
+<ul>
+<li>在一般的优化器上增加SWA，可以提高性能</li>
+</ul></li>
+</ul>
+<figure>
+<img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image7.jpeg"
+alt="Dirichlet 分布" />
+<figcaption aria-hidden="true">Dirichlet 分布</figcaption>
+</figure>
+<figure>
+<img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image8.png"
+alt="SWA vs SGD" />
+<figcaption aria-hidden="true">SWA vs SGD</figcaption>
+</figure>
+<p>Dirichlet分布是Beta分布的多元推广。Beta分布是二项式分布的共轭分布，Dirichlet分布是多项式分布的共轭分布。通常情况下，我们说的分布都是关于某个参数的函数，把对应的参数换成一个函数（函数也可以理解成某分布的概率密度）就变成了关于函数的函数。于是，把Dirichlet分布里面的参数换成一个基分布就变成了一个关于分布的分布了。那么它就是Dirichlet过程了。</p>
+<p>延伸阅读：<a
+target="_blank" rel="noopener" href="https://www.zhihu.com/question/26751755">Dirichlet分布</a>；<a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2009.05537">差分隐私+联邦学习</a>；<a
+target="_blank" rel="noopener" href="https://pytorch.org/blog/stochastic-weight-averaging-in-pytorch/">SWA</a></p>
+<p>Lin T, Kong L, Stich S U, et al. Ensemble distillation for robust
+model fusion in federated learning[J]. arXiv preprint arXiv:2006.07242,
+2020.</p>
+<h1
+id="group-knowledge-transferfederated-learning-of-large-cnns-at-the-edge">Group
+Knowledge Transfer:Federated Learning of Large CNNs at the Edge</h1>
+<p>2021.04.09</p>
+<h2 id="backgroundsplit-learning">Background(Split Learning)</h2>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image11.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image12.png" /></p>
+<h2 id="methodgroup-knowledge-transfer">Method(Group Knowledge
+Transfer)</h2>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image9.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image10.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image13.png" /></p>
+<h1
+id="performance-optimization-for-federated-person-re-identification-via-benchmark-analysis">Performance
+Optimization for Federated Person Re-identification via Benchmark
+Analysis</h1>
+<p>2021.04.16</p>
+<ol type="1">
+<li><p>FedAVG不满足需求（不同分类），性能上也达不到（比本地训练精度低）</p></li>
+<li><p>FedPAV满足了需求，但是对于性能上不能完成满足（小数据提升，大数据集下降，训练过程振荡）</p></li>
+<li><p>FedPAV+KD满足需求，提升了性能，但是不稳定（性能不稳定，训练过程稳定）</p>
+<ol type="1">
+<li>Tricks：正则化</li>
+<li>Tricks：Cosing Distance Weight</li>
+</ol></li>
+</ol>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image14.png" /></p>
+<h1
+id="fedbn-federated-learning-on-non-iid-features-via-local-batch-normalization">FedBN:
+Federated Learning on Non-IID Features via Local Batch
+Normalization</h1>
+<p>2021.04.23</p>
+<h2 id="实验设计分析">实验设计分析</h2>
+<ol type="1">
+<li>选定一个数据集，比较：本地训练轮数E，本地数据集大小，客户端数目（切割数据集数量）（左上角三张图）
+<ul>
+<li>可说明：收敛速度、E的影响，数据集大小影响，异质性影响</li>
+</ul></li>
+<li>不同数据集进行比较。说明有效果（右上角一张图）</li>
+<li>基于2，有效果再比较其他三种不同领域的任务。实验设置+实验分析（简要）</li>
+</ol>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image15.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image16.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image17.png" /></p>
+<h1 id="adaptive-federated-optimization">Adaptive Federated
+Optimization</h1>
+<p>2021.05.14</p>
+<h2 id="problem">Problem</h2>
+<p>Standard federated optimization methods such as Federated Averaging
+(FedAvg) are often difficult to tune and exhibit unfavorable convergence
+behavior.</p>
+<h2 id="inspired">Inspired</h2>
+<p>In non-federated settings, <strong>adaptive optimization</strong>
+methods have had notable success in combating such issues.</p>
+<h2 id="work">Work</h2>
+<p>In this work, we propose <strong>federated versions of adaptive
+optimizers</strong>, including Adagrad, Adam, and Yogi, and analyze
+their convergence in the presence of heterogeneous data for general
+nonconvex settings.</p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image18.png" /></p>
+<p>Google: 2020 Feb-2020 Dec</p>
+<h1
+id="preservation-of-the-global-knowledge-by-not-true-self-knowledge-distillation-in-federated-learning">Preservation
+of the Global Knowledge by Not-True Self Knowledge Distillation in
+Federated Learning</h1>
+<p>2021.06.18</p>
+<h2 id="动机">动机</h2>
+<p>Catastrophic Forgetting: feature shifting induced fitting on biased
+local</p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image19.png" /></p>
+<h2 id="研究">研究</h2>
+<p>训练方式: 本地自蒸馏(LSD)</p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image20.png" /></p>
+<p>二次改进: Not-True Distillation</p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image21.png" /></p>
+<p>有偏局部特征转移诱导拟合</p>
+<p>遗忘灾难：把CIFAR10输入拉成二维，在进行100轮联邦学习后，估计数据的概率密度函数，上图这个分布存在明显偏差；提出的方法基本无偏差</p>
+<p>研究方法：将传统的训练，改成了蒸馏的方式（由于是模型架构相同，所以可以叫做自蒸馏），也在本地进行蒸馏；另外，基于IJCAJ2021知识蒸馏的工作，对教师模型预测正确的标签剔除，再KL散度计算，以进行改进。</p>
+<p>Taehyeon Kim, Jaehoon Oh, NakYil Kim, Sangwook Cho, and Se-Young Yun.
+Comparingkullback-leibler divergence and mean squared error loss in
+knowledge distillation.arXiv preprintarXiv:2105.08919, 2021.</p>
+<h1
+id="preservation-of-the-global-knowledge-by-not-trueself-knowledge-distillation-in-federated-learning">Preservation
+of the Global Knowledge by Not-TrueSelf Knowledge Distillation in
+Federated Learning</h1>
+<p>2021.06.25</p>
+<p>利用知识蒸馏保留旧任务的知识</p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image24.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image23.png" /></p>
+<p>Weight divergence</p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image25.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image22.png" /></p>
+<p>全局模型的预测可以作为先前数据分布的参考，从而产生类似于在CL中使用情景记忆的效果。</p>
+<p>beta是指KL散度损失的权重</p>
+<p>结果表明，数据分布的正确性，即数据分布的偏态性，可能影响数据的准确性。</p>
+<p>Zhao Y, Li M, Lai L, et al. Federated learning with non-iid data[J].
+arXiv preprint arXiv:1806.00582, 2018.</p>
+<h1 id="learn-distributed-gan-with-temporary-discriminators">Learn
+distributed GAN with Temporary Discriminators</h1>
+<p>2021.07.02</p>
+<p>研究动机：医疗领域，利用本地的隐私数据进行数据增强</p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image26.png" /></p>
+<p><a
+target="_blank" rel="noopener" href="https://github.com/huiqu18/TDGAN-PyTorch">https://github.com/huiqu18/TDGAN-PyTorch</a></p>
+<h1
+id="personalized-federated-learning-with-theoretical-guarantees-a-model-agnostic-meta-learning-approach">Personalized
+Federated Learning with Theoretical Guarantees: A Model-Agnostic
+Meta-Learning Approach</h1>
+<p>2021.07.16</p>
+<h2 id="动机-1">动机</h2>
+<p>联邦学习+元学习-&gt;个性化联邦学习(Per-FedAVG) <img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image29.png" /></p>
+<h2 id="元学习maml">元学习——MAML</h2>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image27.png" /></p>
+<h2 id="first-order">First-Order</h2>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image28.png" /></p>
+<h2 id="hessian-free">Hessian-Free</h2>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image30.png" /></p>
+<p>这篇论文是发表在NIPS2020，是关于个性化联邦学习的文章。作者来自于MIT的LIDS团队。文章主要是通过统计优化角度的层面对问题进行分析，并给予理论分析与实验结果证明方法的有效性。</p>
+<p>从元学习的角度来分析这篇文章，作者是同一批人。他们首先提出了MAML这种元学习的方法，右侧图，w
+的hat，是提出的问题建模。从w
+hat开始训练，更容易适用于大部分任务。即原始公式</p>
+<p>根据原始公式，得到两种近似，一阶形式，与海森形式（二阶）。</p>
+<p>Alireza Fallah, Aryan Mokhtari, Asuman Ozdaglar. Personalized
+Federated Learning with Theoretical Guarantees: A Model-Agnostic
+Meta-Learning Approach. In Advances in Neural Information Processing
+Systems (NIPS), 2020(33): 3557–3568.</p>
+<h1 id="distilled-one-shot-federated-learning">Distilled One-Shot
+Federated Learning</h1>
+<p>2021.08.20</p>
+<h2 id="动机-2">动机</h2>
+<p>Solve the communication challenges of FL</p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image31.png" /></p>
+<h2 id="方法">方法</h2>
+<ul>
+<li>Clients: datasets distillation</li>
+<li>Send distilled data</li>
+<li>Server train
+<ul>
+<li>Parallel: hard resets + randomly adjusts (slow)</li>
+<li>Serial: one by one distillated ## 实验</li>
+</ul></li>
+<li>Image Classification
+<ul>
+<li>MNIST: LeNet</li>
+</ul></li>
+<li>Text Classification
+<ul>
+<li>IMDB: TextCNN</li>
+<li>TREC-6: Bi-LSTM</li>
+<li>SENT140: TextCNN</li>
+</ul></li>
+</ul>
+<p>由于有大量蒸馏的数据，不能直接进行聚合。所以有串行与并行两种解决方案。</p>
+<p>数据蒸馏：不能在没有resets的模型中直接训练，否则无法达到较好的精度</p>
+<p>hard resets: 强制初始化模型参数</p>
+<p>randomly adjusts: 在每次学习过程中，进行随机的调整</p>
+<p>Random masking randomly selects a fraction p_{rm} of the distilled
+data at each training iteration andreplaces it with a random tensor.</p>
+<p>Zhou Y, Pu G, Ma X, et al. Distilled one-shot federated learning[J].
+arXiv preprint arXiv:2009.07999, 2020.</p>
+<p>NSF Center for Big Learning University of Florida</p>
+<h1 id="does-knowledge-distillation-really-work">Does Knowledge
+Distillation Really Work?</h1>
+<p>2021.08.27</p>
+<h2 id="agreement-and-fidelity">Agreement and Fidelity</h2>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image34.png" /></p>
+<h2 id="generalization-vs-fidelity">Generalization vs Fidelity</h2>
+<ul>
+<li>SD: Data ⬆ Fidelity ⬆, Accuracy ⬇</li>
+<li>ED: Data ⬆ Fidelity ⬆, Accuracy ⬆</li>
+</ul>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image33.png" /></p>
+<h2 id="why-low-fidelity">Why Low Fidelity</h2>
+<ul>
+<li>Architecture: ResNet √ ; VGG ×</li>
+<li>Student Capacity: ×</li>
+<li>Identifiability：distillation dataset ≠ test dataset</li>
+<li>Optimization：√ <img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image32.png" /></li>
+</ul>
+<p>知识蒸馏在深度学习中被广泛应用，但其是否真的有效？简单来说，KD确实有效，能够提升学生网络模型的性能；然而教师往往只能传递有限的知识给学生。
+文章提出了一个新的名词Agreement，或者说Fidelity，即教师与学生对于数据的预测相似度。</p>
+<p>为什么要提出一个新的概念，根据图1中的实验结果xxx</p>
+<p>为什么会有更低的保真度 1. 优化器。随着epoch的增加，一致性增加 2.
+初始化。教师权重+随机权重，lambda比值，越大表示趋近于教师</p>
+<p>我们发现，如果学生的初始化距离教师很远（λ≤0.25），优化器会收敛到蒸馏损失的次优值，从而产生与教师明显不同的学生。然而在λ=
+0.375
+处有一个突然的变化。最终的训练损失下降到最优值并且一致性急剧增加，并且行为继续
+λ &gt;0.375。为了进一步研究，在图 6 (c) 中，我们将 λ∈ {0,0.25,0.375}
+的蒸馏损失表面可视化，投影在与 θt
+相交的二维子空间、初始学生权重和最终学生权重上。如果学生初始化离老师很远（λ∈{0,0.25}），它会收敛到损失表面的一个不同的、次优的盆地。另一方面，当初始化接近于老师（λ=
+0.375）时，学生收敛到与老师相同的盆地，达到接近 100% 的一致性</p>
+<p>我们终于确定了之前所有干预措施无效的根本原因。知识蒸馏无法收敛到最佳学生参数，即使我们知道一个解决方案并在优化方向上给初始化一个小的开端。事实上，虽然可识别性可能是一个问题，但为了在所有输入上匹配教师，学生有
+至少在用于蒸馏的数据上匹配老师，并实现蒸馏损失的接近最优值。在实践中，优化收敛到次优解，导致蒸馏保真度不佳</p>
+<p>Stanton S, Izmailov P, Kirichenko P, et al. Does Knowledge
+Distillation Really Work?[J]. arXiv preprint arXiv:2106.05945, 2021.</p>
+<p>Google Research</p>
+<h1 id="model-contrastive-federated-learning">Model-Contrastive
+Federated Learning</h1>
+<p>2021.09.18</p>
+<h2 id="motivation-1">Motivation</h2>
+<p>A key challenge in federated learning is to handle the heterogeneity
+of local data distribution across parties Method</p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image35.png" /></p>
+<h2 id="method-1">Method</h2>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image37.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image36.png" /></p>
+<p>Li Q, He B, Song D. Model-Contrastive Federated
+Learning[C]//Proceedings of the IEEE/CVF Conference on Computer Vision
+and Pattern Recognition. 2021: 10713-10722.</p>
+<p>UC Berkeley</p>
+<h1
+id="data-free-knowledge-distillation-for-heterogeneous-federated-learning">Data-Free
+Knowledge Distillation for Heterogeneous Federated Learning</h1>
+<p>2021.09.27</p>
+<h2 id="motivation-2">Motivation</h2>
+<p>The ensemble knowledge is not fully utilized to guide local model
+learning, which mayin turn affect the quality of the aggregated
+model.</p>
+<h2 id="method-2">Method</h2>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image39.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image38.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image40.png" /></p>
+<p>Zhuangdi Zhu and Junyuan Hong and Jiayu Zhou. 2021. Data-Free
+Knowledge Distillation for Heterogeneous Federated Learning. In ICML,
+139:12878-12889.</p>
+<p>Michigan State University</p>
+<h1 id="beyond-sharing-weights-for-deep-domain-adaptation">Beyond
+Sharing Weights for Deep Domain Adaptation</h1>
+<p>2021.10.18</p>
+<h2 id="motivation-3">Motivation</h2>
+<p>Learn features that are invariant to the domain shift.</p>
+<h2 id="method-3">Method</h2>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image41.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image43.png" /></p>
+<h2 id="discussion">Discussion</h2>
+<p>It therefore seems reasonable that thehigher layers of the network,
+which encode higher-level in-formation, should be domain-specific.</p>
+<p>Rozantsev, A., Salzmann, M., &amp; Fua, P. (2019). Beyond Sharing
+Weights for Deep Domain Adaptation. IEEE Transactions on Pattern
+Analysis and Machine Intelligence, 41(4), 801-814.</p>
+<h1
+id="feddg-federated-domain-generalization-on-medical-image-segmentation-via-episodic-learning-in-continuous-frequency-space">FedDG:
+Federated Domain Generalization on Medical Image Segmentation via
+Episodic Learning in Continuous Frequency Space</h1>
+<p>2021.10.25</p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image50.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image48.png" /></p>
+<h2 id="method-4">Method</h2>
+<ul>
+<li>Data
+<ul>
+<li>Step 1：对每个客户端的数据都做如右处理</li>
+<li>Step
+2：客户端k的图像X，与傅里叶变换后的数据A（联合任意两个客户端的A）
+<ul>
+<li>对X进行傅里叶变换</li>
+<li>把X的振幅分量中的低频分量换为A的低频分量， low_freq_mutate</li>
+<li>最后结合A，做逆傅里叶变换，得到新的图像X’</li>
+</ul></li>
+</ul></li>
+<li>Train
+<ul>
+<li>Loss1:
+根据原始图像X做训练。先利用这里的梯度计算梯度下降后的模型参数F’</li>
+<li>Loss2: 根据F’对X’的输出计算</li>
+<li>Loss3: F与F’ 分别提取mask的边界与背景
+(ndimage.binary_erosion)做对比学习NTXentLoss，loss3*0.1</li>
+</ul></li>
+</ul>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image51.png" /></p>
+<p>解决从多个分布域中学习的问题-&gt;数据异质问题</p>
+<p>一般的深度学习中，数据是共享的，所以可以直接进行跨域学习。然而在联邦学习中，数据并不支持直接共享，所以从数据分布角度入手。从原始图像中抽取中分布(风格)信息，并把这个信息共享出来。这里假设通过这个分布信息无法还原真实数据。How？</p>
+<p>通过傅里叶变换，把数据转换为：振幅谱+相位谱。下图的蓝色背景部分，通过公式进行转换后，再把各个客户端的信息数据进行汇总学习。</p>
+<p>由于训练背景是医学图像处理，涉及到语义分割，所以需要使用常规的分割损失函数。再考虑图形的边界与背景，对应右边的绿色部分，采用InfoNCE损失函数
+对边界与背景做提取处理，计算InfoNCE损失。hm，hp表示同一类的正面特征，表示边界与背景。</p>
+<p>所以整个训练过程就是利用傅里叶变换提取分布信息，结合一般的分割与InfoNCE损失进行训练。主要的创新点在傅里叶变换提取了可共享的信息。下一次再进行具体的方法介绍。</p>
+<p>Liu Q, Chen C, Qin J, et al. Feddg: Federated domain generalization
+on medical image segmentation via episodic learning in continuous
+frequency space. Proceedings of the IEEE/CVF Conference on Computer
+Vision and Pattern Recognition. 2021: 1013-1023.</p>
+<p>CUHK, 香港中文大学</p>
+<h1
+id="refine-myself-by-teaching-myself-feature-refinement-via-self-knowledge-distillation">Refine
+Myself by Teaching Myself : Feature Refinement via Self-Knowledge
+Distillation</h1>
+<p>2021.11.11</p>
+<h2 id="method-5">Method</h2>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image53.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image54.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image55.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image56.png" /></p>
+<h2 id="result-1">Result</h2>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image57.png" /></p>
+<p><a
+target="_blank" rel="noopener" href="https://github.com/MingiJi/FRSKD">https://github.com/MingiJi/FRSKD</a></p>
+<p>Ji M, Shin S, Hwang S, et al. Refine Myself by Teaching Myself:
+Feature Refinement via Self-Knowledge Distillation. Proceedings of the
+IEEE/CVF Conference on Computer Vision and Pattern Recognition. 2021:
+10664-10673.</p>
+<h1
+id="no-fear-of-heterogeneity-classifier-calibration-for-federated-learning-with-non-iid-data">No
+Fear of Heterogeneity: Classifier Calibration for Federated Learning
+with Non-IID Data</h1>
+<p>2021.11.25</p>
+<h2 id="motivation-4">Motivation</h2>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image58.png" /></p>
+<h2 id="method-6">Method</h2>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image60.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image61.png" /></p>
+<h2 id="result-2">Result</h2>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image62.png" /></p>
+<p>Luo M, Chen F, Hu D, et al. No Fear of Heterogeneity: Classifier
+Calibration for Federated Learning with Non-IID Data[J]. arXiv preprint
+arXiv:2106.05001, 2021.</p>
+<h1 id="federated-learning-with-personalization-layers">Federated
+Learning with Personalization Layers</h1>
+<p>2021.12.02</p>
+<h2 id="method-7">Method</h2>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image64.png" /></p>
+<p>Personalized population risk</p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image65.png" /></p>
+<p>Empirical risk</p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image66.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image67.png" /></p>
+<p>Manoj Ghuhan Arivazhagan, Vinay Aggarwal, Aaditya Kumar Singh, and
+Sunav Choudhary. 2019. Federated learning with personalization layers.
+arXiv preprint arXiv:1912.00818 (2019).</p>
+<h1
+id="federated-split-vision-transformer-for-covid-19-cxr-diagnosis-using-task-agnostic-training">Federated
+Split Vision Transformer for COVID-19 CXR Diagnosis using Task-Agnostic
+Training</h1>
+<p>2021.12.09</p>
+<h2 id="motivation-5">Motivation</h2>
+<p>融合联邦学习与分割学习尽可能发挥他们的独特优势</p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image69.png" /></p>
+<h2 id="method-8">Method</h2>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image70.png" /></p>
+<p>Park S, Kim G, Kim J, et al. Federated Split Vision Transformer for
+COVID-19 CXR Diagnosis using Task-Agnostic Training[J]. arXiv preprint
+arXiv:2111.01338, 2021.</p>
+<h1
+id="local-learning-matters-rethinking-data-heterogeneity-in-federated-learning">Local
+Learning Matters: Rethinking Data Heterogeneity in Federated
+Learning</h1>
+<p>2022.03.18</p>
+<h2 id="contribution">Contribution</h2>
+<p>Focus on local learning generality rather than proximal
+restriction</p>
+<h2 id="method-9">Method</h2>
+<h3 id="stochastic-depth-2016">Stochastic Depth (2016)</h3>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image71.png" /></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> <span class="variable language_">self</span>.training <span class="keyword">or</span> torch.rand(<span class="number">1</span>)[<span class="number">0</span>] &gt;= <span class="variable language_">self</span>.death_rate:</span><br><span class="line">    ……</span><br><span class="line">     <span class="keyword">if</span> <span class="variable language_">self</span>.training:</span><br><span class="line">         residual /= (<span class="number">1.</span> - <span class="variable language_">self</span>.death_rate)</span><br><span class="line">    ……</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="mixup-2018">Mixup (2018)</h3>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image72.png" /></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">index = torch.randperm(batch_size)</span><br><span class="line">mixed_x = lam * x + (<span class="number">1</span> - lam) * x[index, :]</span><br><span class="line">y_a, y_b = y, y[index]</span><br><span class="line">……</span><br><span class="line">loss = lam * f(pred, y_a) + (<span class="number">1</span> - lam) * f(pred, y_b)</span><br></pre></td></tr></table></figure>
+<h3 id="gradaug-2020">GradAug (2020)</h3>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image73.png" /></p>
+<p>Random number of channels in each layer</p>
+<p>University of Central Florida</p>
+<p>Mendieta M, Yang T, Wang P, et al. Local Learning Matters: Rethinking
+Data Heterogeneity in Federated Learning[J]. arXiv preprint
+arXiv:2111.14213, 2021.</p>
+<h1
+id="local-learning-matters-rethinking-data-heterogeneity-in-federated-learning-1">Local
+Learning Matters: Rethinking Data Heterogeneity in Federated
+Learning</h1>
+<p>2022.03.25</p>
+<h2 id="motivation-6">Motivation</h2>
+<ul>
+<li><p>Promote smooth optimization and consistency within the
+model</p></li>
+<li><p>Reduce computation in a purposeful manner</p></li>
+</ul>
+<h2 id="method-10">Method</h2>
+<ul>
+<li><p>Untrained network in place of the traditional logit-based
+loss</p></li>
+<li><p>Reuse the intermediate features of the full network</p></li>
+</ul>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image75.png" /></p>
+<h2 id="result-3">Result</h2>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image74.png" /></p>
+<p>University of Central Florida</p>
+<p>Mendieta M, Yang T, Wang P, et al. Local Learning Matters: Rethinking
+Data Heterogeneity in Federated Learning[J]. arXiv preprint
+arXiv:2111.14213, 2021.</p>
+<h1 id="motion-representations-for-articulated-animation">Motion
+Representations for Articulated Animation</h1>
+<p>2022.04.15</p>
+<h2 id="问题">问题</h2>
+<ul>
+<li>输入：图片与视频</li>
+<li>目标：图片中的目标“动”起来</li>
+<li>挑战：目标与背景提取；视频帧与帧之间的关联 ## 建模：</li>
+<li>对图片与每帧视频进行粗估计，提取驱动的目标
+<ul>
+<li>AutoEncoder（AE）：提取图片的feature map（FM）</li>
+<li>单层卷积：根据FM提取驱动的目标区域（限定好区域大小），R_p, V_p</li>
+<li>计算仿射参数（PCA 或 Jacobian）</li>
+<li>若干层下采样+单层全连接（特征点数）（拼接后输入）</li>
+</ul></li>
+<li>图片生成（细粒度）
+<ul>
+<li>原图：Block(卷积+下采样)+ResBlock</li>
+<li>AE+卷积（区域数）</li>
+<li>上采样+卷积</li>
+</ul></li>
+</ul>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image77.png" /></p>
+<h2 id="结果">结果</h2>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image76.gif" /></p>
+<p>University of Trento, Italy</p>
+<p>Siarohin, Aliaksandr, Oliver, Woodford, Jian, Ren, Menglei, Chai, and
+Sergey, Tulyakov. "Motion Representations for Articulated Animation." .
+In CVPR.2021.</p>
+<h1
+id="communication-efficient-federated-learning-via-knowledge-distillation">Communication-efficient
+federated learning via knowledge distillation</h1>
+<p>2022.05.06</p>
+<h2 id="method-11">Method</h2>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image78.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image79.png" /></p>
+<p>SVD energy 随着轮数增加，阈值需要增大，即重要的知识越来越多</p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image80.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image82.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image81.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image83.png" /></p>
+<ol type="1">
+<li><p>Client: Layer SVD-&gt;u<em>sigma</em>v</p></li>
+<li><p>Server: mean(u<em>sigma</em>v)-&gt; u<em>sigma</em>v</p></li>
+<li><p>Client Revice: replace u<em>sigma</em>v</p></li>
+</ol>
+<p>Wu, C., Wu, F., Lyu, L. et al. Communication-efficient federated
+learning via knowledge distillation. Nat Commun 13, 2032 (2022)</p>
+<p>Tsinghua University</p>
+<h1
+id="personalized-federated-learning-using-hypernetworks">Personalized
+Federated Learning using Hypernetworks</h1>
+<p>2022.06.24</p>
+<h2 id="method-12">Method</h2>
+<p>Using a single joint hypernetwork to generate all separate models
+allows us to perform smart parameter sharing.</p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image84.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image85.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image87.png" /></p>
+<h2 id="results">Results</h2>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image86.png" /></p>
+<p>Shamsian A, Navon A, Fetaya E, et al. Personalized federated learning
+using hypernetworks[C]//International Conference on Machine Learning.
+PMLR, 2021: 9489-9502.</p>
+<h1 id="the-power-of-scale-for-parameter-efficient-prompt-tuning">The
+Power of Scale for Parameter-Efficient Prompt Tuning</h1>
+<p>2023.04.04</p>
+<h2 id="motivation-7">Motivation</h2>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image88.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image91.png" /></p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image90.png" /></p>
+<h2 id="method-13">Method</h2>
+<ul>
+<li><p>模型输入层额外加入一层Embedding，其他部分冻结</p></li>
+<li><p>额外的数据输入处理</p></li>
+</ul>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image93.png" /></p>
+<h2 id="result-4">Result</h2>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image92.png" /></p>
+<p>Lester B , et al. The Power of Scale for Parameter-Efficient Prompt
+Tuning. In EMNLP. 2021:3045–3059</p>
+<p>Google</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>wnma3mz
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wnma3mz.github.io/2022/12/31/ShortPaperReading/" title="Short Paper Reading">https://wnma3mz.github.io/2022/12/31/ShortPaperReading/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hexo_blog/tags/Federated-Learning/" rel="tag"># Federated Learning</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2021/10/30/%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85/Ubuntu20.04%E5%AE%89%E8%A3%85%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%8E%AF%E5%A2%83%E5%8F%8A%E9%85%8D%E7%BD%AE%E4%B8%AA%E4%BA%BA%E7%8E%AF%E5%A2%83%E5%B0%8F%E8%AE%B0/" rel="prev" title="Ubuntu20.04安装深度学习环境及配置个人环境小记">
+      <i class="fa fa-chevron-left"></i> Ubuntu20.04安装深度学习环境及配置个人环境小记
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2023/01/10/IOT/OpenWrt%E8%B7%AF%E7%94%B1%E5%99%A8%E8%AE%B0%E5%BD%95/" rel="next" title="OpenWrt路由器折腾记录">
+      OpenWrt路由器折腾记录 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#what-does-the-gradient-represent"><span class="nav-text">What does the gradient
+represent?</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#motivation"><span class="nav-text">Motivation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#method"><span class="nav-text">Method</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#result"><span class="nav-text">Result</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#inspirer"><span class="nav-text">Inspirer</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#knowledge-distillation-with-svd"><span class="nav-text">Knowledge Distillation with
+SVD</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#knowledge-distillation-in-federated-learning"><span class="nav-text">Knowledge
+Distillation in Federated Learning</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#contributions"><span class="nav-text">Contributions</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#understanding"><span class="nav-text">Understanding</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#feddf-experiments"><span class="nav-text">FedDF Experiments</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ensemble-distillation-for-robust-model-fusion-in-federated-learning"><span class="nav-text">Ensemble
+Distillation for Robust Model Fusion in Federated Learning</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%81%94%E9%82%A6%E5%AD%A6%E4%B9%A0%E7%9F%A5%E8%AF%86%E8%92%B8%E9%A6%8F"><span class="nav-text">联邦学习——知识蒸馏</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#group-knowledge-transferfederated-learning-of-large-cnns-at-the-edge"><span class="nav-text">Group
+Knowledge Transfer:Federated Learning of Large CNNs at the Edge</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#backgroundsplit-learning"><span class="nav-text">Background(Split Learning)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#methodgroup-knowledge-transfer"><span class="nav-text">Method(Group Knowledge
+Transfer)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#performance-optimization-for-federated-person-re-identification-via-benchmark-analysis"><span class="nav-text">Performance
+Optimization for Federated Person Re-identification via Benchmark
+Analysis</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#fedbn-federated-learning-on-non-iid-features-via-local-batch-normalization"><span class="nav-text">FedBN:
+Federated Learning on Non-IID Features via Local Batch
+Normalization</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E8%AE%BE%E8%AE%A1%E5%88%86%E6%9E%90"><span class="nav-text">实验设计分析</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#adaptive-federated-optimization"><span class="nav-text">Adaptive Federated
+Optimization</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#problem"><span class="nav-text">Problem</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#inspired"><span class="nav-text">Inspired</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#work"><span class="nav-text">Work</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#preservation-of-the-global-knowledge-by-not-true-self-knowledge-distillation-in-federated-learning"><span class="nav-text">Preservation
+of the Global Knowledge by Not-True Self Knowledge Distillation in
+Federated Learning</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%9C%BA"><span class="nav-text">动机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A0%94%E7%A9%B6"><span class="nav-text">研究</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#preservation-of-the-global-knowledge-by-not-trueself-knowledge-distillation-in-federated-learning"><span class="nav-text">Preservation
+of the Global Knowledge by Not-TrueSelf Knowledge Distillation in
+Federated Learning</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#learn-distributed-gan-with-temporary-discriminators"><span class="nav-text">Learn
+distributed GAN with Temporary Discriminators</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#personalized-federated-learning-with-theoretical-guarantees-a-model-agnostic-meta-learning-approach"><span class="nav-text">Personalized
+Federated Learning with Theoretical Guarantees: A Model-Agnostic
+Meta-Learning Approach</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%9C%BA-1"><span class="nav-text">动机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%83%E5%AD%A6%E4%B9%A0maml"><span class="nav-text">元学习——MAML</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#first-order"><span class="nav-text">First-Order</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hessian-free"><span class="nav-text">Hessian-Free</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#distilled-one-shot-federated-learning"><span class="nav-text">Distilled One-Shot
+Federated Learning</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%9C%BA-2"><span class="nav-text">动机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%B3%95"><span class="nav-text">方法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#does-knowledge-distillation-really-work"><span class="nav-text">Does Knowledge
+Distillation Really Work?</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#agreement-and-fidelity"><span class="nav-text">Agreement and Fidelity</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#generalization-vs-fidelity"><span class="nav-text">Generalization vs Fidelity</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#why-low-fidelity"><span class="nav-text">Why Low Fidelity</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#model-contrastive-federated-learning"><span class="nav-text">Model-Contrastive
+Federated Learning</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#motivation-1"><span class="nav-text">Motivation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#method-1"><span class="nav-text">Method</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#data-free-knowledge-distillation-for-heterogeneous-federated-learning"><span class="nav-text">Data-Free
+Knowledge Distillation for Heterogeneous Federated Learning</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#motivation-2"><span class="nav-text">Motivation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#method-2"><span class="nav-text">Method</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#beyond-sharing-weights-for-deep-domain-adaptation"><span class="nav-text">Beyond
+Sharing Weights for Deep Domain Adaptation</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#motivation-3"><span class="nav-text">Motivation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#method-3"><span class="nav-text">Method</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#discussion"><span class="nav-text">Discussion</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#feddg-federated-domain-generalization-on-medical-image-segmentation-via-episodic-learning-in-continuous-frequency-space"><span class="nav-text">FedDG:
+Federated Domain Generalization on Medical Image Segmentation via
+Episodic Learning in Continuous Frequency Space</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#method-4"><span class="nav-text">Method</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#refine-myself-by-teaching-myself-feature-refinement-via-self-knowledge-distillation"><span class="nav-text">Refine
+Myself by Teaching Myself : Feature Refinement via Self-Knowledge
+Distillation</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#method-5"><span class="nav-text">Method</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#result-1"><span class="nav-text">Result</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#no-fear-of-heterogeneity-classifier-calibration-for-federated-learning-with-non-iid-data"><span class="nav-text">No
+Fear of Heterogeneity: Classifier Calibration for Federated Learning
+with Non-IID Data</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#motivation-4"><span class="nav-text">Motivation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#method-6"><span class="nav-text">Method</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#result-2"><span class="nav-text">Result</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#federated-learning-with-personalization-layers"><span class="nav-text">Federated
+Learning with Personalization Layers</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#method-7"><span class="nav-text">Method</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#federated-split-vision-transformer-for-covid-19-cxr-diagnosis-using-task-agnostic-training"><span class="nav-text">Federated
+Split Vision Transformer for COVID-19 CXR Diagnosis using Task-Agnostic
+Training</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#motivation-5"><span class="nav-text">Motivation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#method-8"><span class="nav-text">Method</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#local-learning-matters-rethinking-data-heterogeneity-in-federated-learning"><span class="nav-text">Local
+Learning Matters: Rethinking Data Heterogeneity in Federated
+Learning</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#contribution"><span class="nav-text">Contribution</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#method-9"><span class="nav-text">Method</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#stochastic-depth-2016"><span class="nav-text">Stochastic Depth (2016)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mixup-2018"><span class="nav-text">Mixup (2018)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gradaug-2020"><span class="nav-text">GradAug (2020)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#local-learning-matters-rethinking-data-heterogeneity-in-federated-learning-1"><span class="nav-text">Local
+Learning Matters: Rethinking Data Heterogeneity in Federated
+Learning</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#motivation-6"><span class="nav-text">Motivation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#method-10"><span class="nav-text">Method</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#result-3"><span class="nav-text">Result</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#motion-representations-for-articulated-animation"><span class="nav-text">Motion
+Representations for Articulated Animation</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98"><span class="nav-text">问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E6%9E%9C"><span class="nav-text">结果</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#communication-efficient-federated-learning-via-knowledge-distillation"><span class="nav-text">Communication-efficient
+federated learning via knowledge distillation</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#method-11"><span class="nav-text">Method</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#personalized-federated-learning-using-hypernetworks"><span class="nav-text">Personalized
+Federated Learning using Hypernetworks</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#method-12"><span class="nav-text">Method</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#results"><span class="nav-text">Results</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#the-power-of-scale-for-parameter-efficient-prompt-tuning"><span class="nav-text">The
+Power of Scale for Parameter-Efficient Prompt Tuning</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#motivation-7"><span class="nav-text">Motivation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#method-13"><span class="nav-text">Method</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#result-4"><span class="nav-text">Result</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="wnma3mz"
+      src="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
+  <p class="site-author-name" itemprop="name">wnma3mz</p>
+  <div class="site-description" itemprop="description">Day Day Up</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/hexo_blog/archives/">
+        
+          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/hexo_blog/categories/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/hexo_blog/tags/">
+          
+        <span class="site-state-item-count">89</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wnma3mz" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wnma3mz" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wnma3mz@gmail.com" title="E-Mail → mailto:wnma3mz@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wnma3mz</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='99' src="/hexo_blog/lib/canvas-nest/canvas-nest-nomobile.min.js"></script>
+  <script src="/hexo_blog/lib/anime.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/hexo_blog/js/utils.js"></script>
+
+<script src="/hexo_blog/js/motion.js"></script>
+
+
+<script src="/hexo_blog/js/schemes/muse.js"></script>
+
+
+<script src="/hexo_blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/hexo_blog/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
