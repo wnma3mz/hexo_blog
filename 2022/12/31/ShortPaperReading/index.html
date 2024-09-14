@@ -28,7 +28,7 @@
 <meta property="og:description" content="读研期间，短时 paper reading">
 <meta property="og:locale">
 <meta property="article:published_time" content="2022-12-31T13:12:43.000Z">
-<meta property="article:modified_time" content="2024-09-14T13:40:27.932Z">
+<meta property="article:modified_time" content="2024-09-14T14:11:05.737Z">
 <meta property="article:author" content="wnma3mz">
 <meta property="article:tag" content="Federated Learning">
 <meta name="twitter:card" content="summary">
@@ -229,7 +229,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="عُدل：2024-09-14 21:40:27" itemprop="dateModified" datetime="2024-09-14T21:40:27+08:00">2024-09-14</time>
+                <time title="عُدل：2024-09-14 22:11:05" itemprop="dateModified" datetime="2024-09-14T22:11:05+08:00">2024-09-14</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -274,16 +274,21 @@ src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/
 <p>实验结果证明，该方法能够在精度不变的前提下，减少50倍的通信规模，并且提升了22%的速度</p>
 <p>这篇文章可以间接为受控共享学习中，之前的实验结果做一个解释，只接受梯度值较大的客户端，即表明该客户端的贡献较大。</p>
 <p>问题：分布式机器学习的任务，数据可能都是来源同一个域内的，甚至就是相同的数据；从该文中的图来看，不能证明之前实验收敛速度加快的原因</p>
+<blockquote>
 <p>Alham Fikri Aji and Kenneth Heafield. Sparse communication for
 distributed gradient descent. In Empirical Methods in Natural Language
 Processing (EMNLP), 2017.</p>
+</blockquote>
 <h1 id="knowledge-distillation-with-svd">Knowledge Distillation with
 SVD</h1>
 <p>2020.10.23</p>
-<p>Knowledge Distillation (KD) - Fully Connected Layers-&gt;L2 loss</p>
-<p>KD-FSP - Feature Map-&gt;L2 loss</p>
-<p>KD-SVD - Feature Map-&gt;SVD</p>
-<p>KD-EID - KD-SVD(Adaptively)</p>
+<ul>
+<li><p>Knowledge Distillation (KD): Fully Connected Layers-&gt;L2
+loss</p></li>
+<li><p>KD-FSP: Feature Map-&gt;L2 loss</p></li>
+<li><p>KD-SVD: Feature Map-&gt;SVD</p></li>
+<li><p>KD-EID: KD-SVD(Adaptively)</p></li>
+</ul>
 <p><img
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image3.png" /></p>
 <p>基于SVD对模型进行压缩的新改进。</p>
@@ -292,9 +297,11 @@ Map进行损失计算。作者基于FSP此类思想，提出对Feature
 Map进行SVD，这样可以有效提取教师模型中的知识，更准确地传递给学生信息。</p>
 <p>新发表的文章，则是对这种方法进行了改进，无需人工干预参数设计。实验证明该方法也是有效的（在TinyImageNet对比原始的学生模型提高了2.89%）。文章大部分内容都还是ECCV那篇文章的内容，增加的自适应部分是判断教师与学生模型的Feature
 Map大小差异，来决定使用SVD还是特征分解。</p>
+<blockquote>
 <p>Lee S, Song B C. Knowledge Transfer via Decomposing Essential
 Information in Convolutional Neural Networks[J]. IEEE transactions on
 neural networks and learning systems.</p>
+</blockquote>
 <h1 id="knowledge-distillation-in-federated-learning">Knowledge
 Distillation in Federated Learning</h1>
 <p>2020.10.30</p>
@@ -316,12 +323,14 @@ src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/
 <p>主要贡献是提出了鲁棒性的联邦蒸馏框架，并且在CV和NLP任务上都得到了验证，还对异质模型，无标签数据等进行了大量实验。</p>
 <p>右图是文章提出的算法（图是自己画的，原文并没有给方法图）,首先是根据不同的客户端在本地训练得到梯度值后，上传至服务端进行聚合，后发回给客户端进行作为教师模型进行KL散度计算，对比于之前的FedMD的方法是不加入公开数据集部分。FedDF这个方法跟之前三室的一位师姐介绍在物联网中的应用，框架基本一致。</p>
 <p>FedDF is designed for effective model fusion on the server,
-considering the accuracy of the global model on the test dataset.
-FedDF是为了有效融合模型，考虑了全局模型在测试集上的准确性，所以未对一些实验进行比较（比如FedMD）。我觉得在找借口，FedMD是有这部分实验的。</p>
+considering the accuracy of the global model on the test dataset.</p>
+<p>FedDF是为了有效融合模型，考虑了全局模型在测试集上的准确性，所以未对一些实验进行比较（比如FedMD）。我觉得在找借口，FedMD是有这部分实验的。</p>
 <p>文章为了辅助理解这个框架，还加入了泛化边界，数据集的分布与大小，蒸馏的实验（类似于消融实验）</p>
+<blockquote>
 <p>Lin T, Kong L, Stich S U, et al. Ensemble Distillation for Robust
 Model Fusion in Federated Learning[J]. arXiv preprint arXiv:2006.07242,
 2020.</p>
+</blockquote>
 <p>洛桑联邦理工学院</p>
 <h2 id="feddf-experiments">FedDF Experiments</h2>
 <p>2020.12.04</p>
@@ -347,31 +356,23 @@ src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image5.png" /></p>
 <p><img
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image6.png" /></p>
+<blockquote>
 <p>Lin T, Kong L, Stich S U, et al. Ensemble Distillation for Robust
 Model Fusion in Federated Learning[J]. arXiv preprint arXiv:2006.07242,
 2020.</p>
+</blockquote>
 <h1
 id="ensemble-distillation-for-robust-model-fusion-in-federated-learning">Ensemble
 Distillation for Robust Model Fusion in Federated Learning</h1>
 <p>2021.01.15</p>
 <h2 id="联邦学习知识蒸馏">联邦学习——知识蒸馏</h2>
 <ul>
-<li>Zero-Shot（无标签）
-<ul>
-<li>利用公开数据集，训练GAN生成无标签的数据</li>
-</ul></li>
-<li>常规迁移学习
-<ul>
-<li>利用客户端模型分类层权重生成数据（Dirichlet分布）</li>
-</ul></li>
-<li>噪声迁移学习
-<ul>
-<li>差分隐私+联邦学习</li>
-</ul></li>
-<li>SWA迁移学习
-<ul>
-<li>在一般的优化器上增加SWA，可以提高性能</li>
-</ul></li>
+<li><p>Zero-Shot（无标签）:
+利用公开数据集，训练GAN生成无标签的数据</p></li>
+<li><p>常规迁移学习:
+利用客户端模型分类层权重生成数据（Dirichlet分布）</p></li>
+<li><p>噪声迁移学习: 差分隐私+联邦学习</p></li>
+<li><p>SWA迁移学习: 在一般的优化器上增加SWA，可以提高性能</p></li>
 </ul>
 <figure>
 <img
@@ -390,9 +391,11 @@ alt="SWA vs SGD" />
 target="_blank" rel="noopener" href="https://www.zhihu.com/question/26751755">Dirichlet分布</a>；<a
 target="_blank" rel="noopener" href="https://arxiv.org/abs/2009.05537">差分隐私+联邦学习</a>；<a
 target="_blank" rel="noopener" href="https://pytorch.org/blog/stochastic-weight-averaging-in-pytorch/">SWA</a></p>
+<blockquote>
 <p>Lin T, Kong L, Stich S U, et al. Ensemble distillation for robust
 model fusion in federated learning[J]. arXiv preprint arXiv:2006.07242,
 2020.</p>
+</blockquote>
 <h1
 id="group-knowledge-transferfederated-learning-of-large-cnns-at-the-edge">Group
 Knowledge Transfer:Federated Learning of Large CNNs at the Edge</h1>
@@ -420,8 +423,8 @@ Analysis</h1>
 <li><p>FedPAV满足了需求，但是对于性能上不能完成满足（小数据提升，大数据集下降，训练过程振荡）</p></li>
 <li><p>FedPAV+KD满足需求，提升了性能，但是不稳定（性能不稳定，训练过程稳定）</p>
 <ol type="1">
-<li>Tricks：正则化</li>
-<li>Tricks：Cosing Distance Weight</li>
+<li>Trick：正则化</li>
+<li>Trick：Cosing Distance Weight</li>
 </ol></li>
 </ol>
 <p><img
@@ -463,7 +466,9 @@ their convergence in the presence of heterogeneous data for general
 nonconvex settings.</p>
 <p><img
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image18.png" /></p>
+<blockquote>
 <p>Google: 2020 Feb-2020 Dec</p>
+</blockquote>
 <h1
 id="preservation-of-the-global-knowledge-by-not-true-self-knowledge-distillation-in-federated-learning">Preservation
 of the Global Knowledge by Not-True Self Knowledge Distillation in
@@ -484,9 +489,11 @@ src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/
 <p>有偏局部特征转移诱导拟合</p>
 <p>遗忘灾难：把CIFAR10输入拉成二维，在进行100轮联邦学习后，估计数据的概率密度函数，上图这个分布存在明显偏差；提出的方法基本无偏差</p>
 <p>研究方法：将传统的训练，改成了蒸馏的方式（由于是模型架构相同，所以可以叫做自蒸馏），也在本地进行蒸馏；另外，基于IJCAJ2021知识蒸馏的工作，对教师模型预测正确的标签剔除，再KL散度计算，以进行改进。</p>
+<blockquote>
 <p>Taehyeon Kim, Jaehoon Oh, NakYil Kim, Sangwook Cho, and Se-Young Yun.
 Comparingkullback-leibler divergence and mean squared error loss in
 knowledge distillation.arXiv preprintarXiv:2105.08919, 2021.</p>
+</blockquote>
 <h1
 id="preservation-of-the-global-knowledge-by-not-trueself-knowledge-distillation-in-federated-learning">Preservation
 of the Global Knowledge by Not-TrueSelf Knowledge Distillation in
@@ -505,8 +512,10 @@ src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/
 <p>全局模型的预测可以作为先前数据分布的参考，从而产生类似于在CL中使用情景记忆的效果。</p>
 <p>beta是指KL散度损失的权重</p>
 <p>结果表明，数据分布的正确性，即数据分布的偏态性，可能影响数据的准确性。</p>
+<blockquote>
 <p>Zhao Y, Li M, Lai L, et al. Federated learning with non-iid data[J].
 arXiv preprint arXiv:1806.00582, 2018.</p>
+</blockquote>
 <h1 id="learn-distributed-gan-with-temporary-discriminators">Learn
 distributed GAN with Temporary Discriminators</h1>
 <p>2021.07.02</p>
@@ -539,10 +548,12 @@ class="math display">\[w_{k+1}=w_{k}-\beta_{k}{\frac{1}{B}}\sum_{i\in{\mathcal{B
 的hat，是提出的问题建模。从w
 hat开始训练，更容易适用于大部分任务。即原始公式</p>
 <p>根据原始公式，得到两种近似，一阶形式，与海森形式（二阶）。</p>
+<blockquote>
 <p>Alireza Fallah, Aryan Mokhtari, Asuman Ozdaglar. Personalized
 Federated Learning with Theoretical Guarantees: A Model-Agnostic
 Meta-Learning Approach. In Advances in Neural Information Processing
 Systems (NIPS), 2020(33): 3557–3568.</p>
+</blockquote>
 <h1 id="distilled-one-shot-federated-learning">Distilled One-Shot
 Federated Learning</h1>
 <p>2021.08.20</p>
@@ -576,9 +587,13 @@ src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/
 <p>randomly adjusts: 在每次学习过程中，进行随机的调整</p>
 <p>Random masking randomly selects a fraction p_{rm} of the distilled
 data at each training iteration andreplaces it with a random tensor.</p>
+<blockquote>
+<p>NSF Center for Big Learning University of Florida</p>
+</blockquote>
+<blockquote>
 <p>Zhou Y, Pu G, Ma X, et al. Distilled one-shot federated learning[J].
 arXiv preprint arXiv:2009.07999, 2020.</p>
-<p>NSF Center for Big Learning University of Florida</p>
+</blockquote>
 <h1 id="does-knowledge-distillation-really-work">Does Knowledge
 Distillation Really Work?</h1>
 <p>2021.08.27</p>
@@ -595,17 +610,23 @@ y}|{\bf x}_{i})\mid\right|\hat{p}_{s}({\bf y}|{\bf x}_{i}))\]</span></p>
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image33.png" /></p>
 <h2 id="why-low-fidelity">Why Low Fidelity</h2>
 <ul>
-<li>Architecture: ResNet √ ; VGG ×</li>
-<li>Student Capacity: ×</li>
-<li>Identifiability：distillation dataset ≠ test dataset</li>
-<li>Optimization：√ <img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image32.png" /></li>
+<li>Architecture: ResNet <span class="math inline">\(\sqrt{}\)</span> ;
+VGG <span class="math inline">\(\times\)</span></li>
+<li>Student Capacity: <span class="math inline">\(\times\)</span></li>
+<li>Identifiability：distillation dataset <span
+class="math inline">\(\neq\)</span> test dataset</li>
+<li>Optimization：<span class="math inline">\(\sqrt{}\)</span></li>
 </ul>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image32.png" /></p>
 <p>知识蒸馏在深度学习中被广泛应用，但其是否真的有效？简单来说，KD确实有效，能够提升学生网络模型的性能；然而教师往往只能传递有限的知识给学生。
 文章提出了一个新的名词Agreement，或者说Fidelity，即教师与学生对于数据的预测相似度。</p>
-<p>为什么要提出一个新的概念，根据图1中的实验结果xxx</p>
-<p>为什么会有更低的保真度 1. 优化器。随着epoch的增加，一致性增加 2.
-初始化。教师权重+随机权重，lambda比值，越大表示趋近于教师</p>
+<p>为什么要提出一个新的概念，根据图1中的实验结果</p>
+<p>为什么会有更低的保真度</p>
+<ol type="1">
+<li><p>优化器。随着epoch的增加，一致性增加</p></li>
+<li><p>初始化。教师权重+随机权重，lambda比值，越大表示趋近于教师</p></li>
+</ol>
 <p>我们发现，如果学生的初始化距离教师很远（λ≤0.25），优化器会收敛到蒸馏损失的次优值，从而产生与教师明显不同的学生。然而在λ=
 0.375
 处有一个突然的变化。最终的训练损失下降到最优值并且一致性急剧增加，并且行为继续
@@ -615,9 +636,13 @@ src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/
 0.375）时，学生收敛到与老师相同的盆地，达到接近 100% 的一致性</p>
 <p>我们终于确定了之前所有干预措施无效的根本原因。知识蒸馏无法收敛到最佳学生参数，即使我们知道一个解决方案并在优化方向上给初始化一个小的开端。事实上，虽然可识别性可能是一个问题，但为了在所有输入上匹配教师，学生有
 至少在用于蒸馏的数据上匹配老师，并实现蒸馏损失的接近最优值。在实践中，优化收敛到次优解，导致蒸馏保真度不佳</p>
+<blockquote>
+<p>Google Research</p>
+</blockquote>
+<blockquote>
 <p>Stanton S, Izmailov P, Kirichenko P, et al. Does Knowledge
 Distillation Really Work?[J]. arXiv preprint arXiv:2106.05945, 2021.</p>
-<p>Google Research</p>
+</blockquote>
 <h1 id="model-contrastive-federated-learning">Model-Contrastive
 Federated Learning</h1>
 <p>2021.09.18</p>
@@ -633,10 +658,14 @@ b})/\tau)}{\exp(\mathrm{sim}(z,z_{g l o
 b})/\tau)+\exp(\mathrm{sim}(z,z_{p r e e v})/\tau)}\]</span></p>
 <p><img
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image36.png" /></p>
+<blockquote>
+<p>UC Berkeley</p>
+</blockquote>
+<blockquote>
 <p>Li Q, He B, Song D. Model-Contrastive Federated
 Learning[C]//Proceedings of the IEEE/CVF Conference on Computer Vision
 and Pattern Recognition. 2021: 10713-10722.</p>
-<p>UC Berkeley</p>
+</blockquote>
 <h1
 id="data-free-knowledge-distillation-for-heterogeneous-federated-learning">Data-Free
 Knowledge Distillation for Heterogeneous Federated Learning</h1>
@@ -652,10 +681,14 @@ class="math display">\[\operatorname*{min}_{\theta}\operatorname*{lim}_{x\righta
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image38.png" /></p>
 <p><img
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image40.png" /></p>
+<blockquote>
+<p>Michigan State University</p>
+</blockquote>
+<blockquote>
 <p>Zhuangdi Zhu and Junyuan Hong and Jiayu Zhou. 2021. Data-Free
 Knowledge Distillation for Heterogeneous Federated Learning. In ICML,
 139:12878-12889.</p>
-<p>Michigan State University</p>
+</blockquote>
 <h1 id="beyond-sharing-weights-for-deep-domain-adaptation">Beyond
 Sharing Weights for Deep Domain Adaptation</h1>
 <p>2021.10.18</p>
@@ -669,9 +702,11 @@ src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/
 <h2 id="discussion">Discussion</h2>
 <p>It therefore seems reasonable that thehigher layers of the network,
 which encode higher-level in-formation, should be domain-specific.</p>
+<blockquote>
 <p>Rozantsev, A., Salzmann, M., &amp; Fua, P. (2019). Beyond Sharing
 Weights for Deep Domain Adaptation. IEEE Transactions on Pattern
 Analysis and Machine Intelligence, 41(4), 801-814.</p>
+</blockquote>
 <h1
 id="feddg-federated-domain-generalization-on-medical-image-segmentation-via-episodic-learning-in-continuous-frequency-space">FedDG:
 Federated Domain Generalization on Medical Image Segmentation via
@@ -711,11 +746,15 @@ src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/
 <p>由于训练背景是医学图像处理，涉及到语义分割，所以需要使用常规的分割损失函数。再考虑图形的边界与背景，对应右边的绿色部分，采用InfoNCE损失函数
 对边界与背景做提取处理，计算InfoNCE损失。hm，hp表示同一类的正面特征，表示边界与背景。</p>
 <p>所以整个训练过程就是利用傅里叶变换提取分布信息，结合一般的分割与InfoNCE损失进行训练。主要的创新点在傅里叶变换提取了可共享的信息。下一次再进行具体的方法介绍。</p>
+<blockquote>
+<p>CUHK, 香港中文大学</p>
+</blockquote>
+<blockquote>
 <p>Liu Q, Chen C, Qin J, et al. Feddg: Federated domain generalization
 on medical image segmentation via episodic learning in continuous
 frequency space. Proceedings of the IEEE/CVF Conference on Computer
 Vision and Pattern Recognition. 2021: 1013-1023.</p>
-<p>CUHK, 香港中文大学</p>
+</blockquote>
 <h1
 id="refine-myself-by-teaching-myself-feature-refinement-via-self-knowledge-distillation">Refine
 Myself by Teaching Myself : Feature Refinement via Self-Knowledge
@@ -741,10 +780,12 @@ src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image57.png" /></p>
 <p><a
 target="_blank" rel="noopener" href="https://github.com/MingiJi/FRSKD">https://github.com/MingiJi/FRSKD</a></p>
+<blockquote>
 <p>Ji M, Shin S, Hwang S, et al. Refine Myself by Teaching Myself:
 Feature Refinement via Self-Knowledge Distillation. Proceedings of the
 IEEE/CVF Conference on Computer Vision and Pattern Recognition. 2021:
 10664-10673.</p>
+</blockquote>
 <h1
 id="no-fear-of-heterogeneity-classifier-calibration-for-federated-learning-with-non-iid-data">No
 Fear of Heterogeneity: Classifier Calibration for Federated Learning
@@ -761,9 +802,11 @@ src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/
 <h2 id="result-2">Result</h2>
 <p><img
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image62.png" /></p>
+<blockquote>
 <p>Luo M, Chen F, Hu D, et al. No Fear of Heterogeneity: Classifier
 Calibration for Federated Learning with Non-IID Data[J]. arXiv preprint
 arXiv:2106.05001, 2021.</p>
+</blockquote>
 <h1 id="federated-learning-with-personalization-layers">Federated
 Learning with Personalization Layers</h1>
 <p>2021.12.02</p>
@@ -778,9 +821,11 @@ src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/
 R}\big(\displaystyle\mathrm{W}_B,\displaystyle\mathrm{W}_{P}\big)\triangleq\frac{1}{n_{j}}\sum_{i=1}^{n_{j}}l(y_{j,i},f\big(x_{j,i};\displaystyle\mathrm{W}_B,\displaystyle\mathrm{W}_{P}\big)\big)\]</span></p>
 <p><img
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image67.png" /></p>
+<blockquote>
 <p>Manoj Ghuhan Arivazhagan, Vinay Aggarwal, Aaditya Kumar Singh, and
 Sunav Choudhary. 2019. Federated learning with personalization layers.
 arXiv preprint arXiv:1912.00818 (2019).</p>
+</blockquote>
 <h1
 id="federated-split-vision-transformer-for-covid-19-cxr-diagnosis-using-task-agnostic-training">Federated
 Split Vision Transformer for COVID-19 CXR Diagnosis using Task-Agnostic
@@ -793,9 +838,11 @@ src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/
 <h2 id="method-8">Method</h2>
 <p><img
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image70.png" /></p>
+<blockquote>
 <p>Park S, Kim G, Kim J, et al. Federated Split Vision Transformer for
 COVID-19 CXR Diagnosis using Task-Agnostic Training[J]. arXiv preprint
 arXiv:2111.01338, 2021.</p>
+</blockquote>
 <h1
 id="local-learning-matters-rethinking-data-heterogeneity-in-federated-learning">Local
 Learning Matters: Rethinking Data Heterogeneity in Federated
@@ -817,10 +864,14 @@ src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/
 <p><img
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image73.png" /></p>
 <p>Random number of channels in each layer</p>
+<blockquote>
 <p>University of Central Florida</p>
+</blockquote>
+<blockquote>
 <p>Mendieta M, Yang T, Wang P, et al. Local Learning Matters: Rethinking
 Data Heterogeneity in Federated Learning[J]. arXiv preprint
 arXiv:2111.14213, 2021.</p>
+</blockquote>
 <h1
 id="local-learning-matters-rethinking-data-heterogeneity-in-federated-learning-1">Local
 Learning Matters: Rethinking Data Heterogeneity in Federated
@@ -843,10 +894,14 @@ src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/
 <h2 id="result-3">Result</h2>
 <p><img
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image74.png" /></p>
+<blockquote>
 <p>University of Central Florida</p>
+</blockquote>
+<blockquote>
 <p>Mendieta M, Yang T, Wang P, et al. Local Learning Matters: Rethinking
 Data Heterogeneity in Federated Learning[J]. arXiv preprint
 arXiv:2111.14213, 2021.</p>
+</blockquote>
 <h1 id="motion-representations-for-articulated-animation">Motion
 Representations for Articulated Animation</h1>
 <p>2022.04.15</p>
@@ -874,10 +929,14 @@ src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/
 <h2 id="结果">结果</h2>
 <p><img
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image76.gif" /></p>
+<blockquote>
 <p>University of Trento, Italy</p>
+</blockquote>
+<blockquote>
 <p>Siarohin, Aliaksandr, Oliver, Woodford, Jian, Ren, Menglei, Chai, and
 Sergey, Tulyakov. "Motion Representations for Articulated Animation." .
 In CVPR.2021.</p>
+</blockquote>
 <h1
 id="communication-efficient-federated-learning-via-knowledge-distillation">Communication-efficient
 federated learning via knowledge distillation</h1>
@@ -888,22 +947,29 @@ src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/
 <p><img
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image79.png" /></p>
 <p>SVD energy 随着轮数增加，阈值需要增大，即重要的知识越来越多</p>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image80.png" /></p>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image82.png" /></p>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image81.png" /></p>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image83.png" /></p>
+<p><span class="math display">\[{\mathcal
+L}_{t,i}^{d}=\frac{\mathrm{KL}({\bf y}_{i}^{s}{\bf
+y}_{i}^{t})}{\mathcal{L}_{t,i}^{t}+\mathcal{L}_{s,i}^{t}}\]</span></p>
+<p><span
+class="math display">\[\mathcal{L}_{t,i}^{t}=\mathrm{CE}(\mathrm{y}_{i},\mathrm{y}_{i}^{t})\]</span></p>
+<p><span
+class="math display">\[\mathcal{L}_{t,i}^{h}=\mathcal{L}_{s,i}^{h}=\frac{\mathrm{MSE}({\mathbf
+H}_i^t,{\mathbf W}_{i}^{h}H^{s})+\mathrm{MSE}({\bf A}_{i}^{t},{\bf
+A}^{s})}{\mathcal{L}_{t,i}^{t}+\mathcal{L}_{s,i}^{t}}\]</span></p>
+<p><span
+class="math display">\[T(t)=T_{\mathrm{start}}+(T_{\mathrm{end}}-T_{\mathrm{start}})t,t\in[0,1]\]</span></p>
 <ol type="1">
-<li><p>Client: Layer SVD-&gt;u<em>sigma</em>v</p></li>
-<li><p>Server: mean(u<em>sigma</em>v)-&gt; u<em>sigma</em>v</p></li>
-<li><p>Client Revice: replace u<em>sigma</em>v</p></li>
+<li><p>Client: Layer SVD-&gt;u*sigma*v</p></li>
+<li><p>Server: mean(u*sigma*v)-&gt; u*sigma*v</p></li>
+<li><p>Client Revice: replace u*sigma*v</p></li>
 </ol>
+<blockquote>
+<p>Tsinghua University</p>
+</blockquote>
+<blockquote>
 <p>Wu, C., Wu, F., Lyu, L. et al. Communication-efficient federated
 learning via knowledge distillation. Nat Commun 13, 2032 (2022)</p>
-<p>Tsinghua University</p>
+</blockquote>
 <h1
 id="personalized-federated-learning-using-hypernetworks">Personalized
 Federated Learning using Hypernetworks</h1>
@@ -920,9 +986,11 @@ src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/
 <h2 id="results">Results</h2>
 <p><img
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image86.png" /></p>
+<blockquote>
 <p>Shamsian A, Navon A, Fetaya E, et al. Personalized federated learning
 using hypernetworks[C]//International Conference on Machine Learning.
 PMLR, 2021: 9489-9502.</p>
+</blockquote>
 <h1 id="the-power-of-scale-for-parameter-efficient-prompt-tuning">The
 Power of Scale for Parameter-Efficient Prompt Tuning</h1>
 <p>2023.04.04</p>
@@ -943,9 +1011,13 @@ src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/
 <h2 id="result-4">Result</h2>
 <p><img
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image92.png" /></p>
+<blockquote>
+<p>Google</p>
+</blockquote>
+<blockquote>
 <p>Lester B , et al. The Power of Scale for Parameter-Efficient Prompt
 Tuning. In EMNLP. 2021:3045–3059</p>
-<p>Google</p>
+</blockquote>
 
     </div>
 
