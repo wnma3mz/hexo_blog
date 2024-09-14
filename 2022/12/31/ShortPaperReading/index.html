@@ -28,7 +28,7 @@
 <meta property="og:description" content="读研期间，短时 paper reading">
 <meta property="og:locale">
 <meta property="article:published_time" content="2022-12-31T13:12:43.000Z">
-<meta property="article:modified_time" content="2024-09-14T14:11:05.737Z">
+<meta property="article:modified_time" content="2024-09-14T14:50:01.208Z">
 <meta property="article:author" content="wnma3mz">
 <meta property="article:tag" content="Federated Learning">
 <meta name="twitter:card" content="summary">
@@ -90,7 +90,7 @@
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="تشغيل شريط التصفح">
+    <div class="toggle" aria-label="Navigationsleiste an/ausschalten">
       <span class="toggle-line toggle-line-first"></span>
       <span class="toggle-line toggle-line-middle"></span>
       <span class="toggle-line toggle-line-last"></span>
@@ -229,7 +229,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="عُدل：2024-09-14 22:11:05" itemprop="dateModified" datetime="2024-09-14T22:11:05+08:00">2024-09-14</time>
+                <time title="Geändert am：2024-09-14 22:50:01" itemprop="dateModified" datetime="2024-09-14T22:50:01+08:00">2024-09-14</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -481,11 +481,13 @@ local</p>
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image19.png" /></p>
 <h2 id="研究">研究</h2>
 <p>训练方式: 本地自蒸馏(LSD)</p>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image20.png" /></p>
+<p>$$ _{}(c)=, \</p>
+<p>^g_{}(c)=, \</p>
+<p>(cy) $$</p>
 <p>二次改进: Not-True Distillation</p>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image21.png" /></p>
+<p><span
+class="math display">\[\mathcal{L}_{\mathrm{NTD}}(\tilde{q}_{\tau},\tilde{q}_{\tau}^{g})=-\sum_{c=1,c\neq
+y}^{C}\tilde{q}_{\tau}^{g}(c)\log\left(\frac{\tilde{q}_{\tau}(c)}{\tilde{q}_{\tau}^{g}(c)}\right)\]</span></p>
 <p>有偏局部特征转移诱导拟合</p>
 <p>遗忘灾难：把CIFAR10输入拉成二维，在进行100轮联邦学习后，估计数据的概率密度函数，上图这个分布存在明显偏差；提出的方法基本无偏差</p>
 <p>研究方法：将传统的训练，改成了蒸馏的方式（由于是模型架构相同，所以可以叫做自蒸馏），也在本地进行蒸馏；另外，基于IJCAJ2021知识蒸馏的工作，对教师模型预测正确的标签剔除，再KL散度计算，以进行改进。</p>
@@ -568,8 +570,11 @@ src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/
 <li>Server train
 <ul>
 <li>Parallel: hard resets + randomly adjusts (slow)</li>
-<li>Serial: one by one distillated ## 实验</li>
+<li>Serial: one by one distillated</li>
 </ul></li>
+</ul>
+<h2 id="实验">实验</h2>
+<ul>
 <li>Image Classification
 <ul>
 <li>MNIST: LeNet</li>
@@ -697,8 +702,20 @@ Sharing Weights for Deep Domain Adaptation</h1>
 <h2 id="method-3">Method</h2>
 <p><img
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image41.png" /></p>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image43.png" /></p>
+<p><span class="math display">\[L(\theta^{s},\theta^{t}|{\bf
+X}^{s},{Y}^{s},{\bf X}^{t},{Y}^{t})=L_{s}+L_{t}+L_{w}+L_{M M
+D}\]</span></p>
+<p><span class="math display">\[{\cal
+L}_{s}\,=\,{\frac{1}{N^{s}}}\,\sum_{i=1}^{N^{\circ}}c(\theta^{s}|{\bf
+x}_{i}^{s},y_{i}^{s})\]</span></p>
+<p><span class="math display">\[{\cal
+L}_{t}=\frac{1}{N_{l}^{t}}\sum_{i=1}^{N_{l}^{t}}c(\theta^{t}|{\bf
+x}_{i}^{t},y_{i}^{t})\]</span></p>
+<p><span class="math display">\[{\cal
+L}_{w}=\lambda_{w}\sum_{j\in\Omega}r_{w}(\theta_{j}^{s},\theta_{j}^{t})\]</span></p>
+<p><span class="math display">\[{\cal L}_{M M
+D}=\lambda_{u}r_{u}(\theta^{s},\theta^{t}|{\bf X}^{s},{\bf
+X}^{t})\]</span></p>
 <h2 id="discussion">Discussion</h2>
 <p>It therefore seems reasonable that thehigher layers of the network,
 which encode higher-level in-formation, should be domain-specific.</p>
@@ -712,11 +729,33 @@ id="feddg-federated-domain-generalization-on-medical-image-segmentation-via-epis
 Federated Domain Generalization on Medical Image Segmentation via
 Episodic Learning in Continuous Frequency Space</h1>
 <p>2021.10.25</p>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image50.png" /></p>
+<h2 id="motivation-4">Motivation</h2>
+<p>Aims to learn a federated model from multiple distributed source
+domains such that it can directly generalize to unseen target
+domains.</p>
+<h2 id="method-4">Method</h2>
+<ul>
+<li>傅立叶：Amplitude Spectrum + Phase Spectrum</li>
+</ul>
+$$
+<span class="math display">\[\begin{array}{l}
+
+{\cal
+F}(x_{i}^{k})(u,v,c)=\sum\limits_{h=0}^{H-1}\sum\limits_{w=0}^{W-1}x_{i}^{k}(h,w,c)e^{-j2\pi({\frac{h}{H}}u+{\frac{v}{W}}v)}
+
+\end{array}\]</span>
+<p>$$</p>
+<ul>
+<li>InfoNCE</li>
+</ul>
+<p><span class="math display">\[
+\ell(h_{m},h_{p})=-l o g\frac{e x p(h_{m} \odot
+h_{p}/\tau)}{\sum_{q=1,q\neq m}^{2K}\mathbb{F}(h_{m},h_{q})\cdot e x
+p(h_{m}\ \odot h_{q}/\tau)}
+\]</span></p>
 <p><img
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image48.png" /></p>
-<h2 id="method-4">Method</h2>
+<h2 id="method-5">Method</h2>
 <ul>
 <li>Data
 <ul>
@@ -760,7 +799,7 @@ id="refine-myself-by-teaching-myself-feature-refinement-via-self-knowledge-disti
 Myself by Teaching Myself : Feature Refinement via Self-Knowledge
 Distillation</h1>
 <p>2021.11.11</p>
-<h2 id="method-5">Method</h2>
+<h2 id="method-6">Method</h2>
 <p><img
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image53.png" /></p>
 <p><span class="math display">\[
@@ -791,10 +830,10 @@ id="no-fear-of-heterogeneity-classifier-calibration-for-federated-learning-with-
 Fear of Heterogeneity: Classifier Calibration for Federated Learning
 with Non-IID Data</h1>
 <p>2021.11.25</p>
-<h2 id="motivation-4">Motivation</h2>
+<h2 id="motivation-5">Motivation</h2>
 <p><img
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image58.png" /></p>
-<h2 id="method-6">Method</h2>
+<h2 id="method-7">Method</h2>
 <p><span
 class="math display">\[\mu_{c,k}=\frac{1}{N_{c,k}}\sum_{j=1}^{N_{c,k}}z_{c,k,j},\quad\Sigma_{c,k}=\frac{1}{N_{c,k}-1}\sum_{j=1}^{N_{c,k}}\left(z_{c,k,j}-\mu_{c,k}\right)\left(z_{c,k,j}-\mu_{c,k}\right)^{T}\]</span></p>
 <p><img
@@ -810,12 +849,16 @@ arXiv:2106.05001, 2021.</p>
 <h1 id="federated-learning-with-personalization-layers">Federated
 Learning with Personalization Layers</h1>
 <p>2021.12.02</p>
-<h2 id="method-7">Method</h2>
+<h2 id="method-8">Method</h2>
 <p><img
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image64.png" /></p>
 <p>Personalized population risk</p>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image65.png" /></p>
+<p><span class="math display">\[
+\begin{array}{l}
+L^{PR}(\bf{W}_{B},\bf{W}_{P_{1}},...,\bf{W}_{P_{N}})=\frac{1}{N}\sum\limits_{j=1}^{N}\mathbb{E}_{(\bf{x},y)\sim
+P_{j}} [l(y,f(\mathbf{x};\bf{W}_B,\bf{W}_{P_j}))]
+\end{array}
+\]</span></p>
 <p>Empirical risk</p>
 <p><span class="math display">\[L_{j}^{E
 R}\big(\displaystyle\mathrm{W}_B,\displaystyle\mathrm{W}_{P}\big)\triangleq\frac{1}{n_{j}}\sum_{i=1}^{n_{j}}l(y_{j,i},f\big(x_{j,i};\displaystyle\mathrm{W}_B,\displaystyle\mathrm{W}_{P}\big)\big)\]</span></p>
@@ -831,11 +874,11 @@ id="federated-split-vision-transformer-for-covid-19-cxr-diagnosis-using-task-agn
 Split Vision Transformer for COVID-19 CXR Diagnosis using Task-Agnostic
 Training</h1>
 <p>2021.12.09</p>
-<h2 id="motivation-5">Motivation</h2>
+<h2 id="motivation-6">Motivation</h2>
 <p>融合联邦学习与分割学习尽可能发挥他们的独特优势</p>
 <p><img
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image69.png" /></p>
-<h2 id="method-8">Method</h2>
+<h2 id="method-9">Method</h2>
 <p><img
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image70.png" /></p>
 <blockquote>
@@ -851,7 +894,7 @@ Learning</h1>
 <h2 id="contribution">Contribution</h2>
 <p>Focus on local learning generality rather than proximal
 restriction</p>
-<h2 id="method-9">Method</h2>
+<h2 id="method-10">Method</h2>
 <h3 id="stochastic-depth-2016">Stochastic Depth (2016)</h3>
 <p><img
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image71.png" /></p>
@@ -877,13 +920,13 @@ id="local-learning-matters-rethinking-data-heterogeneity-in-federated-learning-1
 Learning Matters: Rethinking Data Heterogeneity in Federated
 Learning</h1>
 <p>2022.03.25</p>
-<h2 id="motivation-6">Motivation</h2>
+<h2 id="motivation-7">Motivation</h2>
 <ul>
 <li><p>Promote smooth optimization and consistency within the
 model</p></li>
 <li><p>Reduce computation in a purposeful manner</p></li>
 </ul>
-<h2 id="method-10">Method</h2>
+<h2 id="method-11">Method</h2>
 <ul>
 <li><p>Untrained network in place of the traditional logit-based
 loss</p></li>
@@ -941,7 +984,7 @@ In CVPR.2021.</p>
 id="communication-efficient-federated-learning-via-knowledge-distillation">Communication-efficient
 federated learning via knowledge distillation</h1>
 <p>2022.05.06</p>
-<h2 id="method-11">Method</h2>
+<h2 id="method-12">Method</h2>
 <p><img
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image78.png" /></p>
 <p><img
@@ -974,15 +1017,28 @@ learning via knowledge distillation. Nat Commun 13, 2032 (2022)</p>
 id="personalized-federated-learning-using-hypernetworks">Personalized
 Federated Learning using Hypernetworks</h1>
 <p>2022.06.24</p>
-<h2 id="method-12">Method</h2>
+<h2 id="method-13">Method</h2>
 <p>Using a single joint hypernetwork to generate all separate models
 allows us to perform smart parameter sharing.</p>
 <p><img
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image84.png" /></p>
 <p><img
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image85.png" /></p>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image87.png" /></p>
+<ul>
+<li>个性化联邦学习目标</li>
+</ul>
+<p><span
+class="math display">\[\operatorname{arg\,min}\limits_{\Theta}\frac{1}{n}\sum_{i=1}^{n}\mathcal{L}_{i}(\theta_{i})=\argmin\limits_{\Theta}\frac{1}{n}\sum_{i=1}^{n}{\frac{1}{m_{i}}}\sum_{j=1}^{m_{i}}\ell_{i}(x_{j},y_{j};\theta_{i})\]</span></p>
+<ul>
+<li>加入 HyperNetwork</li>
+</ul>
+<p><span
+class="math display">\[\operatorname{arg\,min}\limits_{\varphi,v_{1},\ldots,v_{n}}\frac{1}{n}\sum_{i=1}^{n}\mathcal{L}_{i}(h(\mathbb{v}_{i},\phi_{i}))\]</span></p>
+<ul>
+<li>Personal Classifier</li>
+</ul>
+<p><span
+class="math display">\[\operatorname{arg\,min}_{\varphi,v_{1},\ldots,v_{n},\omega_{1},\ldots,\omega_{n}}\frac{1}{n}\sum_{i=1}^{n}\mathcal{L}_{i}(\theta_{i},\omega_{i})\]</span></p>
 <h2 id="results">Results</h2>
 <p><img
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image86.png" /></p>
@@ -994,14 +1050,14 @@ PMLR, 2021: 9489-9502.</p>
 <h1 id="the-power-of-scale-for-parameter-efficient-prompt-tuning">The
 Power of Scale for Parameter-Efficient Prompt Tuning</h1>
 <p>2023.04.04</p>
-<h2 id="motivation-7">Motivation</h2>
+<h2 id="motivation-8">Motivation</h2>
 <p><img
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image88.png" /></p>
 <p><img
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image91.png" /></p>
 <p><img
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/FL_papers/image90.png" /></p>
-<h2 id="method-13">Method</h2>
+<h2 id="method-14">Method</h2>
 <ul>
 <li><p>模型输入层额外加入一层Embedding，其他部分冻结</p></li>
 <li><p>额外的数据输入处理</p></li>
@@ -1137,28 +1193,28 @@ Federated Learning</span></a></li><li class="nav-item nav-level-1"><a class="nav
 distributed GAN with Temporary Discriminators</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#personalized-federated-learning-with-theoretical-guarantees-a-model-agnostic-meta-learning-approach"><span class="nav-text">Personalized
 Federated Learning with Theoretical Guarantees: A Model-Agnostic
 Meta-Learning Approach</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%9C%BA-1"><span class="nav-text">动机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%83%E5%AD%A6%E4%B9%A0maml"><span class="nav-text">元学习——MAML</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#first-order"><span class="nav-text">First-Order</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hessian-free"><span class="nav-text">Hessian-Free</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#distilled-one-shot-federated-learning"><span class="nav-text">Distilled One-Shot
-Federated Learning</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%9C%BA-2"><span class="nav-text">动机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%B3%95"><span class="nav-text">方法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#does-knowledge-distillation-really-work"><span class="nav-text">Does Knowledge
+Federated Learning</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%9C%BA-2"><span class="nav-text">动机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%B3%95"><span class="nav-text">方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C"><span class="nav-text">实验</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#does-knowledge-distillation-really-work"><span class="nav-text">Does Knowledge
 Distillation Really Work?</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#agreement-and-fidelity"><span class="nav-text">Agreement and Fidelity</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#generalization-vs-fidelity"><span class="nav-text">Generalization vs Fidelity</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#why-low-fidelity"><span class="nav-text">Why Low Fidelity</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#model-contrastive-federated-learning"><span class="nav-text">Model-Contrastive
 Federated Learning</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#motivation-1"><span class="nav-text">Motivation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#method-1"><span class="nav-text">Method</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#data-free-knowledge-distillation-for-heterogeneous-federated-learning"><span class="nav-text">Data-Free
 Knowledge Distillation for Heterogeneous Federated Learning</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#motivation-2"><span class="nav-text">Motivation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#method-2"><span class="nav-text">Method</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#beyond-sharing-weights-for-deep-domain-adaptation"><span class="nav-text">Beyond
 Sharing Weights for Deep Domain Adaptation</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#motivation-3"><span class="nav-text">Motivation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#method-3"><span class="nav-text">Method</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#discussion"><span class="nav-text">Discussion</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#feddg-federated-domain-generalization-on-medical-image-segmentation-via-episodic-learning-in-continuous-frequency-space"><span class="nav-text">FedDG:
 Federated Domain Generalization on Medical Image Segmentation via
-Episodic Learning in Continuous Frequency Space</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#method-4"><span class="nav-text">Method</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#refine-myself-by-teaching-myself-feature-refinement-via-self-knowledge-distillation"><span class="nav-text">Refine
+Episodic Learning in Continuous Frequency Space</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#motivation-4"><span class="nav-text">Motivation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#method-4"><span class="nav-text">Method</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#method-5"><span class="nav-text">Method</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#refine-myself-by-teaching-myself-feature-refinement-via-self-knowledge-distillation"><span class="nav-text">Refine
 Myself by Teaching Myself : Feature Refinement via Self-Knowledge
-Distillation</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#method-5"><span class="nav-text">Method</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#result-1"><span class="nav-text">Result</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#no-fear-of-heterogeneity-classifier-calibration-for-federated-learning-with-non-iid-data"><span class="nav-text">No
+Distillation</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#method-6"><span class="nav-text">Method</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#result-1"><span class="nav-text">Result</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#no-fear-of-heterogeneity-classifier-calibration-for-federated-learning-with-non-iid-data"><span class="nav-text">No
 Fear of Heterogeneity: Classifier Calibration for Federated Learning
-with Non-IID Data</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#motivation-4"><span class="nav-text">Motivation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#method-6"><span class="nav-text">Method</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#result-2"><span class="nav-text">Result</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#federated-learning-with-personalization-layers"><span class="nav-text">Federated
-Learning with Personalization Layers</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#method-7"><span class="nav-text">Method</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#federated-split-vision-transformer-for-covid-19-cxr-diagnosis-using-task-agnostic-training"><span class="nav-text">Federated
+with Non-IID Data</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#motivation-5"><span class="nav-text">Motivation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#method-7"><span class="nav-text">Method</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#result-2"><span class="nav-text">Result</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#federated-learning-with-personalization-layers"><span class="nav-text">Federated
+Learning with Personalization Layers</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#method-8"><span class="nav-text">Method</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#federated-split-vision-transformer-for-covid-19-cxr-diagnosis-using-task-agnostic-training"><span class="nav-text">Federated
 Split Vision Transformer for COVID-19 CXR Diagnosis using Task-Agnostic
-Training</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#motivation-5"><span class="nav-text">Motivation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#method-8"><span class="nav-text">Method</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#local-learning-matters-rethinking-data-heterogeneity-in-federated-learning"><span class="nav-text">Local
+Training</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#motivation-6"><span class="nav-text">Motivation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#method-9"><span class="nav-text">Method</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#local-learning-matters-rethinking-data-heterogeneity-in-federated-learning"><span class="nav-text">Local
 Learning Matters: Rethinking Data Heterogeneity in Federated
-Learning</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#contribution"><span class="nav-text">Contribution</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#method-9"><span class="nav-text">Method</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#stochastic-depth-2016"><span class="nav-text">Stochastic Depth (2016)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mixup-2018"><span class="nav-text">Mixup (2018)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gradaug-2020"><span class="nav-text">GradAug (2020)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#local-learning-matters-rethinking-data-heterogeneity-in-federated-learning-1"><span class="nav-text">Local
+Learning</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#contribution"><span class="nav-text">Contribution</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#method-10"><span class="nav-text">Method</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#stochastic-depth-2016"><span class="nav-text">Stochastic Depth (2016)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mixup-2018"><span class="nav-text">Mixup (2018)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gradaug-2020"><span class="nav-text">GradAug (2020)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#local-learning-matters-rethinking-data-heterogeneity-in-federated-learning-1"><span class="nav-text">Local
 Learning Matters: Rethinking Data Heterogeneity in Federated
-Learning</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#motivation-6"><span class="nav-text">Motivation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#method-10"><span class="nav-text">Method</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#result-3"><span class="nav-text">Result</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#motion-representations-for-articulated-animation"><span class="nav-text">Motion
+Learning</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#motivation-7"><span class="nav-text">Motivation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#method-11"><span class="nav-text">Method</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#result-3"><span class="nav-text">Result</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#motion-representations-for-articulated-animation"><span class="nav-text">Motion
 Representations for Articulated Animation</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98"><span class="nav-text">问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E6%9E%9C"><span class="nav-text">结果</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#communication-efficient-federated-learning-via-knowledge-distillation"><span class="nav-text">Communication-efficient
-federated learning via knowledge distillation</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#method-11"><span class="nav-text">Method</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#personalized-federated-learning-using-hypernetworks"><span class="nav-text">Personalized
-Federated Learning using Hypernetworks</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#method-12"><span class="nav-text">Method</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#results"><span class="nav-text">Results</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#the-power-of-scale-for-parameter-efficient-prompt-tuning"><span class="nav-text">The
-Power of Scale for Parameter-Efficient Prompt Tuning</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#motivation-7"><span class="nav-text">Motivation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#method-13"><span class="nav-text">Method</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#result-4"><span class="nav-text">Result</span></a></li></ol></li></ol></div>
+federated learning via knowledge distillation</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#method-12"><span class="nav-text">Method</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#personalized-federated-learning-using-hypernetworks"><span class="nav-text">Personalized
+Federated Learning using Hypernetworks</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#method-13"><span class="nav-text">Method</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#results"><span class="nav-text">Results</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#the-power-of-scale-for-parameter-efficient-prompt-tuning"><span class="nav-text">The
+Power of Scale for Parameter-Efficient Prompt Tuning</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#motivation-8"><span class="nav-text">Motivation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#method-14"><span class="nav-text">Method</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#result-4"><span class="nav-text">Result</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
