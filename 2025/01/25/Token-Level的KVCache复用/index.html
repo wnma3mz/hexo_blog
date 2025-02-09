@@ -283,7 +283,10 @@ KV Cache，只计算「不」的 KV Cache</li>
 </ol>
 <h2 id="问题">问题</h2>
 <p>LLM 的一大场景时多轮对话，即会利用前若干轮对话的情况。具体来说，</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    A[Q1: 今天天气怎么样] --&gt; B[A1: 天气不错]</span><br><span class="line">    B --&gt; C[Q2: 适合穿什么衣服呢？] </span><br><span class="line">    C --&gt; D[A2: 短袖]</span><br></pre></td></tr></table></figure>
+<pre class="mermaid">graph TD
+    A[Q1: 今天天气怎么样] --> B[A1: 天气不错]
+    B --> C[Q2: 适合穿什么衣服呢？] 
+    C --> D[A2: 短袖]</pre>
 <p>A1 是由 Q1 生成的。A2 是由 Q1+A1+Q2 生成的。由于 Q2
 是额外的一个请求，故在生成 A2 时，往往会重新计算 Q1+A1 的 KV Cache。</p>
 <p>如果能够缓存 Q1+A1 的 KV Cache，那么生成 A2 时就可以直接使用 Q1+A1 的
@@ -576,6 +579,19 @@ KV Cache 之后，实际上是复制了一份KV Cache
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme    : 'forest',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
   

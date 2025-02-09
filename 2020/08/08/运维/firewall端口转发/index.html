@@ -31,8 +31,8 @@
 <meta property="article:modified_time" content="2024-06-15T08:01:01.814Z">
 <meta property="article:author" content="wnma3mz">
 <meta property="article:tag" content="Linux">
-<meta property="article:tag" content="ssh">
 <meta property="article:tag" content="端口转发">
+<meta property="article:tag" content="ssh">
 <meta property="article:tag" content="iptables">
 <meta property="article:tag" content="firewall">
 <meta property="article:tag" content="ufw">
@@ -322,8 +322,8 @@
       <footer class="post-footer">
           <div class="post-tags">
               <a href="/hexo_blog/tags/Linux/" rel="tag"># Linux</a>
-              <a href="/hexo_blog/tags/ssh/" rel="tag"># ssh</a>
               <a href="/hexo_blog/tags/%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91/" rel="tag"># 端口转发</a>
+              <a href="/hexo_blog/tags/ssh/" rel="tag"># ssh</a>
               <a href="/hexo_blog/tags/iptables/" rel="tag"># iptables</a>
               <a href="/hexo_blog/tags/firewall/" rel="tag"># firewall</a>
               <a href="/hexo_blog/tags/ufw/" rel="tag"># ufw</a>
@@ -524,6 +524,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme    : 'forest',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
   
