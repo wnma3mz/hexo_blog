@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/hexo_blog/css/main.css">
+
+
+<link rel="stylesheet" href="/hexo_blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wnma3mz.github.io","root":"/hexo_blog/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="记录开发 tLLM 中通信相关的问题。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="together-LLM 跨机通信开发">
+<meta property="og:url" content="https://wnma3mz.github.io/2024/10/21/tllm%E9%80%9A%E4%BF%A1%E5%BC%80%E5%8F%91/index.html">
+<meta property="og:site_name" content="Wnma&#39;s Blogs">
+<meta property="og:description" content="记录开发 tLLM 中通信相关的问题。">
+<meta property="og:locale">
+<meta property="article:published_time" content="2024-10-21T03:03:04.000Z">
+<meta property="article:modified_time" content="2025-02-09T10:18:10.595Z">
+<meta property="article:author" content="wnma3mz">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://wnma3mz.github.io/2024/10/21/tllm%E9%80%9A%E4%BF%A1%E5%BC%80%E5%8F%91/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>together-LLM 跨机通信开发 | Wnma's Blogs</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="تشغيل شريط التصفح">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hexo_blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Wnma's Blogs</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/hexo_blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/hexo_blog/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/hexo_blog/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/hexo_blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-bookmark">
+
+    <a href="https://wnma3mz.github.io/bookmark/index.html" rel="section"><i class="fa fa-bookmark fa-fw"></i>书签</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/2024/10/21/tllm%E9%80%9A%E4%BF%A1%E5%BC%80%E5%8F%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
+      <meta itemprop="name" content="wnma3mz">
+      <meta itemprop="description" content="Day Day Up">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wnma's Blogs">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          together-LLM 跨机通信开发
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建于：2024-10-21 11:03:04" itemprop="dateCreated datePublished" datetime="2024-10-21T11:03:04+08:00">2024-10-21</time>
+
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="عُدل：2025-02-09 18:18:10" itemprop="dateModified" datetime="2025-02-09T18:18:10+08:00">2025-02-09</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>记录开发 tLLM 中通信相关的问题。</p>
+<span id="more"></span>
+<h2 id="模型跨机通信的原因">模型跨机通信的原因</h2>
+<ul>
+<li><p>模型太大单机器放不下</p></li>
+<li><p>模型需要加速</p></li>
+</ul>
+<h2 id="怎么做">怎么做？</h2>
+<ul class="task-list">
+<li><p><label><input type="checkbox" checked="" />流水线并行
+pipeline-parallel</label></p>
+<ul>
+<li><p>当前 LLM
+架构是由多层串联起来组成的，所以可以拆分成多个部分，每个部分计算一部分，实现流水线作业。</p></li>
+<li><p>PP 通信频率取决于 PP
+个数。不加速，仅仅是为了减少单个模型的大小。</p></li>
+</ul></li>
+<li><p><label><input type="checkbox" checked="" />张量
+tensor-parallel</label></p>
+<ul>
+<li><p>矩阵计算本身具备独立性，即可以拆分并行计算，所以可以对应每个矩阵拆分，分发到不同机器上计算，最后再汇总</p></li>
+<li><p>TP
+要求更高的通信频率，适合单机多卡/局域网。不仅减小单机器模型尺寸，主要目的是为了加速，但需要低延迟、高带宽环境。</p></li>
+<li><p>非 GPU
+场景下成功的实践，https://github.com/b4rtaz/distributed-llama</p></li>
+</ul></li>
+</ul>
+<p>实现主要注意的是，通信时，<code>reduce</code>
+涉及到一些复杂的规约算法，会有一些精度问题。</p>
+<h2 id="通信框架选择">通信框架选择</h2>
+<p>由于涉及到跨机器通信，所以期望先选择一个现有的性能较好的通信框架。由于并行需要高频率的通信，所以需要一个高效的通信框架。目前比较好的选择有下面几种</p>
+<ul>
+<li><p>ray</p>
+<ul>
+<li><p>ray 框架更易使用，无需手写 rpc 相关内容，且通信差不多，底层也是
+rpc。</p></li>
+<li><p>但 ray 框架在使用 Tensor Parallel
+会比较慢（大概率是实现问题），故暂时先用
+torch.dist，可以实现加速的效果。</p></li>
+</ul></li>
+<li><p>torch.dist</p>
+<ul>
+<li><p>torch.dist 在 CPU 机器上用 gloo, 在 GPU 机器上用
+nccl，可以实现加速的效果。</p></li>
+<li><p>同时，使用 torch 的多进程共享内存进行 TP 也会更慢。</p></li>
+</ul></li>
+<li><p>rpc: grpc</p></li>
+</ul>
+<h2 id="q-a">Q &amp; A</h2>
+<p>Q：为什么在单个 nn.Linear 使用 torch.dist
+更快，但是在复杂模型中更慢？</p>
+<p>A：可能是通信？内存不够？CPU不够？换 CUDA？</p>
+<p>Q: 为什么 Merge QKV/gate、up 之后在复杂模型中更慢？</p>
+<p>A：内存带宽？多核利用？换 CUDA 效果可能会变好？</p>
+<p>在 <code>src2</code> 文件夹中，用 grpc 通信
+PP，<code>torch.dist</code> 通信 TP。当前版本在实现的时候，没有通信 kv
+cache 和 position_ids，所以是有 bug 的。</p>
+<p>在实现的时候，需要注意 grpc
+只有一个进程能接收到请求，所以需要该进程同步输入至其他进程，以能够实现
+<code>all.reduce</code>。有一些额外的通信开销，可以优化。</p>
+<p><code>torch.dist</code> 其实是有 rpc 模块的，所以 <code>src3</code>
+用 torch.dist.rpc 代替了 grpc
+实现了跨机器通信，好处在于无需转换数据类型。用 torch.Tensor
+通信即可。</p>
+<h2 id="并行策略">并行策略</h2>
+<p>当 TP 和 PP
+同时使用的时候，需要兼顾两种通信策略。在实现上，应该是先切 PP 再 TP
+比较容易。</p>
+<p>整体数据流如下：</p>
+<p>输入会发送至 Master 节点，由 Master 节点发送至 Node0 中，由 Node0
+同步数据至各个进程，计算完成后再汇总至进程
+0，由Node0-进程0发送数据至下一个 Node。重复该流程直至最后一个 Node
+完成，由最后一个 Node 的进程 0 发送至 Master 节点，最后由 Master
+节点返回输出。</p>
+<p>实现过程为了方便会有一定调整：</p>
+<ul>
+<li>Master 节点和 Node0 节点可能是一个节点</li>
+<li>Node0-&gt;Node1 的通信实现比较麻烦，暂时会由 Node1-&gt; Master，再由
+Master 发送至 Node1</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    A[输入] --&gt; B[Master]</span><br><span class="line">    B --&gt; X[Node0]</span><br><span class="line">    X --&gt; C[Node0-进程0]</span><br><span class="line">    X --&gt; D[Node0-进程1]</span><br><span class="line">    C --&gt; E[Node0]</span><br><span class="line">    D --&gt; E[Node0]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    F[Node0] --&gt; G[Node0-进程0]</span><br><span class="line">    G --&gt; Y[Node1]</span><br><span class="line">    Y --&gt; H[Node1-进程0]</span><br><span class="line">    Y --&gt; I[Node1-进程1]</span><br><span class="line">    H --&gt; J[Node1]</span><br><span class="line">    I --&gt; J[Node1]</span><br><span class="line">  </span><br><span class="line">    K[Node1] --&gt; L[Node1-进程0]</span><br><span class="line">    L --&gt; M[Master]</span><br><span class="line">    M --&gt; N[输出]</span><br></pre></td></tr></table></figure>
+<p>单层 TP 的通信细节实现如下图所示，两个进程一直都存在。图中所示，对于
+<code>input_layernorm</code>两个进程的输入是一样，但都需要计算一次。计算后的输出也是一样，但是处于不不同的进程。不同的进程执行
+attention 计算过程，最后对两个进程的 <code>O Proj</code>
+的输出进行求和，再分发至两个进程。再执行
+<code>post_attention_layernorm</code>计算。MLP 的计算过程同理，最后对
+<code>Down Proj</code>
+的输出进行求和，并分发至两个进程以输入至下一层。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    A[输入] --&gt; B[input_layernorm]</span><br><span class="line">    B --&gt; C[QKV Proj 进程0] </span><br><span class="line">    B --&gt; D[QKV Proj 进程1]</span><br><span class="line">    C --&gt; E[attention 计算]</span><br><span class="line">    D --&gt; F[attention 计算]</span><br><span class="line">    E --&gt; G[O Proj 进程0]</span><br><span class="line">    F --&gt; H[O Proj 进程1]</span><br><span class="line">    G --&gt; I[reduce]</span><br><span class="line">    H --&gt; I[reduce]</span><br><span class="line">    I --&gt; J[post_attention_layernorm]</span><br><span class="line">    J --&gt; K[Gate Up Proj 进程0]</span><br><span class="line">    J --&gt; L[Gate Up Proj 进程1]</span><br><span class="line">    K --&gt; M[Down Proj 进程0]</span><br><span class="line">    L --&gt; N[Down Proj 进程1]</span><br><span class="line">    M --&gt; O[reduce]</span><br><span class="line">    N --&gt; O[reduce]</span><br></pre></td></tr></table></figure>
+<p>经典的实现中 qkv proj 是分三层实现的 Q Proj,K Proj, V
+Proj，但是这里其实是可以并行，或者说合并为一层进行的，即 QKV Proj。Gate
+Up Proj 也是同理。具体实现可见
+<code>linear_cases/parallel/merge_linear.py</code></p>
+<h3 id="节点间通信">节点间通信</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">flowchart TB</span><br><span class="line">    subgraph Current[&quot;双向通信架构&quot;]</span><br><span class="line">        direction TB</span><br><span class="line">        A1[Master] --&gt;|gRPC Request| B1[Client1]</span><br><span class="line">        B1[Clinet1] --&gt;|gRPC Response| A1[Master]</span><br><span class="line">        A1[Master] --&gt;|gRPC Request| C1[Client2]</span><br><span class="line">        C1[Client2] --&gt;|gRPC Response| A1[Master]</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    subgraph Desired[&quot;Ring通信架构&quot;]</span><br><span class="line">        direction TB</span><br><span class="line">        A[Master] --&gt;|gRPC Request| B2[Client1]</span><br><span class="line">        B2[Client1] --&gt;|gRPC Request| C2[Client2]</span><br><span class="line">        C2[Client2] --&gt;|gRPC Request| A[Master]</span><br><span class="line">    end</span><br></pre></td></tr></table></figure>
+<h2 id="网络要求估算">网络要求估算</h2>
+<ul>
+<li>PP=8 ，那么通信要求需要 <span class="math inline">\(\times
+8\)</span></li>
+<li>70B 的 hidden_size 是 <span class="math inline">\(8192\)</span></li>
+<li>数据是 <code>(b)float16</code>，每个 token 的通信参数量为 <span
+class="math inline">\(1*8192*2=16,384\)</span></li>
+</ul>
+<p>在 TPOT 阶段预期速度: 20 token/s -&gt; 0.05s / token</p>
+<ul>
+<li>假设通信：计算比为 1:4，那么通信时间为 0.01s
+<ul>
+<li>即每次通信要在 0.01/8s 完成，即 0.00125s -&gt; 1.25ms</li>
+<li>70B 的 hidden_size 是 8192，就有 <span
+class="math inline">\(16,384\)</span> bytes.</li>
+<li>故要在 0.01/8s 完成，那么网络带宽至少要求 <span
+class="math inline">\(16,384/0.01*8=26,214,400 bytes/s = 13
+Mbps\)</span>。</li>
+</ul></li>
+</ul>
+<p>在 TTFT 阶段，即首 token 时间预期 3s 内有响应，</p>
+<ul>
+<li>假设通信：计算比为 1:2，那么通信时间为 1s，即每次通信要在 1/8s
+完成，即 0.125s -&gt; 125ms</li>
+<li>假设输入 token 数为 1000，那么通信参数量为 <span
+class="math inline">\(1000*16,384 = 16,384,000\)</span> bytes</li>
+<li>1/8s 内完成，通信时间为 <span
+class="math inline">\(16,384,000/1*8=131,072,000 比特/秒 = 131
+Mbps\)</span></li>
+</ul>
+<p>优化点： - 数据压缩一倍，加速一倍 - 在 TTFT 阶段做 PP overlap，把输入
+token 分块传输。</p>
+<h2 id="通信时间测试">通信时间测试</h2>
+<p>token
+数较少时压缩似乎效果不大，只有在大数据量的时候才有明显效果。</p>
+<p>=== Starting gRPC Matrix Performance Test (use_zlib: False; use_lz4:
+False) ===</p>
+<p>Time: 2024-11-02 11:40:40</p>
+<table>
+<colgroup>
+<col style="width: 18%" />
+<col style="width: 40%" />
+<col style="width: 13%" />
+<col style="width: 13%" />
+<col style="width: 13%" />
+</colgroup>
+<thead>
+<tr>
+<th>Matrix Shape</th>
+<th>Transmission(ms)</th>
+<th>Compress(ms)</th>
+<th>Total(ms)</th>
+<th>Throughput(MB/s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(1, 8192)</td>
+<td>14.05</td>
+<td>0.01</td>
+<td>14.06</td>
+<td>2.22</td>
+</tr>
+<tr>
+<td>(4, 8192)</td>
+<td>29.89</td>
+<td>0.01</td>
+<td>29.90</td>
+<td>4.18</td>
+</tr>
+<tr>
+<td>(16, 8192)</td>
+<td>76.95</td>
+<td>0.01</td>
+<td>76.97</td>
+<td>6.50</td>
+</tr>
+<tr>
+<td>(32, 8192)</td>
+<td>137.05</td>
+<td>0.01</td>
+<td>137.06</td>
+<td>7.30</td>
+</tr>
+<tr>
+<td>(64, 8192)</td>
+<td>262.03</td>
+<td>0.01</td>
+<td>262.04</td>
+<td>7.63</td>
+</tr>
+</tbody>
+</table>
+<p>=== Starting gRPC Matrix Performance Test (use_zlib: False; use_lz4:
+True) ===</p>
+<p>Time: 2024-11-02 11:51:41</p>
+<table>
+<colgroup>
+<col style="width: 18%" />
+<col style="width: 40%" />
+<col style="width: 13%" />
+<col style="width: 13%" />
+<col style="width: 13%" />
+</colgroup>
+<thead>
+<tr>
+<th>Matrix Shape</th>
+<th>Transmission(ms)</th>
+<th>Compress(ms)</th>
+<th>Total(ms)</th>
+<th>Throughput(MB/s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(1, 8192)</td>
+<td>18.10</td>
+<td>0.08</td>
+<td>18.18</td>
+<td>1.73</td>
+</tr>
+<tr>
+<td>(4, 8192)</td>
+<td>30.82</td>
+<td>0.19</td>
+<td>31.01</td>
+<td>4.06</td>
+</tr>
+<tr>
+<td>(16, 8192)</td>
+<td>78.23</td>
+<td>2.80</td>
+<td>81.02</td>
+<td>6.39</td>
+</tr>
+<tr>
+<td>(32, 8192)</td>
+<td>136.85</td>
+<td>5.62</td>
+<td>142.47</td>
+<td>7.31</td>
+</tr>
+<tr>
+<td>(64, 8192)</td>
+<td>249.84</td>
+<td>10.37</td>
+<td>260.20</td>
+<td>8.01</td>
+</tr>
+</tbody>
+</table>
+<p>=== Starting gRPC Matrix Performance Test (use_zlib: True; use_lz4:
+False) ===</p>
+<p>Time: 2024-11-02 11:41:51</p>
+<table>
+<colgroup>
+<col style="width: 18%" />
+<col style="width: 40%" />
+<col style="width: 13%" />
+<col style="width: 13%" />
+<col style="width: 13%" />
+</colgroup>
+<thead>
+<tr>
+<th>Matrix Shape</th>
+<th>Transmission(ms)</th>
+<th>Compress(ms)</th>
+<th>Total(ms)</th>
+<th>Throughput(MB/s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(1, 8192)</td>
+<td>13.95</td>
+<td>1.96</td>
+<td>15.91</td>
+<td>2.24</td>
+</tr>
+<tr>
+<td>(4, 8192)</td>
+<td>32.74</td>
+<td>9.82</td>
+<td>42.56</td>
+<td>3.82</td>
+</tr>
+<tr>
+<td>(16, 8192)</td>
+<td>77.19</td>
+<td>32.65</td>
+<td>109.84</td>
+<td>6.48</td>
+</tr>
+<tr>
+<td>(64, 8192)</td>
+<td>256.25</td>
+<td>83.67</td>
+<td>339.92</td>
+<td>7.80</td>
+</tr>
+</tbody>
+</table>
+<p>TODO: Meta-Llama-3-8B-Instruct in GPU</p>
+<ul>
+<li>多维数组实现（float32）: 单机通信在 0.002 s 左右 （seq-len=1）</li>
+<li>bytes 实现（float32）: 单机通信在 0.001 s 左右 （seq-len=1）</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>wnma3mz
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wnma3mz.github.io/2024/10/21/tllm%E9%80%9A%E4%BF%A1%E5%BC%80%E5%8F%91/" title="together-LLM 跨机通信开发">https://wnma3mz.github.io/2024/10/21/tllm通信开发/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2024/09/05/LLM/LLM%E6%8E%A8%E7%90%86%E7%9B%B8%E5%85%B3%E8%AE%A1%E7%AE%97%E5%85%AC%E5%BC%8F/" rel="prev" title="LLM的推理相关计算公式">
+      <i class="fa fa-chevron-left"></i> LLM的推理相关计算公式
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2024/11/15/tllm%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91/" rel="next" title="together-LLM 跨机后端开发">
+      together-LLM 跨机后端开发 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E8%B7%A8%E6%9C%BA%E9%80%9A%E4%BF%A1%E7%9A%84%E5%8E%9F%E5%9B%A0"><span class="nav-text">模型跨机通信的原因</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%8E%E4%B9%88%E5%81%9A"><span class="nav-text">怎么做？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E4%BF%A1%E6%A1%86%E6%9E%B6%E9%80%89%E6%8B%A9"><span class="nav-text">通信框架选择</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#q-a"><span class="nav-text">Q &amp; A</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%B6%E8%A1%8C%E7%AD%96%E7%95%A5"><span class="nav-text">并行策略</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8A%82%E7%82%B9%E9%97%B4%E9%80%9A%E4%BF%A1"><span class="nav-text">节点间通信</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E8%A6%81%E6%B1%82%E4%BC%B0%E7%AE%97"><span class="nav-text">网络要求估算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E4%BF%A1%E6%97%B6%E9%97%B4%E6%B5%8B%E8%AF%95"><span class="nav-text">通信时间测试</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="wnma3mz"
+      src="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
+  <p class="site-author-name" itemprop="name">wnma3mz</p>
+  <div class="site-description" itemprop="description">Day Day Up</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/hexo_blog/archives/">
+        
+          <span class="site-state-item-count">71</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/hexo_blog/categories/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/hexo_blog/tags/">
+          
+        <span class="site-state-item-count">89</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wnma3mz" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wnma3mz" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wnma3mz@gmail.com" title="E-Mail → mailto:wnma3mz@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wnma3mz</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='99' src="/hexo_blog/lib/canvas-nest/canvas-nest-nomobile.min.js"></script>
+  <script src="/hexo_blog/lib/anime.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/hexo_blog/js/utils.js"></script>
+
+<script src="/hexo_blog/js/motion.js"></script>
+
+
+<script src="/hexo_blog/js/schemes/muse.js"></script>
+
+
+<script src="/hexo_blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/hexo_blog/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
