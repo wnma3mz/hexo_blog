@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.2">
+<meta name="generator" content="Hexo 7.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png">
@@ -28,10 +28,10 @@
 <meta property="og:description" content="介绍手中各种电子产品及各自的拓展玩法">
 <meta property="og:locale">
 <meta property="article:published_time" content="2019-09-14T05:15:32.000Z">
-<meta property="article:modified_time" content="2024-06-15T08:01:01.794Z">
+<meta property="article:modified_time" content="2025-02-09T09:50:00.654Z">
 <meta property="article:author" content="wnma3mz">
-<meta property="article:tag" content="Raspberry">
 <meta property="article:tag" content="Linux">
+<meta property="article:tag" content="Raspberry">
 <meta property="article:tag" content="Android">
 <meta property="article:tag" content="Windows">
 <meta property="article:tag" content="IOS">
@@ -234,7 +234,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="عُدل：2024-06-15 16:01:01" itemprop="dateModified" datetime="2024-06-15T16:01:01+08:00">2024-06-15</time>
+                <time title="عُدل：2025-02-09 17:50:00" itemprop="dateModified" datetime="2025-02-09T17:50:00+08:00">2025-02-09</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -273,13 +273,13 @@ id="对各种电子产品的拓展玩法与互联">对各种电子产品的拓�
 </ul>
 <h3 id="手机与ipad">手机与IPad</h3>
 <p>这两个放在一起的原因是，在IOS13之前，IPad其实差不多可以等同于大尺寸IPone。所以这里就是一个安卓手机（未ROOT）与IPone的介绍，这里的玩法也算是比较多的，下面一一介绍。关于APP的安装包在此就不提供了，请读者自行搜索。当然还有ADB这种玩法，也不做介绍，可参考
-<a href="#">Post not found: IOT/用ADB调试安卓手机.md</a></p>
+<a href="/hexo_blog/2018/01/25/IOT/%E7%94%A8ADB%E8%B0%83%E8%AF%95%E5%AE%89%E5%8D%93%E6%89%8B%E6%9C%BA/" title="用ADB调试安卓手机">用ADB调试安卓手机</a></p>
 <h4 id="termux与juicessh">Termux与JuiceSSH</h4>
 <p>放在搜索引擎一搜，其实这两个APP就有很多相关介绍了。但这里我想介绍一些不一样的玩法。关于Termux操作不方便这一点，可以使用JuiceSSH连接localhost来操作，具体操作不介绍。</p>
 <p><strong>下载</strong>：如何在手机上实现多线程下载？下一个ADM？当然这样很方便，但我们同样可以使用Termux来完成这一点。Termux安装Axel（<code>pkg install axel</code>），下载<code>axel -n 32 url</code>，使用32个线程下载链接。建议先<code>cd /sdcard/</code>中。</p>
 <p><strong>数据传输</strong>：一个手机和一个IPad，如何在不借助其他介质的前提下快速传输。QQ、微信、快牙等传输文件工具都行，但这里我自己实测速度都不如这里的方法快。就拿快牙举例，它实际是用手机开放一个<code>2.4G</code>的热点，然后用二维码进行链接传输。同样的，我们用同样的思路，手机开放<code>5G</code>热点，IPad手动连接此WIFI。打开Termux，先<code>ifconfig</code>知道本地IP，形如<code>192.168.x.1</code>这种，再<code>cd</code>到传输文件的目录，利用Python的静态资源服务器<code>python3 -m http.server</code>，这样，资源就对局域网内设备（连接到手机热点的设备）开放。接下来操作IPad，由于IOS13之前，<code>Safari</code>不支持输入链接下载，所以这里推荐<code>Alook</code>与<code>Documents</code>（后者免费），在<code>Documents</code>中的浏览器输入刚刚的手机<code>ip:8000</code>，这样就能看到手机资源所在文件目录的所有文件，点击即可下载。实测单个文件速度大概比<code>2.4G</code>快3倍（无需流量）。当然这里手机和IPad也可以同时连接同一个WIFI，然后使用同上方法进行传输（速度取决于路由器和网络带宽）。</p>
 <p><strong>远程手机</strong>：如何在手机不连接WIFI，不连接数据线的前提下，用其他设备访问手机（手机与其他设备的实际距离也可以很远），前提手机能上网。这一方法个人暂没有特别用途，但<code>Just for fun</code>。首先，需要一个公网IP服务器；接下来需要会玩ssh，<code>Termux</code>与服务器配置好ssh，<code>Termux</code>能够ssh到服务器上即可。最后一步，参考
-<a href="/hexo_blog/2018/02/11/%E8%BF%90%E7%BB%B4/ssh/" title="ssh 笔记（端口转发）">ssh 笔记（端口转发）</a>。</p>
+<a href="/hexo_blog/2018/02/11/%E8%BF%90%E7%BB%B4/ssh/" title="ssh笔记（端口转发）">ssh 笔记（端口转发）</a>。</p>
 <h4 id="spacedesk">spacedesk</h4>
 <p>电脑投屏，使用USB数据线连接设备和电脑，用这个软件进行投屏。我觉得挺鸡肋的。。。安卓手机屏幕又太小，测试IPad的时候发现闪退。</p>
 <h4
@@ -341,8 +341,8 @@ target="_blank" rel="noopener" href="https://bookfere.com/post/19.html">搭建�
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/hexo_blog/tags/Raspberry/" rel="tag"># Raspberry</a>
               <a href="/hexo_blog/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/hexo_blog/tags/Raspberry/" rel="tag"># Raspberry</a>
               <a href="/hexo_blog/tags/Android/" rel="tag"># Android</a>
               <a href="/hexo_blog/tags/Windows/" rel="tag"># Windows</a>
               <a href="/hexo_blog/tags/IOS/" rel="tag"># IOS</a>
@@ -436,7 +436,7 @@ target="_blank" rel="noopener" href="https://bookfere.com/post/19.html">搭建�
       <div class="site-state-item site-state-posts">
           <a href="/hexo_blog/archives/">
         
-          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-count">69</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -484,7 +484,7 @@ target="_blank" rel="noopener" href="https://bookfere.com/post/19.html">搭建�
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2024</span>
+  <span itemprop="copyrightYear">2025</span>
   <span class="with-love">
     <i class="user"></i>
   </span>

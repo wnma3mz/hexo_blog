@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/hexo_blog/css/main.css">
+
+
+<link rel="stylesheet" href="/hexo_blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wnma3mz.github.io","root":"/hexo_blog/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="在 LLM 中一大应用场景就是进行多轮对话，发起的第二轮对话大多情况下是基于第一轮对话的结果进行的。因此，完全可以缓存第一轮对话的结果，避免重复计算 KV Cache，以加速第二轮 TTFT 时间。 更进一步，在非对话场景可以查找输入的最长公共前缀序列，以复用 KV Cache。 主要论文：https:&#x2F;&#x2F;arxiv.org&#x2F;pdf&#x2F;2312.07104">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Token-Level 的 KVCache 复用">
+<meta property="og:url" content="https://wnma3mz.github.io/2025/01/25/Token-Level%E7%9A%84KVCache%E5%A4%8D%E7%94%A8/index.html">
+<meta property="og:site_name" content="Wnma&#39;s Blogs">
+<meta property="og:description" content="在 LLM 中一大应用场景就是进行多轮对话，发起的第二轮对话大多情况下是基于第一轮对话的结果进行的。因此，完全可以缓存第一轮对话的结果，避免重复计算 KV Cache，以加速第二轮 TTFT 时间。 更进一步，在非对话场景可以查找输入的最长公共前缀序列，以复用 KV Cache。 主要论文：https:&#x2F;&#x2F;arxiv.org&#x2F;pdf&#x2F;2312.07104">
+<meta property="og:locale">
+<meta property="article:published_time" content="2025-01-25T06:09:10.000Z">
+<meta property="article:modified_time" content="2025-02-09T09:37:35.162Z">
+<meta property="article:author" content="wnma3mz">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://wnma3mz.github.io/2025/01/25/Token-Level%E7%9A%84KVCache%E5%A4%8D%E7%94%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>Token-Level 的 KVCache 复用 | Wnma's Blogs</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="تشغيل شريط التصفح">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hexo_blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Wnma's Blogs</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/hexo_blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/hexo_blog/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/hexo_blog/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/hexo_blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-bookmark">
+
+    <a href="https://wnma3mz.github.io/bookmark/index.html" rel="section"><i class="fa fa-bookmark fa-fw"></i>书签</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/2025/01/25/Token-Level%E7%9A%84KVCache%E5%A4%8D%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
+      <meta itemprop="name" content="wnma3mz">
+      <meta itemprop="description" content="Day Day Up">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wnma's Blogs">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Token-Level 的 KVCache 复用
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建于：2025-01-25 14:09:10" itemprop="dateCreated datePublished" datetime="2025-01-25T14:09:10+08:00">2025-01-25</time>
+
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="عُدل：2025-02-09 17:37:35" itemprop="dateModified" datetime="2025-02-09T17:37:35+08:00">2025-02-09</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>在 LLM
+中一大应用场景就是进行多轮对话，发起的第二轮对话大多情况下是基于第一轮对话的结果进行的。因此，完全可以缓存第一轮对话的结果，避免重复计算
+KV Cache，以加速第二轮 TTFT 时间。</p>
+<p>更进一步，在非对话场景可以查找输入的<strong>最长公共前缀序列</strong>，以复用
+KV Cache。</p>
+<p>主要论文：https://arxiv.org/pdf/2312.07104</p>
+<span id="more"></span>
+<h2 id="背景">背景</h2>
+<p>LLM 在生成 token 的时候，需要重新计算前面所有 token 的 attention。且
+LLM 生成过程又是 token by token 的，因此每生成一个新的 token
+都需要重新计算一次 attention。</p>
+<p>以「今天天气真不错」为例，当输入「今天」时</p>
+<ol type="1">
+<li>计算「今天」的 KV Cache</li>
+<li>生成 token「天气」</li>
+<li>计算「今天天气」的 KV Cache</li>
+<li>生成 token「真」</li>
+<li>计算「今天天气真」的 KV Cache</li>
+<li>生成 token「不」</li>
+<li>计算「今天天气真不」的 KV Cache</li>
+<li>生成 token「错」</li>
+</ol>
+<p>这样，每次生成一个 token 都需要重新计算一次 KV
+Cache，这样效率是很低的。</p>
+<p>一种直接的思路是每次缓存生成过程的 KV Cache，下次生成 token
+时直接使用缓存的 KV Cache。</p>
+<ol type="1">
+<li>计算「今天」的 KV Cache</li>
+<li>生成 token「天气」</li>
+<li>计算「今天天气」的 KV Cache 时，直接使用缓存的「今天」的 KV
+Cache，只计算「天气」的 KV Cache</li>
+<li>生成 token「真」</li>
+<li>计算「今天天气真」的 KV Cache 时，直接使用缓存的「今天天气」的 KV
+Cache，只计算「真」的 KV Cache</li>
+<li>生成 token「不」</li>
+<li>计算「今天天气真不」的 KV Cache 时，直接使用缓存的「今天天气真」的
+KV Cache，只计算「不」的 KV Cache</li>
+<li>生成 token「错」</li>
+</ol>
+<h2 id="问题">问题</h2>
+<p>LLM 的一大场景时多轮对话，即会利用前若干轮对话的情况。具体来说，</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    A[Q1: 今天天气怎么样] --&gt; B[A1: 天气不错]</span><br><span class="line">    B --&gt; C[Q2: 适合穿什么衣服呢？] </span><br><span class="line">    C --&gt; D[A2: 短袖]</span><br></pre></td></tr></table></figure>
+<p>A1 是由 Q1 生成的。A2 是由 Q1+A1+Q2 生成的。由于 Q2
+是额外的一个请求，故在生成 A2 时，往往会重新计算 Q1+A1 的 KV Cache。</p>
+<p>如果能够缓存 Q1+A1 的 KV Cache，那么生成 A2 时就可以直接使用 Q1+A1 的
+KV Cache，只计算 Q2 的 KV Cache。这样可以加速 A2 的 TTFT 时间。</p>
+<p>更进一步，哪怕不是多轮对话，只要输入的两个句子有<strong>最长公共前缀</strong>，就可以复用
+KV Cache。</p>
+<h2 id="解决方案">解决方案</h2>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2312.07104">SGLang: Efficient
+Execution of Structured Language Model Programs</a>
+在工程上对此进行了实现。其核心思想就是使用<code>Radix Tree</code>来存储
+KV Cache，以实现 KV Cache
+的复用，命名为<code>RadixAttention</code>。</p>
+<p>如下图所示，<code>RadixAttention</code>
+能够根据输入的内容，查找到之前计算过的 KV
+Cache，以节约计算时间。并且，对于多个分支的情况也进行了比较好的处理。</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/kvcache/1739091372419.png"
+alt="1739091372419" />
+<figcaption aria-hidden="true">1739091372419</figcaption>
+</figure>
+<h2 id="radix-tree">Radix Tree</h2>
+<p><code>Radix Tree</code>
+是一种树形数据结构，用于查找过程中的字符串。其核心思想是将相同前缀的字符串合并为一个节点，以节约空间。但是放到
+LLM 中，需要对里面的一些数据和逻辑进行修改。</p>
+<ul>
+<li>核心目的：是查找<strong>最长公共前缀</strong></li>
+<li>存储内容：KV Cache 的索引，及对应的 token 序列</li>
+<li>实现功能
+<ul>
+<li>插入 token 序列及其对应的 KV Cache 索引</li>
+<li>输入 token 序列，查找最长公共前缀，返回对应的 KV Cache
+索引，以及前缀长度</li>
+<li>删除 token 序列及其对应的 KV Cache
+索引（侧重工程上优化，不重点介绍）</li>
+</ul></li>
+</ul>
+<p>对于树结构，需要实现一个最基本的节点结构，如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> <span class="type">Dict</span>, <span class="type">List</span>, <span class="type">Optional</span>, <span class="type">Tuple</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Node</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, request_id: <span class="built_in">str</span></span>):</span><br><span class="line">        <span class="variable language_">self</span>.children: <span class="type">Dict</span>[<span class="built_in">int</span>, Node] = &#123;&#125;</span><br><span class="line">        <span class="variable language_">self</span>.is_end = <span class="literal">False</span></span><br><span class="line">        <span class="variable language_">self</span>.path = <span class="literal">None</span></span><br><span class="line">        <span class="variable language_">self</span>.request_id = request_id</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__repr__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="string">f&quot;Node(<span class="subst">&#123;self.request_id&#125;</span>): path=<span class="subst">&#123;self.path&#125;</span>; is_end=<span class="subst">&#123;self.is_end&#125;</span>&quot;</span></span><br></pre></td></tr></table></figure>
+<h3 id="插入">插入</h3>
+<p>在每次生成 token 时，需要将 token 序列及其对应的 KV Cache 索引插入到
+<code>Radix Tree</code> 中。</p>
+<p>而生成 token 其实又分了两种情况，</p>
+<ul>
+<li>生成第一个 token 时，此时 KV Cache 的长度是大于 1 的</li>
+<li>生成后续 token 时，此时 KV Cache 的长度是 1</li>
+</ul>
+<p>所以，分别实现两个函数 <code>insert</code> 和
+<code>append_to_request</code>。用 <code>request_id</code> 来标识 KV
+Cache 的索引并且也能对应到完整的 token 生成序列。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">RadixTree</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="variable language_">self</span>.root = Node(<span class="literal">None</span>)  <span class="comment"># 根节点</span></span><br><span class="line">        <span class="variable language_">self</span>.request_id_map: <span class="type">Dict</span>[<span class="built_in">str</span>, Node] = &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">insert</span>(<span class="params">self, input_ids: <span class="type">List</span>[<span class="built_in">int</span>], request_id: <span class="built_in">str</span></span>):</span><br><span class="line">        <span class="comment"># 生成第一个 token 时</span></span><br><span class="line">        node = <span class="variable language_">self</span>.root</span><br><span class="line">        path = []</span><br><span class="line">        <span class="keyword">for</span> id_ <span class="keyword">in</span> input_ids:</span><br><span class="line">            <span class="keyword">if</span> id_ <span class="keyword">not</span> <span class="keyword">in</span> node.children:</span><br><span class="line">                node.children[id_] = Node(request_id)</span><br><span class="line">            node = node.children[id_]</span><br><span class="line">            path.append(id_)</span><br><span class="line">            node.path = path[:]</span><br><span class="line">        node.is_end = <span class="literal">True</span></span><br><span class="line">        <span class="variable language_">self</span>.request_id_map[request_id] = node</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">append_to_request</span>(<span class="params">self, input_ids: <span class="type">List</span>[<span class="built_in">int</span>], request_id: <span class="built_in">str</span></span>):</span><br><span class="line">        <span class="keyword">if</span> request_id <span class="keyword">not</span> <span class="keyword">in</span> <span class="variable language_">self</span>.request_id_map:</span><br><span class="line">            <span class="variable language_">self</span>.insert(input_ids, request_id)</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="comment"># 对于后续 token 生成，只需要在原有的 KV Cache 上追加即可</span></span><br><span class="line">        node = <span class="variable language_">self</span>.request_id_map.pop(request_id)</span><br><span class="line">        path = node.path</span><br><span class="line">        node.is_end = <span class="literal">False</span></span><br><span class="line">        <span class="keyword">for</span> id_ <span class="keyword">in</span> input_ids:</span><br><span class="line">            <span class="keyword">if</span> id_ <span class="keyword">not</span> <span class="keyword">in</span> node.children:</span><br><span class="line">                node.children[id_] = Node(request_id)</span><br><span class="line">            node = node.children[id_]</span><br><span class="line">            path.append(id_)</span><br><span class="line">            node.path = path[:]</span><br><span class="line">        node.is_end = <span class="literal">True</span></span><br><span class="line">        <span class="variable language_">self</span>.request_id_map[request_id] = node        </span><br></pre></td></tr></table></figure>
+<h3 id="查找">查找</h3>
+<p>在定下数据结构之后，这个查找是比较容易实现的，只需要遍历
+<code>Radix Tree</code>，找到最长的公共前缀即可。</p>
+<p>主要是需要注意一些边界情况，比如输入的 token 序列不存在于
+<code>Radix Tree</code> 中，或者输入的 token 序列是
+<code>Radix Tree</code> 中某个 token 序列的子序列。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">longest_common_prefix</span>(<span class="params">self, input_ids: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="type">Tuple</span>[<span class="type">Optional</span>[<span class="built_in">str</span>], <span class="built_in">int</span>]:</span><br><span class="line">    <span class="comment"># 返回最长的公共前缀</span></span><br><span class="line">    node = <span class="variable language_">self</span>.root</span><br><span class="line">    longest = []</span><br><span class="line">    <span class="keyword">for</span> id_ <span class="keyword">in</span> input_ids:</span><br><span class="line">        <span class="keyword">if</span> id_ <span class="keyword">not</span> <span class="keyword">in</span> node.children:</span><br><span class="line">            <span class="keyword">return</span> node.request_id, <span class="built_in">len</span>(longest) - <span class="number">1</span> <span class="keyword">if</span> <span class="built_in">len</span>(longest) &gt; <span class="number">0</span> <span class="keyword">else</span> -<span class="number">1</span></span><br><span class="line">        node = node.children[id_]</span><br><span class="line">        <span class="keyword">if</span> node.path <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span> <span class="keyword">and</span> <span class="built_in">len</span>(node.path) &gt; <span class="built_in">len</span>(longest):</span><br><span class="line">            longest = node.path[:]</span><br><span class="line">    <span class="keyword">return</span> node.request_id, <span class="built_in">len</span>(longest) - <span class="number">1</span> <span class="keyword">if</span> <span class="built_in">len</span>(longest) &gt; <span class="number">0</span> <span class="keyword">else</span> -<span class="number">1</span></span><br></pre></td></tr></table></figure>
+<h3 id="删除">删除</h3>
+<p>由于 KV Cache 会消耗大量的显存/内存，所以需要定期的删除。</p>
+<p>这里的删除只能从后往前删，并且结合删除策略，比如删除最近最少使用的 KV
+Cache。可能还需要做一些其他数据结构上的调整。暂时没实现完整。</p>
+<h2 id="总结">总结</h2>
+<p>使用 <code>Radix Tree</code> 来存储 KV Cache，可以有效优化 TTFT
+的时间，但同时也会增加显存/内存的消耗。</p>
+<p>另外有几个注意事项：</p>
+<ul>
+<li>实现的时候使用了 token ids 进行查找。而对于多模态来说，不同图片的
+token ids 序列可能是相同的，所以会在查找的时候出现问题</li>
+<li>删除策略不够完善，需要进一步优化</li>
+<li><code>Radix Tree</code> 需要结合 KV Cache 一起优化。比如这里在复用了
+KV Cache 之后，实际上是复制了一份KV Cache
+，导致消耗内存变大。理想情况是直接接着之前的 KV Cache。</li>
+</ul>
+<p>对应项目的实现：https://github.com/wnma3mz/tLLM/blob/main/tllm/commons/radix_tree.py</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>wnma3mz
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wnma3mz.github.io/2025/01/25/Token-Level%E7%9A%84KVCache%E5%A4%8D%E7%94%A8/" title="Token-Level 的 KVCache 复用">https://wnma3mz.github.io/2025/01/25/Token-Level的KVCache复用/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2024/09/05/LLM/LLM%E6%8E%A8%E7%90%86%E7%9B%B8%E5%85%B3%E8%AE%A1%E7%AE%97%E5%85%AC%E5%BC%8F/" rel="prev" title="LLM的推理相关计算公式">
+      <i class="fa fa-chevron-left"></i> LLM的推理相关计算公式
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98"><span class="nav-text">问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-text">解决方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#radix-tree"><span class="nav-text">Radix Tree</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%92%E5%85%A5"><span class="nav-text">插入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E6%89%BE"><span class="nav-text">查找</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4"><span class="nav-text">删除</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="wnma3mz"
+      src="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
+  <p class="site-author-name" itemprop="name">wnma3mz</p>
+  <div class="site-description" itemprop="description">Day Day Up</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/hexo_blog/archives/">
+        
+          <span class="site-state-item-count">69</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/hexo_blog/categories/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/hexo_blog/tags/">
+          
+        <span class="site-state-item-count">89</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wnma3mz" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wnma3mz" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wnma3mz@gmail.com" title="E-Mail → mailto:wnma3mz@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wnma3mz</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='99' src="/hexo_blog/lib/canvas-nest/canvas-nest-nomobile.min.js"></script>
+  <script src="/hexo_blog/lib/anime.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/hexo_blog/js/utils.js"></script>
+
+<script src="/hexo_blog/js/motion.js"></script>
+
+
+<script src="/hexo_blog/js/schemes/muse.js"></script>
+
+
+<script src="/hexo_blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/hexo_blog/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

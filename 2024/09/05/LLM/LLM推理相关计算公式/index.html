@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.2">
+<meta name="generator" content="Hexo 7.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png">
@@ -20,21 +20,22 @@
     var CONFIG = {"hostname":"wnma3mz.github.io","root":"/hexo_blog/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="对于两种场景下介绍 LLM 的 推理加速方法 长输入，短输出 长输出但输出 token 有限">
+  <meta name="description" content="记录 LLM 在推理上的理论计算公式">
 <meta property="og:type" content="article">
-<meta property="og:title" content="LLM的推理加速">
-<meta property="og:url" content="https://wnma3mz.github.io/2024/06/15/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F/index.html">
+<meta property="og:title" content="LLM的推理相关计算公式">
+<meta property="og:url" content="https://wnma3mz.github.io/2024/09/05/LLM/LLM%E6%8E%A8%E7%90%86%E7%9B%B8%E5%85%B3%E8%AE%A1%E7%AE%97%E5%85%AC%E5%BC%8F/index.html">
 <meta property="og:site_name" content="Wnma&#39;s Blogs">
-<meta property="og:description" content="对于两种场景下介绍 LLM 的 推理加速方法 长输入，短输出 长输出但输出 token 有限">
+<meta property="og:description" content="记录 LLM 在推理上的理论计算公式">
 <meta property="og:locale">
-<meta property="article:published_time" content="2024-06-15T12:00:00.000Z">
-<meta property="article:modified_time" content="2024-09-08T05:57:26.326Z">
+<meta property="article:published_time" content="2024-09-05T05:45:43.000Z">
+<meta property="article:modified_time" content="2024-09-08T07:29:21.754Z">
 <meta property="article:author" content="wnma3mz">
 <meta property="article:tag" content="NLP">
-<meta property="article:tag" content="Attention">
+<meta property="article:tag" content="Inference">
+<meta property="article:tag" content="Math">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://wnma3mz.github.io/2024/06/15/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F/">
+<link rel="canonical" href="https://wnma3mz.github.io/2024/09/05/LLM/LLM%E6%8E%A8%E7%90%86%E7%9B%B8%E5%85%B3%E8%AE%A1%E7%AE%97%E5%85%AC%E5%BC%8F/">
 
 
 <script id="page-configurations">
@@ -47,7 +48,7 @@
   };
 </script>
 
-  <title>LLM的推理加速 | Wnma's Blogs</title>
+  <title>LLM的推理相关计算公式 | Wnma's Blogs</title>
   
 
 
@@ -199,7 +200,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/2024/06/15/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F/">
+    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/2024/09/05/LLM/LLM%E6%8E%A8%E7%90%86%E7%9B%B8%E5%85%B3%E8%AE%A1%E7%AE%97%E5%85%AC%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
@@ -212,7 +213,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          LLM的推理加速
+          LLM的推理相关计算公式
         </h1>
 
         <div class="post-meta">
@@ -222,7 +223,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建于：2024-06-15 20:00:00" itemprop="dateCreated datePublished" datetime="2024-06-15T20:00:00+08:00">2024-06-15</time>
+              <time title="创建于：2024-09-05 13:45:43" itemprop="dateCreated datePublished" datetime="2024-09-05T13:45:43+08:00">2024-09-05</time>
 
             </span>
               <span class="post-meta-item">
@@ -230,7 +231,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="عُدل：2024-09-08 13:57:26" itemprop="dateModified" datetime="2024-09-08T13:57:26+08:00">2024-09-08</time>
+                <time title="عُدل：2024-09-08 15:29:21" itemprop="dateModified" datetime="2024-09-08T15:29:21+08:00">2024-09-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -253,26 +254,59 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>对于两种场景下介绍 LLM 的 推理加速方法</p>
-<p>长输入，短输出</p>
-<p>长输出但输出 token 有限</p>
+        <p>记录 LLM 在推理上的理论计算公式</p>
 <span id="more"></span>
-<p>大语言模型在进行推理时是非常耗时的，因为需要对每个 token
-进行计算。对于推理加速这个话题，在工程上可以从很多方面考虑：</p>
+<h3 id="参数量">参数量</h3>
+<p>embedding + lm head + transformer block <span
+class="math inline">\(\times\)</span> N</p>
 <ul>
-<li>模型进行量化/剪枝，降低模型浮点计算成本</li>
-<li>Continuous Batch，批量计算 Next Token</li>
-<li>KV Cache：LLM 推理的是 Token by Token
-生成，每次生成的时候会计算所有输入 Token 的
-Attention，故可以缓存已计算的 Attention，减少计算量</li>
-<li>对显存进行管理，如 <a
-href="https://wnma3mz.github.io/hexo_blog/2023/11/24/vLLM%E7%9A%84PageAttention/">PageAttention</a></li>
-<li>KV Cache 量化</li>
-<li>...</li>
+<li>Embedding / LM Head 的参数量：vocab_size <span
+class="math inline">\(\times\)</span> hidden_size</li>
+<li>transformer block 的参数量
+<ul>
+<li>self-attention：qkvo 四个线性层，需要分别考虑两种 Attention
+<ul>
+<li>multi-head attention（MHA）：4 <span
+class="math inline">\(\times\)</span> hidden_size <span
+class="math inline">\(^2\)</span></li>
+<li>grouped query attention（GQA）：
+<ul>
+<li><p>q 和 o，2 $$ hidden_size <span
+class="math inline">\(^2\)</span></p></li>
+<li><p>k 和 v，2 $$ hidden_size <span class="math inline">\(^2\)</span>
+/ num_attention_heads $$ num_key_value_heads</p></li>
+</ul></li>
+</ul></li>
+<li>FFN：三个线性层，3 <span class="math inline">\(\times\)</span>
+hidden_size <span class="math inline">\(\times\)</span>
+intermediate_size</li>
+<li>layer norm：2 <span class="math inline">\(\times\)</span> 2 <span
+class="math inline">\(\times\)</span> hidden_size</li>
+</ul></li>
 </ul>
-<p>而其他在工程上的优化，往往是针对特定场景的，下面介绍两种场景下的优化方法。</p>
-<h2 id="prefix-cache长输入短输出">Prefix Cache：长输入，短输出</h2>
-<p>注：优化显存并不会减少计算量，只是减少了显存占用，从而提升了吞吐。</p>
+<p>以 <a
+target="_blank" rel="noopener" href="https://huggingface.co/meta-llama/Llama-2-13b-hf/blob/main/config.json">llama2-13B</a>
+为例，关键参数</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;hidden_size&quot;</span><span class="punctuation">:</span> <span class="number">5120</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;intermediate_size&quot;</span><span class="punctuation">:</span> <span class="number">13824</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;mlp_bias&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;num_attention_heads&quot;</span><span class="punctuation">:</span> <span class="number">40</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;num_hidden_layers&quot;</span><span class="punctuation">:</span> <span class="number">40</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;num_key_value_heads&quot;</span><span class="punctuation">:</span> <span class="number">40</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;vocab_size&quot;</span><span class="punctuation">:</span> <span class="number">32000</span><span class="punctuation">,</span></span><br></pre></td></tr></table></figure>
+<p>由于 num_attention_heads == num_key_value_heads，所以是 MHA</p>
+<ul>
+<li>Embedding/LM Head： <span class="math inline">\(32000\times
+5120\)</span></li>
+<li>transformer block
+<ul>
+<li>self-attention：<span class="math inline">\(4\times 5120\times
+5120\)</span></li>
+<li>FFN: <span class="math inline">\(3\times 5120\times
+13824\)</span></li>
+<li>layer norm: <span class="math inline">\(4\times 5120\)</span></li>
+</ul></li>
+</ul>
+<p>综上，列出计算</p>
+<p><span class="math display">\[2\times 32000\times 5120 + 40\times
+(4\times 5120\times 5120 + 3\times 5120\times 13824 + 4\times 5120) =
+13,016,268,800 \approx 13B\]</span></p>
+<p>如果是 (b)float16，则占用空间/显存为 13 $$ 2 = 26G</p>
+<p>如果是 GQA，self-attn 参数量公式为</p>
 <h3 id="kv-cache-显存计算公式">KV cache 显存计算公式</h3>
 <p><span class="math inline">\(4\times b\times l\times num\_heads\times
 embed\_size\_per\_head \times (s+n)\)</span></p>
@@ -295,116 +329,68 @@ num_attention_heads)</li>
 <p>简单来说，每增加一个 token</p>
 <p>8B 就会增加 0.125 M 的显存</p>
 <p>70B 就会增加 0.3125 M 的显存</p>
-<p>这个显存占有直到整个句子生成完成之后才会释放，所以对于长句子，KV
-Cache 的显存占用是非常大的。</p>
-<p>显存决定了整体的吞吐量。对于 70B，假设有 1k 个请求，每个请求的总
-token 为 1k，那么显存占用为 0.3125M * 1000 * 1000 = 0.3G。</p>
-<h3 id="方法">方法</h3>
-<p>在 LLM
-推理时，往往是用对话的方式进行推理，而每次对话的开头可能是相同（System），这一部分的
-Attention 是不变的，所以可以缓存这部分 Attention。</p>
-<p>加速的原因：</p>
+<h3 id="计算量">计算量</h3>
+<p>Embedding 可以视作一个哈希表，没有计算量</p>
 <ul>
-<li>prefix 的 kv cache 不需要计算</li>
-<li>prefix 的 kv cache 复用节约了显存，提升吞吐（主要收益）</li>
+<li>LM Head：<span class="math inline">\(2 \times b \times s\times
+hidden\_size\times V\)</span></li>
+<li>Self-attention：
+<ul>
+<li>q_proj: <span class="math inline">\(2 \times b \times s \times
+hidden\_size^2\)</span></li>
+<li>k_proj和v_proj:
+<ul>
+<li>MHA: <span class="math inline">\(2\times(2 \times b \times s \times
+hidden\_size^2)\)</span></li>
+<li>GQA: <span class="math inline">\(2\times(2 \times b \times s \times
+hidden\_size^2 / (num\_attention\_heads
+\times  num\_key\_value\_heads)^2 )\)</span></li>
+</ul></li>
+<li>attn_weights: <span class="math inline">\(2 \times b \times s^2
+\times hidden\_size\)</span></li>
+<li>attn_output: <span class="math inline">\(2 \times b \times s^2
+\times hidden\_size\)</span></li>
+<li>o_proj: <span class="math inline">\(2 \times b \times s \times
+hidden\_size^2\)</span></li>
+</ul></li>
+<li>FFN:
+<ul>
+<li>gate_proj 和 up_proj: <span class="math inline">\(2\times 2\times b
+\times s\times (hidden\_size\times intermediate\_size)\)</span></li>
+<li>down_proj: <span class="math inline">\(2\times b \times s\times
+(intermediate\_size\times hidden\_size)\)</span></li>
+</ul></li>
 </ul>
-<p>所以适用场景的一个明显特点就是必须要有长的 system prefix，而且这个
-prefix
-是不变的。另外，如果模型输出过长的话，这个优化的收益就会变小。因为它并不会加速在生成过程中的计算，只是减少了显存占用。</p>
-<h3 id="收益">收益</h3>
-<p>https://github.com/vllm-project/vllm/issues/227</p>
-<p>For each request, the prefix length is 200, the input length is 30,
-and the output length is 50.</p>
-<table>
-<colgroup>
-<col style="width: 12%" />
-<col style="width: 15%" />
-<col style="width: 20%" />
-<col style="width: 29%" />
-<col style="width: 20%" />
-</colgroup>
-<thead>
-<tr>
-<th>Load (QPS)</th>
-<th>Method</th>
-<th>Requests/s</th>
-<th>Average Latency per Req</th>
-<th>First Token Time</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>10 QPS</td>
-<td>Prefix Cache</td>
-<td>9.83 requests/s</td>
-<td>1.97 s</td>
-<td>0.29 s</td>
-</tr>
-<tr>
-<td>10 QPS</td>
-<td>Base</td>
-<td>9.80 requests/s</td>
-<td>2.87 s</td>
-<td>0.45 s</td>
-</tr>
-<tr>
-<td>15 QPS</td>
-<td>Prefix Cache</td>
-<td>14.30 requests/s</td>
-<td>2.98 s</td>
-<td>0.39 s</td>
-</tr>
-<tr>
-<td>15 QPS</td>
-<td>Base</td>
-<td>13.24 requests/s</td>
-<td>8.65 s</td>
-<td>1.02 s</td>
-</tr>
-<tr>
-<td>25 QPS</td>
-<td>Prefix Cache</td>
-<td>19.81 requests/s</td>
-<td>6.46 s</td>
-<td>0.84 s</td>
-</tr>
-<tr>
-<td>25 QPS</td>
-<td>Base</td>
-<td>14.08 requests/s</td>
-<td>13.67 s</td>
-<td>4.74 s</td>
-</tr>
-</tbody>
-</table>
-<h2 id="并行解码长输出但输出-token-有限">并行解码：长输出但输出 token
-有限</h2>
-<p>LLM 的推理是 Token by Token 生成的，如果有一种方式可以每次生成多个
-token，那么就可以提升推理速度。</p>
-<h3 id="方法-1">方法</h3>
-<p>以下图为例，对 LLM 的模型结构进行一定的修改，使每次可以同时生成 3 个
-token。</p>
-<figure>
-<img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/llm_speedup/251e873bb1322b4d31fee19f0c81c424.png"
-alt="并行解码" />
-<figcaption aria-hidden="true">并行解码</figcaption>
-</figure>
-<p>并行解码的方式不一定要对结构进行修改，这里只是一种实现方式。</p>
-<p>具体实现方式： -
-训练：修改结构后对模型的新增部分进行常规的训练，其他部分冻结，减少训练成本
-- 推理：模型生成的时候会把连续 3 个 token 的 top-K
-的可能均生成，交由原模型进行打分，然后选择最优的一个。</p>
-<h3 id="问题">问题</h3>
-<p>并行生成的 Token 的可靠性是取决于具体场景的。如果生成的 Token
-可能性只有 20 个，那么并行生成的 Token
-的可靠性就会相对较高，这种对于模型而言是更容易学习的。但如果生成的 Token
-可能有 10000 个，那么并行生成的 Token 的可靠性就会相对较低。</p>
-<p>换而言之，Token
-可能性越少越容易猜中，越多越难猜中。所以，这种方法适用于输出 token
-可能性有限的场景。</p>
-<p>并且，如果输出 token 数量较短，那么相较于 token by token
-的生成，这种方法的优势就会变小。</p>
+<p>参数说明 - b: 句子条数 - s: 输入长度 - 2:
+一次乘法操作和一次加法操作</p>
+<p>还是以 <a
+target="_blank" rel="noopener" href="https://huggingface.co/meta-llama/Llama-2-13b-hf/blob/main/config.json">llama2-13B</a>
+为例，关键参数</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;hidden_size&quot;</span><span class="punctuation">:</span> <span class="number">5120</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;intermediate_size&quot;</span><span class="punctuation">:</span> <span class="number">13824</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;mlp_bias&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;num_attention_heads&quot;</span><span class="punctuation">:</span> <span class="number">40</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;num_hidden_layers&quot;</span><span class="punctuation">:</span> <span class="number">40</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;num_key_value_heads&quot;</span><span class="punctuation">:</span> <span class="number">40</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;vocab_size&quot;</span><span class="punctuation">:</span> <span class="number">32000</span><span class="punctuation">,</span></span><br></pre></td></tr></table></figure>
+<p>假设 b=1，s=1，则整体计算量有</p>
+<ul>
+<li>LM Head: <span class="math inline">\(2\times 5120\times
+32000\)</span></li>
+<li>self-attention:
+<ul>
+<li><span class="math inline">\(2\times 5120\times 5120\)</span></li>
+<li><span class="math inline">\(4\times 5120\times 5120\)</span></li>
+<li><span class="math inline">\(2\times 5120\)</span></li>
+<li><span class="math inline">\(2\times 5120\)</span></li>
+<li><span class="math inline">\(2\times 5120\times 5120\)</span></li>
+</ul></li>
+<li>MLP:
+<ul>
+<li><span class="math inline">\(4\times 5120\times 13824\)</span></li>
+<li><span class="math inline">\(2\times 13824\times 5120\)</span></li>
+</ul></li>
+</ul>
+<p>模型有 40 层，所以</p>
+<p><span class="math inline">\(2\times 5120\times 32000+
+40\times(8\times 5120\times 5120+4\times 5120+ 2\times 5120\times
+13824+2\times 13824\times 5120) = 20,041,728,000\)</span></p>
+<p>参考资料：</p>
+<p>https://blog.csdn.net/wxc971231/article/details/135434478</p>
 
     </div>
 
@@ -420,7 +406,7 @@ alt="并行解码" />
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://wnma3mz.github.io/2024/06/15/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F/" title="LLM的推理加速">https://wnma3mz.github.io/2024/06/15/LLM的推理加速/</a>
+    <a href="https://wnma3mz.github.io/2024/09/05/LLM/LLM%E6%8E%A8%E7%90%86%E7%9B%B8%E5%85%B3%E8%AE%A1%E7%AE%97%E5%85%AC%E5%BC%8F/" title="LLM的推理相关计算公式">https://wnma3mz.github.io/2024/09/05/LLM/LLM推理相关计算公式/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -432,7 +418,8 @@ alt="并行解码" />
       <footer class="post-footer">
           <div class="post-tags">
               <a href="/hexo_blog/tags/NLP/" rel="tag"># NLP</a>
-              <a href="/hexo_blog/tags/Attention/" rel="tag"># Attention</a>
+              <a href="/hexo_blog/tags/Inference/" rel="tag"># Inference</a>
+              <a href="/hexo_blog/tags/Math/" rel="tag"># Math</a>
           </div>
 
         
@@ -441,12 +428,12 @@ alt="并行解码" />
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/hexo_blog/2024/03/28/LLM%E6%B7%B1%E5%BA%A6%E7%9A%84%E7%A8%80%E7%96%8F%E6%80%A7/" rel="prev" title="LLM 深度的”稀疏性“">
-      <i class="fa fa-chevron-left"></i> LLM 深度的”稀疏性“
+    <a href="/hexo_blog/2024/08/08/Knowledge-Distillation-in-LLM/" rel="prev" title="Knowledge Distillation in LLM">
+      <i class="fa fa-chevron-left"></i> Knowledge Distillation in LLM
     </a></div>
       <div class="post-nav-item">
-    <a href="/hexo_blog/2024/06/15/MoE%E4%B8%AD%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1Loss%E5%AE%9E%E7%8E%B0%E5%AF%B9%E6%AF%94/" rel="next" title="MoE中负载均衡Loss实现">
-      MoE中负载均衡Loss实现 <i class="fa fa-chevron-right"></i>
+    <a href="/hexo_blog/2025/01/25/Token-Level%E7%9A%84KVCache%E5%A4%8D%E7%94%A8/" rel="next" title="Token-Level 的 KVCache 复用">
+      Token-Level 的 KVCache 复用 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -506,8 +493,7 @@ alt="并行解码" />
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#prefix-cache%E9%95%BF%E8%BE%93%E5%85%A5%E7%9F%AD%E8%BE%93%E5%87%BA"><span class="nav-text">Prefix Cache：长输入，短输出</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#kv-cache-%E6%98%BE%E5%AD%98%E8%AE%A1%E7%AE%97%E5%85%AC%E5%BC%8F"><span class="nav-text">KV cache 显存计算公式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95"><span class="nav-text">方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%B6%E7%9B%8A"><span class="nav-text">收益</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%B6%E8%A1%8C%E8%A7%A3%E7%A0%81%E9%95%BF%E8%BE%93%E5%87%BA%E4%BD%86%E8%BE%93%E5%87%BA-token-%E6%9C%89%E9%99%90"><span class="nav-text">并行解码：长输出但输出 token
-有限</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95-1"><span class="nav-text">方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%98"><span class="nav-text">问题</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E6%95%B0%E9%87%8F"><span class="nav-text">参数量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kv-cache-%E6%98%BE%E5%AD%98%E8%AE%A1%E7%AE%97%E5%85%AC%E5%BC%8F"><span class="nav-text">KV cache 显存计算公式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E9%87%8F"><span class="nav-text">计算量</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -523,7 +509,7 @@ alt="并行解码" />
       <div class="site-state-item site-state-posts">
           <a href="/hexo_blog/archives/">
         
-          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-count">69</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -571,7 +557,7 @@ alt="并行解码" />
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2024</span>
+  <span itemprop="copyrightYear">2025</span>
   <span class="with-love">
     <i class="user"></i>
   </span>

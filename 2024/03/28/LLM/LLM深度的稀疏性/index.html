@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.2">
+<meta name="generator" content="Hexo 7.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png">
@@ -20,22 +20,22 @@
     var CONFIG = {"hostname":"wnma3mz.github.io","root":"/hexo_blog/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="对比不同硬件下，LLM 的推理速度">
+  <meta name="description" content="LLM 在宽度上的稀疏性可以通过 MoE 这种架构来优化。而深度上也具备稀疏性，故而可以进行裁剪。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="LLM 不同硬件推理速度对比">
-<meta property="og:url" content="https://wnma3mz.github.io/2024/07/21/LLM%20%E7%A1%AC%E4%BB%B6%E6%AF%94%E4%BB%B7/index.html">
+<meta property="og:title" content="LLM 深度的”稀疏性“">
+<meta property="og:url" content="https://wnma3mz.github.io/2024/03/28/LLM/LLM%E6%B7%B1%E5%BA%A6%E7%9A%84%E7%A8%80%E7%96%8F%E6%80%A7/index.html">
 <meta property="og:site_name" content="Wnma&#39;s Blogs">
-<meta property="og:description" content="对比不同硬件下，LLM 的推理速度">
+<meta property="og:description" content="LLM 在宽度上的稀疏性可以通过 MoE 这种架构来优化。而深度上也具备稀疏性，故而可以进行裁剪。">
 <meta property="og:locale">
-<meta property="article:published_time" content="2024-07-21T12:02:00.000Z">
-<meta property="article:modified_time" content="2024-07-24T13:46:03.731Z">
+<meta property="article:published_time" content="2024-03-28T05:02:21.000Z">
+<meta property="article:modified_time" content="2024-09-08T05:32:54.609Z">
 <meta property="article:author" content="wnma3mz">
 <meta property="article:tag" content="NLP">
 <meta property="article:tag" content="LLM">
-<meta property="article:tag" content="Raspberry">
+<meta property="article:tag" content="knowledge distillation">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://wnma3mz.github.io/2024/07/21/LLM%20%E7%A1%AC%E4%BB%B6%E6%AF%94%E4%BB%B7/">
+<link rel="canonical" href="https://wnma3mz.github.io/2024/03/28/LLM/LLM%E6%B7%B1%E5%BA%A6%E7%9A%84%E7%A8%80%E7%96%8F%E6%80%A7/">
 
 
 <script id="page-configurations">
@@ -48,7 +48,7 @@
   };
 </script>
 
-  <title>LLM 不同硬件推理速度对比 | Wnma's Blogs</title>
+  <title>LLM 深度的”稀疏性“ | Wnma's Blogs</title>
   
 
 
@@ -200,7 +200,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/2024/07/21/LLM%20%E7%A1%AC%E4%BB%B6%E6%AF%94%E4%BB%B7/">
+    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/2024/03/28/LLM/LLM%E6%B7%B1%E5%BA%A6%E7%9A%84%E7%A8%80%E7%96%8F%E6%80%A7/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
@@ -213,7 +213,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          LLM 不同硬件推理速度对比
+          LLM 深度的”稀疏性“
         </h1>
 
         <div class="post-meta">
@@ -223,7 +223,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建于：2024-07-21 20:02:00" itemprop="dateCreated datePublished" datetime="2024-07-21T20:02:00+08:00">2024-07-21</time>
+              <time title="创建于：2024-03-28 13:02:21" itemprop="dateCreated datePublished" datetime="2024-03-28T13:02:21+08:00">2024-03-28</time>
 
             </span>
               <span class="post-meta-item">
@@ -231,7 +231,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="عُدل：2024-07-24 21:46:03" itemprop="dateModified" datetime="2024-07-24T21:46:03+08:00">2024-07-24</time>
+                <time title="عُدل：2024-09-08 13:32:54" itemprop="dateModified" datetime="2024-09-08T13:32:54+08:00">2024-09-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -239,7 +239,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/Note/" itemprop="url" rel="index"><span itemprop="name">Note</span></a>
+                  <a href="/hexo_blog/categories/PaperReading/" itemprop="url" rel="index"><span itemprop="name">PaperReading</span></a>
                 </span>
             </span>
 
@@ -254,322 +254,171 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>对比不同硬件下，LLM 的推理速度</p>
+        <p>LLM 在宽度上的稀疏性可以通过 MoE
+这种架构来优化。而深度上也具备稀疏性，故而可以进行裁剪。</p>
 <span id="more"></span>
-<p>生成阶段，20 Token/s 认为是一个比较可以接受的速度，即 20 / 1000 =
-0.02 s = 20 ms</p>
-<table style="width:100%;">
-<colgroup>
-<col style="width: 16%" />
-<col style="width: 16%" />
-<col style="width: 16%" />
-<col style="width: 16%" />
-<col style="width: 16%" />
-<col style="width: 16%" />
-</colgroup>
+<h2 id="背景">背景</h2>
+<p>这篇<a
+target="_blank" rel="noopener" href="https://www.lesswrong.com/posts/AcKRB8wDpdaN6v6ru/interpreting-gpt-the-logit-lens">博客</a>发现到
+GPT-2 在深度上的输出具有相似性。即，第 20 层的输出接入 LM Head 和第 21
+层的输出接入 LM Head 是相似，甚至一致的。</p>
+<p>故而，模型在深度上可能是稀疏的。所以可以按 block
+的维度进行裁剪。如下图所示，</p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/sparseinLLM/image-2024-3-28_18-23-0.png" /></p>
+<p>找到三篇相似的工作</p>
+<ul>
+<li>上交：<a target="_blank" rel="noopener" href="https://arxiv.org/html/2402.11187v1">LaCo: Large
+Language Model Pruning via Layer Collapse</a></li>
+<li>Meta：<a target="_blank" rel="noopener" href="https://arxiv.org/html/2403.17887">The Unreasonable
+Ineffectiveness of the Deeper Layers</a></li>
+<li>百川：<a target="_blank" rel="noopener" href="https://arxiv.org/html/2403.03853v2">ShortGPT: Layers
+in Large Language Models are More Redundant Than You Expect</a></li>
+</ul>
+<p>越靠近模型输出的那些层相似度较高，可以通过删除一些“冗余”层来减小模型参数</p>
+<h2 id="方法的共通性">方法的共通性</h2>
+<ul>
+<li>构建一个“中性”数据集！！！</li>
+<li>观察不同层的输入/输出</li>
+<li>用某种度量距离的方法测量不同层是否相似
+<ul>
+<li>百川：Block Influence</li>
+<li>Meta：角距离</li>
+</ul></li>
+</ul>
+<h2 id="meta-论文结果">Meta 论文结果</h2>
+<h3 id="不同模型具有相似的表现">不同模型具有相似的表现</h3>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/sparseinLLM/x2.png" /></p>
+<p>注：</p>
+<ul>
+<li>实线（healing）：扔掉一些层之后进行了训练</li>
+<li>虚线（no healing）： → 扔掉这些层后不训练</li>
+<li>实线和虚线扔掉的是相同的层</li>
+<li>横坐标是扔掉的比例</li>
+</ul>
+<p>Q：MMLU/BoolQ 指标具备足够的可信度？</p>
+<p>A：个人感觉没有，但有后续有其他的一些实验支撑</p>
+<p>Q：Qwen 为啥表现不大一样？</p>
+<p>A：论文其他部分进行一定的解释，但与本文的重点相关性不强，所以不展开介绍</p>
+<h3 id="暴力裁剪-vs-提出的方法">暴力裁剪 vs 提出的方法</h3>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/sparseinLLM/x5.png" /></p>
+<p>有一种直接粗暴的方法就是直接扔掉最后若干层，这样就不需要数据集啥的来选层。</p>
+<p>奇怪的现象就是直接扔掉最后若干层，指标会出现先降低再提升（不训练的情况）。</p>
+<h2 id="百川论文的结论">百川论文的结论</h2>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/sparseinLLM/baichuan.png" /></p>
+<p><strong>第一层和最后一层很重要！！！</strong></p>
+<h2 id="剪枝比率">剪枝比率</h2>
+<p>利用宽度稀疏性，一种优化架构 MoE
+可以做到降低一半的参数且保持性能不变。</p>
+<p>而在深度稀疏上，这一点是比较难做到的。</p>
+<table>
 <thead>
 <tr>
-<th>设备</th>
 <th>模型尺寸</th>
-<th>速度</th>
-<th>来源</th>
-<th>记录时间</th>
-<th>备注</th>
+<th>层数</th>
+<th>参数量</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>1 x RasPi 5 8 GB</td>
-<td>Llama 3 8B （Q4）</td>
-<td>564.31 ms, 1.77 t/s</td>
-<td></td>
-<td></td>
-<td></td>
+<td>70B</td>
+<td>80</td>
+<td>69,434,351,616</td>
 </tr>
 <tr>
-<td>I: 556.67 ms, T: 6.17 ms</td>
-<td>https://github.com/b4rtaz/distributed-llama/blob/main/README.md</td>
-<td>2024.07.21</td>
-<td></td>
-<td></td>
-<td></td>
+<td>70B</td>
+<td>40</td>
+<td>35,208,175,616</td>
 </tr>
 <tr>
-<td>4 x RasPi 5 8 GB</td>
-<td>Llama 3 8B （Q4）</td>
-<td>331.47 ms, 3.01 t/s</td>
-<td></td>
-<td></td>
-<td></td>
+<td>70B</td>
+<td>45</td>
+<td>39,486,447,616</td>
 </tr>
 <tr>
-<td>I: 267.62 ms, T: 62.34 ms</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td>34B</td>
+<td>48</td>
+<td>34,201,673,728</td>
 </tr>
 <tr>
-<td>8 x RasPi 4B 8 GB</td>
-<td>Llama 2 70B（Q4）</td>
-<td>4842.81 ms</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>I: 2121.94 ms, T: 2719.62 ms</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>c3d-highcpu-30</td>
-<td>Llama 2 7B （Q4）</td>
-<td>101.81 ms</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>I: 101.06 ms, T: 0.19 ms</td>
-<td>https://github.com/b4rtaz/distributed-llama/discussions/9</td>
-<td></td>
-<td>(30 vCPU, 15 core, 59 GB memory) europe-west1, AMD Genoa</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>c3d-highcpu-30 *4</td>
-<td>Llama 2 7B（Q4）</td>
-<td>53.69 ms</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>I: 40.25 ms, T: 12.81 ms</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>c3d-highcpu-30</td>
-<td>Llama 2 70B（Q4）</td>
-<td>909.69 ms</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>I: 907.25 ms, T: 1.75 ms</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>c3d-highcpu-30 *4</td>
-<td>Llama 2 70B（Q4）</td>
-<td>293.06 ms</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>I: 264.00 ms, T: 28.50 ms</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>M1</td>
-<td>Llama 7B（Q4）</td>
-<td>14.19 t/s</td>
-<td>https://github.com/ggerganov/llama.cpp/discussions/4167</td>
-<td>2023.11.22</td>
-<td>取最慢的速度</td>
-</tr>
-<tr>
-<td>M1 Pro</td>
-<td>Llama 7B（Q4）</td>
-<td>35.52 t/s</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>M1 Max</td>
-<td>Llama 7B（Q4）</td>
-<td>54.61 t/s</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>M1 Ultra</td>
-<td>Llama 7B（Q4）</td>
-<td>74.93 t/s</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>M2</td>
-<td>Llama 7B（Q4）</td>
-<td>21.7 t/s</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>M2 Pro</td>
-<td>Llama 7B（Q4）</td>
-<td>37.87 t/s</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>M2 Max</td>
-<td>Llama 7B（Q4）</td>
-<td>60.99 t/s</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>M2 Ultra</td>
-<td>Llama 7B（Q4）</td>
-<td>65.95 t/s</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>M3</td>
-<td>Llama 7B（Q4）</td>
-<td>21.34 t/s</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>M3 Pro</td>
-<td>Llama 7B（Q4）</td>
-<td>30.65 t/s</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>M3 Max</td>
-<td>Llama 7B（Q4）</td>
-<td>56.58 t/s</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>AMD EPYC 7443P</td>
-<td>Llama 7B（Q4）</td>
-<td>11.18 t/s</td>
-<td>https://github.com/ggerganov/llama.cpp/issues/34#issuecomment-1465138574</td>
-<td>2023.3.12</td>
-<td></td>
-</tr>
-<tr>
-<td>Ryzen 7 3700X</td>
-<td>Llama 7B（Q4）</td>
-<td>8.51 t/s</td>
-<td>https://github.com/ggerganov/llama.cpp/issues/34#issuecomment-1465313724</td>
-<td>2023.3.13</td>
-<td></td>
-</tr>
-<tr>
-<td>13900k</td>
-<td>Llama 7B（Q4）</td>
-<td>14.02 t/s</td>
-<td>https://github.com/ggerganov/llama.cpp/issues/34#issuecomment-1467067155</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>2x Intel Xeon Gold 5120 @ 2.20GHz</td>
-<td>Llama 7B（Q4）</td>
-<td>8.68 t/s</td>
-<td>https://github.com/ggerganov/llama.cpp/issues/34#issuecomment-1471171246</td>
-<td>2023.3.16</td>
-<td></td>
-</tr>
-<tr>
-<td>E5-2680v4</td>
-<td>Llama 7B（Q4）</td>
-<td>8.87 t/s</td>
-<td>https://github.com/ggerganov/llama.cpp/issues/34#issuecomment-1517704976</td>
-<td>2023.4.21</td>
-<td></td>
-</tr>
-<tr>
-<td>i5 6500</td>
-<td>Llama 7B（Q4）</td>
-<td>13.82 t/s</td>
-<td>https://github.com/ggerganov/llama.cpp/issues/34#issuecomment-1550410400</td>
-<td>2023.5.17</td>
-<td></td>
-</tr>
-<tr>
-<td>Hetzner Cloud Arm64 Ampere, 16 VCPU</td>
-<td>Llama 7B（Q4）</td>
-<td>11.76 t/s</td>
-<td>https://github.com/ggerganov/llama.cpp/issues/34#issuecomment-1575736794</td>
-<td>2023.6.5</td>
-<td></td>
-</tr>
-<tr>
-<td>13900k</td>
-<td>Llama 7B（Q4）</td>
-<td>12.65 t/s</td>
-<td>https://github.com/ggerganov/llama.cpp/issues/34#issuecomment-1675971336</td>
-<td>2023.8.12</td>
-<td></td>
-</tr>
-<tr>
-<td>Snapdragon 870 / 8GB of ram</td>
-<td>zephyr-7b (Q4)</td>
-<td>4.7 t/s</td>
-<td>https://github.com/ggerganov/llama.cpp/issues/34#issuecomment-1825489115</td>
-<td>2023.11.24</td>
-<td></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td>34B</td>
+<td>24</td>
+<td>17,591,836,672</td>
 </tr>
 </tbody>
 </table>
-<p>I ：推理每个 token花费的时间</p>
-<p>T：通信时间</p>
+<p>简单来说，对于 70B 模型要剪枝到 34B，需要砍掉一半的层；对于 34B
+模型要剪枝到 13B，要砍掉大于一半的层。</p>
+<p>通过 Meta 论文的实验结果显示，当裁剪超过
+40%，就会有较大的风险不能恢复模型性能。</p>
+<h2 id="实验">实验</h2>
+<p>在 boolq/gsm8k
+数据集上简单了进行若干实验，这两个数据集均具备训练集和评测集。所以，对
+13B 模型进行暴力裁剪后（～40%
+参数）在训练集上进行训练，在评测集上进行评测。</p>
+<ul>
+<li>裁剪方法：保留最后一层，从最后一层往前数，直至裁剪到 40% 为止。</li>
+<li>完整训练集：对应评测的训练集+通用的QA/对话数据集</li>
+</ul>
+<h3 id="gsm8k">gsm8k</h3>
+<p>是一个考验数学/逻辑推理能力的评测结果</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;conversations&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;user&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Natalia sold clips to 48 of her friends in April, and then she sold half as many clips in May. How many clips did Natalia sell altogether in April and May?&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;assistant&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Natalia sold 48 clips in April.\nThen she sold half as many in May, which is 48 / 2 = 24.\nSo altogether she sold 48 + 24 = 72 clips.\nThe answer is 72.&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">]</span><span class="punctuation">,</span></span><br></pre></td></tr></table></figure>
+<p>在该评测上指标直接崩掉，如原来可能是 &gt;70，现在只有 2%</p>
+<table>
+<colgroup>
+<col style="width: 47%" />
+<col style="width: 52%" />
+</colgroup>
+<thead>
+<tr>
+<th><strong>prompt</strong></th>
+<th><strong>pred</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Janet’s ducks lay 16 eggs per day. She eats three for breakfast
+every morning and bakes muffins for her friends every day with four. She
+sells the remainder at the farmers' market daily for $2 per fresh duck
+egg. How much in dollars does she make every day at the farmers' market?
+Let's think step by step.</td>
+<td>Each egg is 16 eggs/day for 16 eggs/day for 1600000000 / 16 =
+128000000. So, the total number of eggs is 128000000. The total number
+of eggs is 160000000 - 128000000 = 128000000.The answer is
+128000000.</td>
+</tr>
+<tr>
+<td>A robe takes 2 bolts of blue fiber and half that much white fiber.
+How many bolts in total does it take? Let's think step by step</td>
+<td>The rose is 2 bolts of blue fibers. Half that amount is 2 / 2 = 1.
+So the rose is 2 - 1 = 2 flobs. The answer is 2.</td>
+</tr>
+<tr>
+<td>Josh decides to try flipping a house. He buys a house for $80,000
+and then puts in $50,000 in repairs. This increased the value of the
+house by 150%. How much profit did he make? Let's think step by
+step.</td>
+<td>The house was originally 80,000 dollars. The new house is 80,000 +
+50,000 = 15,000 dollars. The new house is 15,000 dollars. So, the total
+value of the house is 15,000 + 80,000 + 15,000 = 11,000 dollars. The
+total value of the house is 11,000 dollars. The total value of the house
+is 11,000 + 15,000 = 11,000 + 15,000 = 11,000 + 15,000 =</td>
+</tr>
+</tbody>
+</table>
+<h3 id="boolq">boolq</h3>
+<p>而 boolq 相对是一个简单的数据集，输出只需要有 yes or no 即可。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;conversations&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;user&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Passage: Persian (/ˈpɜːrʒən, -ʃən/), also known by its endonym Farsi (فارسی fārsi (fɒːɾˈsiː) ( listen)), is one of the Western Iranian languages within the Indo-Iranian branch of the Indo-European language family. It is primarily spoken in Iran, Afghanistan (officially known as Dari since 1958), and Tajikistan (officially known as Tajiki since the Soviet era), and some other regions which historically were Persianate societies and considered part of Greater Iran. It is written in the Persian alphabet, a modified variant of the Arabic script, which itself evolved from the Aramaic alphabet.\nQuestion: do iran and afghanistan speak the same language\nAnswer:&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;assistant&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Yes&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">]</span></span><br></pre></td></tr></table></figure>
+<p>在该指标上结果就是相对正常的，符合 Meta 论文的结果。</p>
+<ul>
+<li>裁剪前：～84%</li>
+<li>裁剪后：～68%</li>
+<li>裁剪+训练后：～85%</li>
+</ul>
+<p>所以，模型深度或许是加强模型推理能力的关键因素之一？</p>
 
     </div>
 
@@ -585,7 +434,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://wnma3mz.github.io/2024/07/21/LLM%20%E7%A1%AC%E4%BB%B6%E6%AF%94%E4%BB%B7/" title="LLM 不同硬件推理速度对比">https://wnma3mz.github.io/2024/07/21/LLM 硬件比价/</a>
+    <a href="https://wnma3mz.github.io/2024/03/28/LLM/LLM%E6%B7%B1%E5%BA%A6%E7%9A%84%E7%A8%80%E7%96%8F%E6%80%A7/" title="LLM 深度的”稀疏性“">https://wnma3mz.github.io/2024/03/28/LLM/LLM深度的稀疏性/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -598,7 +447,7 @@
           <div class="post-tags">
               <a href="/hexo_blog/tags/NLP/" rel="tag"># NLP</a>
               <a href="/hexo_blog/tags/LLM/" rel="tag"># LLM</a>
-              <a href="/hexo_blog/tags/Raspberry/" rel="tag"># Raspberry</a>
+              <a href="/hexo_blog/tags/knowledge-distillation/" rel="tag"># knowledge distillation</a>
           </div>
 
         
@@ -607,12 +456,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/hexo_blog/2024/06/15/MoE%E4%B8%AD%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1Loss%E5%AE%9E%E7%8E%B0%E5%AF%B9%E6%AF%94/" rel="prev" title="MoE中负载均衡Loss实现">
-      <i class="fa fa-chevron-left"></i> MoE中负载均衡Loss实现
+    <a href="/hexo_blog/2023/12/03/PyTorch/pytorch_cpp_extension/" rel="prev" title="用 Cpp 写 PyTorch 的插件">
+      <i class="fa fa-chevron-left"></i> 用 Cpp 写 PyTorch 的插件
     </a></div>
       <div class="post-nav-item">
-    <a href="/hexo_blog/2024/08/08/Knowledge-Distillation-in-LLM/" rel="next" title="Knowledge Distillation in LLM">
-      Knowledge Distillation in LLM <i class="fa fa-chevron-right"></i>
+    <a href="/hexo_blog/2024/06/15/LLM/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F/" rel="next" title="LLM的推理加速">
+      LLM的推理加速 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -672,6 +521,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E7%9A%84%E5%85%B1%E9%80%9A%E6%80%A7"><span class="nav-text">方法的共通性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#meta-%E8%AE%BA%E6%96%87%E7%BB%93%E6%9E%9C"><span class="nav-text">Meta 论文结果</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8D%E5%90%8C%E6%A8%A1%E5%9E%8B%E5%85%B7%E6%9C%89%E7%9B%B8%E4%BC%BC%E7%9A%84%E8%A1%A8%E7%8E%B0"><span class="nav-text">不同模型具有相似的表现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9A%B4%E5%8A%9B%E8%A3%81%E5%89%AA-vs-%E6%8F%90%E5%87%BA%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-text">暴力裁剪 vs 提出的方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%99%BE%E5%B7%9D%E8%AE%BA%E6%96%87%E7%9A%84%E7%BB%93%E8%AE%BA"><span class="nav-text">百川论文的结论</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%AA%E6%9E%9D%E6%AF%94%E7%8E%87"><span class="nav-text">剪枝比率</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C"><span class="nav-text">实验</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#gsm8k"><span class="nav-text">gsm8k</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#boolq"><span class="nav-text">boolq</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -687,7 +537,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/hexo_blog/archives/">
         
-          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-count">69</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -735,7 +585,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2024</span>
+  <span itemprop="copyrightYear">2025</span>
   <span class="with-love">
     <i class="user"></i>
   </span>
