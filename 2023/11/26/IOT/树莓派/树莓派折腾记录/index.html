@@ -27,15 +27,12 @@
 <meta property="og:site_name" content="Wnma&#39;s Blogs">
 <meta property="og:description" content="使用树莓派的一些记录">
 <meta property="og:locale">
-<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/notion_cal_apple/1701535383410.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/notion_cal_apple/1701535461302.png">
 <meta property="article:published_time" content="2023-11-26T14:39:53.000Z">
 <meta property="article:modified_time" content="2024-06-15T08:01:01.794Z">
 <meta property="article:author" content="wnma3mz">
 <meta property="article:tag" content="Python">
 <meta property="article:tag" content="Linux">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/notion_cal_apple/1701535383410.png">
 
 <link rel="canonical" href="https://wnma3mz.github.io/2023/11/26/IOT/%E6%A0%91%E8%8E%93%E6%B4%BE/%E6%A0%91%E8%8E%93%E6%B4%BE%E6%8A%98%E8%85%BE%E8%AE%B0%E5%BD%95/">
 
@@ -94,7 +91,7 @@
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="Toggle navigation bar">
+    <div class="toggle" aria-label="تشغيل شريط التصفح">
       <span class="toggle-line toggle-line-first"></span>
       <span class="toggle-line toggle-line-middle"></span>
       <span class="toggle-line toggle-line-last"></span>
@@ -233,7 +230,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="Modified：2024-06-15 16:01:01" itemprop="dateModified" datetime="2024-06-15T16:01:01+08:00">2024-06-15</time>
+                <time title="عُدل：2024-06-15 16:01:01" itemprop="dateModified" datetime="2024-06-15T16:01:01+08:00">2024-06-15</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -258,66 +255,105 @@
       
         <p>使用树莓派的一些记录</p>
 <span id="more"></span>
-<h2 id="网络-wifi-问题"><a class="markdownIt-Anchor" href="#网络-wifi-问题"></a> 网络 WiFi 问题</h2>
-<p>使用的 Zero W，没有网口。所以在不使用图形界面的时候，需要在命令行配置网络</p>
+<h2 id="网络-wifi-问题">网络 WiFi 问题</h2>
+<p>使用的 Zero
+W，没有网口。所以在不使用图形界面的时候，需要在命令行配置网络</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/wpa_supplicant/wpa_supplicant.conf</span><br></pre></td></tr></table></figure>
-<p>ssid 是 WiFi 名称，psk 是密码，priority 是优先级，数字越大优先级越高。有些低版本的树莓派，只能连接 2.4G 的 Wifi。</p>
+<p>ssid 是 WiFi 名称，psk 是密码，priority
+是优先级，数字越大优先级越高。有些低版本的树莓派，只能连接 2.4G 的
+Wifi。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">country=US</span><br><span class="line">ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev</span><br><span class="line">update_config=1</span><br><span class="line"></span><br><span class="line">network=&#123;</span><br><span class="line">    ssid=<span class="string">&quot;ABC&quot;</span></span><br><span class="line">    psk=<span class="string">&quot;password&quot;</span></span><br><span class="line">    key_mgmt=WPA-PSK</span><br><span class="line">    priority=9</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>WiFi 重启命令</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ip <span class="built_in">link</span> <span class="built_in">set</span> wlan0 down &amp;&amp; ip <span class="built_in">link</span> <span class="built_in">set</span> wlan up</span><br></pre></td></tr></table></figure>
-<h2 id="fbterm-字体问题"><a class="markdownIt-Anchor" href="#fbterm-字体问题"></a> fbterm 字体问题</h2>
+<p>WiFi 重启命令 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ip <span class="built_in">link</span> <span class="built_in">set</span> wlan0 down &amp;&amp; ip <span class="built_in">link</span> <span class="built_in">set</span> wlan up</span><br></pre></td></tr></table></figure></p>
+<h2 id="fbterm-字体问题">fbterm 字体问题</h2>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.fbtermrc</span><br></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">font-names=mono</span><br><span class="line">font-size=12</span><br></pre></td></tr></table></figure>
-<p><a target="_blank" rel="noopener" href="https://bbs.deepin.org/post/230435">https://bbs.deepin.org/post/230435</a></p>
-<h2 id="获取小米温湿度计的数据"><a class="markdownIt-Anchor" href="#获取小米温湿度计的数据"></a> 获取小米温湿度计的数据</h2>
-<h3 id="需求"><a class="markdownIt-Anchor" href="#需求"></a> 需求</h3>
-<p>小米温湿度计用米家连接速度慢，且获取间隔为 1 小时一次，感觉有点慢，想要手动保存这些数据。</p>
-<p>本来是想使用 HomeAssistant 来完成的，但发现 Python 版本要求 3.8 以上，而树莓派上的 Python 版本是 3.7。且就这一个设备，感觉没必要那么复杂。</p>
-<p>好在已经有成熟的开源项目实现这一功能，<a target="_blank" rel="noopener" href="https://github.com/JsBergbau/MiTemperature2">https://github.com/JsBergbau/MiTemperature2</a>。使用起来也很简单</p>
-<h3 id="准备"><a class="markdownIt-Anchor" href="#准备"></a> 准备</h3>
+<p><a
+target="_blank" rel="noopener" href="https://bbs.deepin.org/post/230435">https://bbs.deepin.org/post/230435</a></p>
+<h2 id="获取小米温湿度计的数据">获取小米温湿度计的数据</h2>
+<h3 id="需求">需求</h3>
+<p>小米温湿度计用米家连接速度慢，且获取间隔为 1
+小时一次，感觉有点慢，想要手动保存这些数据。</p>
+<p>本来是想使用 HomeAssistant 来完成的，但发现 Python 版本要求 3.8
+以上，而树莓派上的 Python 版本是
+3.7。且就这一个设备，感觉没必要那么复杂。</p>
+<p>好在已经有成熟的开源项目实现这一功能，<a
+target="_blank" rel="noopener" href="https://github.com/JsBergbau/MiTemperature2">https://github.com/JsBergbau/MiTemperature2</a>。使用起来也很简单</p>
+<h3 id="准备">准备</h3>
 <p>安装蓝牙驱动</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 可以先输入 bluetoothctl 看看是否可以进入蓝牙交互界面，如果可以则无需安装</span></span><br><span class="line"><span class="built_in">sudo</span> apt update -y &amp;&amp; <span class="built_in">sudo</span> apt upgrade -y </span><br><span class="line"><span class="built_in">sudo</span> apt install bluetooth pi-bluetooth bluez blueman mplayer -y</span><br></pre></td></tr></table></figure>
-<p>python 安装依赖</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install bluepy</span><br></pre></td></tr></table></figure>
-<h3 id="获取设备信息"><a class="markdownIt-Anchor" href="#获取设备信息"></a> 获取设备信息</h3>
+<p>python 安装依赖 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install bluepy</span><br></pre></td></tr></table></figure></p>
+<h3 id="获取设备信息">获取设备信息</h3>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 进入蓝牙交互界面</span></span><br><span class="line">bluetoothctl</span><br><span class="line"></span><br><span class="line"><span class="comment"># 扫描附件的蓝牙设备</span></span><br><span class="line">scan on</span><br></pre></td></tr></table></figure>
-<p>会持续扫描附近蓝牙设备，需要关注一个叫做 LYWSD03MMC 的设备（在设备后面有型号），这个就是小米温湿度计。</p>
+<p>会持续扫描附近蓝牙设备，需要关注一个叫做 LYWSD03MMC
+的设备（在设备后面有型号），这个就是小米温湿度计。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">[NEW] Device AA:BB:CC:DD:EE:FF LYWSD03MMC</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 <p>记录这个设备的 MAC 地址，退出蓝牙交互界面</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">exit</span></span><br></pre></td></tr></table></figure>
-<h3 id="实现"><a class="markdownIt-Anchor" href="#实现"></a> 实现</h3>
+<h3 id="实现">实现</h3>
 <p>原来的代码过于复杂，还涉及一些其他的功能。核心功能是，获取温湿度信息即可。因此，我对代码进行了简化。在外面套一个定时任务即可。</p>
-<p>把 MAC 地址写到下面的脚本中，然后运行脚本，就可以获取到温湿度信息了。</p>
+<p>把 MAC
+地址写到下面的脚本中，然后运行脚本，就可以获取到温湿度信息了。</p>
 <script src="https://gist.github.com/wnma3mz/197a5665734e2449e591892da10cd08f.js"></script>
-<p>每 10 分钟获取一次温湿度信息，保存到 <code>temp.log</code> 文件中。如果每次获取失败次数超过 5 次，则退出程序。</p>
+<p>每 10 分钟获取一次温湿度信息，保存到 <code>temp.log</code>
+文件中。如果每次获取失败次数超过 5 次，则退出程序。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*/10 * * * * <span class="built_in">cd</span> /root/MiTemperature2 &amp;&amp; /usr/bin/python3 mi_temp.py &gt;&gt; /root/MiTemperature2/temp.log</span><br></pre></td></tr></table></figure>
-<p>下面的脚本可以获取树莓派本身的温度信息，保存到 <code>temp.log</code> 文件中。可以进行对比</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="built_in">echo</span> `<span class="built_in">date</span> +<span class="string">&quot;%Y-%m-%d %H:%M&quot;</span>` `vcgencmd measure_temp` &gt;&gt; /home/pi/temp_save/temp.log</span><br></pre></td></tr></table></figure>
+<p>下面的脚本可以获取树莓派本身的温度信息，保存到 <code>temp.log</code>
+文件中。可以进行对比 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="built_in">echo</span> `<span class="built_in">date</span> +<span class="string">&quot;%Y-%m-%d %H:%M&quot;</span>` `vcgencmd measure_temp` &gt;&gt; /home/pi/temp_save/temp.log</span><br></pre></td></tr></table></figure></p>
 <p>参考</p>
-<p>[1] <a target="_blank" rel="noopener" href="https://www.cnblogs.com/blueberry-mint/p/16575252.html">https://www.cnblogs.com/blueberry-mint/p/16575252.html</a></p>
-<p>[2] <a target="_blank" rel="noopener" href="https://github.com/JsBergbau/MiTemperature2">https://github.com/JsBergbau/MiTemperature2</a></p>
-<h2 id="notion-日历和苹果日历联动"><a class="markdownIt-Anchor" href="#notion-日历和苹果日历联动"></a> Notion 日历和苹果日历联动</h2>
-<h3 id="需求描述"><a class="markdownIt-Anchor" href="#需求描述"></a> 需求描述</h3>
-<p>Notion 作为一个强大的笔记软件，吸引笔者使用的点在于跨平台，功能齐全。因此，在将 Notion 作为笔记软件使用的同时，也可以将其作为 TODO 事项管理软件使用。但是，移动端的 Notion 并没有实用的小组件视图。因此，结合之前的文章想到用 ics 文件来管理 Notion 的 TODO 事项。</p>
-<h3 id="数据获取"><a class="markdownIt-Anchor" href="#数据获取"></a> 数据获取</h3>
-<p>Notion 支持以 API 的方式获取 Page 的信息，尤其是当 Page 中主要以表格形式展示时，甚至可以用一系列过滤条件。首先，需要创建一个工具，以能够用 API 的方式获取 Notion 中的 Page 信息。<a target="_blank" rel="noopener" href="https://www.notion.so/my-integrations%EF%BC%8C%E5%88%9B%E5%BB%BA%E8%BF%87%E7%A8%8B%E5%BE%88%E7%AE%80%E5%8D%95%EF%BC%8C%E4%B8%BB%E8%A6%81%E4%BF%9D%E5%AD%98%E4%B8%8B">https://www.notion.so/my-integrations，创建过程很简单，主要保存下</a> Secrets 即可。</p>
-<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/notion_cal_apple/1701535383410.png" alt="" /></p>
-<p>创建完成后，就可以在 Notion 的 Page 中 Add connections，如下图所示，可以把刚刚创建的工具，添加进来。比如这里是 123。</p>
-<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/notion_cal_apple/1701535461302.png" alt="" /></p>
-<p>同时，保存 Page 页面的 url，比如 <a target="_blank" rel="noopener" href="https://www.notion.so/AAA%EF%BC%8C%E8%AE%BF%E9%97%AE%E9%A1%B5%E9%9D%A2%E6%97%B6%E7%9A%84">https://www.notion.so/AAA，访问页面时的</a> url，AAA 就是 dataset_id。至此，有两个信息，一个是 Secrets，一个是 dataset_id。将其粘贴至下面的 Python 代码中。</p>
+<p>[1] <a
+target="_blank" rel="noopener" href="https://www.cnblogs.com/blueberry-mint/p/16575252.html">https://www.cnblogs.com/blueberry-mint/p/16575252.html</a></p>
+<p>[2] <a
+target="_blank" rel="noopener" href="https://github.com/JsBergbau/MiTemperature2">https://github.com/JsBergbau/MiTemperature2</a></p>
+<h2 id="notion-日历和苹果日历联动">Notion 日历和苹果日历联动</h2>
+<h3 id="需求描述">需求描述</h3>
+<p>Notion
+作为一个强大的笔记软件，吸引笔者使用的点在于跨平台，功能齐全。因此，在将
+Notion 作为笔记软件使用的同时，也可以将其作为 TODO
+事项管理软件使用。但是，移动端的 Notion
+并没有实用的小组件视图。因此，结合之前的文章想到用 ics 文件来管理 Notion
+的 TODO 事项。</p>
+<h3 id="数据获取">数据获取</h3>
+<p>Notion 支持以 API 的方式获取 Page 的信息，尤其是当 Page
+中主要以表格形式展示时，甚至可以用一系列过滤条件。首先，需要创建一个工具，以能够用
+API 的方式获取 Notion 中的 Page
+信息。https://www.notion.so/my-integrations，创建过程很简单，主要保存下
+Secrets 即可。</p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/notion_cal_apple/1701535383410.png" /></p>
+<p>创建完成后，就可以在 Notion 的 Page 中 Add
+connections，如下图所示，可以把刚刚创建的工具，添加进来。比如这里是
+123。</p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/notion_cal_apple/1701535461302.png" /></p>
+<p>同时，保存 Page 页面的 url，比如
+https://www.notion.so/AAA，访问页面时的 url，AAA 就是
+dataset_id。至此，有两个信息，一个是 Secrets，一个是
+dataset_id。将其粘贴至下面的 Python 代码中。</p>
 <p>Python 的示例代码如下：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> datetime <span class="keyword">import</span> datetime, timedelta, timezone</span><br><span class="line"></span><br><span class="line">key = ...</span><br><span class="line">dataset_id = ...</span><br><span class="line">url = <span class="string">f&quot;https://api.notion.com/v1/databases/<span class="subst">&#123;dataset_id&#125;</span>/query&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">today = datetime(datetime.now().year, datetime.now().month, datetime.now().day)</span><br><span class="line">yesterday = today - timedelta(days=<span class="number">1</span>)  <span class="comment"># 计算前一天的时间</span></span><br><span class="line"></span><br><span class="line">payload = &#123;</span><br><span class="line">    <span class="string">&quot;page_size&quot;</span>: <span class="number">100</span>,</span><br><span class="line">    <span class="string">&quot;filter&quot;</span>: &#123;&#125;, <span class="comment"># 增加一系列过滤条件，也可以事后用 Python 再过滤</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">headers = &#123;</span><br><span class="line">    <span class="string">&quot;accept&quot;</span>: <span class="string">&quot;application/json&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Notion-Version&quot;</span>: <span class="string">&quot;2022-06-28&quot;</span>,</span><br><span class="line">    <span class="string">&quot;content-type&quot;</span>: <span class="string">&quot;application/json&quot;</span>,</span><br><span class="line">    <span class="string">&quot;Authorization&quot;</span>: <span class="string">f&quot;Bearer <span class="subst">&#123;key&#125;</span>&quot;</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    response = requests.post(url, headers=headers, json=payload)</span><br><span class="line">    data_lst = response.json()[<span class="string">&quot;results&quot;</span>]</span><br></pre></td></tr></table></figure>
 <p>至此，Page 上的信息已经存到了 data_lst 中。</p>
-<h3 id="ics-文件生成"><a class="markdownIt-Anchor" href="#ics-文件生成"></a> ics 文件生成</h3>
-<p>接下来，就是生成 ics 文件的生成。ics 文件的格式需要日程标题 <code>summary</code>、日程描述 <code>description</code>（可为空）、开始时间 <code>dtstart</code>、结束时间 <code>dtend</code>。</p>
+<h3 id="ics-文件生成">ics 文件生成</h3>
+<p>接下来，就是生成 ics 文件的生成。ics 文件的格式需要日程标题
+<code>summary</code>、日程描述
+<code>description</code>（可为空）、开始时间
+<code>dtstart</code>、结束时间 <code>dtend</code>。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> datetime <span class="keyword">import</span> datetime, timedelta, timezone</span><br><span class="line"><span class="keyword">from</span> icalendar <span class="keyword">import</span> Calendar, Event</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    cal = Calendar()</span><br><span class="line">    cal[<span class="string">&quot;version&quot;</span>] = <span class="string">&quot;2.0&quot;</span></span><br><span class="line">    cal[<span class="string">&quot;prodid&quot;</span>] = <span class="string">&quot;-//ABC ICS//ZH&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> item <span class="keyword">in</span> data_lst:</span><br><span class="line">        <span class="comment"># 处理每条信息，将其转换为如下信息</span></span><br><span class="line">        summary = ...</span><br><span class="line">        description = ...</span><br><span class="line">        dtstart = ...</span><br><span class="line">        dtend = ...</span><br><span class="line"></span><br><span class="line">        event = Event()</span><br><span class="line">        event.add(<span class="string">&quot;summary&quot;</span>, summary)</span><br><span class="line">        event.add(<span class="string">&quot;description&quot;</span>, description)</span><br><span class="line">        event.add(<span class="string">&quot;dtstart&quot;</span>, dtstart)</span><br><span class="line">        event.add(<span class="string">&quot;dtend&quot;</span>, dtend)</span><br><span class="line">        cal.add_component(event)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;my.ics&quot;</span>, <span class="string">&quot;wb&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        f.write(cal.to_ical())</span><br></pre></td></tr></table></figure>
-<h3 id="ics-部署"><a class="markdownIt-Anchor" href="#ics-部署"></a> ics 部署</h3>
-<p>将生成的 ics 文件部署到服务器上，以便于服务器定期更新日程信息。同时，苹果可以订阅该 ics，以更新日程信息。</p>
-<p>对于 tailscale 这一点而言，非常简单，只需要在服务器上运行如下命令即可。否则，需要使用域名 + nginx + https，这样才能将 ics 文件暴露出去，且苹果只接受 https 的 ics 文件。</p>
+<h3 id="ics-部署">ics 部署</h3>
+<p>将生成的 ics
+文件部署到服务器上，以便于服务器定期更新日程信息。同时，苹果可以订阅该
+ics，以更新日程信息。</p>
+<p>对于 tailscale
+这一点而言，非常简单，只需要在服务器上运行如下命令即可。否则，需要使用域名
++ nginx + https，这样才能将 ics 文件暴露出去，且苹果只接受 https 的 ics
+文件。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tailscale funnel --<span class="built_in">bg</span> https+insecure://localhost --set-path /ics /data/my.ics</span><br></pre></td></tr></table></figure>
-<p>另外，需要在服务器上，设置一个定时任务，定时运行上面的 python 脚本，以更新 notion 上的日程信息至 ics，最后苹果手机再接收到 ics 文件对日历进行更新。</p>
+<p>另外，需要在服务器上，设置一个定时任务，定时运行上面的 python
+脚本，以更新 notion 上的日程信息至 ics，最后苹果手机再接收到 ics
+文件对日历进行更新。</p>
 <p>苹果手机的订阅步骤如下：</p>
-<p>设置 -&gt; 日历 -&gt; 账户 -&gt; 添加账户 -&gt; 其他 -&gt; 添加已订阅的日历 -&gt; 输入 ics 文件的 url 即可（比如这里应该是 <a target="_blank" rel="noopener" href="https://A/ics%EF%BC%89%E3%80%82%E8%BF%99%E6%A0%B7%E5%B0%B1%E5%AE%8C%E6%88%90%E4%BA%86%E6%89%80%E6%9C%89%E7%9A%84%E8%AE%BE%E7%BD%AE">https://A/ics）。这样就完成了所有的设置</a></p>
+<p>设置 -&gt; 日历 -&gt; 账户 -&gt; 添加账户 -&gt; 其他 -&gt;
+添加已订阅的日历 -&gt; 输入 ics 文件的 url 即可（比如这里应该是
+https://A/ics）。这样就完成了所有的设置</p>
 
     </div>
 
@@ -419,7 +455,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C-wifi-%E9%97%AE%E9%A2%98"><span class="nav-text"> 网络 WiFi 问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fbterm-%E5%AD%97%E4%BD%93%E9%97%AE%E9%A2%98"><span class="nav-text"> fbterm 字体问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%B0%8F%E7%B1%B3%E6%B8%A9%E6%B9%BF%E5%BA%A6%E8%AE%A1%E7%9A%84%E6%95%B0%E6%8D%AE"><span class="nav-text"> 获取小米温湿度计的数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9C%80%E6%B1%82"><span class="nav-text"> 需求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%86%E5%A4%87"><span class="nav-text"> 准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E8%AE%BE%E5%A4%87%E4%BF%A1%E6%81%AF"><span class="nav-text"> 获取设备信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0"><span class="nav-text"> 实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#notion-%E6%97%A5%E5%8E%86%E5%92%8C%E8%8B%B9%E6%9E%9C%E6%97%A5%E5%8E%86%E8%81%94%E5%8A%A8"><span class="nav-text"> Notion 日历和苹果日历联动</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9C%80%E6%B1%82%E6%8F%8F%E8%BF%B0"><span class="nav-text"> 需求描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E8%8E%B7%E5%8F%96"><span class="nav-text"> 数据获取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ics-%E6%96%87%E4%BB%B6%E7%94%9F%E6%88%90"><span class="nav-text"> ics 文件生成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ics-%E9%83%A8%E7%BD%B2"><span class="nav-text"> ics 部署</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C-wifi-%E9%97%AE%E9%A2%98"><span class="nav-text">网络 WiFi 问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fbterm-%E5%AD%97%E4%BD%93%E9%97%AE%E9%A2%98"><span class="nav-text">fbterm 字体问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%B0%8F%E7%B1%B3%E6%B8%A9%E6%B9%BF%E5%BA%A6%E8%AE%A1%E7%9A%84%E6%95%B0%E6%8D%AE"><span class="nav-text">获取小米温湿度计的数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9C%80%E6%B1%82"><span class="nav-text">需求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%86%E5%A4%87"><span class="nav-text">准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E8%AE%BE%E5%A4%87%E4%BF%A1%E6%81%AF"><span class="nav-text">获取设备信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0"><span class="nav-text">实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#notion-%E6%97%A5%E5%8E%86%E5%92%8C%E8%8B%B9%E6%9E%9C%E6%97%A5%E5%8E%86%E8%81%94%E5%8A%A8"><span class="nav-text">Notion 日历和苹果日历联动</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9C%80%E6%B1%82%E6%8F%8F%E8%BF%B0"><span class="nav-text">需求描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E8%8E%B7%E5%8F%96"><span class="nav-text">数据获取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ics-%E6%96%87%E4%BB%B6%E7%94%9F%E6%88%90"><span class="nav-text">ics 文件生成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ics-%E9%83%A8%E7%BD%B2"><span class="nav-text">ics 部署</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -435,7 +471,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/hexo_blog/archives/">
         
-          <span class="site-state-item-count">74</span>
+          <span class="site-state-item-count">75</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -448,7 +484,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/hexo_blog/tags/">
           
-        <span class="site-state-item-count">89</span>
+        <span class="site-state-item-count">91</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
