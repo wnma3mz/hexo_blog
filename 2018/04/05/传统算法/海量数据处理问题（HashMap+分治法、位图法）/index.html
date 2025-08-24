@@ -91,7 +91,7 @@
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="Navigationsleiste an/ausschalten">
+    <div class="toggle" aria-label="تشغيل شريط التصفح">
       <span class="toggle-line toggle-line-first"></span>
       <span class="toggle-line toggle-line-middle"></span>
       <span class="toggle-line toggle-line-last"></span>
@@ -230,7 +230,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="Geändert am：2024-06-15 16:01:01" itemprop="dateModified" datetime="2024-06-15T16:01:01+08:00">2024-06-15</time>
+                <time title="عُدل：2024-06-15 16:01:01" itemprop="dateModified" datetime="2024-06-15T16:01:01+08:00">2024-06-15</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -255,58 +255,42 @@
       
         <p>从海量数据中找出不重复的数和出现次数最多的数的解决方案，分别采用了分治法+HashMap和位图法Bitmap两种方法。其中，位图法在大数据量下处理速度更快，内存占用更小。而对于其他类似问题，可以尝试使用分治法加最小堆/最大堆的方式处理。</p>
 <span id="more"></span>
-<p>原文链接：<a
-target="_blank" rel="noopener" href="https://juejin.im/post/5aa0ee9f518825557c010bc0">经典面试问题: Top
-K 之 ---- 海量数据找出现次数最多或，不重复的。</a></p>
+<p>原文链接：<a target="_blank" rel="noopener" href="https://juejin.im/post/5aa0ee9f518825557c010bc0">经典面试问题: Top K 之 ---- 海量数据找出现次数最多或，不重复的。</a></p>
 <p>在数据处理中，较为棘手的有这么一种问题，海量数据如何进行处理。一旦数据的数量足够大，我们就不能使用常规的思路来解决。典型例子就是排序算法，在数据不大（不超过内存）的情况下，可以直接使用排序算法，但是当数据量很大时，我们就需要使用如多路归并此类的算法。</p>
 <p>总结问题：</p>
-<ol type="1">
+<ol>
 <li>内存一次性不能放下所有的数</li>
 <li>机器CPU核数不够</li>
 <li>……</li>
 </ol>
-<h2 id="不重复数">不重复数</h2>
+<h2 id="不重复数"><a class="markdownIt-Anchor" href="#不重复数"></a> 不重复数</h2>
 <p>在2.5亿个正整数中找出不重复的数。</p>
-<h3 id="分治法hashmap">分治法+HashMap</h3>
-<h4 id="说明">说明</h4>
-<p>比如将这些数据平均分为100个批次，每个批次就有250万数。每个批次用循环进行遍历，存入
-<code>HashMap&lt;a, b&gt;</code>，<code>a</code>表示每个数，<code>b</code>表示对应数出现次数，默认为1。每遍历完一批，就对当前
-<code>HashMap</code>进行去重，如果
-<code>b &gt; 1</code>，就排除此数。全部批次进行完筛选之后，剩下的数最后可以直接进行统计，得出不重复的数。</p>
-<h4 id="双间复杂度">双间复杂度</h4>
-<p>时间复杂度：250W * 100轮 + 其他批次。
-这里可以使用多核机器加速运算。</p>
-<p>空间复杂度：int保存数，<code>Key + Value（250W * 4Byte）/ (1024 * 1024)</code>约为
-<code>(Key + 9.5M)</code>内存</p>
-<h3 id="位图法-bitmap">位图法 Bitmap</h3>
-<h4 id="说明-1">说明</h4>
-<p>设计每两个
-<code>bit</code>位，标识一个数的出现情况。如：00表示没有出现，01表示出现一次，10表述出现多次。此题给出的是正整数，所以就是无符号的整型数，占四个字节。</p>
-<p>内存的计算。1B=8b, 4B=32b, 它可以表示的最大整数是<span
-class="math inline">\(2^{32}-1\)</span>, 即需要$2^{32}-1 $约位<span
-class="math inline">\(2^{32}\)</span>个<strong>位</strong>来表示这2.5亿个数，每个状态是两个数，总共就是<span
-class="math inline">\(2^{32}\times 2\)</span>个位。</p>
-<p>一次性申请的位图内存是: $2^{32} $ bit, 即<span
-class="math inline">\(\frac{2^{32}\times2}{(1024\times1024 \times
-8)}=1\)</span> GB。如果加上分治法，甚至都不需要1G内存。</p>
-<p>假设一个数是64, 则对应的bit位是 <span class="math inline">\(64\times
-2=128\)</span>，即127和128共同标识这个数的出现状态（没有出现、出现一次、出现多次）。所以，每当读入了一个数，先找对应的bit位，如果是00就改为01，如果是01就改为10，如果是10就不需要修改。最后扫描整个位图，如果是10，就将下标/2得出出现次数为1的这个数。</p>
-<h2 id="出现次数最多的">出现次数最多的</h2>
-<ol type="1">
+<h3 id="分治法hashmap"><a class="markdownIt-Anchor" href="#分治法hashmap"></a> 分治法+HashMap</h3>
+<h4 id="说明"><a class="markdownIt-Anchor" href="#说明"></a> 说明</h4>
+<p>比如将这些数据平均分为100个批次，每个批次就有250万数。每个批次用循环进行遍历，存入 <code>HashMap&lt;a, b&gt;</code>，<code>a</code>表示每个数，<code>b</code>表示对应数出现次数，默认为1。每遍历完一批，就对当前 <code>HashMap</code>进行去重，如果 <code>b &gt; 1</code>，就排除此数。全部批次进行完筛选之后，剩下的数最后可以直接进行统计，得出不重复的数。</p>
+<h4 id="双间复杂度"><a class="markdownIt-Anchor" href="#双间复杂度"></a> 双间复杂度</h4>
+<p>时间复杂度：250W * 100轮 + 其他批次。 这里可以使用多核机器加速运算。</p>
+<p>空间复杂度：int保存数，<code>Key + Value（250W * 4Byte）/ (1024 * 1024)</code>约为 <code>(Key + 9.5M)</code>内存</p>
+<h3 id="位图法-bitmap"><a class="markdownIt-Anchor" href="#位图法-bitmap"></a> 位图法 Bitmap</h3>
+<h4 id="说明-2"><a class="markdownIt-Anchor" href="#说明-2"></a> 说明</h4>
+<p>设计每两个 <code>bit</code>位，标识一个数的出现情况。如：00表示没有出现，01表示出现一次，10表述出现多次。此题给出的是正整数，所以就是无符号的整型数，占四个字节。</p>
+<p>内存的计算。1B=8b, 4B=32b, 它可以表示的最大整数是<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mn>2</mn><mn>32</mn></msup><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">2^{32}-1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.897438em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">3</span><span class="mord mtight">2</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span>, 即需要$2^{32}-1 $约位<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mn>2</mn><mn>32</mn></msup></mrow><annotation encoding="application/x-tex">2^{32}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">3</span><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span></span>个<strong>位</strong>来表示这2.5亿个数，每个状态是两个数，总共就是<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mn>2</mn><mn>32</mn></msup><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2^{32}\times 2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.897438em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">3</span><span class="mord mtight">2</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">2</span></span></span></span>个位。</p>
+<p>一次性申请的位图内存是: $2^{32}\times 2 $ bit, 即<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><msup><mn>2</mn><mn>32</mn></msup><mo>×</mo><mn>2</mn></mrow><mrow><mo stretchy="false">(</mo><mn>1024</mn><mo>×</mo><mn>1024</mn><mo>×</mo><mn>8</mn><mo stretchy="false">)</mo></mrow></mfrac><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\frac{2^{32}\times2}{(1024\times1024 \times 8)}=1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.53792em;vertical-align:-0.52em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.01792em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mopen mtight">(</span><span class="mord mtight">1</span><span class="mord mtight">0</span><span class="mord mtight">2</span><span class="mord mtight">4</span><span class="mbin mtight">×</span><span class="mord mtight">1</span><span class="mord mtight">0</span><span class="mord mtight">2</span><span class="mord mtight">4</span><span class="mbin mtight">×</span><span class="mord mtight">8</span><span class="mclose mtight">)</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mtight">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8913142857142857em;"><span style="top:-2.931em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mtight">3</span><span class="mord mtight">2</span></span></span></span></span></span></span></span></span><span class="mbin mtight">×</span><span class="mord mtight">2</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.52em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span> GB。如果加上分治法，甚至都不需要1G内存。</p>
+<p>假设一个数是64, 则对应的bit位是 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>64</mn><mo>×</mo><mn>2</mn><mo>=</mo><mn>128</mn></mrow><annotation encoding="application/x-tex">64\times 2=128</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">6</span><span class="mord">4</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span><span class="mord">2</span><span class="mord">8</span></span></span></span>，即127和128共同标识这个数的出现状态（没有出现、出现一次、出现多次）。所以，每当读入了一个数，先找对应的bit位，如果是00就改为01，如果是01就改为10，如果是10就不需要修改。最后扫描整个位图，如果是10，就将下标/2得出出现次数为1的这个数。</p>
+<h2 id="出现次数最多的"><a class="markdownIt-Anchor" href="#出现次数最多的"></a> 出现次数最多的</h2>
+<ol>
 <li>找出一篇文章中，出现次数最多的单词</li>
 <li>10亿个正整数找出重复次数最多的100个整数</li>
 </ol>
 <p>这类问题被叫做Top K问题</p>
-<h3 id="分治法hashmap-1">分治法+HashMap</h3>
+<h3 id="分治法hashmap-2"><a class="markdownIt-Anchor" href="#分治法hashmap-2"></a> 分治法+HashMap</h3>
 <p>对于文章来说，我们需要规定每批次的字数限制。这里假设100为一批的处理极限，每次处理100个，如果最后一批少于100个就直接当作100来处理。之后每批文字进行切分(<code>split</code>)，比如英文的切割方法可以是空格、标点符号什么的，中文的切割方式可以是空格或者有预先准备好的词库。</p>
-<p>之后就跟上面不重复数字的思路类似了，遍历每批数据，存入
-<code>HashMap&lt;String, Integer&gt;</code>，String表示字符串，Integer对应出现的次数，最大的Integer就是出现次数最多的。</p>
-<p>对数字来说，就是跟不重复数字思路类似，将十亿个数分乘很多份，利用
-<code>HashMap&lt;int, int&gt;</code>来统计，最后找到第二个int最大的那个。每批筛选完之后，就进行排序，选出十亿个数中最大的。</p>
-<h3 id="位图法-bitmap-1">位图法 Bitmap</h3>
+<p>之后就跟上面不重复数字的思路类似了，遍历每批数据，存入 <code>HashMap&lt;String, Integer&gt;</code>，String表示字符串，Integer对应出现的次数，最大的Integer就是出现次数最多的。</p>
+<p>对数字来说，就是跟不重复数字思路类似，将十亿个数分乘很多份，利用 <code>HashMap&lt;int, int&gt;</code>来统计，最后找到第二个int最大的那个。每批筛选完之后，就进行排序，选出十亿个数中最大的。</p>
+<h3 id="位图法-bitmap-2"><a class="markdownIt-Anchor" href="#位图法-bitmap-2"></a> 位图法 Bitmap</h3>
 <p>对于文章（字符串）来说，不建议采用</p>
 <p>对于数字来说，此题的背景不需要乘2，将每个数存进位图。出现了一次，bit位=1，没有出现就是0。但是没有办法统计出现次数，所以此题也不适合采用位图法。</p>
-<h2 id="其他">其他</h2>
+<h2 id="其他"><a class="markdownIt-Anchor" href="#其他"></a> 其他</h2>
 <p>在XXX中找出最大、最小、最大的几个、最小的几个。都可以使用分治法+最小堆/最大堆。</p>
 
     </div>
@@ -409,7 +393,7 @@ class="math inline">\(\frac{2^{32}\times2}{(1024\times1024 \times
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8D%E9%87%8D%E5%A4%8D%E6%95%B0"><span class="nav-text">不重复数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%B2%BB%E6%B3%95hashmap"><span class="nav-text">分治法+HashMap</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%B4%E6%98%8E"><span class="nav-text">说明</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%8C%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6"><span class="nav-text">双间复杂度</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%8D%E5%9B%BE%E6%B3%95-bitmap"><span class="nav-text">位图法 Bitmap</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%B4%E6%98%8E-1"><span class="nav-text">说明</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BA%E7%8E%B0%E6%AC%A1%E6%95%B0%E6%9C%80%E5%A4%9A%E7%9A%84"><span class="nav-text">出现次数最多的</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%B2%BB%E6%B3%95hashmap-1"><span class="nav-text">分治法+HashMap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%8D%E5%9B%BE%E6%B3%95-bitmap-1"><span class="nav-text">位图法 Bitmap</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96"><span class="nav-text">其他</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8D%E9%87%8D%E5%A4%8D%E6%95%B0"><span class="nav-text"> 不重复数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%B2%BB%E6%B3%95hashmap"><span class="nav-text"> 分治法+HashMap</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%B4%E6%98%8E"><span class="nav-text"> 说明</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%8C%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6"><span class="nav-text"> 双间复杂度</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%8D%E5%9B%BE%E6%B3%95-bitmap"><span class="nav-text"> 位图法 Bitmap</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%B4%E6%98%8E-2"><span class="nav-text"> 说明</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BA%E7%8E%B0%E6%AC%A1%E6%95%B0%E6%9C%80%E5%A4%9A%E7%9A%84"><span class="nav-text"> 出现次数最多的</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%B2%BB%E6%B3%95hashmap-2"><span class="nav-text"> 分治法+HashMap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%8D%E5%9B%BE%E6%B3%95-bitmap-2"><span class="nav-text"> 位图法 Bitmap</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96"><span class="nav-text"> 其他</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -425,7 +409,7 @@ class="math inline">\(\frac{2^{32}\times2}{(1024\times1024 \times
       <div class="site-state-item site-state-posts">
           <a href="/hexo_blog/archives/">
         
-          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-count">74</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

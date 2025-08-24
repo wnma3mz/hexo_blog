@@ -90,7 +90,7 @@
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="Navigationsleiste an/ausschalten">
+    <div class="toggle" aria-label="تشغيل شريط التصفح">
       <span class="toggle-line toggle-line-first"></span>
       <span class="toggle-line toggle-line-middle"></span>
       <span class="toggle-line toggle-line-last"></span>
@@ -229,7 +229,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="Geändert am：2024-06-15 16:01:01" itemprop="dateModified" datetime="2024-06-15T16:01:01+08:00">2024-06-15</time>
+                <time title="عُدل：2024-06-15 16:01:01" itemprop="dateModified" datetime="2024-06-15T16:01:01+08:00">2024-06-15</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -255,7 +255,7 @@
         <p>Python3的Tools-scripts整理</p>
 <span id="more"></span>
 <p>文件路径为<code>Anaconda3\Tools\scripts</code></p>
-<h3 id="byext.py">byext.py</h3>
+<h3 id="byextpy"><a class="markdownIt-Anchor" href="#byextpy"></a> <a target="_blank" rel="noopener" href="http://byext.py">byext.py</a></h3>
 <p>分析文件/文件夹</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># py文件</span></span><br><span class="line">ext  <span class="built_in">bytes</span>  files  lines  words</span><br><span class="line">.py   <span class="number">2655</span>      <span class="number">1</span>     <span class="number">91</span>    <span class="number">265</span></span><br><span class="line">TOTAL   <span class="number">2655</span>      <span class="number">1</span>     <span class="number">91</span>    <span class="number">265</span></span><br><span class="line">ext  <span class="built_in">bytes</span>  files  lines  words</span><br><span class="line"></span><br><span class="line"><span class="comment"># 二进制文件</span></span><br><span class="line">   ext binary  <span class="built_in">bytes</span>  files</span><br><span class="line">&lt;none&gt;      <span class="number">1</span>  <span class="number">10382</span>      <span class="number">1</span></span><br><span class="line"> TOTAL      <span class="number">1</span>  <span class="number">10382</span>      <span class="number">1</span></span><br><span class="line">   ext binary  <span class="built_in">bytes</span>  files</span><br><span class="line"></span><br><span class="line"><span class="comment"># 文件夹</span></span><br><span class="line">  ext binary  <span class="built_in">bytes</span>   dirs  files  lines  words</span><br><span class="line"> .png      <span class="number">2</span>   <span class="number">2823</span>             <span class="number">2</span></span><br><span class="line">  .py         <span class="number">10471</span>             <span class="number">5</span>    <span class="number">224</span>    <span class="number">647</span></span><br><span class="line"> .txt         <span class="number">17404</span>             <span class="number">3</span>    <span class="number">554</span>    <span class="number">960</span></span><br><span class="line">&lt;<span class="built_in">dir</span>&gt;                    <span class="number">1</span></span><br><span class="line">TOTAL      <span class="number">2</span>  <span class="number">30698</span>      <span class="number">1</span>     <span class="number">10</span>    <span class="number">778</span>   <span class="number">1607</span></span><br><span class="line">  ext binary  <span class="built_in">bytes</span>   dirs  files  lines  words</span><br></pre></td></tr></table></figure>
 <table>
@@ -300,28 +300,28 @@
 </tr>
 </tbody>
 </table>
-<h3 id="checkpip.py">checkpip.py</h3>
+<h3 id="checkpippy"><a class="markdownIt-Anchor" href="#checkpippy"></a> <a target="_blank" rel="noopener" href="http://checkpip.py">checkpip.py</a></h3>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">The latest version of setuptools on PyPI <span class="keyword">is</span> <span class="number">46.2</span><span class="number">.0</span>, but ensurepip has <span class="number">40.8</span><span class="number">.0</span></span><br><span class="line">The latest version of pip on PyPI <span class="keyword">is</span> <span class="number">20.1</span>, but ensurepip has <span class="number">19.0</span><span class="number">.3</span></span><br></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 主要是检查版本</span></span><br><span class="line"><span class="keyword">import</span> ensurepip</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(ensurepip._PROJECTS)</span><br><span class="line"><span class="comment"># [(&#x27;setuptools&#x27;, &#x27;40.8.0&#x27;), (&#x27;pip&#x27;, &#x27;19.0.3&#x27;)]</span></span><br></pre></td></tr></table></figure>
-<h3 id="checkpyc.py">checkpyc.py</h3>
+<h3 id="checkpycpy"><a class="markdownIt-Anchor" href="#checkpycpy"></a> <a target="_blank" rel="noopener" href="http://checkpyc.py">checkpyc.py</a></h3>
 <p>检查pyc文件是否最新</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> importlib.util</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(importlib.util.MAGIC_NUMBER)</span><br><span class="line"><span class="comment"># b&#x27;B\r\r\n&#x27;</span></span><br></pre></td></tr></table></figure>
-<h3 id="cleanfuture.py">cleanfuture.py</h3>
+<h3 id="cleanfuturepy"><a class="markdownIt-Anchor" href="#cleanfuturepy"></a> <a target="_blank" rel="noopener" href="http://cleanfuture.py">cleanfuture.py</a></h3>
 <p>修改py文件的future语法</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">errprint</span>(<span class="params">*args</span>):</span><br><span class="line">    strings = <span class="built_in">map</span>(<span class="built_in">str</span>, args)</span><br><span class="line">    msg = <span class="string">&#x27; &#x27;</span>.join(strings)</span><br><span class="line">    <span class="keyword">if</span> msg[-<span class="number">1</span>:] != <span class="string">&#x27;\n&#x27;</span>:</span><br><span class="line">        msg += <span class="string">&#x27;\n&#x27;</span></span><br><span class="line">    sys.stderr.write(msg)</span><br><span class="line">    </span><br><span class="line">errprint(<span class="string">&quot;Usage:&quot;</span>, __doc__)</span><br></pre></td></tr></table></figure>
-<h3 id="crlf.py">crlf.py</h3>
+<h3 id="crlfpy"><a class="markdownIt-Anchor" href="#crlfpy"></a> <a target="_blank" rel="noopener" href="http://crlf.py">crlf.py</a></h3>
 <p>文件中CRLF用LF替换</p>
-<h3 id="lfcr.py">lfcr.py</h3>
+<h3 id="lfcrpy"><a class="markdownIt-Anchor" href="#lfcrpy"></a> <a target="_blank" rel="noopener" href="http://lfcr.py">lfcr.py</a></h3>
 <p>文件中LF用CRLF替换</p>
 <p>迭代：<code>itertools.count()</code></p>
-<h3 id="reindent.py">reindent.py</h3>
+<h3 id="reindentpy"><a class="markdownIt-Anchor" href="#reindentpy"></a> <a target="_blank" rel="noopener" href="http://reindent.py">reindent.py</a></h3>
 <p>py文件改为4空格缩进</p>
-<h3 id="untabify.py">untabify.py</h3>
+<h3 id="untabifypy"><a class="markdownIt-Anchor" href="#untabifypy"></a> <a target="_blank" rel="noopener" href="http://untabify.py">untabify.py</a></h3>
 <p>同上</p>
-<h3 id="texi2html.py">texi2html.py</h3>
+<h3 id="texi2htmlpy"><a class="markdownIt-Anchor" href="#texi2htmlpy"></a> <a target="_blank" rel="noopener" href="http://texi2html.py">texi2html.py</a></h3>
 <p>texi to html</p>
 <p><code>import keyword</code></p>
-<p><code>import webbrowser</code></p>
+<p><code>import webbrowser </code></p>
 
     </div>
 
@@ -422,7 +422,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#byext.py"><span class="nav-text">byext.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#checkpip.py"><span class="nav-text">checkpip.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#checkpyc.py"><span class="nav-text">checkpyc.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cleanfuture.py"><span class="nav-text">cleanfuture.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#crlf.py"><span class="nav-text">crlf.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lfcr.py"><span class="nav-text">lfcr.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#reindent.py"><span class="nav-text">reindent.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#untabify.py"><span class="nav-text">untabify.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#texi2html.py"><span class="nav-text">texi2html.py</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#byextpy"><span class="nav-text"> byext.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#checkpippy"><span class="nav-text"> checkpip.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#checkpycpy"><span class="nav-text"> checkpyc.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cleanfuturepy"><span class="nav-text"> cleanfuture.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#crlfpy"><span class="nav-text"> crlf.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lfcrpy"><span class="nav-text"> lfcr.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#reindentpy"><span class="nav-text"> reindent.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#untabifypy"><span class="nav-text"> untabify.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#texi2htmlpy"><span class="nav-text"> texi2html.py</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -438,7 +438,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/hexo_blog/archives/">
         
-          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-count">74</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

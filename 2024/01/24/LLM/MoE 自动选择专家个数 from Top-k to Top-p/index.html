@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/hexo_blog/css/main.css">
+
+
+<link rel="stylesheet" href="/hexo_blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wnma3mz.github.io","root":"/hexo_blog/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="MoE 自动选择专家个数">
+<meta property="og:type" content="article">
+<meta property="og:title" content="VLM的识别图片能力">
+<meta property="og:url" content="https://wnma3mz.github.io/2024/01/24/LLM/MoE%20%E8%87%AA%E5%8A%A8%E9%80%89%E6%8B%A9%E4%B8%93%E5%AE%B6%E4%B8%AA%E6%95%B0%20from%20Top-k%20to%20Top-p/index.html">
+<meta property="og:site_name" content="Wnma&#39;s Blogs">
+<meta property="og:description" content="MoE 自动选择专家个数">
+<meta property="og:locale">
+<meta property="article:published_time" content="2024-01-24T08:41:53.000Z">
+<meta property="article:modified_time" content="2025-08-24T08:37:21.904Z">
+<meta property="article:author" content="wnma3mz">
+<meta property="article:tag" content="NLP">
+<meta property="article:tag" content="MoE">
+<meta property="article:tag" content="Attention">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://wnma3mz.github.io/2024/01/24/LLM/MoE%20%E8%87%AA%E5%8A%A8%E9%80%89%E6%8B%A9%E4%B8%93%E5%AE%B6%E4%B8%AA%E6%95%B0%20from%20Top-k%20to%20Top-p/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>VLM的识别图片能力 | Wnma's Blogs</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="تشغيل شريط التصفح">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hexo_blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Wnma's Blogs</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/hexo_blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/hexo_blog/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/hexo_blog/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/hexo_blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-bookmark">
+
+    <a href="https://wnma3mz.github.io/bookmark/index.html" rel="section"><i class="fa fa-bookmark fa-fw"></i>书签</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/2024/01/24/LLM/MoE%20%E8%87%AA%E5%8A%A8%E9%80%89%E6%8B%A9%E4%B8%93%E5%AE%B6%E4%B8%AA%E6%95%B0%20from%20Top-k%20to%20Top-p/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
+      <meta itemprop="name" content="wnma3mz">
+      <meta itemprop="description" content="Day Day Up">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wnma's Blogs">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          VLM的识别图片能力
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建于：2024-01-24 16:41:53" itemprop="dateCreated datePublished" datetime="2024-01-24T16:41:53+08:00">2024-01-24</time>
+
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="عُدل：2025-08-24 16:37:21" itemprop="dateModified" datetime="2025-08-24T16:37:21+08:00">2025-08-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/Note/" itemprop="url" rel="index"><span itemprop="name">Note</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>MoE 自动选择专家个数</p>
+<span id="more"></span>
+<h2 id="背景"><a class="markdownIt-Anchor" href="#背景"></a> 背景</h2>
+<p>在 MoE 中每次推理需要指定选择专家个数，且每层专家个数完全一致。想到 Nucleus Sampling（Top-p采样），是不是可以把指定专家的数量换成，累计概率值来灵活的选择专家（cumsum）</p>
+<h2 id="预期"><a class="markdownIt-Anchor" href="#预期"></a> 预期</h2>
+<p>在保证性能的同时，降低激活的专家数量</p>
+<h2 id="代码"><a class="markdownIt-Anchor" href="#代码"></a> 代码</h2>
+<h3 id="原-top-k-实现"><a class="markdownIt-Anchor" href="#原-top-k-实现"></a> 原 top-K 实现</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, hidden_states: torch.Tensor</span>) -&gt; torch.Tensor:</span><br><span class="line">    batch_size, sequence_length, hidden_dim = hidden_states.shape</span><br><span class="line">    hidden_states = hidden_states.view(-<span class="number">1</span>, hidden_dim)</span><br><span class="line">    <span class="comment"># router_logits: (batch * sequence_length, n_experts)</span></span><br><span class="line">    router_logits, _ = <span class="variable language_">self</span>.gate(hidden_states)</span><br><span class="line"> </span><br><span class="line">    routing_weights = F.softmax(router_logits, dim=<span class="number">1</span>, dtype=torch.<span class="built_in">float</span>)</span><br><span class="line"> </span><br><span class="line">    <span class="comment"># 从这里选择最大的 N 个专家。输出的两个 tensor shape 为 bs * N</span></span><br><span class="line">    routing_weights, selected_experts = torch.topk(routing_weights,</span><br><span class="line">                                                   <span class="variable language_">self</span>.top_k,</span><br><span class="line">                                                   dim=-<span class="number">1</span>)</span><br><span class="line">    routing_weights /= routing_weights.<span class="built_in">sum</span>(dim=-<span class="number">1</span>, keepdim=<span class="literal">True</span>)</span><br><span class="line">     </span><br><span class="line">    final_hidden_states = <span class="literal">None</span></span><br><span class="line">    <span class="keyword">for</span> expert_idx <span class="keyword">in</span> <span class="variable language_">self</span>.expert_indicies:</span><br><span class="line">        expert_layer = <span class="variable language_">self</span>.experts[expert_idx]</span><br><span class="line">        <span class="comment"># 找到对应的专家，并取值</span></span><br><span class="line">        expert_mask = (selected_experts == expert_idx)</span><br><span class="line">        expert_weights = (routing_weights * expert_mask).<span class="built_in">sum</span>(dim=-<span class="number">1</span>,</span><br><span class="line">                                                             keepdim=<span class="literal">True</span>)</span><br><span class="line"> </span><br><span class="line">        current_hidden_states = expert_layer(hidden_states).mul_(</span><br><span class="line">            expert_weights)</span><br><span class="line">        <span class="keyword">if</span> final_hidden_states <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            final_hidden_states = current_hidden_states</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            final_hidden_states.add_(current_hidden_states)</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">return</span> tensor_model_parallel_all_reduce(final_hidden_states).view(</span><br><span class="line">        batch_size, sequence_length, hidden_dim)</span><br></pre></td></tr></table></figure>
+<h3 id="新-top-p-实现"><a class="markdownIt-Anchor" href="#新-top-p-实现"></a> 新 top-P 实现</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, hidden_states: torch.Tensor</span>) -&gt; torch.Tensor:</span><br><span class="line">    batch_size, sequence_length, hidden_dim = hidden_states.shape</span><br><span class="line">    hidden_states = hidden_states.view(-<span class="number">1</span>, hidden_dim)</span><br><span class="line">    <span class="comment"># router_logits: (batch * sequence_length, n_experts)</span></span><br><span class="line">    router_logits, _ = <span class="variable language_">self</span>.gate(hidden_states)</span><br><span class="line"> </span><br><span class="line">    routing_weights = F.softmax(router_logits, dim=<span class="number">1</span>, dtype=torch.<span class="built_in">float</span>)</span><br><span class="line"> </span><br><span class="line">    <span class="comment"># 用 one-hot 的形式输出所有专家的概率，并做好归一化，即输出 shape 为 bs * num_expert。</span></span><br><span class="line">    <span class="comment"># 没被选中的专家值为 0</span></span><br><span class="line">    routing_weights = top_p_prob(routing_weights, top_p=<span class="number">0.8</span>)</span><br><span class="line">     </span><br><span class="line">    final_hidden_states = <span class="literal">None</span></span><br><span class="line">    <span class="keyword">for</span> expert_idx <span class="keyword">in</span> <span class="variable language_">self</span>.expert_indicies:</span><br><span class="line">        expert_layer = <span class="variable language_">self</span>.experts[expert_idx]</span><br><span class="line">        <span class="comment"># 在这里直接取值</span></span><br><span class="line">        expert_weights = routing_weights[:, expert_idx].unsqueeze(dim=-<span class="number">1</span>)</span><br><span class="line"> </span><br><span class="line">        current_hidden_states = expert_layer(hidden_states).mul_(</span><br><span class="line">            expert_weights)</span><br><span class="line">        <span class="keyword">if</span> final_hidden_states <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            final_hidden_states = current_hidden_states</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            final_hidden_states.add_(current_hidden_states)</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">return</span> tensor_model_parallel_all_reduce(final_hidden_states).view(</span><br><span class="line">        batch_size, sequence_length, hidden_dim)</span><br></pre></td></tr></table></figure>
+<p><strong>top_p_prob</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># From GPT-4</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">top_p_prob</span>(<span class="params">probs: torch.Tensor, top_p: <span class="built_in">float</span> = <span class="number">0.8</span></span>) -&gt; torch.Tensor:</span><br><span class="line">    <span class="comment"># 输入输出的 shape 一样（bs * num_expert），概率值从高到低，累计概率超过 top_p 的部分进行归一化，其余部分置 0</span></span><br><span class="line"> </span><br><span class="line">    <span class="comment"># 按照概率值降序排序，同时获取排序后的索引</span></span><br><span class="line">    sorted_probs, indices = torch.sort(probs, dim=-<span class="number">1</span>, descending=<span class="literal">True</span>)</span><br><span class="line">    <span class="comment"># 计算累积概率</span></span><br><span class="line">    cumulative_probs = torch.cumsum(sorted_probs, dim=-<span class="number">1</span>)</span><br><span class="line"> </span><br><span class="line">    <span class="comment"># 使累积概率小于top_p的部分为1，其余部分为0</span></span><br><span class="line">    mask = cumulative_probs &lt; top_p</span><br><span class="line"> </span><br><span class="line">    <span class="comment"># 保留最大的一个概率</span></span><br><span class="line">    mask[..., <span class="number">1</span>:] = mask[..., :-<span class="number">1</span>].clone()</span><br><span class="line">    mask[..., <span class="number">0</span>] = <span class="number">1</span></span><br><span class="line"> </span><br><span class="line">    <span class="comment"># 根据mask来选择需要保留的概率值</span></span><br><span class="line">    masked_probs = torch.zeros_like(probs)</span><br><span class="line">    masked_probs.scatter_(dim=-<span class="number">1</span>, index=indices, src=sorted_probs * mask.<span class="built_in">float</span>())</span><br><span class="line">    <span class="comment"># 计算概率值的和，归一化的分母</span></span><br><span class="line">    sum_masked_probs = masked_probs.<span class="built_in">sum</span>(-<span class="number">1</span>).unsqueeze(-<span class="number">1</span>).repeat(<span class="number">1</span>, probs.shape[-<span class="number">1</span>])</span><br><span class="line"> </span><br><span class="line">    <span class="comment"># 需要保留位置的索引，mask为1的位置</span></span><br><span class="line">    mask_masked = torch.zeros_like(probs)</span><br><span class="line">    mask_masked.scatter_(dim=-<span class="number">1</span>, index=indices, src=mask.<span class="built_in">float</span>())</span><br><span class="line"> </span><br><span class="line">    <span class="comment"># 执行索引操作保证了元素在原始位置，此处更新对应位置的概率值，其他位置为0</span></span><br><span class="line">    masked_probs = torch.where(mask_masked.<span class="built_in">bool</span>(), masked_probs / sum_masked_probs, torch.zeros_like(probs))</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">return</span> masked_probs</span><br></pre></td></tr></table></figure>
+<h3 id="实现思路"><a class="markdownIt-Anchor" href="#实现思路"></a> 实现思路</h3>
+<p>在 top_k 的实现中，假设有 torch.tensor([[1,2,3], [2,4,3]])</p>
+<ol>
+<li>先找出最大的 top_k 的最大索引和值
+<ol>
+<li>假设 top_k 为2，则有</li>
+<li>routing_weights：tensor([[3, 2],[4, 3]])</li>
+<li>selected_experts ：tensor([[2, 1], [1, 2]])</li>
+<li>即输出的 shape 为 (bs, top_k)</li>
+</ol>
+</li>
+<li>对 routing_weights 进行归一化</li>
+<li>根据 expert_mask 重新计算哪些专家的值为 0。此时输出的 shape 为 (bs, num_expert)</li>
+</ol>
+<p>然而，对于 top_p，每行选出来的专家数是不确定的，因为是根据概率值选出来的。所以需要重新设计这里的输出。</p>
+<p>既然这里最终用到的 weight 还是 (bs, num_expert)，那么可以使用 one-hot 的形式来表示专家被选择的情况。即，</p>
+<ul>
+<li>用 tensor([[0, 0, 1],[0, 1, 1]]) 表示专家的情况选择情况，如果为1，则进行归一化计算，否则直接设置成 0</li>
+<li>最后专家的权重只需要用 routing_weights[:, expert_idx]来选择，而不需要根据 expert_mask 进行计算。</li>
+</ul>
+<h2 id="实验"><a class="markdownIt-Anchor" href="#实验"></a> 实验</h2>
+<p>在 Mixtral 上，top_p=0.6 和 0.7。因此，观察模型在每层选择了几个专家。</p>
+<table>
+<thead>
+<tr>
+<th>layer idx</th>
+<th>top_p=0.6</th>
+<th>top_p=0.7</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>2.545</td>
+<td>3.357</td>
+</tr>
+<tr>
+<td>15</td>
+<td>2.605</td>
+<td>3.342</td>
+</tr>
+<tr>
+<td>31</td>
+<td>1.908</td>
+<td>2.425</td>
+</tr>
+<tr>
+<td>所有层取 mean</td>
+<td>2.529</td>
+<td>3.26</td>
+</tr>
+</tbody>
+</table>
+<p>在某 1B * 8 实验上，top_p=0.7、0.8、0.9</p>
+<table>
+<thead>
+<tr>
+<th>layer idx</th>
+<th>top_p=0.7</th>
+<th>top_p=0.8</th>
+<th>top_p=0.9</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>4.90282023</td>
+<td>5.88775894</td>
+<td>6.97505182</td>
+</tr>
+<tr>
+<td>12</td>
+<td>3.70174125</td>
+<td>4.63081198</td>
+<td>5.96097647</td>
+</tr>
+<tr>
+<td>23</td>
+<td>4.41420775</td>
+<td>5.08847432</td>
+<td>5.97912663</td>
+</tr>
+<tr>
+<td>所有层取 mean</td>
+<td>4.34094666</td>
+<td>5.23354833</td>
+<td>6.38608094</td>
+</tr>
+</tbody>
+</table>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>wnma3mz
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wnma3mz.github.io/2024/01/24/LLM/MoE%20%E8%87%AA%E5%8A%A8%E9%80%89%E6%8B%A9%E4%B8%93%E5%AE%B6%E4%B8%AA%E6%95%B0%20from%20Top-k%20to%20Top-p/" title="VLM的识别图片能力">https://wnma3mz.github.io/2024/01/24/LLM/MoE 自动选择专家个数 from Top-k to Top-p/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hexo_blog/tags/NLP/" rel="tag"># NLP</a>
+              <a href="/hexo_blog/tags/MoE/" rel="tag"># MoE</a>
+              <a href="/hexo_blog/tags/Attention/" rel="tag"># Attention</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2023/12/03/PyTorch/pytorch_cpp_extension/" rel="prev" title="用 Cpp 写 PyTorch 的插件">
+      <i class="fa fa-chevron-left"></i> 用 Cpp 写 PyTorch 的插件
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2024/03/28/LLM/LLM%E6%B7%B1%E5%BA%A6%E7%9A%84%E7%A8%80%E7%96%8F%E6%80%A7/" rel="next" title="LLM 深度的”稀疏性“">
+      LLM 深度的”稀疏性“ <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-text"> 背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%84%E6%9C%9F"><span class="nav-text"> 预期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-text"> 代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F-top-k-%E5%AE%9E%E7%8E%B0"><span class="nav-text"> 原 top-K 实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B0-top-p-%E5%AE%9E%E7%8E%B0"><span class="nav-text"> 新 top-P 实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E6%80%9D%E8%B7%AF"><span class="nav-text"> 实现思路</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C"><span class="nav-text"> 实验</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="wnma3mz"
+      src="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
+  <p class="site-author-name" itemprop="name">wnma3mz</p>
+  <div class="site-description" itemprop="description">Day Day Up</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/hexo_blog/archives/">
+        
+          <span class="site-state-item-count">74</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/hexo_blog/categories/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/hexo_blog/tags/">
+          
+        <span class="site-state-item-count">89</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wnma3mz" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wnma3mz" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wnma3mz@gmail.com" title="E-Mail → mailto:wnma3mz@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wnma3mz</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='99' src="/hexo_blog/lib/canvas-nest/canvas-nest-nomobile.min.js"></script>
+  <script src="/hexo_blog/lib/anime.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/hexo_blog/js/utils.js"></script>
+
+<script src="/hexo_blog/js/motion.js"></script>
+
+
+<script src="/hexo_blog/js/schemes/muse.js"></script>
+
+
+<script src="/hexo_blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/hexo_blog/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme    : 'forest',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
