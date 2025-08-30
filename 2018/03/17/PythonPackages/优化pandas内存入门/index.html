@@ -253,13 +253,9 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>降低数据存储消耗并提高处理效率，本文教你如何通过优化数值类型、<code>object</code>类型和
-<code>datetime</code>类型三个方面来减少内存使用量。其中，使用
-<code>Categoricals</code>优化
-<code>object</code>类型数据是效果最显著的一种优化方式。另外，还介绍了如何在读取数据的时候就完成优化步骤，避免加载完数据再做优化的麻烦。</p>
+        <p>降低数据存储消耗并提高处理效率，本文教你如何通过优化数值类型、<code>object</code>类型和 <code>datetime</code>类型三个方面来减少内存使用量。其中，使用 <code>Categoricals</code>优化 <code>object</code>类型数据是效果最显著的一种优化方式。另外，还介绍了如何在读取数据的时候就完成优化步骤，避免加载完数据再做优化的麻烦。</p>
 <span id="more"></span>
-<h2 id="简单的概念">简单的概念</h2>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding: utf-8</span></span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line"><span class="comment"># 读取数据</span></span><br><span class="line">df = pd.read_csv(<span class="string">&quot;test.csv&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 得到精确的内存信息</span></span><br><span class="line">df.info(memory_usage=<span class="string">&#x27;deep&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 说明：之后都用df来表示读取到的dataframe</span></span><br></pre></td></tr></table></figure>
+<h2 id="简单的概念"><a href="#简单的概念" class="headerlink" title="简单的概念"></a>简单的概念</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding: utf-8</span></span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line"><span class="comment"># 读取数据</span></span><br><span class="line">df = pd.read_csv(<span class="string">&quot;test.csv&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 得到精确的内存信息</span></span><br><span class="line">df.info(memory_usage=<span class="string">&#x27;deep&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 说明：之后都用df来表示读取到的dataframe</span></span><br></pre></td></tr></table></figure>
 <p>pandas中每一个数据类型都有一个专门的类来处理。</p>
 <ul>
 <li><code>ObjectBlock</code>： 字符串列的块</li>
@@ -268,7 +264,7 @@
 </ul>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> dtype <span class="keyword">in</span> [<span class="string">&#x27;float&#x27;</span>, <span class="string">&#x27;int&#x27;</span>, <span class="string">&#x27;object&#x27;</span>]:</span><br><span class="line">    <span class="comment"># 选中对应的dtype列</span></span><br><span class="line">    selected_dtype = df.select_dtypes(include=[dtype])</span><br><span class="line">    <span class="comment"># 查看内存使用量的平均值</span></span><br><span class="line">    mean_usage_b = selected_dtype.memory_usage(deep=<span class="literal">True</span>).mean()</span><br><span class="line">    <span class="comment"># 获取到的数据单位为K, 这里转换一下</span></span><br><span class="line">    mean_usage_mb = mean_usage_b / <span class="number">1024</span> ** <span class="number">2</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Average memory usage for &#123;&#125; columns:&#123;:03.2f&#125; MB&quot;</span>.<span class="built_in">format</span>(dtype, mean_usage_mb))</span><br></pre></td></tr></table></figure>
 <p>这里我们可以发现 <code>object</code>类占用内存最大</p>
-<h3 id="子类型subtype">子类型(subtype)</h3>
+<h3 id="子类型-subtype"><a href="#子类型-subtype" class="headerlink" title="子类型(subtype)"></a>子类型(subtype)</h3><div class="table-container">
 <table>
 <thead>
 <tr>
@@ -329,46 +325,24 @@
 </tr>
 </tbody>
 </table>
-<p>一个
-<code>int8</code>类型值使用1个字节的存储空间，可以表示256(2^8)个二进制数，即-128到127的所有整数值。根据表可以得出，对于每个列，应该尽可能"抠"一点，
-物尽其用。这里的
-<code>uint</code>表示无符号整型，可以更有效地处理正整数的列。</p>
-<h2 id="优化">优化</h2>
-<h3 id="数值型数据">数值型数据</h3>
-<p>这里可以使用 <code>to_numeric()</code>对数值类型进行
-<code>downcast</code>（向下转型）的操作。</p>
+</div>
+<p>一个 <code>int8</code>类型值使用1个字节的存储空间，可以表示256(2^8)个二进制数，即-128到127的所有整数值。根据表可以得出，对于每个列，应该尽可能”抠”一点， 物尽其用。这里的 <code>uint</code>表示无符号整型，可以更有效地处理正整数的列。</p>
+<h2 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h2><h3 id="数值型数据"><a href="#数值型数据" class="headerlink" title="数值型数据"></a>数值型数据</h3><p>这里可以使用 <code>to_numeric()</code>对数值类型进行 <code>downcast</code>（向下转型）的操作。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 选中整数型的列</span></span><br><span class="line">df_int_columns = df.select_dtypes(include=[<span class="string">&#x27;int&#x27;</span>])</span><br><span class="line"><span class="comment"># 向下转型</span></span><br><span class="line">df_int_columns.apply(pd.to_numeric, downcast=<span class="string">&#x27;unsigned&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 选中浮点型数据</span></span><br><span class="line">df_float_columns = df.select_dtypes(include=[<span class="string">&#x27;float&#x27;</span>])</span><br><span class="line"><span class="comment"># 向下转型</span></span><br><span class="line">df_float_columns.apply(pd.to_numeric, downcast=<span class="string">&#x27;float&#x27;</span>)</span><br></pre></td></tr></table></figure>
 <p>这里能够有效的利用内存，但是缺点很明显的就是只能用于数值型数据，而且优化的空间有限。</p>
-<h3 id="object型数据"><code>object</code>型数据</h3>
-<p><code>object</code>类型实际上使用的是Python字符串对应的值，由于Python解释性语言的特性，字符串存储方式很碎片化（消耗更多内存，访问速度更慢）。<code>object</code>列中的每个元素都是一个指针。<code>object</code>类型的数据内存使用情况是可变的。如果每个字符串是单独存储的，那么实际上字符串占用内存是很大。</p>
+<h3 id="object型数据"><a href="#object型数据" class="headerlink" title="object型数据"></a><code>object</code>型数据</h3><p><code>object</code>类型实际上使用的是Python字符串对应的值，由于Python解释性语言的特性，字符串存储方式很碎片化（消耗更多内存，访问速度更慢）。<code>object</code>列中的每个元素都是一个指针。<code>object</code>类型的数据内存使用情况是可变的。如果每个字符串是单独存储的，那么实际上字符串占用内存是很大。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">1</span>]: <span class="keyword">from</span> sys <span class="keyword">import</span> getsizeof</span><br><span class="line"><span class="comment"># 字符串本身内存使用情况</span></span><br><span class="line">In [<span class="number">2</span>]: s1 = <span class="string">&quot;hello world!&quot;</span></span><br><span class="line">In [<span class="number">3</span>]: s2 = <span class="string">&quot;hello pandas!&quot;</span></span><br><span class="line">In [<span class="number">4</span>]: getsizeof(s1), getsizeof(s2)</span><br><span class="line">Out[<span class="number">4</span>]: (<span class="number">61</span>, <span class="number">62</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 字符串(object)在pandas中内存使用情况</span></span><br><span class="line">In [<span class="number">9</span>]: <span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line">In [<span class="number">10</span>]: ser = pd.Series([s1, s2])</span><br><span class="line">In [<span class="number">11</span>]: ser.apply(getsizeof)</span><br><span class="line">Out[<span class="number">11</span>]:</span><br><span class="line"><span class="number">0</span>    <span class="number">61</span></span><br><span class="line"><span class="number">1</span>    <span class="number">62</span></span><br><span class="line">dtype: int64</span><br></pre></td></tr></table></figure>
-<p>这里通过观察看到，在这里pandas使用了int64来存储，实际占用大小与字符串本身是一样的。这里可以使用
-<code>Categoricals</code>来优化
-<code>object</code>类型。<code>Categoricals</code>的工作原理我理解为，某个
-<code>object</code>类有有限的分类情况(比如只有
-<code>red</code>、<code>yellow</code>、<code>blue</code>、<code>black</code>等颜色相关)，那么
-<code>Categoricals</code>将这些分类 <code>object</code>对象转换为
-<code>int</code>子类型（对应上面的0, 1, 2, 3）</p>
+<p>这里通过观察看到，在这里pandas使用了int64来存储，实际占用大小与字符串本身是一样的。这里可以使用 <code>Categoricals</code>来优化 <code>object</code>类型。<code>Categoricals</code>的工作原理我理解为，某个 <code>object</code>类有有限的分类情况(比如只有 <code>red</code>、<code>yellow</code>、<code>blue</code>、<code>black</code>等颜色相关)，那么 <code>Categoricals</code>将这些分类 <code>object</code>对象转换为 <code>int</code>子类型（对应上面的0, 1, 2, 3）</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 选中object类型</span></span><br><span class="line">df_obj_columns = df.select_dtypes(include=[<span class="string">&#x27;object&#x27;</span>])</span><br><span class="line"><span class="comment"># 查看object类型列的相关信息</span></span><br><span class="line">df_obj_columns.describe()</span><br></pre></td></tr></table></figure>
-<p>如果
-<code>unique</code>(不同值)的数量很少，那么就可以使用这种优化方案。</p>
+<p>如果 <code>unique</code>(不同值)的数量很少，那么就可以使用这种优化方案。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 假设某一列符合优化条件，为df_obj_less，使类型转换为category</span></span><br><span class="line">df_category_column = df_obj_less.astype(<span class="string">&#x27;category&#x27;</span>)</span><br><span class="line"><span class="comment"># 转换之后，主观观察数据没有什么区别，只是类型改变了</span></span><br><span class="line"><span class="comment"># 观察转换之后实际上的数据</span></span><br><span class="line">df_category_column.cat.codes</span><br><span class="line"><span class="comment"># 变成了由0,1,2等数字构成的int8类型的数据</span></span><br></pre></td></tr></table></figure>
-<p>这里提升的空间远远超过第一步优化的空间，具体要结合数据来检验（最好貌似可以减少98%的使用量）。这里有个很大的缺点就是无法进行数值计算，即没有办法使用
-<code>pd.Series.min()</code>、<code>pd.Series.max()</code>等与数值相关操作。</p>
-<p>还有一个问题就是在有多少个
-<code>unique</code>(不同值)的情况下才使用这种方法。首先，毫无疑问的是如果需要计算操作的列是不能使用的。第二是如果
-<code>unique</code>的比例小于50%(个人觉得比例应该更小)就可以使用这种情况，如果过多的话，转换之后消耗的内存会更多（不仅需要存储string还有int）。</p>
+<p>这里提升的空间远远超过第一步优化的空间，具体要结合数据来检验（最好貌似可以减少98%的使用量）。这里有个很大的缺点就是无法进行数值计算，即没有办法使用 <code>pd.Series.min()</code>、<code>pd.Series.max()</code>等与数值相关操作。</p>
+<p>还有一个问题就是在有多少个 <code>unique</code>(不同值)的情况下才使用这种方法。首先，毫无疑问的是如果需要计算操作的列是不能使用的。第二是如果 <code>unique</code>的比例小于50%(个人觉得比例应该更小)就可以使用这种情况，如果过多的话，转换之后消耗的内存会更多（不仅需要存储string还有int）。</p>
 <p>附上筛选 <code>unique</code>比例小于50%的代码</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 提取unique少于50%的object列</span></span><br><span class="line">df_obj_columns = df.select_dtypes(include=[<span class="string">&#x27;object&#x27;</span>])</span><br><span class="line"><span class="keyword">for</span> obj_col <span class="keyword">in</span> df_obj_columns:</span><br><span class="line">    unique_values = <span class="built_in">len</span>(df_obj_columns[obj_col].unique())</span><br><span class="line">    total_values = <span class="built_in">len</span>(df_obj_columns[obj_col])</span><br><span class="line">    <span class="keyword">if</span> unique_values / total_values &lt; <span class="number">0.5</span>:</span><br><span class="line">        obj_col.astype(<span class="string">&#x27;category&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 建议提前copy一份数据，再做上面的操作</span></span><br></pre></td></tr></table></figure>
-<h3 id="datetime类型"><code>datetime</code>类型</h3>
-<p>这里其实不能叫做优化，因为这里是将数值型数据转换为
-<code>datetime</code>类型，虽然提高了内存的使用，但是转换为
-<code>datetime</code>类型的数据更容易进行分析（时间序列分析）。当然如果有
-<code>datetime</code>类型不在分析的范围内，自然可以无视。</p>
+<h3 id="datetime类型"><a href="#datetime类型" class="headerlink" title="datetime类型"></a><code>datetime</code>类型</h3><p>这里其实不能叫做优化，因为这里是将数值型数据转换为 <code>datetime</code>类型，虽然提高了内存的使用，但是转换为 <code>datetime</code>类型的数据更容易进行分析（时间序列分析）。当然如果有 <code>datetime</code>类型不在分析的范围内，自然可以无视。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 假设df_num_col为需要转换的列, 这里format格式看情况更改</span></span><br><span class="line">df_num_col = pd.to_datetime(df_num_col, <span class="built_in">format</span>=<span class="string">&quot;%Y%m%d&quot;</span>)</span><br></pre></td></tr></table></figure>
-<h2 id="总结">总结</h2>
-<p>写了这么多，如果每次等加载完数据再做优化操作，感觉有些鸡肋。但是其实可以使用
-<code>read_csv</code>等读取函数的几个参数来帮助我们在读取的时候就完成优化步骤。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>写了这么多，如果每次等加载完数据再做优化操作，感觉有些鸡肋。但是其实可以使用 <code>read_csv</code>等读取函数的几个参数来帮助我们在读取的时候就完成优化步骤。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 首先，需要整理出每一列最终的数据类型，组成一个dict</span></span><br><span class="line">dtypes_lst = [col.name <span class="keyword">for</span> name <span class="keyword">in</span> df.dtypes]</span><br><span class="line">column_types = <span class="built_in">dict</span>(<span class="built_in">zip</span>(dtypes.index, dtypes_lst))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重新读取数据, dtype指定数据格式，parse_dates指定列转换格式为datetime,infer_datetime_format尝试解析字符串形式的datatime格式（在一些情况下可以加快解析速度5-10倍）</span></span><br><span class="line">new_df = pd.read_csv(<span class="string">&#x27;test.csv&#x27;</span>, dtpye=column_types, parse_dates=[<span class="string">&#x27;date&#x27;</span>], infer_datetime_format=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
 
     </div>
@@ -471,7 +445,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="nav-text">简单的概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%90%E7%B1%BB%E5%9E%8Bsubtype"><span class="nav-text">子类型(subtype)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%98%E5%8C%96"><span class="nav-text">优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E5%80%BC%E5%9E%8B%E6%95%B0%E6%8D%AE"><span class="nav-text">数值型数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#object%E5%9E%8B%E6%95%B0%E6%8D%AE"><span class="nav-text">object型数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#datetime%E7%B1%BB%E5%9E%8B"><span class="nav-text">datetime类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">总结</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="nav-text">简单的概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%90%E7%B1%BB%E5%9E%8B-subtype"><span class="nav-text">子类型(subtype)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%98%E5%8C%96"><span class="nav-text">优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E5%80%BC%E5%9E%8B%E6%95%B0%E6%8D%AE"><span class="nav-text">数值型数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#object%E5%9E%8B%E6%95%B0%E6%8D%AE"><span class="nav-text">object型数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#datetime%E7%B1%BB%E5%9E%8B"><span class="nav-text">datetime类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">总结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -487,7 +461,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/hexo_blog/archives/">
         
-          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-count">77</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

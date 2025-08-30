@@ -27,6 +27,13 @@
 <meta property="og:site_name" content="Wnma&#39;s Blogs">
 <meta property="og:description" content="如何爬取微信公众号所有历史文章的阅读量和点赞量？该文介绍了两种突破难点的方法：一是使用微信个人订阅号进行爬取，二是在电脑上使用Fiddler进行抓包分析。详细的操作步骤及代码实现都在文中。缺陷是需要手动获取一些关键参数。针对被封禁的问题，文中提供了两种解决方案。">
 <meta property="og:locale">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/wechat/20200319174821639.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/wechat/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcxMTE4MTkxMzExMzM2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/wechat/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcxMTE4MTkxNDM5MzM1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/wechat/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcxMTE4MTkxNTM4MTk5.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/wechat/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcxMTE4MTkxNzA1NzQy.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/wechat/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcxMTE4MTkxODMzNzAx.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/wechat/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcxMTE4MTkxOTA0MDAw.png">
 <meta property="article:published_time" content="2017-11-18T11:19:53.000Z">
 <meta property="article:modified_time" content="2024-06-15T08:01:01.812Z">
 <meta property="article:author" content="wnma3mz">
@@ -34,6 +41,7 @@
 <meta property="article:tag" content="爬虫">
 <meta property="article:tag" content="微信">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/wechat/20200319174821639.png">
 
 <link rel="canonical" href="https://wnma3mz.github.io/2017/11/18/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7%E7%88%AC%E8%99%AB%E7%9A%84%E7%BB%8F%E5%8E%86%EF%BC%88%E5%BE%AE%E4%BF%A1%E6%96%87%E7%AB%A0%E9%98%85%E8%AF%BB%E7%82%B9%E8%B5%9E%E7%9A%84%E8%8E%B7%E5%8F%96%EF%BC%89/">
 
@@ -256,124 +264,92 @@
       
         <p>如何爬取微信公众号所有历史文章的阅读量和点赞量？该文介绍了两种突破难点的方法：一是使用微信个人订阅号进行爬取，二是在电脑上使用Fiddler进行抓包分析。详细的操作步骤及代码实现都在文中。缺陷是需要手动获取一些关键参数。针对被封禁的问题，文中提供了两种解决方案。</p>
 <span id="more"></span>
-<p>项目实现地址。查看我的<a
-target="_blank" rel="noopener" href="https://github.com/wnma3mz/wechat_articles_spider">Github地址</a></p>
+<p>项目实现地址。查看我的<a target="_blank" rel="noopener" href="https://github.com/wnma3mz/wechat_articles_spider">Github地址</a></p>
 <p><a target="_blank" rel="noopener" href="https://data.wnma3mz.cn/">数据展示（完整指标）</a></p>
-<p><a
-target="_blank" rel="noopener" href="https://data.wnma3mz.cn/demo.html">日更两次，获取公众号的最新文章链接</a>，暂不支持实时获取阅读点赞</p>
+<p><a target="_blank" rel="noopener" href="https://data.wnma3mz.cn/demo.html">日更两次，获取公众号的最新文章链接</a>，暂不支持实时获取阅读点赞</p>
 <p>支持下载文章内容为HTML（含图片，经过二次处理可转换为PDF、Word）。欢迎技术交流，微信：wnma3mz，烦请进行相关备注，如hexo_wechat_spider。二维码见文末，样例图：</p>
-<p>目前具体可获取指标（包含但不局限）：阅读数、点赞数（在看）、评论内容及总数、正文内容及图片、是否为头条、是否为原创。
-<img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/wechat/20200319174821639.png" /></p>
+<p>目前具体可获取指标（包含但不局限）：阅读数、点赞数（在看）、评论内容及总数、正文内容及图片、是否为头条、是否为原创。<br><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/wechat/20200319174821639.png" alt=""></p>
 <p>项目已经实现，比本文介绍的更加方便简单，可直接调用。</p>
-<p>关于批量关注公众号的问题已解决，见我的另一篇文章:<a
-target="_blank" rel="noopener" href="https://blog.csdn.net/wnma3mz/article/details/105448808">自动批量关注微信公众号（非逆向）</a></p>
+<p>关于批量关注公众号的问题已解决，见我的另一篇文章:<a target="_blank" rel="noopener" href="https://blog.csdn.net/wnma3mz/article/details/105448808">自动批量关注微信公众号（非逆向）</a></p>
 <p>不求完美，只求能够用。。。</p>
 <p>截至2019年4月项目可正常运行， 方法已更新。</p>
 <p>3月1号更新：</p>
-<ol type="1">
+<ol>
 <li>获取阅读点赞时，每篇文章间隔10s 一次性可获取500篇文章以上</li>
 <li>从公众号获取永久链接时，间隔3分钟，可以连续获取几小时（网友测试）</li>
 </ol>
 <p>公开已爬取的公众号历史文章的永久链接，数据上传至GitHub，日期均截止commit时间。</p>
-<p><a
-target="_blank" rel="noopener" href="https://github.com/wnma3mz/wechat_articles_spider/blob/master/%E7%A7%91%E6%8A%80%E7%BE%8E%E5%AD%A6.json">科技美学</a></p>
-<p><a
-target="_blank" rel="noopener" href="https://github.com/wnma3mz/wechat_articles_spider/blob/master/%E5%85%B1%E9%9D%92%E5%9B%A2%E4%B8%AD%E5%A4%AE.json">共青团中央</a></p>
-<p><a
-target="_blank" rel="noopener" href="https://github.com/wnma3mz/wechat_articles_spider/blob/master/AppSo.json">AppSo</a></p>
-<p><a
-target="_blank" rel="noopener" href="https://github.com/wnma3mz/wechat_articles_spider/blob/master/%E5%8D%97%E6%96%B9%E5%91%A8%E6%9C%AB.json">南方周末</a></p>
-<h2 id="需求">需求</h2>
-<p>某某微信公众号历史的所有文章的阅读数和点赞数</p>
-<h2 id="难点">难点</h2>
-<ol type="1">
+<p><a target="_blank" rel="noopener" href="https://github.com/wnma3mz/wechat_articles_spider/blob/master/%E7%A7%91%E6%8A%80%E7%BE%8E%E5%AD%A6.json">科技美学</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/wnma3mz/wechat_articles_spider/blob/master/%E5%85%B1%E9%9D%92%E5%9B%A2%E4%B8%AD%E5%A4%AE.json">共青团中央</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/wnma3mz/wechat_articles_spider/blob/master/AppSo.json">AppSo</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/wnma3mz/wechat_articles_spider/blob/master/%E5%8D%97%E6%96%B9%E5%91%A8%E6%9C%AB.json">南方周末</a></p>
+<h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p>某某微信公众号历史的所有文章的阅读数和点赞数</p>
+<h2 id="难点"><a href="#难点" class="headerlink" title="难点"></a>难点</h2><ol>
 <li>微信公众号历史的所有文章（来源？？？）</li>
 <li>每篇文章的阅读量和点赞量（电脑上浏览文章只显示内容，没有阅读量、点赞量、评论……）</li>
 </ol>
-<h3 id="突破难点一">突破难点一</h3>
-<ol type="1">
-<li><a
-target="_blank" rel="noopener" href="http://weixin.sogou.com/">搜狗微信搜索</a>，可以搜索微信公众号文章。但是貌似只能显示该公众号最近十篇的文章。放弃……</li>
+<h3 id="突破难点一"><a href="#突破难点一" class="headerlink" title="突破难点一"></a>突破难点一</h3><ol>
+<li><a target="_blank" rel="noopener" href="http://weixin.sogou.com/">搜狗微信搜索</a>，可以搜索微信公众号文章。但是貌似只能显示该公众号最近十篇的文章。放弃……</li>
 <li>利用抓包工具（Fiddler），抓取文章。成本有点大……，且貌似只能抓取原创文章。不符合个人需求，放弃……</li>
 <li>利用微信个人订阅号进行爬取，神奇的操作。</li>
 </ol>
-<h4 id="操作">操作</h4>
-<ol type="1">
-<li>拥有一个微信个人订阅号，附上登陆和注册链接。<a
-target="_blank" rel="noopener" href="https://mp.weixin.qq.com/">微信公众平台</a></li>
+<h4 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h4><ol>
+<li>拥有一个微信个人订阅号，附上登陆和注册链接。<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/">微信公众平台</a></li>
 <li>好在之前无聊注册过一次，所以就可以直接登陆操作。没有注册的童鞋可以用自己的微信号注册一下，过程十分简单，在此就不赘述了</li>
-<li>登陆之后，点击左侧菜单栏“管理”-“素材管理”。再点击右边的“新建图文素材”</li>
+<li><p>登陆之后，点击左侧菜单栏“管理”-“素材管理”。再点击右边的“新建图文素材”</p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/wechat/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcxMTE4MTkxMzExMzM2.png" alt=""></p>
+</li>
+<li><p>弹出一个新的标签页，在上面的工具栏找到“超链接”并点击<br><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/wechat/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcxMTE4MTkxNDM5MzM1.png" alt=""></p>
+</li>
+<li>弹出了一个小窗口，选择“查找文章”，输入需要查找的公众号，这里用“科技美学”公众号作为例子<br><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/wechat/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcxMTE4MTkxNTM4MTk5.png" alt=""></li>
+<li><p>点击之后，可以弹出该公众号的所有历史文章</p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/wechat/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcxMTE4MTkxNzA1NzQy.png" alt=""></p>
+</li>
 </ol>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/wechat/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcxMTE4MTkxMzExMzM2.png" /></p>
-<ol start="4" type="1">
-<li>弹出一个新的标签页，在上面的工具栏找到“超链接”并点击 <img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/wechat/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcxMTE4MTkxNDM5MzM1.png" /></li>
-<li>弹出了一个小窗口，选择“查找文章”，输入需要查找的公众号，这里用“科技美学”公众号作为例子
-<img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/wechat/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcxMTE4MTkxNTM4MTk5.png" /></li>
-<li>点击之后，可以弹出该公众号的所有历史文章</li>
-</ol>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/wechat/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcxMTE4MTkxNzA1NzQy.png" /></p>
-<h4 id="代码实现">代码实现</h4>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 目标url</span></span><br><span class="line">url = <span class="string">&quot;https://mp.weixin.qq.com/cgi-bin/appmsg&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用Cookie，跳过登陆操作</span></span><br><span class="line">headers = &#123;</span><br><span class="line">  <span class="string">&quot;Cookie&quot;</span>: yourcookie,</span><br><span class="line">  <span class="string">&quot;User-Agent&quot;</span>: <span class="string">&quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36&quot;</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">需要提交的data</span></span><br><span class="line"><span class="string">以下个别字段是否一定需要还未验证。</span></span><br><span class="line"><span class="string">注意修改yourtoken,number</span></span><br><span class="line"><span class="string">number表示从第number页开始爬取，为5的倍数，从0开始。如0、5、10……</span></span><br><span class="line"><span class="string">token可以使用Chrome自带的工具进行获取</span></span><br><span class="line"><span class="string">fakeid是公众号独一无二的一个id，等同于后面的__biz</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">data = &#123;</span><br><span class="line">    <span class="string">&quot;token&quot;</span>: yourtoken,</span><br><span class="line">    <span class="string">&quot;lang&quot;</span>: <span class="string">&quot;zh_CN&quot;</span>,</span><br><span class="line">    <span class="string">&quot;f&quot;</span>: <span class="string">&quot;json&quot;</span>,</span><br><span class="line">    <span class="string">&quot;ajax&quot;</span>: <span class="string">&quot;1&quot;</span>,</span><br><span class="line">    <span class="string">&quot;action&quot;</span>: <span class="string">&quot;list_ex&quot;</span>,</span><br><span class="line">    <span class="string">&quot;begin&quot;</span>: number,</span><br><span class="line">    <span class="string">&quot;count&quot;</span>: <span class="string">&quot;5&quot;</span>,</span><br><span class="line">    <span class="string">&quot;query&quot;</span>: <span class="string">&quot;&quot;</span>,</span><br><span class="line">    <span class="string">&quot;fakeid&quot;</span>: yourfakeid,</span><br><span class="line">    <span class="string">&quot;type&quot;</span>: <span class="string">&quot;9&quot;</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用get方法进行提交</span></span><br><span class="line">content_json = requests.get(url, headers=headers, params=data).json()</span><br><span class="line"><span class="comment"># 返回了一个json，里面是每一页的数据</span></span><br><span class="line"><span class="keyword">for</span> item <span class="keyword">in</span> content_json[<span class="string">&quot;app_msg_list&quot;</span>]:</span><br><span class="line">    <span class="comment"># 提取每页文章的标题及对应的url</span></span><br><span class="line">    <span class="built_in">print</span>(item[<span class="string">&quot;title&quot;</span>], <span class="string">&quot;url&quot;</span>: item[<span class="string">&quot;link&quot;</span>])</span><br></pre></td></tr></table></figure>
+<h4 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 目标url</span></span><br><span class="line">url = <span class="string">&quot;https://mp.weixin.qq.com/cgi-bin/appmsg&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用Cookie，跳过登陆操作</span></span><br><span class="line">headers = &#123;</span><br><span class="line">  <span class="string">&quot;Cookie&quot;</span>: yourcookie,</span><br><span class="line">  <span class="string">&quot;User-Agent&quot;</span>: <span class="string">&quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36&quot;</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">需要提交的data</span></span><br><span class="line"><span class="string">以下个别字段是否一定需要还未验证。</span></span><br><span class="line"><span class="string">注意修改yourtoken,number</span></span><br><span class="line"><span class="string">number表示从第number页开始爬取，为5的倍数，从0开始。如0、5、10……</span></span><br><span class="line"><span class="string">token可以使用Chrome自带的工具进行获取</span></span><br><span class="line"><span class="string">fakeid是公众号独一无二的一个id，等同于后面的__biz</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">data = &#123;</span><br><span class="line">    <span class="string">&quot;token&quot;</span>: yourtoken,</span><br><span class="line">    <span class="string">&quot;lang&quot;</span>: <span class="string">&quot;zh_CN&quot;</span>,</span><br><span class="line">    <span class="string">&quot;f&quot;</span>: <span class="string">&quot;json&quot;</span>,</span><br><span class="line">    <span class="string">&quot;ajax&quot;</span>: <span class="string">&quot;1&quot;</span>,</span><br><span class="line">    <span class="string">&quot;action&quot;</span>: <span class="string">&quot;list_ex&quot;</span>,</span><br><span class="line">    <span class="string">&quot;begin&quot;</span>: number,</span><br><span class="line">    <span class="string">&quot;count&quot;</span>: <span class="string">&quot;5&quot;</span>,</span><br><span class="line">    <span class="string">&quot;query&quot;</span>: <span class="string">&quot;&quot;</span>,</span><br><span class="line">    <span class="string">&quot;fakeid&quot;</span>: yourfakeid,</span><br><span class="line">    <span class="string">&quot;type&quot;</span>: <span class="string">&quot;9&quot;</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用get方法进行提交</span></span><br><span class="line">content_json = requests.get(url, headers=headers, params=data).json()</span><br><span class="line"><span class="comment"># 返回了一个json，里面是每一页的数据</span></span><br><span class="line"><span class="keyword">for</span> item <span class="keyword">in</span> content_json[<span class="string">&quot;app_msg_list&quot;</span>]:</span><br><span class="line">    <span class="comment"># 提取每页文章的标题及对应的url</span></span><br><span class="line">    <span class="built_in">print</span>(item[<span class="string">&quot;title&quot;</span>], <span class="string">&quot;url&quot;</span>: item[<span class="string">&quot;link&quot;</span>])</span><br></pre></td></tr></table></figure>
 <p>以上，即可爬取微信公众号的一页数据，如果是爬取所有页的数据，则需要改变number进行爬取。</p>
 <p>注：每次抓取完一页之后，最好设定time.sleep(3)。过快会导致爬取失败</p>
-<h3 id="突破难点二">突破难点二</h3>
-<p>这里我使用的方法是在电脑上登陆微信客户端，进行抓包分析。从客户端看推文可以看到阅读量、点赞量。</p>
+<h3 id="突破难点二"><a href="#突破难点二" class="headerlink" title="突破难点二"></a>突破难点二</h3><p>这里我使用的方法是在电脑上登陆微信客户端，进行抓包分析。从客户端看推文可以看到阅读量、点赞量。</p>
 <p>我使用的是Fiddler。Fiddller具体使用就不赘述了。下面直接演示操作</p>
-<h4 id="操作-1">操作</h4>
-<ol type="1">
+<h4 id="操作-1"><a href="#操作-1" class="headerlink" title="操作"></a>操作</h4><ol>
 <li>打开fiddler开始监控</li>
 <li>登陆微信客户端，浏览该公众号的任意一篇推文</li>
 <li>可以观察到这里的内容显示会有阅读量、点赞量、评论等</li>
 <li>观察fiddler的监控数据，如下图显示</li>
 </ol>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/wechat/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcxMTE4MTkxODMzNzAx.png" />
-5. 其中
-<code>/mp/getappmgsext?...</code>是我们推文内容的url，双击之后，fiddler界面右边出现如下图数据</p>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/wechat/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcxMTE4MTkxOTA0MDAw.png" />
-6. 上图下侧的json里面的
-<code>read_num</code>、<code>like_num</code>分别是阅读量和点赞量</p>
-<p>####代码实现</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 目标url</span></span><br><span class="line">url = <span class="string">&quot;http://mp.weixin.qq.com/mp/getappmsgext&quot;</span></span><br><span class="line"><span class="comment"># 添加Cookie避免登陆操作，这里的&quot;User-Agent&quot;最好为手机浏览器的标识</span></span><br><span class="line">headers = &#123;</span><br><span class="line">    <span class="string">&quot;Cookie&quot;</span>: yourcookie,</span><br><span class="line">    <span class="string">&quot;User-Agent&quot;</span>: <span class="string">&quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36 MicroMessenger/6.5.2.501 NetType/WIFI WindowsWechat QBCore/3.43.27.400 QQBrowser/9.0.2524.400&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">data = &#123;</span><br><span class="line">    <span class="string">&quot;is_only_read&quot;</span>: <span class="string">&quot;1&quot;</span>,</span><br><span class="line">    <span class="string">&quot;is_temp_url&quot;</span>: <span class="string">&quot;0&quot;</span>,              </span><br><span class="line">    <span class="string">&quot;appmsg_type&quot;</span>: <span class="string">&quot;9&quot;</span>, <span class="comment"># 新参数，不加入无法获取like_num</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">添加请求参数</span></span><br><span class="line"><span class="string">__biz对应公众号的信息，唯一</span></span><br><span class="line"><span class="string">mid、sn、idx分别对应每篇文章的url的信息，需要从url中进行提取</span></span><br><span class="line"><span class="string">key、appmsg_token从fiddler上复制即可</span></span><br><span class="line"><span class="string">pass_ticket对应的文章的信息，貌似影响不大，也可以直接从fiddler复制</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">params = &#123;</span><br><span class="line">    <span class="string">&quot;__biz&quot;</span>: your__biz,</span><br><span class="line">    <span class="string">&quot;mid&quot;</span>: article_mid,</span><br><span class="line">    <span class="string">&quot;sn&quot;</span>: article_sn,</span><br><span class="line">    <span class="string">&quot;idx&quot;</span>: article_idx,</span><br><span class="line">    <span class="string">&quot;key&quot;</span>: yourkey,</span><br><span class="line">    <span class="string">&quot;pass_ticket&quot;</span>: pass_ticket,</span><br><span class="line">    <span class="string">&quot;appmsg_token&quot;</span>: yourappmsg_token,</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment"># 使用post方法进行提交</span></span><br><span class="line">content = requests.post(url, headers=headers, data=data, params=params).json()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 由于上面这种方法可能会获取数据失败，可以采取字符串拼接这种方法</span></span><br><span class="line">origin_url = <span class="string">&quot;https://mp.weixin.qq.com/mp/getappmsgext?&quot;</span></span><br><span class="line">appmsgext_url = origin_url + <span class="string">&quot;__biz=&#123;&#125;&amp;mid=&#123;&#125;&amp;sn=&#123;&#125;&amp;idx=&#123;&#125;&amp;appmsg_token=&#123;&#125;&amp;x5=1&quot;</span>.<span class="built_in">format</span>(your__biz, article_mid, article_sn, article_idx, yourappmsg_token)</span><br><span class="line">content = requests.post(appmsgext_url, headers=headers, data=data).json()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 提取其中的阅读数和点赞数</span></span><br><span class="line"><span class="built_in">print</span>(content[<span class="string">&quot;appmsgstat&quot;</span>][<span class="string">&quot;read_num&quot;</span>], content[<span class="string">&quot;appmsgstat&quot;</span>][<span class="string">&quot;like_num&quot;</span>])</span><br></pre></td></tr></table></figure>
-<p>以上即可获取到一篇文章的阅读量、点赞量。
-<code>Cookie</code>、<code>req_id</code>、<code>pass_ticket</code>、<code>key</code>、<code>appmsg_token</code>、<code>__biz</code>利用fiddler获取
-如果是需要多篇文章，需要更改的参数
-<code>mid</code>、<code>sn</code>、<code>idx</code>
-如果是不同公众号，就需要根据url修改 <code>__biz</code>
-多篇文章的爬取，需要根据之前爬取到的url进行提取关键信息，分别爬取。
-注：每次抓取完一页之后，最好设定time.sleep(3)。过快会导致爬取失败。</p>
-<h2 id="写在最后">写在最后</h2>
-<p>以上就是这次微信爬虫的经历。</p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/wechat/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcxMTE4MTkxODMzNzAx.png" alt=""></p>
+<ol>
+<li>其中 <code>/mp/getappmgsext?...</code>是我们推文内容的url，双击之后，fiddler界面右边出现如下图数据</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/wechat/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcxMTE4MTkxOTA0MDAw.png" alt=""></p>
+<ol>
+<li>上图下侧的json里面的 <code>read_num</code>、<code>like_num</code>分别是阅读量和点赞量</li>
+</ol>
+<h4 id="代码实现-1"><a href="#代码实现-1" class="headerlink" title="代码实现"></a>代码实现</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 目标url</span></span><br><span class="line">url = <span class="string">&quot;http://mp.weixin.qq.com/mp/getappmsgext&quot;</span></span><br><span class="line"><span class="comment"># 添加Cookie避免登陆操作，这里的&quot;User-Agent&quot;最好为手机浏览器的标识</span></span><br><span class="line">headers = &#123;</span><br><span class="line">    <span class="string">&quot;Cookie&quot;</span>: yourcookie,</span><br><span class="line">    <span class="string">&quot;User-Agent&quot;</span>: <span class="string">&quot;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36 MicroMessenger/6.5.2.501 NetType/WIFI WindowsWechat QBCore/3.43.27.400 QQBrowser/9.0.2524.400&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">data = &#123;</span><br><span class="line">    <span class="string">&quot;is_only_read&quot;</span>: <span class="string">&quot;1&quot;</span>,</span><br><span class="line">    <span class="string">&quot;is_temp_url&quot;</span>: <span class="string">&quot;0&quot;</span>,              </span><br><span class="line">    <span class="string">&quot;appmsg_type&quot;</span>: <span class="string">&quot;9&quot;</span>, <span class="comment"># 新参数，不加入无法获取like_num</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">添加请求参数</span></span><br><span class="line"><span class="string">__biz对应公众号的信息，唯一</span></span><br><span class="line"><span class="string">mid、sn、idx分别对应每篇文章的url的信息，需要从url中进行提取</span></span><br><span class="line"><span class="string">key、appmsg_token从fiddler上复制即可</span></span><br><span class="line"><span class="string">pass_ticket对应的文章的信息，貌似影响不大，也可以直接从fiddler复制</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">params = &#123;</span><br><span class="line">    <span class="string">&quot;__biz&quot;</span>: your__biz,</span><br><span class="line">    <span class="string">&quot;mid&quot;</span>: article_mid,</span><br><span class="line">    <span class="string">&quot;sn&quot;</span>: article_sn,</span><br><span class="line">    <span class="string">&quot;idx&quot;</span>: article_idx,</span><br><span class="line">    <span class="string">&quot;key&quot;</span>: yourkey,</span><br><span class="line">    <span class="string">&quot;pass_ticket&quot;</span>: pass_ticket,</span><br><span class="line">    <span class="string">&quot;appmsg_token&quot;</span>: yourappmsg_token,</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment"># 使用post方法进行提交</span></span><br><span class="line">content = requests.post(url, headers=headers, data=data, params=params).json()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 由于上面这种方法可能会获取数据失败，可以采取字符串拼接这种方法</span></span><br><span class="line">origin_url = <span class="string">&quot;https://mp.weixin.qq.com/mp/getappmsgext?&quot;</span></span><br><span class="line">appmsgext_url = origin_url + <span class="string">&quot;__biz=&#123;&#125;&amp;mid=&#123;&#125;&amp;sn=&#123;&#125;&amp;idx=&#123;&#125;&amp;appmsg_token=&#123;&#125;&amp;x5=1&quot;</span>.<span class="built_in">format</span>(your__biz, article_mid, article_sn, article_idx, yourappmsg_token)</span><br><span class="line">content = requests.post(appmsgext_url, headers=headers, data=data).json()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 提取其中的阅读数和点赞数</span></span><br><span class="line"><span class="built_in">print</span>(content[<span class="string">&quot;appmsgstat&quot;</span>][<span class="string">&quot;read_num&quot;</span>], content[<span class="string">&quot;appmsgstat&quot;</span>][<span class="string">&quot;like_num&quot;</span>])</span><br></pre></td></tr></table></figure>
+<p>以上即可获取到一篇文章的阅读量、点赞量。<br><code>Cookie</code>、<code>req_id</code>、<code>pass_ticket</code>、<code>key</code>、<code>appmsg_token</code>、<code>__biz</code>利用fiddler获取<br>如果是需要多篇文章，需要更改的参数 <code>mid</code>、<code>sn</code>、<code>idx</code><br>如果是不同公众号，就需要根据url修改 <code>__biz</code><br>多篇文章的爬取，需要根据之前爬取到的url进行提取关键信息，分别爬取。<br>注：每次抓取完一页之后，最好设定time.sleep(3)。过快会导致爬取失败。</p>
+<h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><p>以上就是这次微信爬虫的经历。</p>
 <p>需要掌握的基本技能：</p>
-<ol type="1">
+<ol>
 <li>python爬虫的语法</li>
 <li>Chrome、Fiddler基本使用</li>
 <li>网络爬虫基本常识</li>
 </ol>
 <p>缺陷：</p>
-<ol type="1">
+<ol>
 <li>使用Cookie登陆，未实现自动登陆</li>
 <li>key、appmsg_token一些关键参数需要进行手动获取</li>
 <li>实际运行之后，就算设定了爬取间隙时间，还是会被封禁（获取链接时）。</li>
 </ol>
 <p>说明：</p>
-<ol type="1">
+<ol>
 <li>网上一些说法，key半小时过期，我好像没有遇到。</li>
 <li>代码中若有细节问题，欢迎指出讨论</li>
 </ol>
 <p>Github上已经实现了第1、2点，欢迎回到文章开头看github上的实现过程。</p>
 <p>关于被封禁的问题，已有两个解决方案，均放在github上，在这不做讲解。</p>
-<ol type="1">
-<li>selenium解决方案，提高约十倍抓取量（不确定）。优点：提高抓取量；缺点：速度慢，不一定能完全抓取完整，抓取量不确定。<a
-target="_blank" rel="noopener" href="https://github.com/wnma3mz/wechat_articles_spider/blob/master/test/test_seleinum/test_seleinum.py">test_seleinum.py</a></li>
-<li>利用个人微信号的查看公众号历史消息，抓取量在500条以上，具体未测试。优点：抓取量最多的方案；缺点：短时间内（5-10分钟）无法查看历史消息，或者说无法持续抓取；不保证微信号会被封号。<a
-target="_blank" rel="noopener" href="https://github.com/wnma3mz/wechat_articles_spider/blob/master/test/test_GetUrls.py">test_GetUrls.py</a></li>
+<ol>
+<li>selenium解决方案，提高约十倍抓取量（不确定）。优点：提高抓取量；缺点：速度慢，不一定能完全抓取完整，抓取量不确定。<a target="_blank" rel="noopener" href="https://github.com/wnma3mz/wechat_articles_spider/blob/master/test/test_seleinum/test_seleinum.py">test_seleinum.py</a></li>
+<li>利用个人微信号的查看公众号历史消息，抓取量在500条以上，具体未测试。优点：抓取量最多的方案；缺点：短时间内（5-10分钟）无法查看历史消息，或者说无法持续抓取；不保证微信号会被封号。<a target="_blank" rel="noopener" href="https://github.com/wnma3mz/wechat_articles_spider/blob/master/test/test_GetUrls.py">test_GetUrls.py</a></li>
 </ol>
 
     </div>
@@ -477,7 +453,7 @@ target="_blank" rel="noopener" href="https://github.com/wnma3mz/wechat_articles_
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9C%80%E6%B1%82"><span class="nav-text">需求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9A%BE%E7%82%B9"><span class="nav-text">难点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AA%81%E7%A0%B4%E9%9A%BE%E7%82%B9%E4%B8%80"><span class="nav-text">突破难点一</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C"><span class="nav-text">操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-text">代码实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AA%81%E7%A0%B4%E9%9A%BE%E7%82%B9%E4%BA%8C"><span class="nav-text">突破难点二</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C-1"><span class="nav-text">操作</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E6%9C%80%E5%90%8E"><span class="nav-text">写在最后</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9C%80%E6%B1%82"><span class="nav-text">需求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9A%BE%E7%82%B9"><span class="nav-text">难点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AA%81%E7%A0%B4%E9%9A%BE%E7%82%B9%E4%B8%80"><span class="nav-text">突破难点一</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C"><span class="nav-text">操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-text">代码实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AA%81%E7%A0%B4%E9%9A%BE%E7%82%B9%E4%BA%8C"><span class="nav-text">突破难点二</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C-1"><span class="nav-text">操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0-1"><span class="nav-text">代码实现</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E6%9C%80%E5%90%8E"><span class="nav-text">写在最后</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -493,7 +469,7 @@ target="_blank" rel="noopener" href="https://github.com/wnma3mz/wechat_articles_
       <div class="site-state-item site-state-posts">
           <a href="/hexo_blog/archives/">
         
-          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-count">77</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

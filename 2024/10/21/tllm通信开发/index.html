@@ -244,78 +244,67 @@
       
         <p>记录开发 tLLM 中通信相关的问题。</p>
 <span id="more"></span>
-<h2 id="模型跨机通信的原因">模型跨机通信的原因</h2>
-<ul>
-<li><p>模型太大单机器放不下</p></li>
-<li><p>模型需要加速</p></li>
+<h2 id="模型跨机通信的原因"><a href="#模型跨机通信的原因" class="headerlink" title="模型跨机通信的原因"></a>模型跨机通信的原因</h2><ul>
+<li><p>模型太大单机器放不下</p>
+</li>
+<li><p>模型需要加速</p>
+</li>
 </ul>
-<h2 id="怎么做">怎么做？</h2>
-<ul>
+<h2 id="怎么做？"><a href="#怎么做？" class="headerlink" title="怎么做？"></a>怎么做？</h2><ul>
 <li><p>流水线并行 pipeline-parallel</p>
 <ul>
-<li><p>当前 LLM
-架构是由多层串联起来组成的，所以可以拆分成多个部分，每个部分计算一部分，实现流水线作业。</p></li>
-<li><p>PP 通信频率取决于 PP
-个数。不加速，仅仅是为了减少单个模型的大小。</p></li>
-</ul></li>
+<li><p>当前 LLM 架构是由多层串联起来组成的，所以可以拆分成多个部分，每个部分计算一部分，实现流水线作业。</p>
+</li>
+<li><p>PP 通信频率取决于 PP 个数。不加速，仅仅是为了减少单个模型的大小。</p>
+</li>
+</ul>
+</li>
 <li><p>张量并行 tensor-parallel</p>
 <ul>
-<li><p>矩阵计算本身具备独立性，即可以拆分并行计算，所以可以对应每个矩阵拆分，分发到不同机器上计算，最后再汇总</p></li>
-<li><p>TP
-要求更高的通信频率，适合单机多卡/局域网。不仅减小单机器模型尺寸，主要目的是为了加速，但需要低延迟、高带宽环境。</p></li>
-<li><p>非 GPU
-场景下成功的实践，https://github.com/b4rtaz/distributed-llama</p></li>
-</ul></li>
+<li><p>矩阵计算本身具备独立性，即可以拆分并行计算，所以可以对应每个矩阵拆分，分发到不同机器上计算，最后再汇总</p>
+</li>
+<li><p>TP 要求更高的通信频率，适合单机多卡/局域网。不仅减小单机器模型尺寸，主要目的是为了加速，但需要低延迟、高带宽环境。</p>
+</li>
+<li><p>非 GPU 场景下成功的实践，<a target="_blank" rel="noopener" href="https://github.com/b4rtaz/distributed-llama">https://github.com/b4rtaz/distributed-llama</a></p>
+</li>
 </ul>
-<p>实现主要注意的是，通信时，<code>reduce</code>
-涉及到一些复杂的规约算法，会有一些精度问题。</p>
-<h2 id="通信框架选择">通信框架选择</h2>
-<p>由于涉及到跨机器通信，所以期望先选择一个现有的性能较好的通信框架。由于并行需要高频率的通信，所以需要一个高效的通信框架。目前比较好的选择有下面几种</p>
+</li>
+</ul>
+<p>实现主要注意的是，通信时，<code>reduce</code> 涉及到一些复杂的规约算法，会有一些精度问题。</p>
+<h2 id="通信框架选择"><a href="#通信框架选择" class="headerlink" title="通信框架选择"></a>通信框架选择</h2><p>由于涉及到跨机器通信，所以期望先选择一个现有的性能较好的通信框架。由于并行需要高频率的通信，所以需要一个高效的通信框架。目前比较好的选择有下面几种</p>
 <ul>
 <li><p>ray</p>
 <ul>
-<li><p>ray 框架更易使用，无需手写 rpc 相关内容，且通信差不多，底层也是
-rpc。</p></li>
-<li><p>但 ray 框架在使用 Tensor Parallel
-会比较慢（大概率是实现问题），故暂时先用
-torch.dist，可以实现加速的效果。</p></li>
-</ul></li>
+<li><p>ray 框架更易使用，无需手写 rpc 相关内容，且通信差不多，底层也是 rpc。</p>
+</li>
+<li><p>但 ray 框架在使用 Tensor Parallel 会比较慢（大概率是实现问题），故暂时先用 torch.dist，可以实现加速的效果。</p>
+</li>
+</ul>
+</li>
 <li><p>torch.dist</p>
 <ul>
-<li><p>torch.dist 在 CPU 机器上用 gloo, 在 GPU 机器上用
-nccl，可以实现加速的效果。</p></li>
-<li><p>同时，使用 torch 的多进程共享内存进行 TP 也会更慢。</p></li>
-</ul></li>
-<li><p>rpc: grpc</p></li>
+<li><p>torch.dist 在 CPU 机器上用 gloo, 在 GPU 机器上用 nccl，可以实现加速的效果。</p>
+</li>
+<li><p>同时，使用 torch 的多进程共享内存进行 TP 也会更慢。</p>
+</li>
 </ul>
-<h2 id="q-a">Q &amp; A</h2>
-<p>Q：为什么在单个 nn.Linear 使用 torch.dist
-更快，但是在复杂模型中更慢？</p>
+</li>
+<li><p>rpc: grpc</p>
+</li>
+</ul>
+<h2 id="Q-amp-A"><a href="#Q-amp-A" class="headerlink" title="Q &amp; A"></a>Q &amp; A</h2><p>Q：为什么在单个 nn.Linear 使用 torch.dist 更快，但是在复杂模型中更慢？</p>
 <p>A：可能是通信？内存不够？CPU不够？换 CUDA？</p>
 <p>Q: 为什么 Merge QKV/gate、up 之后在复杂模型中更慢？</p>
 <p>A：内存带宽？多核利用？换 CUDA 效果可能会变好？</p>
-<p>在实现的时候，需要注意 <code>grpc</code>
-只有一个进程能接收到请求，所以需要该进程同步输入至其他进程，以能够实现
-<code>all.reduce</code>。有一些额外的通信开销，可以优化。</p>
-<p><code>torch.dist</code> 其实是有 rpc
-模块的，<code>torch.dist.rpc</code> 可以代替了 <code>grpc</code>
-实现了跨机器通信，好处在于无需转换数据类型。用 <code>torch.Tensor</code>
-通信即可。</p>
-<h2 id="并行策略">并行策略</h2>
-<p>当 TP 和 PP
-同时使用的时候，需要兼顾两种通信策略。在实现上，应该是先切 PP 再 TP
-比较容易。</p>
+<p>在实现的时候，需要注意 <code>grpc</code> 只有一个进程能接收到请求，所以需要该进程同步输入至其他进程，以能够实现 <code>all.reduce</code>。有一些额外的通信开销，可以优化。</p>
+<p><code>torch.dist</code> 其实是有 rpc 模块的，<code>torch.dist.rpc</code> 可以代替了 <code>grpc</code> 实现了跨机器通信，好处在于无需转换数据类型。用 <code>torch.Tensor</code> 通信即可。</p>
+<h2 id="并行策略"><a href="#并行策略" class="headerlink" title="并行策略"></a>并行策略</h2><p>当 TP 和 PP 同时使用的时候，需要兼顾两种通信策略。在实现上，应该是先切 PP 再 TP 比较容易。</p>
 <p>整体数据流如下：</p>
-<p>输入会发送至 Master 节点，由 Master 节点发送至 Node0 中，由 Node0
-同步数据至各个进程，计算完成后再汇总至进程
-0，由Node0-进程0发送数据至下一个 Node。重复该流程直至最后一个 Node
-完成，由最后一个 Node 的进程 0 发送至 Master 节点，最后由 Master
-节点返回输出。</p>
+<p>输入会发送至 Master 节点，由 Master 节点发送至 Node0 中，由 Node0 同步数据至各个进程，计算完成后再汇总至进程 0，由Node0-进程0发送数据至下一个 Node。重复该流程直至最后一个 Node 完成，由最后一个 Node 的进程 0 发送至 Master 节点，最后由 Master 节点返回输出。</p>
 <p>实现过程为了方便会有一定调整：</p>
 <ul>
 <li>Master 节点和 Node0 节点可能是一个节点</li>
-<li>Node0-&gt;Node1 的通信实现比较麻烦，暂时会由 Node1-&gt; Master，再由
-Master 发送至 Node1</li>
+<li>Node0-&gt;Node1 的通信实现比较麻烦，暂时会由 Node1-&gt; Master，再由 Master 发送至 Node1</li>
 </ul>
 <pre class="mermaid">graph LR
     A[输入] --> B[Master]
@@ -332,17 +321,12 @@ Master 发送至 Node1</li>
     Y --> I[Node1-进程1]
     H --> J[Node1]
     I --> J[Node1]
-  
+
     K[Node1] --> L[Node1-进程0]
     L --> M[Master]
     M --> N[输出]</pre>
-<p>单层 TP 的通信细节实现如下图所示，两个进程一直都存在。图中所示，对于
-<code>input_layernorm</code>两个进程的输入是一样，但都需要计算一次。计算后的输出也是一样，但是处于不不同的进程。不同的进程执行
-attention 计算过程，最后对两个进程的 <code>O Proj</code>
-的输出进行求和，再分发至两个进程。再执行
-<code>post_attention_layernorm</code>计算。MLP 的计算过程同理，最后对
-<code>Down Proj</code>
-的输出进行求和，并分发至两个进程以输入至下一层。</p>
+
+<p>单层 TP 的通信细节实现如下图所示，两个进程一直都存在。图中所示，对于 <code>input_layernorm</code>两个进程的输入是一样，但都需要计算一次。计算后的输出也是一样，但是处于不不同的进程。不同的进程执行 attention 计算过程，最后对两个进程的 <code>O Proj</code> 的输出进行求和，再分发至两个进程。再执行 <code>post_attention_layernorm</code>计算。MLP 的计算过程同理，最后对 <code>Down Proj</code> 的输出进行求和，并分发至两个进程以输入至下一层。</p>
 <pre class="mermaid">graph TD
     A[输入] --> B[input_layernorm]
     B --> C[QKV Proj 进程0] 
@@ -360,12 +344,9 @@ attention 计算过程，最后对两个进程的 <code>O Proj</code>
     L --> N[Down Proj 进程1]
     M --> O[reduce]
     N --> O[reduce]</pre>
-<p>经典的实现中 qkv proj 是分三层实现的 Q Proj,K Proj, V
-Proj，但是这里其实是可以并行，或者说合并为一层进行的，即 QKV Proj。Gate
-Up Proj 也是同理。具体实现可见
-<code>linear_cases/parallel/merge_linear.py</code></p>
-<h3 id="节点间通信">节点间通信</h3>
-<pre class="mermaid">flowchart TB
+
+<p>经典的实现中 qkv proj 是分三层实现的 Q Proj,K Proj, V Proj，但是这里其实是可以并行，或者说合并为一层进行的，即 QKV Proj。Gate Up Proj 也是同理。具体实现可见 <code>linear_cases/parallel/merge_linear.py</code></p>
+<h3 id="节点间通信"><a href="#节点间通信" class="headerlink" title="节点间通信"></a>节点间通信</h3><pre class="mermaid">flowchart TB
     subgraph Current["双向通信架构"]
         direction TB
         A1[Master] -->|gRPC Request| B1[Client1]
@@ -380,52 +361,39 @@ Up Proj 也是同理。具体实现可见
         B2[Client1] -->|gRPC Request| C2[Client2]
         C2[Client2] -->|gRPC Request| A[Master]
     end</pre>
-<h2 id="网络要求估算">网络要求估算</h2>
-<ul>
-<li>PP=8 ，那么通信要求需要 <span class="math inline">\(\times
-8\)</span></li>
-<li>70B 的 hidden_size 是 <span class="math inline">\(8192\)</span></li>
-<li>数据是 <code>(b)float16</code>，每个 token 的通信参数量为 <span
-class="math inline">\(1*8192*2=16,384\)</span></li>
+
+
+
+<h2 id="网络要求估算"><a href="#网络要求估算" class="headerlink" title="网络要求估算"></a>网络要求估算</h2><ul>
+<li>PP=8 ，那么通信要求需要 $\times 8$</li>
+<li>70B 的 hidden_size 是 $8192$</li>
+<li>数据是 <code>(b)float16</code>，每个 token 的通信参数量为 $1<em>8192</em>2=16,384$</li>
 </ul>
 <p>在 TPOT 阶段预期速度: 20 token/s -&gt; 0.05s / token</p>
 <ul>
-<li>假设通信：计算比为 1:4，那么通信时间为 0.01s
-<ul>
+<li>假设通信：计算比为 1:4，那么通信时间为 0.01s<ul>
 <li>即每次通信要在 0.01/8s 完成，即 0.00125s -&gt; 1.25ms</li>
-<li>70B 的 hidden_size 是 8192，就有 <span
-class="math inline">\(16,384\)</span> bytes.</li>
-<li>故要在 0.01/8s 完成，那么网络带宽至少要求 <span
-class="math inline">\(16,384/0.01*8=26,214,400 bytes/s = 13
-Mbps\)</span>。</li>
-</ul></li>
+<li>70B 的 hidden_size 是 8192，就有 $16,384$ bytes.</li>
+<li>故要在 0.01/8s 完成，那么网络带宽至少要求 $16,384/0.01*8=26,214,400 bytes/s = 13 Mbps$。</li>
+</ul>
+</li>
 </ul>
 <p>在 TTFT 阶段，即首 token 时间预期 3s 内有响应，</p>
 <ul>
-<li>假设通信：计算比为 1:2，那么通信时间为 1s，即每次通信要在 1/8s
-完成，即 0.125s -&gt; 125ms</li>
-<li>假设输入 token 数为 1000，那么通信参数量为 <span
-class="math inline">\(1000*16,384 = 16,384,000\)</span> bytes</li>
-<li>1/8s 内完成，通信时间为 <span
-class="math inline">\(16,384,000/1*8=131,072,000 比特/秒 = 131
-Mbps\)</span></li>
+<li>假设通信：计算比为 1:2，那么通信时间为 1s，即每次通信要在 1/8s 完成，即 0.125s -&gt; 125ms</li>
+<li>假设输入 token 数为 1000，那么通信参数量为 $1000*16,384 = 16,384,000$ bytes</li>
+<li>1/8s 内完成，通信时间为 $16,384,000/1*8=131,072,000 比特/秒 = 131 Mbps$</li>
 </ul>
-<p>优化点： - 数据压缩一倍，加速一倍 - 在 TTFT 阶段做 PP overlap，把输入
-token 分块传输。</p>
-<h2 id="通信时间测试">通信时间测试</h2>
-<p>token
-数较少时压缩似乎效果不大，只有在大数据量的时候才有明显效果。</p>
-<p>=== Starting gRPC Matrix Performance Test (use_zlib: False; use_lz4:
-False) ===</p>
+<p>优化点：</p>
+<ul>
+<li>数据压缩一倍，加速一倍</li>
+<li>在 TTFT 阶段做 PP overlap，把输入 token 分块传输。</li>
+</ul>
+<h2 id="通信时间测试"><a href="#通信时间测试" class="headerlink" title="通信时间测试"></a>通信时间测试</h2><p>token 数较少时压缩似乎效果不大，只有在大数据量的时候才有明显效果。</p>
+<p>=== Starting gRPC Matrix Performance Test (use_zlib: False; use_lz4: False) ===</p>
 <p>Time: 2024-11-02 11:40:40</p>
+<div class="table-container">
 <table>
-<colgroup>
-<col style="width: 18%" />
-<col style="width: 40%" />
-<col style="width: 13%" />
-<col style="width: 13%" />
-<col style="width: 13%" />
-</colgroup>
 <thead>
 <tr>
 <th>Matrix Shape</th>
@@ -473,17 +441,11 @@ False) ===</p>
 </tr>
 </tbody>
 </table>
-<p>=== Starting gRPC Matrix Performance Test (use_zlib: False; use_lz4:
-True) ===</p>
+</div>
+<p>=== Starting gRPC Matrix Performance Test (use_zlib: False; use_lz4: True) ===</p>
 <p>Time: 2024-11-02 11:51:41</p>
+<div class="table-container">
 <table>
-<colgroup>
-<col style="width: 18%" />
-<col style="width: 40%" />
-<col style="width: 13%" />
-<col style="width: 13%" />
-<col style="width: 13%" />
-</colgroup>
 <thead>
 <tr>
 <th>Matrix Shape</th>
@@ -531,17 +493,11 @@ True) ===</p>
 </tr>
 </tbody>
 </table>
-<p>=== Starting gRPC Matrix Performance Test (use_zlib: True; use_lz4:
-False) ===</p>
+</div>
+<p>=== Starting gRPC Matrix Performance Test (use_zlib: True; use_lz4: False) ===</p>
 <p>Time: 2024-11-02 11:41:51</p>
+<div class="table-container">
 <table>
-<colgroup>
-<col style="width: 18%" />
-<col style="width: 40%" />
-<col style="width: 13%" />
-<col style="width: 13%" />
-<col style="width: 13%" />
-</colgroup>
 <thead>
 <tr>
 <th>Matrix Shape</th>
@@ -582,6 +538,7 @@ False) ===</p>
 </tr>
 </tbody>
 </table>
+</div>
 <p>TODO: Meta-Llama-3-8B-Instruct in GPU</p>
 <ul>
 <li>多维数组实现（float32）: 单机通信在 0.002 s 左右 （seq-len=1）</li>
@@ -684,7 +641,7 @@ False) ===</p>
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E8%B7%A8%E6%9C%BA%E9%80%9A%E4%BF%A1%E7%9A%84%E5%8E%9F%E5%9B%A0"><span class="nav-text">模型跨机通信的原因</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%8E%E4%B9%88%E5%81%9A"><span class="nav-text">怎么做？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E4%BF%A1%E6%A1%86%E6%9E%B6%E9%80%89%E6%8B%A9"><span class="nav-text">通信框架选择</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#q-a"><span class="nav-text">Q &amp; A</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%B6%E8%A1%8C%E7%AD%96%E7%95%A5"><span class="nav-text">并行策略</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8A%82%E7%82%B9%E9%97%B4%E9%80%9A%E4%BF%A1"><span class="nav-text">节点间通信</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E8%A6%81%E6%B1%82%E4%BC%B0%E7%AE%97"><span class="nav-text">网络要求估算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E4%BF%A1%E6%97%B6%E9%97%B4%E6%B5%8B%E8%AF%95"><span class="nav-text">通信时间测试</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E8%B7%A8%E6%9C%BA%E9%80%9A%E4%BF%A1%E7%9A%84%E5%8E%9F%E5%9B%A0"><span class="nav-text">模型跨机通信的原因</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%8E%E4%B9%88%E5%81%9A%EF%BC%9F"><span class="nav-text">怎么做？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E4%BF%A1%E6%A1%86%E6%9E%B6%E9%80%89%E6%8B%A9"><span class="nav-text">通信框架选择</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Q-amp-A"><span class="nav-text">Q &amp; A</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%B6%E8%A1%8C%E7%AD%96%E7%95%A5"><span class="nav-text">并行策略</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8A%82%E7%82%B9%E9%97%B4%E9%80%9A%E4%BF%A1"><span class="nav-text">节点间通信</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E8%A6%81%E6%B1%82%E4%BC%B0%E7%AE%97"><span class="nav-text">网络要求估算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E4%BF%A1%E6%97%B6%E9%97%B4%E6%B5%8B%E8%AF%95"><span class="nav-text">通信时间测试</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -700,7 +657,7 @@ False) ===</p>
       <div class="site-state-item site-state-posts">
           <a href="/hexo_blog/archives/">
         
-          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-count">77</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

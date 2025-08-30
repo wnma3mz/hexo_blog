@@ -27,6 +27,7 @@
 <meta property="og:site_name" content="Wnma&#39;s Blogs">
 <meta property="og:description" content="本篇文章简单介绍了三种矩阵分解方式并且附上部分分解方式的实现代码。">
 <meta property="og:locale">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/matrix/2017-03-29-20-13-15.png">
 <meta property="article:published_time" content="2018-04-13T03:12:23.000Z">
 <meta property="article:modified_time" content="2024-06-15T08:01:01.805Z">
 <meta property="article:author" content="wnma3mz">
@@ -34,6 +35,7 @@
 <meta property="article:tag" content="数学">
 <meta property="article:tag" content="矩阵分解">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/matrix/2017-03-29-20-13-15.png">
 
 <link rel="canonical" href="https://wnma3mz.github.io/2018/04/13/%E6%95%B0%E5%AD%A6/%E7%9F%A9%E9%98%B5%E5%88%86%E8%A7%A3%E4%BB%8B%E7%BB%8D%E5%8F%8APython%E5%AE%9E%E7%8E%B0%EF%BC%88QR%E3%80%81SVD%E3%80%81LU%EF%BC%89/">
 
@@ -256,161 +258,103 @@
       
         <p>本篇文章简单介绍了三种矩阵分解方式并且附上部分分解方式的实现代码。</p>
 <span id="more"></span>
-<h1 id="矩阵分解">矩阵分解</h1>
-<p>Python实现了QR与LU分解，QR用了两种变换方式实现。<a
-target="_blank" rel="noopener" href="https://github.com/wnma3mz/Matrix-factorization">Github地址</a></p>
-<h2 id="what">What？</h2>
-<p><a
-target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E7%9F%A9%E9%98%B5%E5%88%86%E8%A7%A3">wiki链接</a></p>
+<h1 id="矩阵分解"><a href="#矩阵分解" class="headerlink" title="矩阵分解"></a>矩阵分解</h1><p>Python实现了QR与LU分解，QR用了两种变换方式实现。<a target="_blank" rel="noopener" href="https://github.com/wnma3mz/Matrix-factorization">Github地址</a></p>
+<h2 id="What？"><a href="#What？" class="headerlink" title="What？"></a>What？</h2><p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E7%9F%A9%E9%98%B5%E5%88%86%E8%A7%A3">wiki链接</a></p>
 <p>将矩阵拆分成数个三角形矩阵。</p>
-<h2 id="why">Why？</h2>
-<ol type="1">
+<h2 id="Why？"><a href="#Why？" class="headerlink" title="Why？"></a>Why？</h2><ol>
 <li>数值分析中，用于实现一些矩阵运算的快速算法</li>
 <li>推荐算法（SVD），信号处理（SVD）</li>
 <li>反应矩阵中的一些数值特性：如矩阵的秩、特征值(奇异值)</li>
 </ol>
 <p>每一种矩阵分解方式对应不同的意义</p>
-<h2 id="how">How？</h2>
-<h3 id="基本概念介绍">基本概念介绍</h3>
-<p>关于转置、逆矩阵就不多介绍了。</p>
+<h2 id="How？"><a href="#How？" class="headerlink" title="How？"></a>How？</h2><h3 id="基本概念介绍"><a href="#基本概念介绍" class="headerlink" title="基本概念介绍"></a>基本概念介绍</h3><p>关于转置、逆矩阵就不多介绍了。</p>
 <ul>
-<li>满秩矩阵
-<ul>
+<li>满秩矩阵<ul>
 <li>矩阵的秩等于行数—&gt;行满秩</li>
 <li>矩阵的秩等于列数—&gt;列满秩</li>
 <li>以上两个都满足称为n阶方阵</li>
-</ul></li>
-<li>酉矩阵（正交矩阵）
-<ul>
+</ul>
+</li>
+<li>酉矩阵（正交矩阵）<ul>
 <li>方块矩阵，元素皆为实数，行与列皆正交的单位向量</li>
 <li>特性：矩阵的转置矩阵为逆矩阵</li>
 <li>定理（det表示行列式）：</li>
-</ul></li>
 </ul>
-<p><span class="math display">\[Q^T=Q^{-1}\Leftrightarrow Q^TQ=QQ^T =
-I\]</span></p>
-<p><span
-class="math display">\[1=\det(I)=\det(Q^TQ)=\det(Q^T)\det(Q)=(\det(Q))^2\Rightarrow|Q|
-\pm 1\]</span></p>
-<ul>
+</li>
+</ul>
+<script type="math/tex; mode=display">Q^T=Q^{-1}\Leftrightarrow Q^TQ=QQ^T = I</script><script type="math/tex; mode=display">1=\det(I)=\det(Q^TQ)=\det(Q^T)\det(Q)=(\det(Q))^2\Rightarrow|Q| \pm 1</script><ul>
 <li><p>单位矩阵</p>
 <ul>
 <li>矩阵中的每个元素都为1</li>
 <li>如下</li>
 </ul>
-<p><span class="math display">\[\left| \begin{array}{ccc} 1 &amp; 1
-&amp; 1 \\ 1 &amp; 1 &amp; 1 \\ 1&amp; 1 &amp; 1 \end{array}
-\right|\]</span></p></li>
+<script type="math/tex; mode=display">\left| \begin{array}{ccc} 1 & 1 & 1 \\ 1 & 1 & 1 \\ 1& 1 & 1 \end{array} \right|</script></li>
 <li><p>上三角矩阵</p>
 <ul>
 <li>非零元素在右上方的矩阵</li>
 <li>如下</li>
 </ul>
-<p><span class="math display">\[\left| \begin{array}{ccc} 1 &amp; 2
-&amp; 3 \\ 0 &amp; 1 &amp; 2\\ 0&amp; 0 &amp; 1 \end{array}
-\right|\]</span></p></li>
+<script type="math/tex; mode=display">\left| \begin{array}{ccc} 1 & 2 & 3 \\ 0 & 1 & 2\\ 0& 0 & 1 \end{array} \right|</script></li>
 <li><p>二范数</p>
 <ul>
 <li>假设有一个x的向量</li>
 </ul>
-<p><span class="math display">\[x= (1, 2, 3)^T\]</span></p>
-<ul>
+<script type="math/tex; mode=display">x= (1, 2, 3)^T</script><ul>
 <li>那么它的二范数表示如下</li>
 </ul>
-<p><span class="math display">\[||x||_2 =\sqrt{1^2 + 2^2 +
-3^2}=\sqrt{14}\]</span></p></li>
+<script type="math/tex; mode=display">||x||_2 =\sqrt{1^2 + 2^2 + 3^2}=\sqrt{14}</script></li>
 <li><p>共轭转置</p>
-<p><span class="math display">\[A^*=(\bar{A})^T=\bar{A^T}\]</span></p>
-<ul>
+<script type="math/tex; mode=display">A^*=(\bar{A})^T=\bar{A^T}</script><ul>
 <li>现有矩阵A</li>
 </ul>
-<p><span class="math display">\[A=\left[ \begin{array}{ccc} 3+i &amp; 5
-\\ 2-2i &amp; i\end{array} \right]\]</span></p>
-<ul>
+<script type="math/tex; mode=display">A=\left[ \begin{array}{ccc} 3+i & 5 \\ 2-2i & i\end{array} \right]</script><ul>
 <li>则它的共轭矩阵如下</li>
 </ul>
-<p><span class="math display">\[A^*=\left[ \begin{array}{ccc} 3-i &amp;
-2+2i \\ 5 &amp; -i\end{array} \right]\]</span></p></li>
+<script type="math/tex; mode=display">A^*=\left[ \begin{array}{ccc} 3-i & 2+2i \\ 5 & -i\end{array} \right]</script></li>
 <li><p>特征值与奇异值</p>
 <p>我的理解是：特征值是奇异值的一种特殊情况，特征值是在矩阵是方阵时候的奇异值。</p>
 <p>关于什么是特征值。</p>
 <p>一个矩阵可以理解为由n个向量组成的，而特征值就是反应向量长度（重要性）的标准，特征值越大，则对应向量就越重要。</p>
-<p>假设判断电影为动作片还是搞笑片，可以由以下几个特征来衡量，打斗场景、观众笑声次数、导演、演员……。将数据离散化成矩阵，然后提取特征值，特征值越大的特征则对于衡量电影是动作片还是搞笑片的比重越大。</p></li>
+<p>假设判断电影为动作片还是搞笑片，可以由以下几个特征来衡量，打斗场景、观众笑声次数、导演、演员……。将数据离散化成矩阵，然后提取特征值，特征值越大的特征则对于衡量电影是动作片还是搞笑片的比重越大。</p>
+</li>
 <li><p>Householder矩阵</p>
 <ul>
-<li><p><a
-target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/豪斯霍尔德变换">wiki链接</a></p></li>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/豪斯霍尔德变换">wiki链接</a></li>
 <li><p>公式如下，H表示Householder矩阵，I表示单位矩阵，v表示单位向量，v*表示v的共轭转置。</p>
-<p><span class="math display">\[H=I-2vv^*\]</span></p></li>
+<script type="math/tex; mode=display">H=I-2vv^*</script></li>
 <li><p>性质：</p>
-<ol type="1">
+<ol>
 <li>H矩阵的转置等于它本身的逆</li>
-<li>H矩阵的平方等于单位矩阵</li>
+<li><p>H矩阵的平方等于单位矩阵</p>
+<script type="math/tex; mode=display">H^{-1}=H^*</script><script type="math/tex; mode=display">H^2=I</script></li>
 </ol>
-<p><span class="math display">\[H^{-1}=H^*\]</span></p>
-<p><span class="math display">\[H^2=I\]</span></p></li>
-</ul></li>
+</li>
 </ul>
-<h3 id="svd分解">1. SVD分解</h3>
-<p><a
-target="_blank" rel="noopener" href="https://blog.csdn.net/u010099080/article/details/68060274">数学解释参考链接</a></p>
+</li>
+</ul>
+<h3 id="1-SVD分解"><a href="#1-SVD分解" class="headerlink" title="1. SVD分解"></a>1. SVD分解</h3><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/u010099080/article/details/68060274">数学解释参考链接</a></p>
 <p>奇异值分解。公式如下：</p>
-<p><span class="math display">\[M=U\Sigma V^*\]</span></p>
-<p>举例：</p>
-<p><span class="math display">\[\begin{array}{clll} M &amp;= U\Sigma V^*
-\\ &amp;= \begin{bmatrix} 1 &amp; 0 &amp; 0 &amp; 0 &amp; 2\\ 0 &amp; 0
-&amp; 3 &amp; 0 &amp; 0\\ 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0\\ 0 &amp; 4
-&amp; 0 &amp; 0 &amp; 0\end{bmatrix} \\  &amp;= \begin{bmatrix} 0 &amp;
-0 &amp; 1 &amp; 0\\ 0 &amp; 1 &amp; 0 &amp; 0\\ 0 &amp; 0 &amp; 0 &amp;
-1\\ 1 &amp; 0 &amp; 0 &amp; 0\end{bmatrix} \cdot \begin{bmatrix} 4 &amp;
-0 &amp; 0 &amp; 0 &amp; 0\\ 0 &amp; 3 &amp; 0 &amp; 0 &amp; 0\\ 0 &amp;
-0 &amp; \sqrt{5} &amp; 0 &amp; 0\\ 0 &amp; 0 &amp; 0 &amp; 0 &amp;
-0\end{bmatrix} \cdot \begin{bmatrix} 0 &amp; 1 &amp; 0 &amp; 0 &amp; 0\\
-0 &amp; 0 &amp; 1 &amp; 0 &amp; 0\\ \sqrt{0.2} &amp; 0 &amp; 0 &amp; 0
-&amp; \sqrt{0.8}\\ 0 &amp; 0 &amp; 0 &amp; 1 &amp; 0\\ \sqrt{0.8} &amp;
-0 &amp; 0 &amp; 0 &amp; -\sqrt{0.2}\end{bmatrix}
-\end{array}\]</span></p>
-<p>性质:</p>
-<ol type="1">
-<li>矩阵<span
-class="math inline">\(\Sigma\)</span>的所有非对角元为0。矩阵<strong>U</strong>和<span
-class="math inline">\(V^*\)</span>都是酉矩阵，它们乘上各自的共轭转置都得到单位矩阵</li>
-<li>奇异值的分解并不是唯一的，这是因为<span
-class="math inline">\(\Sigma\)</span>矩阵中的对角元有元素为0</li>
+<script type="math/tex; mode=display">M=U\Sigma V^*</script><p>举例：</p>
+<script type="math/tex; mode=display">\begin{array}{clll} M &= U\Sigma V^* \\ &= \begin{bmatrix} 1 & 0 & 0 & 0 & 2\\ 0 & 0 & 3 & 0 & 0\\ 0 & 0 & 0 & 0 & 0\\ 0 & 4 & 0 & 0 & 0\end{bmatrix} \\  &= \begin{bmatrix} 0 & 0 & 1 & 0\\ 0 & 1 & 0 & 0\\ 0 & 0 & 0 & 1\\ 1 & 0 & 0 & 0\end{bmatrix} \cdot \begin{bmatrix} 4 & 0 & 0 & 0 & 0\\ 0 & 3 & 0 & 0 & 0\\ 0 & 0 & \sqrt{5} & 0 & 0\\ 0 & 0 & 0 & 0 & 0\end{bmatrix} \cdot \begin{bmatrix} 0 & 1 & 0 & 0 & 0\\ 0 & 0 & 1 & 0 & 0\\ \sqrt{0.2} & 0 & 0 & 0 & \sqrt{0.8}\\ 0 & 0 & 0 & 1 & 0\\ \sqrt{0.8} & 0 & 0 & 0 & -\sqrt{0.2}\end{bmatrix} \end{array}</script><p>性质:</p>
+<ol>
+<li>矩阵$\Sigma$的所有非对角元为0。矩阵<strong>U</strong>和$V^*$都是酉矩阵，它们乘上各自的共轭转置都得到单位矩阵</li>
+<li>奇异值的分解并不是唯一的，这是因为$\Sigma$矩阵中的对角元有元素为0</li>
 </ol>
 <p>步骤：</p>
-<ol type="1">
-<li>计算<span class="math inline">\(M.T\cdot
-M\)</span>得到特征向量（左奇异向量），是U的列向量</li>
-<li>计算<span class="math inline">\(M\cdot
-M.T\)</span>得到特征向量（右奇异向量），是V的列向量</li>
-<li>计算<span class="math inline">\(M\cdot M.T\)</span>或者<span
-class="math inline">\(M.T\cdot
-M\)</span>得到特征值，所有非零特征值的平方根（二范数）</li>
+<ol>
+<li>计算$M.T\cdot M$得到特征向量（左奇异向量），是U的列向量</li>
+<li>计算$M\cdot M.T$得到特征向量（右奇异向量），是V的列向量</li>
+<li>计算$M\cdot M.T$或者$M.T\cdot M$得到特征值，所有非零特征值的平方根（二范数）</li>
 </ol>
 <p>得到特征向量之后，需要依照特征值从大到小进行排序。</p>
 <p>关于求特征值的方法，线代书上已做介绍，就不赘述。如果运用编程方法求矩阵的特征值，最常见的方法有<strong>雅可比算法、幂法。</strong>当然也可以用先进行QR分解求得特征值之后，再继续进行SVD。</p>
-<h3 id="lu分解">2. LU分解</h3>
-<p><a
-target="_blank" rel="noopener" href="https://jiayi797.github.io/2017/03/29/%E6%95%B0%E5%AD%A6-%E7%9F%A9%E9%98%B5LU%E5%88%86%E8%A7%A3/">参考链接</a></p>
+<h3 id="2-LU分解"><a href="#2-LU分解" class="headerlink" title="2. LU分解"></a>2. LU分解</h3><p><a target="_blank" rel="noopener" href="https://jiayi797.github.io/2017/03/29/%E6%95%B0%E5%AD%A6-%E7%9F%A9%E9%98%B5LU%E5%88%86%E8%A7%A3/">参考链接</a></p>
 <p>将一个矩阵分解为一个下三角矩阵和一个上三角矩阵的乘积。形式如：</p>
-<p><span class="math display">\[A=LU\]</span></p>
-<p>格式如下</p>
-<p><span class="math display">\[\left[ \begin{array} { l l l } { a _ {
-11 } } &amp; { a _ { 12 } } &amp; { a _ { 13 } } \\ { a _ { 21 } } &amp;
-{ a _ { 22 } } &amp; { a _ { 23 } } \\ { a _ { 31 } } &amp; { a _ { 32 }
-} &amp; { a _ { 33 } } \end{array} \right] = \left[ \begin{array} { c c
-c } { l _ { 11 } } &amp; { 0 } &amp; { 0 } \\ { l _ { 21 } } &amp; { l _
-{ 22 } } &amp; { 0 } \\ { l _ { 31 } } &amp; { l _ { 32 } } &amp; { l _
-{ 33 } } \end{array} \right] \left[ \begin{array} { c c c } { u _ { 11 }
-} &amp; { u _ { 12 } } &amp; { u _ { 13 } } \\ { 0 } &amp; { u _ { 22 }
-} &amp; { u _ { 23 } } \\ { 0 } &amp; { 0 } &amp; { u _ { 33 } }
-\end{array} \right]\]</span></p>
-<p>分解过程：</p>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/matrix/2017-03-29-20-13-15.png" /></p>
+<script type="math/tex; mode=display">A=LU</script><p>格式如下</p>
+<script type="math/tex; mode=display">\left[ \begin{array} { l l l } { a _ { 11 } } & { a _ { 12 } } & { a _ { 13 } } \\ { a _ { 21 } } & { a _ { 22 } } & { a _ { 23 } } \\ { a _ { 31 } } & { a _ { 32 } } & { a _ { 33 } } \end{array} \right] = \left[ \begin{array} { c c c } { l _ { 11 } } & { 0 } & { 0 } \\ { l _ { 21 } } & { l _ { 22 } } & { 0 } \\ { l _ { 31 } } & { l _ { 32 } } & { l _ { 33 } } \end{array} \right] \left[ \begin{array} { c c c } { u _ { 11 } } & { u _ { 12 } } & { u _ { 13 } } \\ { 0 } & { u _ { 22 } } & { u _ { 23 } } \\ { 0 } & { 0 } & { u _ { 33 } } \end{array} \right]</script><p>分解过程：</p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/matrix/2017-03-29-20-13-15.png" alt=""></p>
 <p>声明：l11表示L矩阵的第一行第一列的元素，U1i表示L矩阵第一行每一列（需要遍历的列）的元素</p>
-<ol type="1">
+<ol>
 <li>初始化L、U矩阵。L矩阵下三角矩阵，对角元素全为1；U矩阵为上三角矩阵。</li>
 <li>计算U矩阵的第一行，对应A矩阵的第一行元素，不需要做任何操作</li>
 <li>计算L矩阵的第一列（除去第一行元素），对应A矩阵的第一列元素，每个元素除以u11</li>
@@ -421,70 +365,50 @@ src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/matrix/201
 <p>总结公式如下：</p>
 <p>L矩阵对角元素为1。</p>
 <p>第一步的公式：</p>
-<p><span class="math display">\[\begin{array}{lll}
-a_{1j}=(1,0,0,\cdots,0)\cdot(u_{1j},u_{2j},\cdots,u_{ij}).T=u_{1j} \\
-a_{i1}=(l_{i1},
-l_{i1},\cdots,l_{i1})\cdot(u_{11},0,\cdots,0).T=l_{i1}\cdot u_{11}
-\\u_{1j}=a_{1j}  \\ l_{i1}=\frac{a_{i1}}{u_{11}} \\j=1,2,\cdots,n
-\\i=2,3,\cdots,n\end{array}\]</span></p>
-<p>第r步的公式：</p>
-<p><span
-class="math display">\[\begin{array}{rl}  a_{rj}&amp;=(l_{r1},l_{r2},...,l_{rr-1})\cdot(u_{1j},u_{2j},...,u_{jj}).T
-\\&amp;=\sum\limits_{k=1}^{r-1}l_{rk}u_{kj}+u_{rj}  \end{array}\]</span></p>
-<p><span class="math display">\[\begin{array}{lll}
-u_{rj}=a_{rj}-\sum\limits_{k=1}^{r-1}l_{rk}u_{kj} \\
-l_{ir}=\frac{a_{ir}-\sum\limits_{k=1}^{r-1}l_{ik}u_{kr}}{u_{rr}}
-\end{array}\]</span></p>
-<p><span class="math display">\[\begin{array}{lll} j=r,r+1,\cdots,n \\
-r=2,3,\cdots,n-1 \\ i=r+1,\cdots,n\end{array}\]</span></p>
-<h3 id="qr分解">3. QR分解</h3>
-<p><a
-target="_blank" rel="noopener" href="https://wenku.baidu.com/view/c2e34678168884868762d6f9.html">参考链接</a></p>
+<script type="math/tex; mode=display">\begin{array}{lll} a_{1j}=(1,0,0,\cdots,0)\cdot(u_{1j},u_{2j},\cdots,u_{ij}).T=u_{1j} \\ a_{i1}=(l_{i1}, l_{i1},\cdots,l_{i1})\cdot(u_{11},0,\cdots,0).T=l_{i1}\cdot u_{11} \\u_{1j}=a_{1j}  \\ l_{i1}=\frac{a_{i1}}{u_{11}} \\j=1,2,\cdots,n \\i=2,3,\cdots,n\end{array}</script><p>第r步的公式：</p>
+<script type="math/tex; mode=display">\begin{array}{rl}  a_{rj}&=(l_{r1},l_{r2},...,l_{rr-1})\cdot(u_{1j},u_{2j},...,u_{jj}).T \\&=\sum\limits_{k=1}^{r-1}l_{rk}u_{kj}+u_{rj}  \end{array}</script><script type="math/tex; mode=display">\begin{array}{lll} u_{rj}=a_{rj}-\sum\limits_{k=1}^{r-1}l_{rk}u_{kj} \\ l_{ir}=\frac{a_{ir}-\sum\limits_{k=1}^{r-1}l_{ik}u_{kr}}{u_{rr}} \end{array}</script><script type="math/tex; mode=display">\begin{array}{lll} j=r,r+1,\cdots,n \\ r=2,3,\cdots,n-1 \\ i=r+1,\cdots,n\end{array}</script><h3 id="3-QR分解"><a href="#3-QR分解" class="headerlink" title="3. QR分解"></a>3. QR分解</h3><p><a target="_blank" rel="noopener" href="https://wenku.baidu.com/view/c2e34678168884868762d6f9.html">参考链接</a></p>
 <p>把矩阵分解成一个半正交矩阵与一个上三角矩阵的积。</p>
 <p>形式如:</p>
-<p><span class="math display">\[A=QR\]</span></p>
-<p>分解定理：任意一个满秩实（复）矩阵A，都可唯一地分解A=QR,其中Q为正交（酉）矩阵，R是具有对角元的上三角矩阵。</p>
-<h4 id="三种实现方式">三种实现方式</h4>
-<ol type="1">
+<script type="math/tex; mode=display">A=QR</script><p>分解定理：任意一个满秩实（复）矩阵A，都可唯一地分解A=QR,其中Q为正交（酉）矩阵，R是具有对角元的上三角矩阵。</p>
+<h4 id="三种实现方式"><a href="#三种实现方式" class="headerlink" title="三种实现方式"></a>三种实现方式</h4><ol>
 <li><p>Gram-Schmidt正交化</p>
-<p>过程:</p>
-<ol type="1">
-<li><p>取出矩阵A中的每一列命名为x_col，它们之间线性无关</p></li>
-<li><p>将每一个x_col正交化得到y_col</p></li>
-<li><p>再将y_col进行单位化，即转换为e_col。这里每个e_col为矩阵Q中的每一列。</p></li>
-<li><p>将第二步中，先转换为y_col的正交化得到x_col，再转换为e_col正交化得到x_col。这里每个e_col的系数，对应的就是矩阵R中的每一列</p></li>
-</ol></li>
+<p>   过程:</p>
+<ol>
+<li><p>取出矩阵A中的每一列命名为x_col，它们之间线性无关</p>
+</li>
+<li><p>将每一个x_col正交化得到y_col</p>
+</li>
+<li><p>再将y_col进行单位化，即转换为e_col。这里每个e_col为矩阵Q中的每一列。</p>
+</li>
+<li><p>将第二步中，先转换为y_col的正交化得到x_col，再转换为e_col正交化得到x_col。这里每个e_col的系数，对应的就是矩阵R中的每一列</p>
+</li>
+</ol>
+</li>
 <li><p>Householder变换</p>
-<p><a target="_blank" rel="noopener" href="https://www.bbsmax.com/A/gVdnKqK1zW/">参考链接</a></p>
-<p>outer函数</p>
+<p> <a target="_blank" rel="noopener" href="https://www.bbsmax.com/A/gVdnKqK1zW/">参考链接</a></p>
+<p> outer函数</p>
 <ul>
 <li><p>通常有两个输入向量，假设为向量a、b</p>
-<p><span class="math display">\[a = (1, 2, 3) , b = (-1, -2,
--3)\]</span></p></li>
-<li><p>那么，outer函数运算过程如</p></li>
-</ul>
-<p><span class="math display">\[outer(a, b) = \left[ \begin{array}{ccc}
-1*-1 &amp; 1*-2 &amp; 1*-3 \\ 2*1 &amp; 2*-2 &amp; 2*-3 \\ 3*-1 &amp;
-3*-2 &amp; 3*-3 \end{array} \right]\]</span></p>
-<p>过程:</p>
-<ol type="1">
+<script type="math/tex; mode=display">a = (1, 2, 3) , b = (-1, -2, -3)</script></li>
+<li><p>那么，outer函数运算过程如</p>
+<script type="math/tex; mode=display">outer(a, b) = \left[ \begin{array}{ccc} 1*-1 & 1*-2 & 1*-3 \\ 2*1 & 2*-2 & 2*-3 \\ 3*-1 & 3*-2 & 3*-3 \end{array} \right]</script><p>过程:</p>
+<ol>
 <li>初始化矩阵Q为单位矩阵(rxr)，r为矩阵A的行数。初始化矩阵R为矩阵A</li>
 <li>取R中的下三角矩阵，每次取一列命名为x（不包括最后一列）。e初始化为形如x的零向量</li>
 <li>e中的第一个元素为向量x的二范数</li>
 <li>这里得到v，范数取2</li>
 </ol>
-<p><span class="math display">\[v = \frac{x - e}{||x-e||}\]</span></p>
-<ol start="5" type="1">
-<li>初始化一个单位矩阵命名为Q_cnt，取Q_cnt的下三角矩阵，每次取一列在原有的基础上减去2*outer(v,
-v)。（不包括最后一列）</li>
+<script type="math/tex; mode=display">v = \frac{x - e}{||x-e||}</script><ol>
+<li>初始化一个单位矩阵命名为Q_cnt，取Q_cnt的下三角矩阵，每次取一列在原有的基础上减去2*outer(v, v)。（不包括最后一列）</li>
 <li>更新R,Q</li>
 </ol>
-<p><span class="math display">\[R = Q\_cnt * R \]</span></p>
-<p><span class="math display">\[Q = Q * Q\_cnt\]</span></p></li>
+<script type="math/tex; mode=display">R = Q\_cnt * R</script><script type="math/tex; mode=display">Q = Q * Q\_cnt</script></li>
+</ul>
+</li>
 <li><p>Givens变换</p>
-<p><a
-target="_blank" rel="noopener" href="http://www.voidcn.com/article/p-vmnqitql-xa.html">参考链接</a></p>
-<p>有待补充</p></li>
+<p>   <a target="_blank" rel="noopener" href="http://www.voidcn.com/article/p-vmnqitql-xa.html">参考链接</a></p>
+<p>   有待补充</p>
+</li>
 </ol>
 
     </div>
@@ -588,7 +512,7 @@ target="_blank" rel="noopener" href="http://www.voidcn.com/article/p-vmnqitql-xa
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9F%A9%E9%98%B5%E5%88%86%E8%A7%A3"><span class="nav-text">矩阵分解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#what"><span class="nav-text">What？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#why"><span class="nav-text">Why？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#how"><span class="nav-text">How？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E4%BB%8B%E7%BB%8D"><span class="nav-text">基本概念介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#svd%E5%88%86%E8%A7%A3"><span class="nav-text">1. SVD分解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lu%E5%88%86%E8%A7%A3"><span class="nav-text">2. LU分解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#qr%E5%88%86%E8%A7%A3"><span class="nav-text">3. QR分解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%89%E7%A7%8D%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F"><span class="nav-text">三种实现方式</span></a></li></ol></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9F%A9%E9%98%B5%E5%88%86%E8%A7%A3"><span class="nav-text">矩阵分解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#What%EF%BC%9F"><span class="nav-text">What？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Why%EF%BC%9F"><span class="nav-text">Why？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#How%EF%BC%9F"><span class="nav-text">How？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E4%BB%8B%E7%BB%8D"><span class="nav-text">基本概念介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-SVD%E5%88%86%E8%A7%A3"><span class="nav-text">1. SVD分解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-LU%E5%88%86%E8%A7%A3"><span class="nav-text">2. LU分解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-QR%E5%88%86%E8%A7%A3"><span class="nav-text">3. QR分解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%89%E7%A7%8D%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F"><span class="nav-text">三种实现方式</span></a></li></ol></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -604,7 +528,7 @@ target="_blank" rel="noopener" href="http://www.voidcn.com/article/p-vmnqitql-xa
       <div class="site-state-item site-state-posts">
           <a href="/hexo_blog/archives/">
         
-          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-count">77</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
