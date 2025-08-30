@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/hexo_blog/css/main.css">
+
+
+<link rel="stylesheet" href="/hexo_blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wnma3mz.github.io","root":"/hexo_blog/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="介绍投机解码 Fast Inference from Transformers via Speculative Decoding">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LLM的推理加速-投机解码">
+<meta property="og:url" content="https://wnma3mz.github.io/2025/08/30/LLM/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-%E6%8A%95%E6%9C%BA%E8%A7%A3%E7%A0%81/index.html">
+<meta property="og:site_name" content="Wnma&#39;s Blogs">
+<meta property="og:description" content="介绍投机解码 Fast Inference from Transformers via Speculative Decoding">
+<meta property="og:locale">
+<meta property="article:published_time" content="2025-08-30T07:04:12.000Z">
+<meta property="article:modified_time" content="2025-08-30T08:46:00.116Z">
+<meta property="article:author" content="wnma3mz">
+<meta property="article:tag" content="NLP">
+<meta property="article:tag" content="Attention">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://wnma3mz.github.io/2025/08/30/LLM/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-%E6%8A%95%E6%9C%BA%E8%A7%A3%E7%A0%81/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>LLM的推理加速-投机解码 | Wnma's Blogs</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="تشغيل شريط التصفح">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hexo_blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Wnma's Blogs</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/hexo_blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/hexo_blog/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/hexo_blog/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/hexo_blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-bookmark">
+
+    <a href="https://wnma3mz.github.io/bookmark/index.html" rel="section"><i class="fa fa-bookmark fa-fw"></i>书签</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/2025/08/30/LLM/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-%E6%8A%95%E6%9C%BA%E8%A7%A3%E7%A0%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
+      <meta itemprop="name" content="wnma3mz">
+      <meta itemprop="description" content="Day Day Up">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wnma's Blogs">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          LLM的推理加速-投机解码
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建于：2025-08-30 15:04:12 / عُدل：16:46:00" itemprop="dateCreated datePublished" datetime="2025-08-30T15:04:12+08:00">2025-08-30</time>
+
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/Note/" itemprop="url" rel="index"><span itemprop="name">Note</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>介绍投机解码</p>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2211.17192">Fast Inference from
+Transformers via Speculative Decoding</a></p>
+<span id="more"></span>
+<h2 id="投机解码">投机解码</h2>
+<h3 id="动机">动机</h3>
+<h3 id="基本设定">基本设定</h3>
+<p>在解题场景下，输入输出如下所示（不讨论为什么要用这个输出格式）</p>
+<p>模型的尺寸是跟能力成正比的，所以在解题场景下，通常使用 72B 模型</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>输入</th>
+<th>输出</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>你是一位老师，给你一个题目，请按下面要求解答题目。<br>要求：<br>1.
+复述一遍题目<br>2.
+给出答案的解题思路分析，最后给出题目的最终答案；<br>3.
+如果题目题干不完整，存在信息丢失、错乱等情况，请说明题目不能解答，并给出具体的原因。<br>(2分)女性口腔上皮细胞中染色体组成是_<strong><em>，有</em></strong>_个细胞分子。<br>【题干】女性口腔上皮细胞中染色体组成是_<strong><em>，有</em></strong>_个细胞分子。<br>【解析】xxx<br>【答案】xxx</td>
+<td>【题干】女性口腔上皮细胞中染色体组成是_<strong><em>，有</em></strong>_个细胞分子。<br>【解析】xxx<br>【答案】xxx</td>
+</tr>
+</tbody>
+</table>
+<p>将模型的输出简单分为三个部分【题干】、【解析】、【答案】</p>
+<h3 id="加速动机">加速动机</h3>
+<p>输出中每个部分的难易程度是不一样的</p>
+<p>【题干】要求重新输出一遍输入的部分内容</p>
+<p>【解析】需要更强的逻辑推理能力</p>
+<p>所以，【题干】对于 72B
+模型是大材小用的。甚至【解析】中也不是所有内容都需要 72B。</p>
+<h3 id="怎么加速">怎么加速</h3>
+<p>“容易”的 token
+（【题干】部分）可以由小尺寸模型代替大尺寸模型生成。</p>
+<p>小尺寸模型称为 Draft Model，用于更快速的生成 token。</p>
+<p>大尺寸模型称为 Target Model（实际生成的模型），对 Draft Model 生成的
+token 进行校验以及纠错</p>
+<h3 id="细化例子">细化例子</h3>
+<p>假设模型需要输出一次计算过程，「1×2+3×4=14」。</p>
+<p>7B 模型可能会输出为「1×2+3×4=111」，而错误的 token
+只是最后的「111」</p>
+<p>72B 模型只需要纠正「111」这个
+token，而前面的生成过程可以被小模型代替</p>
+<h2 id="过程">过程</h2>
+<h3 id="图示">图示</h3>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-EAGLE三部曲/image1.png" /></p>
+<ul>
+<li>每一行表示一次生成</li>
+<li>绿色表示 Draft Model（小模型）生成的 token 且 Target
+Model（大模型）接受的 token</li>
+<li>红色表示 Target Model 拒绝的部分</li>
+<li>蓝色表示 Target Model 生成的部分</li>
+</ul>
+<h3 id="耗时统计">耗时统计</h3>
+<p>在第一行中，实际生成了 5 个 Token。</p>
+<table>
+<colgroup>
+<col style="width: 36%" />
+<col style="width: 63%" />
+</colgroup>
+<thead>
+<tr>
+<th>标准的生成过程</th>
+<th>投机解码</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Target Model 生成 5 个 token 的时间</td>
+<td>Draft Model 生成 5 个 token 的时间 （含拒绝 1 次）<br> Target Model
+校验的时间（相对快）<br> Target Model 生成 1 个 token 的时间</td>
+</tr>
+</tbody>
+</table>
+<h3 id="投机解码的加速因素">投机解码的加速因素</h3>
+<ul>
+<li>Draft Model 生成的速度（模型参数量）</li>
+<li>Draft Model 生成 token 的<strong>平均接受长度</strong></li>
+</ul>
+<h4 id="平均接受长度">平均接受长度</h4>
+<ul>
+<li>接受长度：Draft Model 每次推理 <strong>10</strong>
+（设定的超参数）个 token，Target Model 接受了 7 个 token，那么接受长度为
+7。</li>
+<li>平均接受长度：在推理单个句子的时候，Draft Model 会进行 N
+次推理。对每次推理的接受长度取平均。</li>
+</ul>
+<h3 id="校验">校验</h3>
+<p>假设 Draft Model 生成「小明」、「跑」、「步」、「很快」</p>
+<p>Target Model 会逐个 token 校验，以「跑」为例</p>
+<ul>
+<li><strong>Draft Model</strong> 在生成「跑」这个 token
+时，同时保存生成「跑」这个 token 的概率值 <strong>q</strong></li>
+<li><strong>Target Model</strong> forward「跑」以及之前所有
+token（「小明」）。模型生成 logits，[seq_len x vocab_size]
+<ul>
+<li>取最后一个 token，得到 [1 x vocab_size] 大小的 tensor</li>
+</ul></li>
+<li>通过 softmax + 采样方法 得到每个 token 的概率，找到「跑」这个 token
+的概率 <strong>p</strong>
+<ul>
+<li>采样方法，如 greedy、top_p、top_k</li>
+</ul></li>
+<li>q &lt;= p（Draft Model 的“信心”小于 Target Model），接受；q &gt;
+p，拒绝。</li>
+</ul>
+<h2 id="理论证明">理论证明</h2>
+<p>投机采样是从 p(x) 和 q(x) 联合采样的结果，需要证明最终生成的 token
+分布与直接采样 p(x) 分布是完全相同的。</p>
+<ul>
+<li><strong>p(x)</strong>：这是<strong>目标分布</strong>，也就是我们最终想要采样的真实分布。在大型语言模型（LLM）中，它通常指一个大型、复杂的模型（如GPT-4）的输出分布。</li>
+<li><strong>q(x)</strong>：这是<strong>提议分布</strong>，也就是用于“推测”的辅助分布。它通常是一个小型、快速的模型，用于快速生成多个候选令牌。</li>
+</ul>
+<h3 id="全概率公式">全概率公式</h3>
+<p>在投机采样中，生成的 token 无非两种情况猜对和猜错两种，写作。</p>
+<p><span class="math display">\[
+P(x=x^{′})=P(\text{guess accepted},x=x^{′})+P(\text{guess
+rejected},x=x^{′})
+\]</span> 把事件“最终采样结果是 x′”分解成了两种互斥的情况：</p>
+<ul>
+<li><strong>P(guess accepted,x=x′)</strong>：表示“猜对了，且猜对的 token
+是 x′”的概率。</li>
+<li><strong>P(guess
+rejected,x=x′)</strong>：表示“猜错了，且从目标分布重新采样得到的 token
+是 x′”的概率。</li>
+</ul>
+<p>这个公式符合概率论中的<strong>全概率公式</strong>，因为任何一个最终的
+token x′ 都必然是通过这两种方式之一产生的。</p>
+<p>所以，需要证明投机采样的 token 与目标分布是一致的，即 <span
+class="math inline">\(P(x=x^{′}) = p(x^{′})\)</span></p>
+<h3 id="接受的概率">接受的概率</h3>
+<p><span class="math display">\[
+P(\text{guess accepted},x=x^{′})=P(x=x^{′} \quad \text{and} \quad
+\text{guess accepted})
+\]</span></p>
+<p>接受的概率是视作是一个联合概率，</p>
+<ul>
+<li>事件 A：草稿模型 <span class="math inline">\(q(x)\)</span> 提议生成
+token x'，事件概率是 <span
+class="math inline">\(P(A)=q(x&#39;)\)</span></li>
+<li>事件 B：在提议了 x′ 的条件下，这个提议被接受了。这个事件的概率设置为
+<span class="math inline">\(\beta\)</span>。</li>
+</ul>
+<p>根据联合概率公式 <span class="math inline">\(P(A \cap B) = P(A) \cdot
+P(B|A)\)</span>，我们得到： <span class="math display">\[
+P(\text{guess accepted},x=x^{′})=q(x&#39;)\cdot \beta
+\]</span></p>
+<p>这里的 <span class="math inline">\(\beta\)</span> 定义为 <span
+class="math inline">\(\min\left(1,
+\frac{p(x&#39;)}{q(x&#39;)}\right)\)</span></p>
+<ul>
+<li><span class="math inline">\(p(x&#39;) \ge
+q(x&#39;)\)</span>：目标模型认为 <span
+class="math inline">\(x&#39;\)</span> 的概率比草稿模型认为的要高，比率
+<span class="math inline">\(\frac{p(x&#39;)}{q(x&#39;)}\)</span>
+将大于等于1。为了保持概率在 <span class="math inline">\([0, 1]\)</span>
+之间，我们取最小值，得到 <span class="math inline">\(\beta =
+1\)</span>。这表示只要草稿模型猜对了，且目标模型也高度认可这个猜想，我们就<strong>百分之百地接受</strong>这个令牌。</li>
+<li><span class="math inline">\(p(x&#39;) &lt;
+q(x&#39;)\)</span>：草稿模型对这个 token
+的“猜测”比目标模型更自信。为了纠正这个偏差，我们必须以一个小于 1
+的概率来<strong>接受</strong>它。这个概率就是<span
+class="math inline">\(\frac{p(x&#39;)}{q(x&#39;)}\)</span>。通过这种方式，我们“拒绝”了草稿模型提出的那些过高的概率值，并将其调整回与目标模型一致的水平。</li>
+</ul>
+<p>所以，就有</p>
+<p><span class="math display">\[
+P(\text{guess accepted},x=x^{′})=q(x&#39;)\cdot \min\left(1,
+\frac{p(x&#39;)}{q(x&#39;)}\right)
+\]</span></p>
+<h3 id="拒绝的概率">拒绝的概率</h3>
+<p>如果拒绝了，那就是需要从目标分布 <span
+class="math inline">\(p(x^{&#39;})\)</span>
+进行采样。其也是一个联合概率，需要在拒绝的情况下 <span
+class="math inline">\(1-\beta\)</span> 下，进行计算，得到 <span
+class="math display">\[
+P(\text{guess rejected},x=x^{′})=(1-\beta)p(x^{&#39;})
+\]</span></p>
+<h3 id="合并">合并</h3>
+<p><span class="math display">\[
+P(x=x^{′})=P(\text{guess accepted},x=x^{′})+P(\text{guess
+rejected},x=x^{′})=\beta\cdot p(x^{&#39;}) +
+(1-\beta)p(x^{&#39;})=p(x^{&#39;})
+\]</span></p>
+<p>​</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>wnma3mz
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wnma3mz.github.io/2025/08/30/LLM/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-%E6%8A%95%E6%9C%BA%E8%A7%A3%E7%A0%81/" title="LLM的推理加速-投机解码">https://wnma3mz.github.io/2025/08/30/LLM/LLM的推理加速-投机解码/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hexo_blog/tags/NLP/" rel="tag"># NLP</a>
+              <a href="/hexo_blog/tags/Attention/" rel="tag"># Attention</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2025/08/24/LLM/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-PromptLookup/" rel="prev" title="LLM的推理加速-Prompt Lookup">
+      <i class="fa fa-chevron-left"></i> LLM的推理加速-Prompt Lookup
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%95%E6%9C%BA%E8%A7%A3%E7%A0%81"><span class="nav-text">投机解码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A8%E6%9C%BA"><span class="nav-text">动机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E8%AE%BE%E5%AE%9A"><span class="nav-text">基本设定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A0%E9%80%9F%E5%8A%A8%E6%9C%BA"><span class="nav-text">加速动机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%8E%E4%B9%88%E5%8A%A0%E9%80%9F"><span class="nav-text">怎么加速</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%86%E5%8C%96%E4%BE%8B%E5%AD%90"><span class="nav-text">细化例子</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%87%E7%A8%8B"><span class="nav-text">过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%A4%BA"><span class="nav-text">图示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%80%97%E6%97%B6%E7%BB%9F%E8%AE%A1"><span class="nav-text">耗时统计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%95%E6%9C%BA%E8%A7%A3%E7%A0%81%E7%9A%84%E5%8A%A0%E9%80%9F%E5%9B%A0%E7%B4%A0"><span class="nav-text">投机解码的加速因素</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B9%B3%E5%9D%87%E6%8E%A5%E5%8F%97%E9%95%BF%E5%BA%A6"><span class="nav-text">平均接受长度</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%A1%E9%AA%8C"><span class="nav-text">校验</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%90%86%E8%AE%BA%E8%AF%81%E6%98%8E"><span class="nav-text">理论证明</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%A8%E6%A6%82%E7%8E%87%E5%85%AC%E5%BC%8F"><span class="nav-text">全概率公式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A5%E5%8F%97%E7%9A%84%E6%A6%82%E7%8E%87"><span class="nav-text">接受的概率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8B%92%E7%BB%9D%E7%9A%84%E6%A6%82%E7%8E%87"><span class="nav-text">拒绝的概率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%88%E5%B9%B6"><span class="nav-text">合并</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="wnma3mz"
+      src="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
+  <p class="site-author-name" itemprop="name">wnma3mz</p>
+  <div class="site-description" itemprop="description">Day Day Up</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/hexo_blog/archives/">
+        
+          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/hexo_blog/categories/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/hexo_blog/tags/">
+          
+        <span class="site-state-item-count">91</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wnma3mz" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wnma3mz" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wnma3mz@gmail.com" title="E-Mail → mailto:wnma3mz@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wnma3mz</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='99' src="/hexo_blog/lib/canvas-nest/canvas-nest-nomobile.min.js"></script>
+  <script src="/hexo_blog/lib/anime.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/hexo_blog/js/utils.js"></script>
+
+<script src="/hexo_blog/js/motion.js"></script>
+
+
+<script src="/hexo_blog/js/schemes/muse.js"></script>
+
+
+<script src="/hexo_blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/hexo_blog/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme    : 'forest',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

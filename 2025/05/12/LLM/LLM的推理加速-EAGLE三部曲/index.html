@@ -28,7 +28,7 @@
 <meta property="og:description" content="从标准的自回归解码开始，介绍 EAGLE 系列（EAGLE、EAGLE-2和EAGLE-3）的演进历程。 GitHub">
 <meta property="og:locale">
 <meta property="article:published_time" content="2025-05-12T06:23:00.000Z">
-<meta property="article:modified_time" content="2025-08-24T12:15:25.790Z">
+<meta property="article:modified_time" content="2025-08-30T08:45:30.904Z">
 <meta property="article:author" content="wnma3mz">
 <meta property="article:tag" content="NLP">
 <meta property="article:tag" content="Attention">
@@ -230,7 +230,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="عُدل：2025-08-24 20:15:25" itemprop="dateModified" datetime="2025-08-24T20:15:25+08:00">2025-08-24</time>
+                <time title="عُدل：2025-08-30 16:45:30" itemprop="dateModified" datetime="2025-08-30T16:45:30+08:00">2025-08-30</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -269,116 +269,7 @@ token，导致整个句子的生成时间变久。</p>
 <p>相关引用：<a
 target="_blank" rel="noopener" href="https://huggingface.co/blog/tngtech/llm-performance-prefill-decode-concurrent-requests">https://huggingface.co/blog/tngtech/llm-performance-prefill-decode-concurrent-requests</a></p>
 <h2 id="投机解码">投机解码</h2>
-<h3 id="动机">动机</h3>
-<h3 id="基本设定">基本设定</h3>
-<p>在解题场景下，输入输出如下所示（不讨论为什么要用这个输出格式）</p>
-<p>模型的尺寸是跟能力成正比的，所以在解题场景下，通常使用 72B 模型</p>
-<table>
-<colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
-</colgroup>
-<thead>
-<tr>
-<th>输入</th>
-<th>输出</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>你是一位老师，给你一个题目，请按下面要求解答题目。<br>要求：<br>1.
-复述一遍题目<br>2.
-给出答案的解题思路分析，最后给出题目的最终答案；<br>3.
-如果题目题干不完整，存在信息丢失、错乱等情况，请说明题目不能解答，并给出具体的原因。<br>(2分)女性口腔上皮细胞中染色体组成是_<strong><em>，有</em></strong>_个细胞分子。<br>【题干】女性口腔上皮细胞中染色体组成是_<strong><em>，有</em></strong>_个细胞分子。<br>【解析】xxx<br>【答案】xxx</td>
-<td>【题干】女性口腔上皮细胞中染色体组成是_<strong><em>，有</em></strong>_个细胞分子。<br>【解析】xxx<br>【答案】xxx</td>
-</tr>
-</tbody>
-</table>
-<p>将模型的输出简单分为三个部分【题干】、【解析】、【答案】</p>
-<h3 id="加速动机">加速动机</h3>
-<p>输出中每个部分的难易程度是不一样的</p>
-<p>【题干】要求重新输出一遍输入的部分内容</p>
-<p>【解析】需要更强的逻辑推理能力</p>
-<p>所以，【题干】对于 72B
-模型是大材小用的。甚至【解析】中也不是所有内容都需要 72B。</p>
-<h3 id="怎么加速">怎么加速</h3>
-<p>“容易”的 token
-（【题干】部分）可以由小尺寸模型代替大尺寸模型生成。</p>
-<p>小尺寸模型称为 Draft Model，用于更快速的生成 token。</p>
-<p>大尺寸模型称为 Target Model（实际生成的模型），对 Draft Model 生成的
-token 进行校验以及纠错</p>
-<h3 id="细化例子">细化例子</h3>
-<p>假设模型需要输出一次计算过程，「1×2+3×4=14」。</p>
-<p>7B 模型可能会输出为「1×2+3×4=111」，而错误的 token
-只是最后的「111」</p>
-<p>72B 模型只需要纠正「111」这个
-token，而前面的生成过程可以被小模型代替</p>
-<h2 id="过程">过程</h2>
-<h3 id="图示">图示</h3>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-EAGLE三部曲/image1.png" /></p>
-<ul>
-<li>每一行表示一次生成</li>
-<li>绿色表示 Draft Model（小模型）生成的 token 且 Target
-Model（大模型）接受的 token</li>
-<li>红色表示 Target Model 拒绝的部分</li>
-<li>蓝色表示 Target Model 生成的部分</li>
-</ul>
-<h3 id="耗时统计">耗时统计</h3>
-<p>在第一行中，实际生成了 5 个 Token。</p>
-<table>
-<colgroup>
-<col style="width: 36%" />
-<col style="width: 63%" />
-</colgroup>
-<thead>
-<tr>
-<th>标准的生成过程</th>
-<th>投机解码</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Target Model 生成 5 个 token 的时间</td>
-<td>Draft Model 生成 5 个 token 的时间 （含拒绝 1 次）<br> Target Model
-校验的时间（相对快）<br> Target Model 生成 1 个 token 的时间</td>
-</tr>
-</tbody>
-</table>
-<h3 id="投机解码的加速因素">投机解码的加速因素</h3>
-<ul>
-<li>Draft Model 生成的速度（模型参数量）</li>
-<li>Draft Model 生成 token 的<strong>平均接受长度</strong></li>
-</ul>
-<h4 id="平均接受长度">平均接受长度</h4>
-<ul>
-<li>接受长度：Draft Model 每次推理 <strong>10</strong>
-（设定的超参数）个 token，Target Model 接受了 7 个 token，那么接受长度为
-7。</li>
-<li>平均接受长度：在推理单个句子的时候，Draft Model 会进行 N
-次推理。对每次推理的接受长度取平均。</li>
-</ul>
-<h3 id="校验detail">校验（detail）</h3>
-<p>假设 Draft Model 生成「小明」、「跑」、「步」、「很快」</p>
-<p>Target Model 会逐个 token 校验，以「跑」为例</p>
-<ul>
-<li><strong>Draft Model</strong> 在生成「跑」这个 token
-时，同时保存生成「跑」这个 token 的概率值 <strong>q</strong></li>
-<li><strong>Target Model</strong> forward「跑」以及之前所有
-token（「小明」）。模型生成 logits，[seq_len x vocab_size]
-<ul>
-<li>取最后一个 token，得到 [1 x vocab_size] 大小的 tensor</li>
-</ul></li>
-<li>通过 softmax + 采样方法 得到每个 token 的概率，找到「跑」这个 token
-的概率 <strong>p</strong>
-<ul>
-<li>采样方法，如 greedy、top_p、top_k</li>
-</ul></li>
-<li>q &lt;= p（Draft Model 的“信心”小于 Target Model），接受；q &gt;
-p，拒绝。</li>
-</ul>
-<p>相关引用：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2211.17192">Fast Inference
-from Transformers via Speculative Decoding</a></p>
+<p>见：<a href="/hexo_blog/2025/08/30/LLM/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-%E6%8A%95%E6%9C%BA%E8%A7%A3%E7%A0%81/" title="LLM的推理加速-投机解码">LLM的推理加速-投机解码</a></p>
 <h2 id="eagle-1特征层面的投机解码">EAGLE-1：特征层面的投机解码</h2>
 <p><a
 target="_blank" rel="noopener" href="https://arxiv.org/pdf/2401.15077">https://arxiv.org/pdf/2401.15077</a></p>
@@ -938,7 +829,7 @@ src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推�
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#llm-%E7%9A%84%E6%A0%87%E5%87%86%E7%94%9F%E6%88%90%E8%BF%87%E7%A8%8B"><span class="nav-text">LLM 的标准生成过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%95%E6%9C%BA%E8%A7%A3%E7%A0%81"><span class="nav-text">投机解码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A8%E6%9C%BA"><span class="nav-text">动机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E8%AE%BE%E5%AE%9A"><span class="nav-text">基本设定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A0%E9%80%9F%E5%8A%A8%E6%9C%BA"><span class="nav-text">加速动机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%8E%E4%B9%88%E5%8A%A0%E9%80%9F"><span class="nav-text">怎么加速</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%86%E5%8C%96%E4%BE%8B%E5%AD%90"><span class="nav-text">细化例子</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%87%E7%A8%8B"><span class="nav-text">过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%A4%BA"><span class="nav-text">图示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%80%97%E6%97%B6%E7%BB%9F%E8%AE%A1"><span class="nav-text">耗时统计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%95%E6%9C%BA%E8%A7%A3%E7%A0%81%E7%9A%84%E5%8A%A0%E9%80%9F%E5%9B%A0%E7%B4%A0"><span class="nav-text">投机解码的加速因素</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B9%B3%E5%9D%87%E6%8E%A5%E5%8F%97%E9%95%BF%E5%BA%A6"><span class="nav-text">平均接受长度</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%A1%E9%AA%8Cdetail"><span class="nav-text">校验（detail）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#eagle-1%E7%89%B9%E5%BE%81%E5%B1%82%E9%9D%A2%E7%9A%84%E6%8A%95%E6%9C%BA%E8%A7%A3%E7%A0%81"><span class="nav-text">EAGLE-1：特征层面的投机解码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#eagle-1-%E7%9A%84%E5%8A%A8%E6%9C%BA"><span class="nav-text">EAGLE-1 的动机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#prefill-%E9%98%B6%E6%AE%B5"><span class="nav-text">prefill 阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#decode-%E9%98%B6%E6%AE%B5%E8%BE%93%E5%87%BA-token"><span class="nav-text">decode 阶段输出 token</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#draft-modelone-auto-regression-head"><span class="nav-text">Draft Model——One
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#llm-%E7%9A%84%E6%A0%87%E5%87%86%E7%94%9F%E6%88%90%E8%BF%87%E7%A8%8B"><span class="nav-text">LLM 的标准生成过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%95%E6%9C%BA%E8%A7%A3%E7%A0%81"><span class="nav-text">投机解码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#eagle-1%E7%89%B9%E5%BE%81%E5%B1%82%E9%9D%A2%E7%9A%84%E6%8A%95%E6%9C%BA%E8%A7%A3%E7%A0%81"><span class="nav-text">EAGLE-1：特征层面的投机解码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#eagle-1-%E7%9A%84%E5%8A%A8%E6%9C%BA"><span class="nav-text">EAGLE-1 的动机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#prefill-%E9%98%B6%E6%AE%B5"><span class="nav-text">prefill 阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#decode-%E9%98%B6%E6%AE%B5%E8%BE%93%E5%87%BA-token"><span class="nav-text">decode 阶段输出 token</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#draft-modelone-auto-regression-head"><span class="nav-text">Draft Model——One
 Auto-regression Head</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#pipeline"><span class="nav-text">Pipeline</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#draft-tree-%E6%AF%8F%E6%AC%A1%E7%94%9F%E6%88%90%E5%A4%9A%E7%BB%84%E5%8F%AF%E8%83%BD"><span class="nav-text">Draft Tree 每次生成多组可能</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B7%A5%E7%A8%8B%E8%AE%BE%E8%AE%A1attention-mask"><span class="nav-text">工程设计：Attention Mask</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E6%AF%94%E7%BB%8F%E5%85%B8%E6%8A%95%E6%9C%BA%E9%87%87%E6%A0%B7"><span class="nav-text">对比经典投机采样</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#eagle-2%E5%B7%A5%E7%A8%8B%E4%BC%98%E5%8C%96%E5%8A%A8%E6%80%81%E8%8D%89%E7%A8%BF%E6%A0%91"><span class="nav-text">EAGLE-2：工程优化——动态草稿树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#eagle-2-%E7%9A%84%E5%8A%A8%E6%9C%BA"><span class="nav-text">EAGLE-2 的动机</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#beam-search"><span class="nav-text">Beam Search</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%AA%8C%E8%AF%81%E8%A7%82%E5%AF%9F%E7%8E%B0%E8%B1%A1"><span class="nav-text">验证&#x2F;观察现象</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BD%AE%E4%BF%A1%E5%BA%A6%E5%85%B7%E4%BD%93%E8%AE%A1%E7%AE%97"><span class="nav-text">置信度具体计算</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95"><span class="nav-text">方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AF%94-eagle-1-%E5%BF%AB%E5%9C%A8%E5%93%AA"><span class="nav-text">比 EAGLE-1 快在哪？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#eagle-3%E5%A4%9A%E5%B1%82%E7%89%B9%E5%BE%81%E8%9E%8D%E5%90%88"><span class="nav-text">EAGLE-3：多层特征融合</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#eagle-3-%E7%9A%84%E5%8A%A8%E6%9C%BA"><span class="nav-text">EAGLE-3 的动机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A8%E7%90%86"><span class="nav-text">推理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#eagle-1-vs-eagle-3"><span class="nav-text">EAGLE-1 vs EAGLE-3</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9E%B6%E6%9E%84%E5%92%8C%E8%BE%93%E5%85%A5"><span class="nav-text">架构和输入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83%E5%AF%B9%E6%AF%94"><span class="nav-text">训练对比</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0"><span class="nav-text">损失函数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AF%94-eagle-2-%E5%BF%AB%E5%9C%A8%E5%93%AA"><span class="nav-text">比 EAGLE-2 快在哪？</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
@@ -955,7 +846,7 @@ Auto-regression Head</span></a><ol class="nav-child"><li class="nav-item nav-lev
       <div class="site-state-item site-state-posts">
           <a href="/hexo_blog/archives/">
         
-          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-count">76</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
