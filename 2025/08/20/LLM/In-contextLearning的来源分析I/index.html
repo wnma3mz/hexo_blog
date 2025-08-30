@@ -20,34 +20,27 @@
     var CONFIG = {"hostname":"wnma3mz.github.io","root":"/hexo_blog/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="LLM 复杂推理的来源分析：fuyao 博客 + 综述 拆解追溯 GPT-3.5 各项能力的起源 | Notion A Survey on In-context Learning  LIMA 阅读笔记 LIMA: Less Is More for Alignment">
+  <meta name="description" content="拆解追溯 GPT-3.5 各项能力的起源 | Notion">
 <meta property="og:type" content="article">
-<meta property="og:title" content="LLM 复杂推理的来源分析以及 LIMA 阅读笔记">
-<meta property="og:url" content="https://wnma3mz.github.io/2025/08/20/LLM/ChatGPT%E8%83%BD%E5%8A%9B/index.html">
+<meta property="og:title" content="LLM 复杂推理的来源分析I">
+<meta property="og:url" content="https://wnma3mz.github.io/2025/08/20/LLM/In-contextLearning%E7%9A%84%E6%9D%A5%E6%BA%90%E5%88%86%E6%9E%90I/index.html">
 <meta property="og:site_name" content="Wnma&#39;s Blogs">
-<meta property="og:description" content="LLM 复杂推理的来源分析：fuyao 博客 + 综述 拆解追溯 GPT-3.5 各项能力的起源 | Notion A Survey on In-context Learning  LIMA 阅读笔记 LIMA: Less Is More for Alignment">
+<meta property="og:description" content="拆解追溯 GPT-3.5 各项能力的起源 | Notion">
 <meta property="og:locale">
 <meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/ChatGPT%E8%83%BD%E5%8A%9B/image1.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/ChatGPT%E8%83%BD%E5%8A%9B/image2.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/ChatGPT%E8%83%BD%E5%8A%9B/image3.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/ChatGPT%E8%83%BD%E5%8A%9B/image4.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/ChatGPT%E8%83%BD%E5%8A%9B/image5.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/ChatGPT%E8%83%BD%E5%8A%9B/image6.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/ChatGPT%E8%83%BD%E5%8A%9B/image7.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/ChatGPT%E8%83%BD%E5%8A%9B/image8.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/ChatGPT%E8%83%BD%E5%8A%9B/image9.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/ChatGPT%E8%83%BD%E5%8A%9B/image10.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/ChatGPT%E8%83%BD%E5%8A%9B/image11.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/ChatGPT%E8%83%BD%E5%8A%9B/image12.png">
 <meta property="article:published_time" content="2025-08-20T07:52:42.000Z">
-<meta property="article:modified_time" content="2025-08-30T09:01:14.731Z">
+<meta property="article:modified_time" content="2025-08-30T09:06:26.991Z">
 <meta property="article:author" content="wnma3mz">
 <meta property="article:tag" content="NLP">
 <meta property="article:tag" content="Attention">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/ChatGPT%E8%83%BD%E5%8A%9B/image1.png">
 
-<link rel="canonical" href="https://wnma3mz.github.io/2025/08/20/LLM/ChatGPT%E8%83%BD%E5%8A%9B/">
+<link rel="canonical" href="https://wnma3mz.github.io/2025/08/20/LLM/In-contextLearning%E7%9A%84%E6%9D%A5%E6%BA%90%E5%88%86%E6%9E%90I/">
 
 
 <script id="page-configurations">
@@ -60,7 +53,7 @@
   };
 </script>
 
-  <title>LLM 复杂推理的来源分析以及 LIMA 阅读笔记 | Wnma's Blogs</title>
+  <title>LLM 复杂推理的来源分析I | Wnma's Blogs</title>
   
 
 
@@ -212,7 +205,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/2025/08/20/LLM/ChatGPT%E8%83%BD%E5%8A%9B/">
+    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/2025/08/20/LLM/In-contextLearning%E7%9A%84%E6%9D%A5%E6%BA%90%E5%88%86%E6%9E%90I/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
@@ -225,7 +218,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          LLM 复杂推理的来源分析以及 LIMA 阅读笔记
+          LLM 复杂推理的来源分析I
         </h1>
 
         <div class="post-meta">
@@ -243,7 +236,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="عُدل：2025-08-30 17:01:14" itemprop="dateModified" datetime="2025-08-30T17:01:14+08:00">2025-08-30</time>
+                <time title="عُدل：2025-08-30 17:06:26" itemprop="dateModified" datetime="2025-08-30T17:06:26+08:00">2025-08-30</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -266,13 +259,9 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>LLM 复杂推理的来源分析：fuyao 博客 + 综述</p>
-<p><a target="_blank" rel="noopener" href="https://yaofu.notion.site/GPT-3-5-360081d91ec245f29029d37b54573756">拆解追溯 GPT-3.5 各项能力的起源 | Notion</a></p>
-<p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2301.00234v4">A Survey on In-context Learning</a> </p>
-<p>LIMA 阅读笔记</p>
-<p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.11206">LIMA: Less Is More for Alignment</a></p>
+        <p><a target="_blank" rel="noopener" href="https://yaofu.notion.site/GPT-3-5-360081d91ec245f29029d37b54573756">拆解追溯 GPT-3.5 各项能力的起源 | Notion</a></p>
 <span id="more"></span>
-<h1 id="拆解-ChatGPT"><a href="#拆解-ChatGPT" class="headerlink" title="拆解 ChatGPT"></a>拆解 ChatGPT</h1><p>22 年 12 月：<a target="_blank" rel="noopener" href="https://yaofu.notion.site/GPT-3-5-360081d91ec245f29029d37b54573756">拆解追溯 GPT-3.5 各项能力的起源 | Notion</a></p>
+<p>22 年 12 月：<a target="_blank" rel="noopener" href="https://yaofu.notion.site/GPT-3-5-360081d91ec245f29029d37b54573756">拆解追溯 GPT-3.5 各项能力的起源 | Notion</a></p>
 <p>2022 年 11 月 30 日，ChatGPT 横空出世，它又强又聪明，且跟它说话很好玩，还会写代码。ChatGPT 是怎么变得这么强的？它的各种强大的能力到底从何而来？</p>
 <h2 id="GPT-3-的能力"><a href="#GPT-3-的能力" class="headerlink" title="GPT-3 的能力"></a>GPT-3 的能力</h2><div class="table-container">
 <table>
@@ -434,79 +423,7 @@
 <li>ChatGPT：基于经验的观测结果，ChatGPT 似乎不像 text-davinci-003 那样受到 in-context demonstrations 的<strong>强烈</strong>影响。（？）</li>
 <li>text-davinci-003：<strong>恢复了</strong> text-davinci-002 所牺牲的<strong>上下文学习能力</strong>，根据 InstructGPT的论文，这是来自于强化学习调整阶段混入了语言建模的目标（而不是 RLHF 本身）。</li>
 </ul>
-<p>24 年 10 月：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2301.00234v4"><strong>A Survey on In-context Learning</strong></a> <strong>—— Analysis</strong></p>
-<h2 id="预训练数据的多样性"><a href="#预训练数据的多样性" class="headerlink" title="预训练数据的多样性"></a>预训练数据的多样性</h2><p><a target="_blank" rel="noopener" href="https://aclanthology.org/2022.naacl-main.380.pdf">https://aclanthology.org/2022.naacl-main.380.pdf</a></p>
-<h4 id="语料库的来源"><a href="#语料库的来源" class="headerlink" title="语料库的来源"></a>语料库的来源</h4><p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/ChatGPT能力/image6.png" alt=""></p>
-<p>说明</p>
-<ul>
-<li>左侧列是语料库；最上面一行是指标（用 Few-Shot 评测）</li>
-<li>下划线表示低于平均值（ALL 和 Majority 的平均值），加粗表示高于平均值</li>
-<li>1.3B 模型</li>
-</ul>
-<p>发现：比较不同单一语料库模型（如Blog、Cafe、News）的性能，上下文学习能力<strong>高度依赖于语料库的领域来源</strong>。比如，Blog 54B</p>
-<h4 id="语料库的多样性"><a href="#语料库的多样性" class="headerlink" title="语料库的多样性"></a>语料库的多样性</h4><p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/ChatGPT能力/image7.png" alt=""></p>
-<p>发现：</p>
-<ul>
-<li>单独使用 Cafe 或  KiN 语料库时未观察到上下文少样本学习能力，但<strong>组合训练两者（KiN+Ency）则使这种能力得以出现</strong>。</li>
-<li>但并非所有组合都有效（如Cafe+News组合可能表现不佳甚至下降）</li>
-</ul>
-<h4 id="语料库的大小"><a href="#语料库的大小" class="headerlink" title="语料库的大小"></a>语料库的大小</h4><p>用单一语料库 HyperCLOVA 训练</p>
-<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/ChatGPT能力/image8.png" alt=""></p>
-<ul>
-<li>数据量很重要：6B → 56B 会有显著提升 </li>
-<li>多样性很重要：56B → 150B  并不会有显著提升</li>
-</ul>
-<h2 id="模型架构-——-Attention"><a href="#模型架构-——-Attention" class="headerlink" title="模型架构 —— Attention"></a>模型架构 —— Attention</h2><p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2209.11895">https://arxiv.org/pdf/2209.11895</a></p>
-<p>评测分数：上下文中第 500 个 token 的 loss - 第 50 个 token 的 loss，取平均。</p>
-<h3 id="怎么理解这个评测指标"><a href="#怎么理解这个评测指标" class="headerlink" title="怎么理解这个评测指标"></a>怎么理解这个评测指标</h3><p>背景知识：现代语言模型中，语境中后面的标记（token）比前面的标记更容易预测，即随着语境变长，损失（loss）会下降。</p>
-<p>→ 利用更长的语境信息，从而提高预测能力的现象，就是所谓的<strong>上下文学习</strong>（In-context learning）</p>
-<p><strong>Loss 的下降意味着模型的预测能力得到提高</strong>（提高了 ICL 能力），即第 500 个 token 的损失低于第 50 个标记的 token（Loss(500) &lt; Loss(50)）。</p>
-<p>因此 Loss(500) - Loss(50) 的结果通常为负值。<strong>分数越负，表明模型的 ICL 能力越强</strong></p>
-<p>一条样本有 512 个 token：</p>
-<ul>
-<li>选择第 <strong>500 个 token</strong> 是因为它接近 512 个 token 的末尾</li>
-<li>选择第 <strong>50 个 token</strong> 是因为它在语境中足够靠后，足以建立文本的一些基本属性（如语言和文档类型），但又足够靠前，仍接近开头</li>
-<li>研究表明，选择不同的标记索引并不会改变其结论</li>
-</ul>
-<p>10k 条样本，取均值。</p>
-<p>Q：为什么是看差值，而不是第 500 个 token 的 loss？第 500 个 token 也是看了前面所有 token，也能说明 ICL？</p>
-<p>A：</p>
-<ul>
-<li>单独看第 500 个 token 的 loss，只能反映模型在该语境长度下的最终预测效果，无法体现语境的增长对预测能力带来了多少提升。</li>
-<li>如果只看第 500 个 token 的 loss ，大模型无疑会表现出更低的 loss。但这并不能直接说明其<strong>上下文学习</strong>比小模型更强</li>
-</ul>
-<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/ChatGPT能力/image9.png" alt=""></p>
-<ul>
-<li>如果只有一层，随着训练 token 增加，分数不会显著变化</li>
-<li>当有 2-3 层 attention 的时候，会在某个时间发生“相变”</li>
-</ul>
-<h3 id="Q-amp-A-1"><a href="#Q-amp-A-1" class="headerlink" title="Q &amp; A"></a>Q &amp; A</h3><p>Q：为什么是 Attention？</p>
-<p>A：</p>
-<ul>
-<li>文章中有其他地方补充了实验，如果去掉 Attention 效果会变差。</li>
-<li>DeepMind 在 LSTM 和 RNN 中也没发现 ICL 能力，<a target="_blank" rel="noopener" href="https://papers.nips.cc/paper_files/paper/2022/file/77c6ccacfd9962e2307fc64680fc5ace-Paper-Conference.pdf">链接</a></li>
-<li>（3分）ICL 是 MLP + Attention 共同作用的效果，<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2507.16003">链接</a></li>
-</ul>
-<h1 id="训练-“ChatGPT”"><a href="#训练-“ChatGPT”" class="headerlink" title="训练 “ChatGPT”"></a>训练 “ChatGPT”</h1><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.11206">LIMA: Less Is More for Alignment</a></p>
-<p>假设：<strong>模型的知识和能力几乎完全在预训练阶段学习，SFT 只是激发模型能力</strong></p>
-<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><h3 id="数据"><a href="#数据" class="headerlink" title="数据"></a>数据</h3><p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/ChatGPT能力/image10.png" alt=""></p>
-<ul>
-<li>多样性：不同来源</li>
-<li>高质量：手动撰写了 200 条 高质量回复 + 人工挑选 800 条数据</li>
-</ul>
-<p>基于 LLaMa 65B 进行训练</p>
-<h3 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h3><h4 id="Q-amp-A-2"><a href="#Q-amp-A-2" class="headerlink" title="Q &amp; A"></a>Q &amp; A</h4><p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/ChatGPT能力/image11.png" alt=""></p>
-<ul>
-<li>300 条测试数据</li>
-<li>左图是人工打分，右图是 GPT-4 打分</li>
-</ul>
-<p>表现可以堪比 GPT-4（Win+Tie = 43%）</p>
-<h4 id="Multi-Turn-Dialogue"><a href="#Multi-Turn-Dialogue" class="headerlink" title="Multi-Turn Dialogue"></a>Multi-Turn Dialogue</h4><p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/ChatGPT能力/image12.png" alt=""></p>
-<ul>
-<li>Zero-Shot：在 1k QA 数据上训练的模型评测</li>
-<li>Dialogue-Finetuned：1k + 30 条多轮对话数据训练的模型评测</li>
-</ul>
-<p>所以，QA 数据训练的模型是具备对话能力的；加入 30 条对话数据可以“强化” 模型的对话能力</p>
+<p>下一篇：<a href="/hexo_blog/2025/08/20/LLM/In-contextLearning%E7%9A%84%E6%9D%A5%E6%BA%90%E5%88%86%E6%9E%90II/" title="LLM 复杂推理的来源分析I">LLM 复杂推理的来源分析I</a></p>
 
     </div>
 
@@ -522,7 +439,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://wnma3mz.github.io/2025/08/20/LLM/ChatGPT%E8%83%BD%E5%8A%9B/" title="LLM 复杂推理的来源分析以及 LIMA 阅读笔记">https://wnma3mz.github.io/2025/08/20/LLM/ChatGPT能力/</a>
+    <a href="https://wnma3mz.github.io/2025/08/20/LLM/In-contextLearning%E7%9A%84%E6%9D%A5%E6%BA%90%E5%88%86%E6%9E%90I/" title="LLM 复杂推理的来源分析I">https://wnma3mz.github.io/2025/08/20/LLM/In-contextLearning的来源分析I/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -543,8 +460,8 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/hexo_blog/2025/08/04/LLM/VLM%E8%AF%86%E5%88%AB%E5%9B%BE%E7%89%87%E8%83%BD%E5%8A%9B/" rel="prev" title="VLM的识别图片能力">
-      <i class="fa fa-chevron-left"></i> VLM的识别图片能力
+    <a href="/hexo_blog/2025/08/20/LLM/In-contextLearning%E7%9A%84%E6%9D%A5%E6%BA%90%E5%88%86%E6%9E%90II/" rel="prev" title="LLM 复杂推理的来源分析I">
+      <i class="fa fa-chevron-left"></i> LLM 复杂推理的来源分析I
     </a></div>
       <div class="post-nav-item">
     <a href="/hexo_blog/2025/08/24/LLM/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-PromptLookup/" rel="next" title="LLM的推理加速-Prompt Lookup">
@@ -608,7 +525,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8B%86%E8%A7%A3-ChatGPT"><span class="nav-text">拆解 ChatGPT</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#GPT-3-%E7%9A%84%E8%83%BD%E5%8A%9B"><span class="nav-text">GPT-3 的能力</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%8D%E6%9D%82%E6%8E%A8%E7%90%86%E8%83%BD%E5%8A%9B%E7%9A%84%E6%9D%A5%E6%BA%90%E4%BB%A3%E7%A0%81%E6%95%B0%E6%8D%AE%EF%BC%9F"><span class="nav-text">复杂推理能力的来源代码数据？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Q-amp-A"><span class="nav-text">Q &amp; A</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E8%AE%AD%E7%BB%83-%E2%86%92-%E5%A4%8D%E6%9D%82%E6%8E%A8%E7%90%86%E8%83%BD%E5%8A%9B"><span class="nav-text">代码训练 → 复杂推理能力</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%82%AC%E8%80%8C%E6%9C%AA%E5%86%B3"><span class="nav-text">悬而未决</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%8D%E6%9D%82%E6%8E%A8%E7%90%86%E8%83%BD%E5%8A%9B%E6%98%AF%E6%BF%80%E5%8F%91%E8%BF%98%E6%98%AF%E6%B3%A8%E5%85%A5%EF%BC%9F"><span class="nav-text">复杂推理能力是激发还是注入？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%87%8F"><span class="nav-text">数据量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E5%BA%A7%E6%A8%A1%E5%9E%8B"><span class="nav-text">基座模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%8C%9C%E6%B5%8B%E5%8E%9F%E5%9B%A0"><span class="nav-text">猜测原因</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A9%E5%A5%BD-Code-%E9%A2%84%E8%AE%AD%E7%BB%83%E6%95%B0%E6%8D%AE"><span class="nav-text">利好 Code 预训练数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ICL-%E2%87%8B-%E5%AF%B9%E8%AF%9D%E8%83%BD%E5%8A%9B"><span class="nav-text">ICL ⇋ 对话能力</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%84%E8%AE%AD%E7%BB%83%E6%95%B0%E6%8D%AE%E7%9A%84%E5%A4%9A%E6%A0%B7%E6%80%A7"><span class="nav-text">预训练数据的多样性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%AD%E6%96%99%E5%BA%93%E7%9A%84%E6%9D%A5%E6%BA%90"><span class="nav-text">语料库的来源</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%AD%E6%96%99%E5%BA%93%E7%9A%84%E5%A4%9A%E6%A0%B7%E6%80%A7"><span class="nav-text">语料库的多样性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%AD%E6%96%99%E5%BA%93%E7%9A%84%E5%A4%A7%E5%B0%8F"><span class="nav-text">语料库的大小</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E6%9E%B6%E6%9E%84-%E2%80%94%E2%80%94-Attention"><span class="nav-text">模型架构 —— Attention</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%8E%E4%B9%88%E7%90%86%E8%A7%A3%E8%BF%99%E4%B8%AA%E8%AF%84%E6%B5%8B%E6%8C%87%E6%A0%87"><span class="nav-text">怎么理解这个评测指标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Q-amp-A-1"><span class="nav-text">Q &amp; A</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83-%E2%80%9CChatGPT%E2%80%9D"><span class="nav-text">训练 “ChatGPT”</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C"><span class="nav-text">实验</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE"><span class="nav-text">数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E6%9E%9C"><span class="nav-text">结果</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Q-amp-A-2"><span class="nav-text">Q &amp; A</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Multi-Turn-Dialogue"><span class="nav-text">Multi-Turn Dialogue</span></a></li></ol></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#GPT-3-%E7%9A%84%E8%83%BD%E5%8A%9B"><span class="nav-text">GPT-3 的能力</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%8D%E6%9D%82%E6%8E%A8%E7%90%86%E8%83%BD%E5%8A%9B%E7%9A%84%E6%9D%A5%E6%BA%90%E4%BB%A3%E7%A0%81%E6%95%B0%E6%8D%AE%EF%BC%9F"><span class="nav-text">复杂推理能力的来源代码数据？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Q-amp-A"><span class="nav-text">Q &amp; A</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E8%AE%AD%E7%BB%83-%E2%86%92-%E5%A4%8D%E6%9D%82%E6%8E%A8%E7%90%86%E8%83%BD%E5%8A%9B"><span class="nav-text">代码训练 → 复杂推理能力</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%82%AC%E8%80%8C%E6%9C%AA%E5%86%B3"><span class="nav-text">悬而未决</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%8D%E6%9D%82%E6%8E%A8%E7%90%86%E8%83%BD%E5%8A%9B%E6%98%AF%E6%BF%80%E5%8F%91%E8%BF%98%E6%98%AF%E6%B3%A8%E5%85%A5%EF%BC%9F"><span class="nav-text">复杂推理能力是激发还是注入？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%87%8F"><span class="nav-text">数据量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E5%BA%A7%E6%A8%A1%E5%9E%8B"><span class="nav-text">基座模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%8C%9C%E6%B5%8B%E5%8E%9F%E5%9B%A0"><span class="nav-text">猜测原因</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A9%E5%A5%BD-Code-%E9%A2%84%E8%AE%AD%E7%BB%83%E6%95%B0%E6%8D%AE"><span class="nav-text">利好 Code 预训练数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ICL-%E2%87%8B-%E5%AF%B9%E8%AF%9D%E8%83%BD%E5%8A%9B"><span class="nav-text">ICL ⇋ 对话能力</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -624,7 +541,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/hexo_blog/archives/">
         
-          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-count">79</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
