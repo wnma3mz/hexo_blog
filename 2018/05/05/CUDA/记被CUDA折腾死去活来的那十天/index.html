@@ -27,14 +27,12 @@
 <meta property="og:site_name" content="Wnma&#39;s Blogs">
 <meta property="og:description" content="谨以此文章纪念大二的一次折腾CUDA环境搭建经历。">
 <meta property="og:locale">
-<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/cuda/5af851eca8de0.jpg">
 <meta property="article:published_time" content="2018-05-05T15:11:25.000Z">
 <meta property="article:modified_time" content="2024-06-15T08:01:01.792Z">
 <meta property="article:author" content="wnma3mz">
 <meta property="article:tag" content="GPU">
 <meta property="article:tag" content="CUDA">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/cuda/5af851eca8de0.jpg">
 
 <link rel="canonical" href="https://wnma3mz.github.io/2018/05/05/CUDA/%E8%AE%B0%E8%A2%ABCUDA%E6%8A%98%E8%85%BE%E6%AD%BB%E5%8E%BB%E6%B4%BB%E6%9D%A5%E7%9A%84%E9%82%A3%E5%8D%81%E5%A4%A9/">
 
@@ -257,64 +255,97 @@
       
         <p>谨以此文章纪念大二的一次折腾CUDA环境搭建经历。</p>
 <span id="more"></span>
-<p>为了提高矩阵运算的速度和不浪费实验室的GPU，所以开始折腾CUDA环境，入门GPU Coder。感谢@小岳岳 全程的帮助，学习了很多硬件知识；感谢@浪浪 学长的指导，少走了一些弯路。本文会尽量从零开始介绍硬件知识过渡到系统和软件环境的搭建。</p>
-<p>贴上学长的博客<a target="_blank" rel="noopener" href="http://amourll.cn/2018/03/27/gpu-coder/">GPU Coder初体验</a></p>
-<h2 id="基础介绍"><a href="#基础介绍" class="headerlink" title="基础介绍"></a>基础介绍</h2><p>首先祭出显卡天梯图，时间截止于博客编辑完的日期（2018年4月）。</p>
-<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/cuda/5af851eca8de0.jpg" alt=""></p>
-<p>关于显卡的一些基本知识可以看知乎的这个贴：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/33743591">知识扫盲I给大众的电脑显卡选购指南</a></p>
-<p>这里再简单补充一些基础知识，GPU（Graphic   Process  Unit ）其实是显卡的核心部件，分为AMD和Nvidia两种。一般情况下，做科学计算或者深度学习都是用Nvidia显卡，当然用AMD的也有在这里我用的是Nvidia所以就不介绍如何搭建AMD的编程环境了。</p>
-<h3 id="关于GPU编程"><a href="#关于GPU编程" class="headerlink" title="关于GPU编程"></a>关于GPU编程</h3><p>所谓GPU编程，我的理解是用代码操作GPU进行运算。通常来说，我们写代码用软件都是调用CPU来工作的，显卡在常规的认知中（某某年以前）都是用来作为图像渲染、玩游戏的。随着时代的发展，关于图像处理的数据越来越多，交给CPU来计算就显得过慢，所以人们开始用起了GPU，GPU原本发明的用途就是为了处理图像。所以如果数据是关于图像处理的，交给GPU来计算远远好于CPU的。</p>
-<h3 id="关于并行计算"><a href="#关于并行计算" class="headerlink" title="关于并行计算"></a>关于并行计算</h3><p>GPU并行：CUDA，OpenCL（都比较麻烦，建议CUDA）<br>CPU并行：MPI，OpenMP。MPI比较麻烦，OpenMP容易实现</p>
+<p>为了提高矩阵运算的速度和不浪费实验室的GPU，所以开始折腾CUDA环境，入门GPU
+Coder。感谢@小岳岳 全程的帮助，学习了很多硬件知识；感谢@浪浪
+学长的指导，少走了一些弯路。本文会尽量从零开始介绍硬件知识过渡到系统和软件环境的搭建。</p>
+<p>贴上学长的博客<a target="_blank" rel="noopener" href="http://amourll.cn/2018/03/27/gpu-coder/">GPU
+Coder初体验</a></p>
+<h2 id="基础介绍">基础介绍</h2>
+<p>首先祭出显卡天梯图，时间截止于博客编辑完的日期（2018年4月）。</p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/cuda/5af851eca8de0.jpg" /></p>
+<p>关于显卡的一些基本知识可以看知乎的这个贴：<a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/33743591">知识扫盲I给大众的电脑显卡选购指南</a></p>
+<p>这里再简单补充一些基础知识，GPU（Graphic Process Unit
+）其实是显卡的核心部件，分为AMD和Nvidia两种。一般情况下，做科学计算或者深度学习都是用Nvidia显卡，当然用AMD的也有在这里我用的是Nvidia所以就不介绍如何搭建AMD的编程环境了。</p>
+<h3 id="关于gpu编程">关于GPU编程</h3>
+<p>所谓GPU编程，我的理解是用代码操作GPU进行运算。通常来说，我们写代码用软件都是调用CPU来工作的，显卡在常规的认知中（某某年以前）都是用来作为图像渲染、玩游戏的。随着时代的发展，关于图像处理的数据越来越多，交给CPU来计算就显得过慢，所以人们开始用起了GPU，GPU原本发明的用途就是为了处理图像。所以如果数据是关于图像处理的，交给GPU来计算远远好于CPU的。</p>
+<h3 id="关于并行计算">关于并行计算</h3>
+<p>GPU并行：CUDA，OpenCL（都比较麻烦，建议CUDA）
+CPU并行：MPI，OpenMP。MPI比较麻烦，OpenMP容易实现</p>
 <p>OpenAcc：OpenMP和CUDA的混合</p>
 <p>这里使用的方案是CUDA（读作：库达）。</p>
-<h3 id="实验室的显卡介绍"><a href="#实验室的显卡介绍" class="headerlink" title="实验室的显卡介绍"></a>实验室的显卡介绍</h3><p>Tesla C2050、两块Titans X、一块2010/2011年的AMD卡（具体忘了，反正只用来做图像显示）</p>
+<h3 id="实验室的显卡介绍">实验室的显卡介绍</h3>
+<p>Tesla C2050、两块Titans
+X、一块2010/2011年的AMD卡（具体忘了，反正只用来做图像显示）</p>
 <p>配置情况：特斯拉+AMD，AMD用做显示，特斯拉用来计算。至于为什么不上泰坦，是因为要预备留着后面买的新服务器，这台是之前（2010/2011）的服务器。简单说说特斯拉显卡，特斯拉显示是英伟达专门生产用作科学计算的，一般情况下特斯拉显卡的价格和计算性能都可以碾压其他类型的显卡，而且支持双精度。不过在这的话，泰坦还是可以吊打这块特斯拉的，唯一的缺点大概泰坦是不支持双精度吧。</p>
-<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><h3 id="Ubuntu-Tesla-AMD"><a href="#Ubuntu-Tesla-AMD" class="headerlink" title="Ubuntu + Tesla + AMD"></a>Ubuntu + Tesla + AMD</h3><h4 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h4><p>安装失败</p>
-<h4 id="遇到问题及解决方案"><a href="#遇到问题及解决方案" class="headerlink" title="遇到问题及解决方案"></a>遇到问题及解决方案</h4><ol>
+<h2 id="正文">正文</h2>
+<h3 id="ubuntu-tesla-amd">Ubuntu + Tesla + AMD</h3>
+<h4 id="结果">结果</h4>
+<p>安装失败</p>
+<h4 id="遇到问题及解决方案">遇到问题及解决方案</h4>
+<ol type="1">
 <li>特斯拉不能作为图像显示。解决方案：换AMD显卡做显示。。。</li>
 <li>Ubuntu16.04之后不支持AMD显卡驱动。解决方案：老版本的Ubuntu或者搜索关键词<code>amdgpu-pro</code>、<code>Ubuntu</code></li>
 <li>安装CUDA是否还需要安装英伟达的驱动。Windows下是不需要的，Ubuntu不知道，很多博客中都有安装英伟达驱动这一步骤。</li>
 <li>安装完英伟达驱动之后，出现循环登陆或者不能显示图形界面的情况。解决方案：卸载英伟达驱动，重启。</li>
 <li>英伟达（特斯拉）和AMD双显卡的问题。这种情况网上搜出来的结果比较少，大多都是核显或集显+英伟达显卡。所以在尝试了N次之后，放弃了。</li>
 </ol>
-<h4 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h4><p>当时不知道装CUDA是否需要安装英伟达驱动，所以就安装了。但是安装完之后重启，就不能显示图形界面，原因如问题一。很矛盾的点就在于，如果只安装CUDA不装英伟达驱动，安装CUDA是失败的。综上，不懂如何在AMD的基础上用特斯拉搭建环境。（最后可能怀疑是显卡本身出了问题）</p>
-<p><a target="_blank" rel="noopener" href="https://developer.nvidia.com/cuda-downloads">CUDA下载地址</a>，这里选择好系统环境，强烈推荐下载<code>runfile</code>，用它进行安装。不推荐安装最新版本。CUDA官网虽声明说CUDA向下兼容，但根据网上反馈和自己的实验来看，CUDA并没有做到。关于主板BIOS设置显卡的问题，实验室这块并不支持。。。。凉凉</p>
-<h4 id="一些实用命令"><a href="#一些实用命令" class="headerlink" title="一些实用命令"></a>一些实用命令</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在不能进入图形界面的时候，按住Ctrl+Alt+F1/F2/F3进入终端界面，输入下面的命令卸载英伟达驱动。卸载完重启即可</span></span><br><span class="line">$ <span class="built_in">sudo</span> apt-get remove --purge nvidia-*</span><br><span class="line">$ reboot</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看显卡信息</span></span><br><span class="line">$ lspci | grep -i vga</span><br><span class="line"><span class="comment"># 查看GPU型号</span></span><br><span class="line">$ lspci | grep -i nvidia</span><br><span class="line"><span class="comment"># 查看NVIDIA驱动版本</span></span><br><span class="line">$ <span class="built_in">sudo</span> dpkg --list | grep nvidia-*</span><br></pre></td></tr></table></figure>
+<h4 id="补充">补充</h4>
+<p>当时不知道装CUDA是否需要安装英伟达驱动，所以就安装了。但是安装完之后重启，就不能显示图形界面，原因如问题一。很矛盾的点就在于，如果只安装CUDA不装英伟达驱动，安装CUDA是失败的。综上，不懂如何在AMD的基础上用特斯拉搭建环境。（最后可能怀疑是显卡本身出了问题）</p>
+<p><a
+target="_blank" rel="noopener" href="https://developer.nvidia.com/cuda-downloads">CUDA下载地址</a>，这里选择好系统环境，强烈推荐下载<code>runfile</code>，用它进行安装。不推荐安装最新版本。CUDA官网虽声明说CUDA向下兼容，但根据网上反馈和自己的实验来看，CUDA并没有做到。关于主板BIOS设置显卡的问题，实验室这块并不支持。。。。凉凉</p>
+<h4 id="一些实用命令">一些实用命令</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在不能进入图形界面的时候，按住Ctrl+Alt+F1/F2/F3进入终端界面，输入下面的命令卸载英伟达驱动。卸载完重启即可</span></span><br><span class="line">$ <span class="built_in">sudo</span> apt-get remove --purge nvidia-*</span><br><span class="line">$ reboot</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看显卡信息</span></span><br><span class="line">$ lspci | grep -i vga</span><br><span class="line"><span class="comment"># 查看GPU型号</span></span><br><span class="line">$ lspci | grep -i nvidia</span><br><span class="line"><span class="comment"># 查看NVIDIA驱动版本</span></span><br><span class="line">$ <span class="built_in">sudo</span> dpkg --list | grep nvidia-*</span><br></pre></td></tr></table></figure>
 <p>可以参考的一些博客如下：</p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/chaihuimin/article/details/71006654?locationNum=2&amp;fps=1">Ubuntu16.04安装NVIDIA显卡驱动和CUDA时的一些坑与解决方案</a></p>
-<p><a target="_blank" rel="noopener" href="http://www.cnblogs.com/sp-li/p/7680526.html">ubuntu16.04 安装NVIDIA和CUDA8.0</a></p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/wonengguwozai/article/details/52664597">Ubuntu安装和NVIDIA驱动和安装</a></p>
-<p><a target="_blank" rel="noopener" href="https://jingyan.baidu.com/article/d8072ac468a91dec95cefdf0.html">主板设置独显/集显</a></p>
+<p><a
+target="_blank" rel="noopener" href="https://blog.csdn.net/chaihuimin/article/details/71006654?locationNum=2&amp;fps=1">Ubuntu16.04安装NVIDIA显卡驱动和CUDA时的一些坑与解决方案</a></p>
+<p><a target="_blank" rel="noopener" href="http://www.cnblogs.com/sp-li/p/7680526.html">ubuntu16.04
+安装NVIDIA和CUDA8.0</a></p>
+<p><a
+target="_blank" rel="noopener" href="https://blog.csdn.net/wonengguwozai/article/details/52664597">Ubuntu安装和NVIDIA驱动和安装</a></p>
+<p><a
+target="_blank" rel="noopener" href="https://jingyan.baidu.com/article/d8072ac468a91dec95cefdf0.html">主板设置独显/集显</a></p>
 <p>以上，来来回回重装过无数遍系统，耗时5-6天。其中，大部分耗费的时间在于下载和安装，当然还有相当一部分在重装系统的时间上，而且一开始装的是最新的17.10，之后又回退到了16.04，做了几次系统盘重装了无数次系统，并且还只能在课余时间（基本是晚上，和岳岳在实验室折腾）。可以说是相当惨了，后续已经基本熟练到，出了问题直接手敲命令重新来一遍，不需要查资料（熟悉到令人心疼）。</p>
-<h4 id="总结经验教训"><a href="#总结经验教训" class="headerlink" title="总结经验教训"></a>总结经验教训</h4><ol>
+<h4 id="总结经验教训">总结经验教训</h4>
+<ol type="1">
 <li>踩坑之前，先去请教已经踩过坑的朋友或者去官方论坛查看安装记录或者搜索相关博客。已经两年了，我的习惯还没有改过来QAQ，喜欢自己一遍又一遍踩坑之后再搜索</li>
 <li>提前准备一些工具，比如如果是大型工具，就可能会弄坏（“脏”）系统，备一个系统盘。还有一些能提前获取的压缩包或者安装包。</li>
 <li>踩坑的时候要脚踏实地，不要浮躁冲动。明明不需要重装系统，浪费时间，就不要直接动手格盘重装</li>
 </ol>
-<h3 id="Windows10-Tesla-AMD"><a href="#Windows10-Tesla-AMD" class="headerlink" title="Windows10 + Tesla + AMD"></a>Windows10 + Tesla + AMD</h3><p>按照小岳岳的意思，Windows装这种双显卡驱动啥的会比Linux方便很多，所以改战Windows，重装的系统版本是专业版。</p>
-<h4 id="结果-1"><a href="#结果-1" class="headerlink" title="结果"></a>结果</h4><p>失败</p>
-<h4 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h4><p>AMD驱动能够正常显示图形并且可以正常安装驱动，但是那块特斯拉显卡不行。系统能识别出来有两块显卡，但是在安装完英伟达驱动之后，并不能设置特斯拉。且两块显卡，AMD显示正常，特斯拉有个黄色的感叹号。所以是否怀疑是否是显卡本身有了问题（毕竟这么久了QAQ）</p>
-<h4 id="补充-1"><a href="#补充-1" class="headerlink" title="补充"></a>补充</h4><p>特斯拉显卡本身不是安装一般的英伟达驱动的，而是需要安装<code>TCC</code>驱动程序，<a target="_blank" rel="noopener" href="http://www.nvidia.cn/object/software-for-tesla-products-cn.html">官网介绍</a>。这里一开始我是不知道的，所以可能是这里出了问题。但是很矛盾的点在于，CUDA在Windows可以直接安装驱动程序。我也试过直接安装CUDA也不行。浪浪的意思是，特斯拉只能在Server版本上运行，我和小岳岳对这一点持怀疑态度。</p>
+<h3 id="windows10-tesla-amd">Windows10 + Tesla + AMD</h3>
+<p>按照小岳岳的意思，Windows装这种双显卡驱动啥的会比Linux方便很多，所以改战Windows，重装的系统版本是专业版。</p>
+<h4 id="结果-1">结果</h4>
+<p>失败</p>
+<h4 id="遇到的问题">遇到的问题</h4>
+<p>AMD驱动能够正常显示图形并且可以正常安装驱动，但是那块特斯拉显卡不行。系统能识别出来有两块显卡，但是在安装完英伟达驱动之后，并不能设置特斯拉。且两块显卡，AMD显示正常，特斯拉有个黄色的感叹号。所以是否怀疑是否是显卡本身有了问题（毕竟这么久了QAQ）</p>
+<h4 id="补充-1">补充</h4>
+<p>特斯拉显卡本身不是安装一般的英伟达驱动的，而是需要安装<code>TCC</code>驱动程序，<a
+target="_blank" rel="noopener" href="http://www.nvidia.cn/object/software-for-tesla-products-cn.html">官网介绍</a>。这里一开始我是不知道的，所以可能是这里出了问题。但是很矛盾的点在于，CUDA在Windows可以直接安装驱动程序。我也试过直接安装CUDA也不行。浪浪的意思是，特斯拉只能在Server版本上运行，我和小岳岳对这一点持怀疑态度。</p>
 <p>关于完整的安装过程就不在这个失败部分介绍了，下一节完整的说明Windows下安装过程及注意事项。此部分耗时2-3天。</p>
-<h3 id="Windows10-Titan-X"><a href="#Windows10-Titan-X" class="headerlink" title="Windows10 + Titan X"></a>Windows10 + Titan X</h3><p>由于以上种种原因，并且已经快折腾不下去了，所以跟教授直接申请换泰坦。嗯，所以这一波一天半大概就成功了，只失败了一次。泰坦是支持图形显示的，为了减少问题所以也将AMD换下了（第一次没卸，出了一点问题，可能跟AMD有关）。</p>
-<h4 id="软件版本"><a href="#软件版本" class="headerlink" title="软件版本"></a>软件版本</h4><p>Windows10专业版+VS2013专业版+CUDA7.5</p>
+<h3 id="windows10-titan-x">Windows10 + Titan X</h3>
+<p>由于以上种种原因，并且已经快折腾不下去了，所以跟教授直接申请换泰坦。嗯，所以这一波一天半大概就成功了，只失败了一次。泰坦是支持图形显示的，为了减少问题所以也将AMD换下了（第一次没卸，出了一点问题，可能跟AMD有关）。</p>
+<h4 id="软件版本">软件版本</h4>
+<p>Windows10专业版+VS2013专业版+CUDA7.5</p>
 <p>这里需要注意的是，在前文中提到CUDA不向下兼容，所以推荐不安装最新的，保险起见就选了较旧的版本。关于VS版本选择问题，这里CUDA7.5网上最多的搭配是VS2013，但是这里需要说明VS2013必须要是专业版，否则不支持CUDA。在VS2015之后的版本就没有这个问题。还有就是顺序问题，<strong>一定要先安装VS再安装CUDA</strong>，不需要安装英伟达驱动。</p>
-<h4 id="总体流程"><a href="#总体流程" class="headerlink" title="总体流程"></a>总体流程</h4><ol>
-<li><p>安装Windows系统，激活系统，最好不进行安全更新。卸载一些不必要的软件防止占用空间大小（比如说我只有一块128G的固态，惨！）</p>
-</li>
-<li><p>安装VS2013专业版</p>
-</li>
-<li><p>安装CUDA7.5，建议local版。如果这里安装失败可以进入<strong>服务</strong>，找到<strong>Windows Installer</strong>，手动启动它即可。还有一些其他问题，在文末贴了链接。</p>
-</li>
+<h4 id="总体流程">总体流程</h4>
+<ol type="1">
+<li><p>安装Windows系统，激活系统，最好不进行安全更新。卸载一些不必要的软件防止占用空间大小（比如说我只有一块128G的固态，惨！）</p></li>
+<li><p>安装VS2013专业版</p></li>
+<li><p>安装CUDA7.5，建议local版。如果这里安装失败可以进入<strong>服务</strong>，找到<strong>Windows
+Installer</strong>，手动启动它即可。还有一些其他问题，在文末贴了链接。</p></li>
 <li><p>写CUDA的环境配置。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># cuda7.5安装完成之后在系统环境变量中自动配置了两个系统变量</span></span><br><span class="line">CUDA_PATH：C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5</span><br><span class="line">CUDA_PATH_V7_5：C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5</span><br><span class="line"><span class="comment"># 但是为了之后的vs2013的配置做准备我们需要在配置五个系统变量，请根据具体的安装路径进行设置CUDA_SDK_PATH, 这里我用的是默认设置</span></span><br><span class="line">CUDA_BIN_PATH：%CUDA_PATH%\bin</span><br><span class="line">CUDA_LIB_PATH：%CUDA_PATH%\lib\Win32</span><br><span class="line">CUDA_SDK_BIN：%CUDA_SDK_PATH%\bin\Win64</span><br><span class="line">CUDA_SDK_LIB：%CUDA_SDK_PATH%\common\lib\x64</span><br><span class="line">CUDA_SDK_PATH：C:\ProgramData\NVIDIA Corporation\CUDA Samples\v7.5</span><br><span class="line"><span class="comment"># 在系统环境变量path后添加如下内容</span></span><br><span class="line">%CUDA_LIB_PATH%</span><br><span class="line">%CUDA_BIN_PATH%</span><br><span class="line">%CUDA_SDK_LIB_PATH%</span><br><span class="line">%CUDA_SDK_BIN_PATH%</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>进行测试</p>
-</li>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># cuda7.5安装完成之后在系统环境变量中自动配置了两个系统变量</span></span><br><span class="line">CUDA_PATH：C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5</span><br><span class="line">CUDA_PATH_V7_5：C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5</span><br><span class="line"><span class="comment"># 但是为了之后的vs2013的配置做准备我们需要在配置五个系统变量，请根据具体的安装路径进行设置CUDA_SDK_PATH, 这里我用的是默认设置</span></span><br><span class="line">CUDA_BIN_PATH：%CUDA_PATH%\bin</span><br><span class="line">CUDA_LIB_PATH：%CUDA_PATH%\lib\Win32</span><br><span class="line">CUDA_SDK_BIN：%CUDA_SDK_PATH%\bin\Win64</span><br><span class="line">CUDA_SDK_LIB：%CUDA_SDK_PATH%\common\lib\x64</span><br><span class="line">CUDA_SDK_PATH：C:\ProgramData\NVIDIA Corporation\CUDA Samples\v7.5</span><br><span class="line"><span class="comment"># 在系统环境变量path后添加如下内容</span></span><br><span class="line">%CUDA_LIB_PATH%</span><br><span class="line">%CUDA_BIN_PATH%</span><br><span class="line">%CUDA_SDK_LIB_PATH%</span><br><span class="line">%CUDA_SDK_BIN_PATH%</span><br></pre></td></tr></table></figure></li>
+<li><p>进行测试</p></li>
 </ol>
-<h4 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h4><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/u011821462/article/details/50145221">win10+vs2013+cuda7.5环境搭建</a></p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/u012033124/article/details/52169823">VS2013下CUDA 7.5安装</a></p>
-<p>CUDA安装的一些错误可以参考<a target="_blank" rel="noopener" href="https://blog.csdn.net/xuxiatian/article/details/50577960">这篇文章</a>，但是在某些情况下，可能系统环境已经被污染了，最好的方法还是重装系统。</p>
+<h4 id="参考文章">参考文章</h4>
+<p><a
+target="_blank" rel="noopener" href="https://blog.csdn.net/u011821462/article/details/50145221">win10+vs2013+cuda7.5环境搭建</a></p>
+<p><a
+target="_blank" rel="noopener" href="https://blog.csdn.net/u012033124/article/details/52169823">VS2013下CUDA
+7.5安装</a></p>
+<p>CUDA安装的一些错误可以参考<a
+target="_blank" rel="noopener" href="https://blog.csdn.net/xuxiatian/article/details/50577960">这篇文章</a>，但是在某些情况下，可能系统环境已经被污染了，最好的方法还是重装系统。</p>
 <p>耗时1-2天，总归是很愉快的结束了整个环境搭建。在某些情况下，有些环境的搭建不一定需要（最好不要）用最新的版本，可能会有一些bug，而且之前踩坑的人比较少可借鉴的东西较少。总体来说，抛开之前很奇怪的硬件配置之外，安装过程还是并不难的。接下来，便开始了我的CUDA编程之旅。</p>
 <p>人生路漫漫，谨以此文章纪念上大学来折腾环境最坑爹的一次记录。</p>
 
@@ -418,7 +449,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D"><span class="nav-text">基础介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E4%BA%8EGPU%E7%BC%96%E7%A8%8B"><span class="nav-text">关于GPU编程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E5%B9%B6%E8%A1%8C%E8%AE%A1%E7%AE%97"><span class="nav-text">关于并行计算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E5%AE%A4%E7%9A%84%E6%98%BE%E5%8D%A1%E4%BB%8B%E7%BB%8D"><span class="nav-text">实验室的显卡介绍</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Ubuntu-Tesla-AMD"><span class="nav-text">Ubuntu + Tesla + AMD</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%93%E6%9E%9C"><span class="nav-text">结果</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%81%87%E5%88%B0%E9%97%AE%E9%A2%98%E5%8F%8A%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-text">遇到问题及解决方案</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A1%A5%E5%85%85"><span class="nav-text">补充</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E5%AE%9E%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-text">一些实用命令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93%E7%BB%8F%E9%AA%8C%E6%95%99%E8%AE%AD"><span class="nav-text">总结经验教训</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Windows10-Tesla-AMD"><span class="nav-text">Windows10 + Tesla + AMD</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%93%E6%9E%9C-1"><span class="nav-text">结果</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-text">遇到的问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A1%A5%E5%85%85-1"><span class="nav-text">补充</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Windows10-Titan-X"><span class="nav-text">Windows10 + Titan X</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BD%AF%E4%BB%B6%E7%89%88%E6%9C%AC"><span class="nav-text">软件版本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E4%BD%93%E6%B5%81%E7%A8%8B"><span class="nav-text">总体流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="nav-text">参考文章</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D"><span class="nav-text">基础介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E4%BA%8Egpu%E7%BC%96%E7%A8%8B"><span class="nav-text">关于GPU编程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E5%B9%B6%E8%A1%8C%E8%AE%A1%E7%AE%97"><span class="nav-text">关于并行计算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E5%AE%A4%E7%9A%84%E6%98%BE%E5%8D%A1%E4%BB%8B%E7%BB%8D"><span class="nav-text">实验室的显卡介绍</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ubuntu-tesla-amd"><span class="nav-text">Ubuntu + Tesla + AMD</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%93%E6%9E%9C"><span class="nav-text">结果</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%81%87%E5%88%B0%E9%97%AE%E9%A2%98%E5%8F%8A%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-text">遇到问题及解决方案</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A1%A5%E5%85%85"><span class="nav-text">补充</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E5%AE%9E%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-text">一些实用命令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93%E7%BB%8F%E9%AA%8C%E6%95%99%E8%AE%AD"><span class="nav-text">总结经验教训</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#windows10-tesla-amd"><span class="nav-text">Windows10 + Tesla + AMD</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%93%E6%9E%9C-1"><span class="nav-text">结果</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-text">遇到的问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A1%A5%E5%85%85-1"><span class="nav-text">补充</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#windows10-titan-x"><span class="nav-text">Windows10 + Titan X</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BD%AF%E4%BB%B6%E7%89%88%E6%9C%AC"><span class="nav-text">软件版本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E4%BD%93%E6%B5%81%E7%A8%8B"><span class="nav-text">总体流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="nav-text">参考文章</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

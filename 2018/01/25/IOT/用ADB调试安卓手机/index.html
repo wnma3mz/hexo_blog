@@ -27,16 +27,14 @@
 <meta property="og:site_name" content="Wnma&#39;s Blogs">
 <meta property="og:description" content="使用adb工具实现对安卓手机的调试，包括安装应用、查看运行App、录屏、截图等功能。本文详细介绍了adb工具的安装、配置和使用方法，并列出了一些实用的命令，同时还介绍了无线网调试设备的方法。">
 <meta property="og:locale">
-<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/adb/20180125135305187.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/adb/20180125135319543.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/adb/20180125135348748.png">
 <meta property="article:published_time" content="2018-01-25T05:55:11.000Z">
 <meta property="article:modified_time" content="2024-06-15T08:01:01.795Z">
 <meta property="article:author" content="wnma3mz">
 <meta property="article:tag" content="Python">
 <meta property="article:tag" content="ADB">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/adb/20180125135305187.png">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/adb/20180125135319543.png">
 
 <link rel="canonical" href="https://wnma3mz.github.io/2018/01/25/IOT/%E7%94%A8ADB%E8%B0%83%E8%AF%95%E5%AE%89%E5%8D%93%E6%89%8B%E6%9C%BA/">
 
@@ -260,50 +258,72 @@
         <p>使用adb工具实现对安卓手机的调试，包括安装应用、查看运行App、录屏、截图等功能。本文详细介绍了adb工具的安装、配置和使用方法，并列出了一些实用的命令，同时还介绍了无线网调试设备的方法。</p>
 <span id="more"></span>
 <p>写在开头，一些推荐阅读的博客文章</p>
-<p><a target="_blank" rel="noopener" href="http://blog.csdn.net/fasfaf454/article/details/51438743?locationNum=14">通过adb获取手机信息</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/5980c8c282ef">Android adb你真的会用吗?</a></p>
-<p><a target="_blank" rel="noopener" href="http://blog.csdn.net/qq_15364915/article/details/52369266">ADB调试命令大全</a></p>
-<h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p>adb是安卓开发调试工具，接触到这个还是因为微信跳一跳的外挂原因。看文档说明之后得知需要adb工具，进行简单尝试后，发现这玩意还真的是挺好用的。填补了自己用代码控制安卓手机的空缺（之前也玩过按键精灵，但是需要Root权限）。</p>
-<p><a target="_blank" rel="noopener" href="https://developer.android.com/studio/command-line/adb.html?hl=zh-cn"><strong>adb官方说明</strong></a>：</p>
-<p>Android 调试桥 (adb) 是一个通用命令行工具，其允许您与模拟器实例或连接的 Android 设备进行通信。它可为各种设备操作提供便利，如安装和调试应用，并提供对 Unix shell（可用来在模拟器或连接的设备上运行各种命令）的访问。该工具作为一个客户端-服务器程序，包括三个组件：</p>
-<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>可参考文章:  <a target="_blank" rel="noopener" href="https://www.xda-developers.com/install-adb-windows-macos-linux/">How to Install ADB on Windows, macOS, and Linux</a></p>
-<h4 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h4><p>这里我使用的是win10。如果以下操作不能成功配置，可以百度其他的安装教程</p>
-<ol>
-<li>下载。<a target="_blank" rel="noopener" href="https://dl.google.com/android/repository/platform-tools-latest-windows.zip">下载链接</a></li>
+<p><a
+target="_blank" rel="noopener" href="http://blog.csdn.net/fasfaf454/article/details/51438743?locationNum=14">通过adb获取手机信息</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/5980c8c282ef">Android
+adb你真的会用吗?</a></p>
+<p><a
+target="_blank" rel="noopener" href="http://blog.csdn.net/qq_15364915/article/details/52369266">ADB调试命令大全</a></p>
+<h3 id="介绍">介绍</h3>
+<p>adb是安卓开发调试工具，接触到这个还是因为微信跳一跳的外挂原因。看文档说明之后得知需要adb工具，进行简单尝试后，发现这玩意还真的是挺好用的。填补了自己用代码控制安卓手机的空缺（之前也玩过按键精灵，但是需要Root权限）。</p>
+<p><a
+target="_blank" rel="noopener" href="https://developer.android.com/studio/command-line/adb.html?hl=zh-cn"><strong>adb官方说明</strong></a>：</p>
+<p>Android 调试桥 (adb)
+是一个通用命令行工具，其允许您与模拟器实例或连接的 Android
+设备进行通信。它可为各种设备操作提供便利，如安装和调试应用，并提供对
+Unix
+shell（可用来在模拟器或连接的设备上运行各种命令）的访问。该工具作为一个客户端-服务器程序，包括三个组件：</p>
+<h3 id="安装">安装</h3>
+<p>可参考文章: <a
+target="_blank" rel="noopener" href="https://www.xda-developers.com/install-adb-windows-macos-linux/">How
+to Install ADB on Windows, macOS, and Linux</a></p>
+<h4 id="windows">Windows</h4>
+<p>这里我使用的是win10。如果以下操作不能成功配置，可以百度其他的安装教程</p>
+<ol type="1">
+<li><p>下载。<a
+target="_blank" rel="noopener" href="https://dl.google.com/android/repository/platform-tools-latest-windows.zip">下载链接</a></p></li>
 <li><p>移动目录</p>
-<ol>
+<ol type="1">
 <li>解压压缩包</li>
 <li>移动文件夹你想让它放置的位置</li>
-</ol>
-</li>
+</ol></li>
 <li><p>环境配置</p>
-<ol>
+<ol type="1">
 <li>添加环境变量，这样可以在cmd或者powershell中直接使用adb</li>
-<li>右键”计算机”-&gt;”属性”-&gt;左边的”高级系统设置”-&gt;”环境变量”&gt;-在上面用户变量中的”Path”进行编辑-&gt;”添加”刚刚放置的文件夹目录，确认保存即可<br><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/adb/20180125135305187.png" alt=""></li>
+<li>右键"计算机"-&gt;"属性"-&gt;左边的"高级系统设置"-&gt;"环境变量"&gt;-在上面用户变量中的"Path"进行编辑-&gt;"添加"刚刚放置的文件夹目录，确认保存即可
+<img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/adb/20180125135305187.png" /></li>
 <li>这样再打开cmd或者powershell，就可以直接使用adb命令了</li>
+</ol></li>
 </ol>
-</li>
-</ol>
-<h4 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h4><p>Linux系统安装adb工具还是很容易的，我使用的是Ubuntu17.10</p>
+<h4 id="linux">Linux</h4>
+<p>Linux系统安装adb工具还是很容易的，我使用的是Ubuntu17.10</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 下载</span></span><br><span class="line">&gt; <span class="built_in">sudo</span> apt updagte</span><br><span class="line">&gt; <span class="built_in">sudo</span> apt upgrade</span><br><span class="line">&gt; <span class="built_in">sudo</span> apt install android-tools-adb</span><br></pre></td></tr></table></figure>
-<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>手机需要打开USB调试模式，在实验的时候，市面上流行的大部分安卓手机USB调式模式开关默认关闭。当然如果手机默认开启了USB调试开关，自然可以省去下面一步。这里简单介绍一下如何手动打开USB调试模式开关，手机“设置”—&gt;”关于手机”—&gt;点击”版本号”7次。每个手机开启的方式大同小异，如果有不同，可以百度“xx手机如何开启USB调试”。</p>
+<h3 id="配置">配置</h3>
+<p>手机需要打开USB调试模式，在实验的时候，市面上流行的大部分安卓手机USB调式模式开关默认关闭。当然如果手机默认开启了USB调试开关，自然可以省去下面一步。这里简单介绍一下如何手动打开USB调试模式开关，手机“设置”—&gt;"关于手机"—&gt;点击"版本号"7次。每个手机开启的方式大同小异，如果有不同，可以百度“xx手机如何开启USB调试”。</p>
 <p>在USB调试开关开启之后，进入USB调试，打开USB调试开关，如下图。</p>
 <p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/adb/20180125135319543.png" width="300px" /></p>
 <p>之后使用USB数据线连接到电脑。</p>
-<p>连接成功后，手机需要信任电脑。电脑打开cmd/powershell（Windows）或者终端（Linux），输入 <code>adb devices</code>。查看输出。</p>
+<p>连接成功后，手机需要信任电脑。电脑打开cmd/powershell（Windows）或者终端（Linux），输入
+<code>adb devices</code>。查看输出。</p>
 <p>如果有输出设备名且无警告，则表示连接成功，否则需要进行下面一步的配置。</p>
 <p><strong>Windows</strong></p>
 <p>首先需要连接手机，确保手机能连接到电脑且打开了USB调试。</p>
-<p>第二步，右键”计算机”-&gt;”属性”-&gt;左边的”设备管理器”-&gt;”便携设备”-&gt;”详细信息”-&gt;”属性”下拉选择”硬件Id”，查看”值”中的内容。</p>
-<p>第三步，进入C盘用户目录下的隐藏文件夹”.android”，编辑或者新建文件”adb_usb.ini”，用记事本打开，在里面写上内容。我这里需要写的是”0x2A45”，0x是前缀不需要更改，后面的字符串对应的更改”硬件Id”里面”值”的VID后面的四个字符。保存退出即可</p>
-<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/adb/20180125135348748.png" alt=""></p>
-<p>第四步，断开USB连接，重新连接，再输入 <code>adb devices</code>。正常情况下应该会出现设备的成功连接的信息</p>
+<p>第二步，右键"计算机"-&gt;"属性"-&gt;左边的"设备管理器"-&gt;"便携设备"-&gt;"详细信息"-&gt;"属性"下拉选择"硬件Id"，查看"值"中的内容。</p>
+<p>第三步，进入C盘用户目录下的隐藏文件夹".android"，编辑或者新建文件"adb_usb.ini"，用记事本打开，在里面写上内容。我这里需要写的是"0x2A45"，0x是前缀不需要更改，后面的字符串对应的更改"硬件Id"里面"值"的VID后面的四个字符。保存退出即可</p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/adb/20180125135348748.png" /></p>
+<p>第四步，断开USB连接，重新连接，再输入
+<code>adb devices</code>。正常情况下应该会出现设备的成功连接的信息</p>
 <p><strong>Linux</strong></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 先连接手机，输入下面命令，找到关于连接手机的那一行</span></span><br><span class="line">&gt; lsusb</span><br><span class="line"><span class="comment"># 输出形如下面，最后的&quot;Google Inc&quot;表示的是设备名，这里需要找到匹配自己手机的设备，并记录好ID</span></span><br><span class="line">...</span><br><span class="line">Bus 001 Device 017: ID 18d1:d002 Google Inc.</span><br><span class="line">...</span><br><span class="line"><span class="comment"># 在目录/etc/udev/rules.d/下，添加文件70-android.rules(名字貌似无所谓？？？)</span></span><br><span class="line">&gt; <span class="built_in">sudo</span> vim /etc/udev/rules.d/70-android.rules</span><br><span class="line"><span class="comment"># 写入下面内容，idVendor表示ID冒号前的数字，idProduct表示的是ID冒号后的数字，MODE固定为&quot;0666&quot;，其他不变</span></span><br><span class="line">SUBSYSTEM==<span class="string">&quot;usb&quot;</span>, ATTRS&#123;idVendor&#125;==<span class="string">&quot;18d1&quot;</span>, ATTRS&#123;idProduct&#125;==<span class="string">&quot;d002&quot;</span>,MODE=<span class="string">&quot;0666&quot;</span></span><br><span class="line"><span class="comment"># 保存退出，修改权限</span></span><br><span class="line">&gt; <span class="built_in">sudo</span> <span class="built_in">chmod</span> 644   /etc/udev/rules.d/70-android.rules</span><br><span class="line">&gt; <span class="built_in">sudo</span> <span class="built_in">chown</span> root. /etc/udev/rules.d/70-android.rules</span><br><span class="line"><span class="comment"># 重启服务</span></span><br><span class="line">&gt; <span class="built_in">sudo</span> service udev restart</span><br><span class="line">&gt; <span class="built_in">sudo</span> killall adb</span><br><span class="line"></span><br><span class="line"><span class="comment"># 输入adb devices查看输出，是否有误</span></span><br><span class="line">&gt; adb devices</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>详细可参考这篇博客: <a target="_blank" rel="noopener" href="http://blog.csdn.net/qq_15364915/article/details/52369266">ADB调试命令大全</a></p>
+<h3 id="使用">使用</h3>
+<p>详细可参考这篇博客: <a
+target="_blank" rel="noopener" href="http://blog.csdn.net/qq_15364915/article/details/52369266">ADB调试命令大全</a></p>
 <p>在这里贴出一些我认为比较有意思且实用的功能</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看所有连接设备</span></span><br><span class="line">&gt; adb devices</span><br><span class="line"></span><br><span class="line"><span class="comment"># 进行截图保存在sd卡的根目录下，名字为screen.png</span></span><br><span class="line">&gt; adb shell screencap -p /sdcard/screen.png</span><br><span class="line"><span class="comment"># 将截图发送到本地（当前目录下），也可以发送其他文件</span></span><br><span class="line">&gt; adb pull /sdcard/screen.png</span><br><span class="line"><span class="comment"># 删除本地文件</span></span><br><span class="line">&gt; adb shell <span class="built_in">rm</span> /sdcard/screen.png</span><br><span class="line"><span class="comment"># 发送电脑里的文件到设备</span></span><br><span class="line">&gt; adb shell push screen.png /sdcard/</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 进入手机的交互环境，操作类似linux终端，exit或者Ctrl+C退出</span></span><br><span class="line">&gt; adb shell</span><br><span class="line"></span><br><span class="line"><span class="comment"># 点击手机屏幕(1000,1000)的位置</span></span><br><span class="line">&gt; adb shell input tap 1000 1000</span><br><span class="line"><span class="comment"># 输入字符串&quot;helloworld&quot;，此处不能直接输入中文，且字符串不能有空格</span></span><br><span class="line">&gt; adb shell input text helloworld</span><br><span class="line"><span class="comment"># 滑动屏幕，从（100, 100)到（1000,1000)，经历10s(也可以当作长按屏幕来使用)</span></span><br><span class="line">&gt; adb shell input swipe 100 100 1000 1000 10</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看当前运行的App, 这里Windows没有grep所以会运行失败，可以进入先进入交互环境再输入下面去掉&quot;adb shell&quot;命令</span></span><br><span class="line">&gt; adb shell dumpsys window | grep mCurrentFocus</span><br><span class="line"><span class="comment"># 或者</span></span><br><span class="line">&gt; adb shell dumpsys activity activities | grep mFocusedActivity</span><br><span class="line"></span><br><span class="line"><span class="comment"># 按下电源键</span></span><br><span class="line">&gt; adb shell input keyevent 26</span><br><span class="line"><span class="comment"># 按下返回键</span></span><br><span class="line">&gt; adb shell input keyevent 4</span><br><span class="line"><span class="comment"># 按下HOME健</span></span><br><span class="line">&gt; adb shell input keyevent 3</span><br><span class="line"><span class="comment"># 点亮屏幕</span></span><br><span class="line">&gt; adb shell input keyevent 224</span><br><span class="line"><span class="comment"># 熄灭屏幕</span></span><br><span class="line">&gt; adb shell input keyevent 223</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看手机安装了哪些App，输出按行输出App的包名</span></span><br><span class="line">&gt; adb shell pm list packages</span><br><span class="line"><span class="comment"># 加&quot;-s&quot;表示只输出系统应用</span></span><br><span class="line"><span class="comment"># 加&quot;-3&quot;表示只输出第三方应用</span></span><br><span class="line"><span class="comment"># 加字符串表示过滤应用名称，当然也可以使用grep</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装apk</span></span><br><span class="line">&gt; adb install &lt;packagename&gt;</span><br><span class="line"><span class="comment"># 卸载apk</span></span><br><span class="line">&gt; adb uninstall &lt;packagename&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 从桌面启动app</span></span><br><span class="line">&gt; adb shell monkey -p &lt;packagename&gt; -c android.intent.category.LAUNCHER 1</span><br><span class="line"><span class="comment"># 关闭app</span></span><br><span class="line">&gt; adb shell am force-stop &lt;packagename&gt;</span><br></pre></td></tr></table></figure>
-<h3 id="使用无线网调试设备"><a href="#使用无线网调试设备" class="headerlink" title="使用无线网调试设备"></a>使用无线网调试设备</h3><p>确保手机和电脑在同一局域网内</p>
+<h3 id="使用无线网调试设备">使用无线网调试设备</h3>
+<p>确保手机和电脑在同一局域网内</p>
 <p>如何查看手机的ip，由于每个设备的方法不大相同，在此不进行说明，请读者自行百度。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用USB连接设备，启动手机5555端口</span></span><br><span class="line">&gt; adb tcpip 5555</span><br><span class="line"><span class="comment"># adb连接命令，需要知道手机的ip</span></span><br><span class="line">&gt; adb connect 192.168.1.111</span><br><span class="line"><span class="comment"># 输入如下则表示连接成功</span></span><br><span class="line">connected to 192.168.1.111:5555</span><br><span class="line"><span class="comment"># 这里要注意的是，如果接下来的步骤未断掉数据线，则电脑是连接了两台设备的，进行操作会产生错误，所以可以拔掉数据线或者断开网络或者指定设备运行</span></span><br><span class="line"><span class="comment"># 断开无线网连接</span></span><br><span class="line">&gt; adb disconnect 192.168.1.111</span><br></pre></td></tr></table></figure>
 
@@ -407,7 +427,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D"><span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Windows"><span class="nav-text">Windows</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Linux"><span class="nav-text">Linux</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE"><span class="nav-text">配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8"><span class="nav-text">使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%97%A0%E7%BA%BF%E7%BD%91%E8%B0%83%E8%AF%95%E8%AE%BE%E5%A4%87"><span class="nav-text">使用无线网调试设备</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D"><span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#windows"><span class="nav-text">Windows</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#linux"><span class="nav-text">Linux</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE"><span class="nav-text">配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8"><span class="nav-text">使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%97%A0%E7%BA%BF%E7%BD%91%E8%B0%83%E8%AF%95%E8%AE%BE%E5%A4%87"><span class="nav-text">使用无线网调试设备</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
