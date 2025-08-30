@@ -258,28 +258,20 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看当前用户的定时任务，也可以使用crontab -uroot -l查看指定用户的定时任务</span></span><br><span class="line">crontab -l</span><br><span class="line"></span><br><span class="line"><span class="comment"># 编辑crontab定时任务，貌似是使用vim的编辑命令</span></span><br><span class="line">crontab -e</span><br><span class="line"></span><br><span class="line"><span class="comment"># 其实基本上知道这两个就可以处理定时任务了</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除当前用户的所有定时任务，不知道为什么会有这种设定（手贱按下过一次，恢复起来真的惨）</span></span><br><span class="line">crontab -r</span><br><span class="line"><span class="comment"># 如果按到了，就去日志文件里面找记录，尽可能恢复命令吧</span></span><br></pre></td></tr></table></figure>
 <p>下面讲讲编辑任务的格式</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 基本格式</span></span><br><span class="line"></span><br><span class="line">  *  *  *  *  * <span class="built_in">command</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 分 时 日 月 周 需要执行的命令</span></span><br></pre></td></tr></table></figure>
-<p>可视化测试在线网站，https://crontab.guru/</p>
+<p>可视化测试在线网站，<a target="_blank" rel="noopener" href="https://crontab.guru/">https://crontab.guru/</a></p>
 <p>几个栗子</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 每分钟执行一次command命令，空格表示间隔</span></span><br><span class="line">* * * * * <span class="built_in">command</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 每小时执行一次，‘/’表示频率</span></span><br><span class="line">0 */1 * * * <span class="built_in">command</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 每小时的10分和40分各执行一次，‘,’表示并列</span></span><br><span class="line">10,40 * * * * <span class="built_in">command</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 每个星期一的10-14点的10，40执行，‘-’表述区间</span></span><br><span class="line">10,40 10-14 * * 1 <span class="built_in">command</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 每天的8，13，20点执行，注意此时表示分的那个*要替换为0</span></span><br><span class="line">0 8,13,20 * * * <span class="built_in">command</span></span><br></pre></td></tr></table></figure>
-<p>日志文件一般存放在
-<code>/var/log/cron*</code>中，不过我的Ubuntu好像没有开启cron日志，可以在
-<code>/etc/rsyslog.d/50-default.conf</code>中进行设置（Centos在
-<code>/etc/rsyslog.conf</code>中设置）</p>
+<p>日志文件一般存放在 <code>/var/log/cron*</code>中，不过我的Ubuntu好像没有开启cron日志，可以在 <code>/etc/rsyslog.d/50-default.conf</code>中进行设置（Centos在 <code>/etc/rsyslog.conf</code>中设置）</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="built_in">sudo</span> vim /etc/rsyslog.d/50-default.conf</span><br><span class="line"><span class="comment"># 找到cron*, 去掉前面的#注释即可</span></span><br><span class="line"><span class="comment"># 重启rsyslog</span></span><br><span class="line">&gt; <span class="built_in">sudo</span> service rsyslog  restart</span><br></pre></td></tr></table></figure>
 <p>crontab相关目录介绍</p>
-<p><code>/etc/anacrontab</code>:
-这个文件存着系统级的任务。它主要用来运行每日的(daily)，每周的(weekly),每月的(monthly)的任务。一般不在此文件安装自己的任务</p>
+<p><code>/etc/anacrontab</code>: 这个文件存着系统级的任务。它主要用来运行每日的(daily)，每周的(weekly),每月的(monthly)的任务。一般不在此文件安装自己的任务</p>
 <p><code>/etc/cron.d/</code>: 此目录下存放的是系统级任务的任务文件。</p>
-<p><code>/var/spool/cron/</code>:
-此目录下存放各个用户的任务文件。各个用户的任务存放在以自已用户名为文件名的任务文件中。此文件中的指令行没有用户域。</p>
-<p><code>/etc/crontab</code>:
-crontab的主要配置文件，执行了每小时、每日、每周、每月的脚本文件</p>
+<p><code>/var/spool/cron/</code>: 此目录下存放各个用户的任务文件。各个用户的任务存放在以自已用户名为文件名的任务文件中。此文件中的指令行没有用户域。</p>
+<p><code>/etc/crontab</code>: crontab的主要配置文件，执行了每小时、每日、每周、每月的脚本文件</p>
 <p><code>/etc/cron.hourly</code>、<code>/etc/cron.daily</code>、<code>/etc/cron.weekly</code>、<code>/etc/cron.monthly</code>：这四个目录下分别对应着每隔一段时间需要执行的脚本任务，脚本使用shell命令编写</p>
 <p><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000002628040"></a></p>
-<p><a
-target="_blank" rel="noopener" href="http://www.cnblogs.com/peida/archive/2013/01/08/2850483.html">每天一个linux命令（50）：crontab命令</a></p>
-<p><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000002628040">Linux
-下执行定时任务 crontab 命令详解</a></p>
+<p><a target="_blank" rel="noopener" href="http://www.cnblogs.com/peida/archive/2013/01/08/2850483.html">每天一个linux命令（50）：crontab命令</a></p>
+<p><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000002628040">Linux 下执行定时任务 crontab 命令详解</a></p>
 
     </div>
 
@@ -396,7 +388,7 @@ target="_blank" rel="noopener" href="http://www.cnblogs.com/peida/archive/2013/0
       <div class="site-state-item site-state-posts">
           <a href="/hexo_blog/archives/">
         
-          <span class="site-state-item-count">79</span>
+          <span class="site-state-item-count">80</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

@@ -252,24 +252,16 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>在一个文件夹中，有很多个 Python
-文件，每个文件都有若干重名函数，需要一一导入。这个时候，可以用 Python
-的自动导入包来实现。</p>
+        <p>在一个文件夹中，有很多个 Python 文件，每个文件都有若干重名函数，需要一一导入。这个时候，可以用 Python 的自动导入包来实现。</p>
 <span id="more"></span>
-<h2 id="需求描述">需求描述</h2>
-<p>假设有一个文件夹</p>
+<h2 id="需求描述"><a href="#需求描述" class="headerlink" title="需求描述"></a>需求描述</h2><p>假设有一个文件夹</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">func/</span><br><span class="line">├── __init__.py</span><br><span class="line">├── func1.py</span><br><span class="line">├── func2.py</span><br><span class="line">├── func3.py</span><br></pre></td></tr></table></figure>
 <p>每个文件都有一个重名函数，比如</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># func1.py</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">foo</span>():</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;foo&quot;</span>)</span><br></pre></td></tr></table></figure>
-<p>这不仅导致 <code>import</code> 代码不够简洁，且在新增文件时，还得在
-<code>__init__.py</code> 中添加 <code>import</code>
-语句。甚至在调用处也得增加代码来处理。</p>
-<h2 id="解决方案">解决方案</h2>
-<p>Python 的自动导入包可以解决这个问题。</p>
+<p>这不仅导致 <code>import</code> 代码不够简洁，且在新增文件时，还得在 <code>__init__.py</code> 中添加 <code>import</code> 语句。甚至在调用处也得增加代码来处理。</p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>Python 的自动导入包可以解决这个问题。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> glob</span><br><span class="line"><span class="keyword">import</span> importlib</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取当前文件夹下所有的 .py 文件</span></span><br><span class="line">files = glob.glob(os.path.join(os.path.dirname(__file__), <span class="string">&quot;*.py&quot;</span>))</span><br><span class="line">func_dict = &#123;&#125;</span><br><span class="line"><span class="keyword">for</span> file_ <span class="keyword">in</span> files:</span><br><span class="line">    func_name = os.path.basename(file_)[:-<span class="number">3</span>]</span><br><span class="line">    load_module = importlib.import_module(<span class="string">f&quot;func.<span class="subst">&#123;func_name&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="built_in">globals</span>()[load_module.__name__] = <span class="built_in">getattr</span>(load_module, <span class="string">&quot;foo&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 将其放到一个字典中，以按需处理，</span></span><br><span class="line">    func_dict[func_name] = <span class="built_in">globals</span>()[load_module.__name__]</span><br></pre></td></tr></table></figure>
-<p>这样，不仅不需要在 <code>func/__init__.py</code> 中添加
-<code>import</code>
-语句，也不需要在调用处添加额外的代码。甚至，还要根据需求，从字典中调用对应函数。当然，这需要提前进行约定，比如全部放到<code>func</code>文件夹下，且都用<code>foo</code>这个名字作为函数名。</p>
+<p>这样，不仅不需要在 <code>func/__init__.py</code> 中添加 <code>import</code> 语句，也不需要在调用处添加额外的代码。甚至，还要根据需求，从字典中调用对应函数。当然，这需要提前进行约定，比如全部放到<code>func</code>文件夹下，且都用<code>foo</code>这个名字作为函数名。</p>
 
     </div>
 
@@ -386,7 +378,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/hexo_blog/archives/">
         
-          <span class="site-state-item-count">79</span>
+          <span class="site-state-item-count">80</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

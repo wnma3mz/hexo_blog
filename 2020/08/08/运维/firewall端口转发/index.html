@@ -258,40 +258,35 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>如何通过防火墙本机端口转发来实现SSH跳板登录。继
-<a href="/hexo_blog/2018/02/11/%E8%BF%90%E7%BB%B4/ssh/" title="ssh笔记（端口转发）">ssh 笔记（端口转发）</a>，根据新的需求衍生出新技巧</p>
+        <p>如何通过防火墙本机端口转发来实现SSH跳板登录。继 <a href="/hexo_blog/2018/02/11/%E8%BF%90%E7%BB%B4/ssh/" title="ssh笔记（端口转发）">ssh 笔记（端口转发）</a>，根据新的需求衍生出新技巧</p>
 <span id="more"></span>
 <p>继 <a href="/hexo_blog/2018/02/11/%E8%BF%90%E7%BB%B4/ssh/" title="ssh笔记（端口转发）">ssh 笔记（端口转发）</a>，根据新的需求衍生出新技巧</p>
-<h3 id="需求">需求</h3>
-<ol type="1">
+<h3 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h3><ol>
 <li>继跳板机中转登录后，觉得需要中转登录还是太麻烦，所以希望能够跟普通ssh一样登录</li>
 </ol>
-<h3 id="工具">工具</h3>
-<ol type="1">
+<h3 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h3><ol>
 <li>防火墙配置（iptables/ufw/firewall）</li>
 <li>ssh</li>
 </ol>
-<h3 id="先验知识">先验知识</h3>
-<ol type="1">
+<h3 id="先验知识"><a href="#先验知识" class="headerlink" title="先验知识"></a>先验知识</h3><ol>
 <li><a href="/hexo_blog/2018/02/11/%E8%BF%90%E7%BB%B4/ssh/" title="ssh笔记（端口转发）">ssh 笔记（端口转发）</a></li>
-<li>防火墙配置
-<ol type="1">
+<li>防火墙配置<ol>
 <li>iptables（Centos7之前自带）</li>
 <li>firewall（Centos7之后自带）</li>
 <li>ufw（Ubuntu自带）</li>
 <li>netsh（Windows自带）</li>
-</ol></li>
 </ol>
-<h3 id="实验">实验</h3>
-<ol type="1">
+</li>
+</ol>
+<h3 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h3><ol>
 <li>假设内网机器A，内网机器C，公网机器B。A通过将22端口转发至B的3000端口来进行跳板登录。所以C需要执行如下命令来登录A</li>
 </ol>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># C登录B</span></span><br><span class="line">ssh userB@ip_B</span><br><span class="line"><span class="comment"># B登录A</span></span><br><span class="line">ssh userA@127.0.0.1 -p 3000</span><br></pre></td></tr></table></figure>
-<ol start="2" type="1">
+<ol>
 <li>通过防火墙本机端口转发，将本机的3000端口转发至3000端口</li>
 </ol>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 两者的前提需要在/etc/sysctl.conf中，令net.ipv4.ip_forward = 1</span></span><br><span class="line"><span class="comment"># 使配置生效</span></span><br><span class="line">sysctl -p</span><br><span class="line"></span><br><span class="line"><span class="comment"># iptables</span></span><br><span class="line">iptables -t nat -A PREROUTING -p tcp -i eth0 -d 127.0.0.1 --dport 3000 -j DNAT --to 127.0.0.1:3000</span><br><span class="line"></span><br><span class="line"><span class="comment"># firewall</span></span><br><span class="line"><span class="comment"># 添加端口</span></span><br><span class="line">firewall-cmd --add-port=3000/tcp --permanent</span><br><span class="line"><span class="comment"># 端口转发</span></span><br><span class="line">firewall-cmd --permanent --add-forward-port=port=3000:proto=tcp:toport=3000 --permanent</span><br><span class="line"></span><br><span class="line"><span class="comment"># --permanent 永久生效</span></span><br><span class="line"><span class="comment"># firewall添加后，需要重启</span></span><br><span class="line">firewall-cmd --reload</span><br><span class="line"></span><br><span class="line"><span class="comment"># netsh</span></span><br><span class="line">netsh interface portproxy add v4tov4 listenaddress=127.0.0.1 listenport=2121 connectaddress=ip_B connectport=222</span><br></pre></td></tr></table></figure>
-<ol start="3" type="1">
+<ol>
 <li>以上，即可通过如下命令直接登录A</li>
 </ol>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh userA@ip_B -p 3000</span><br></pre></td></tr></table></figure>
@@ -417,7 +412,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/hexo_blog/archives/">
         
-          <span class="site-state-item-count">79</span>
+          <span class="site-state-item-count">80</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
