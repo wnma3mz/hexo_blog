@@ -244,14 +244,18 @@
       
         <p>记录开发 tLLM 中后端相关的问题。</p>
 <span id="more"></span>
-<h2 id="RoadMap"><a href="#RoadMap" class="headerlink" title="RoadMap"></a>RoadMap</h2><p>使用 <code>torch.dist</code> 实现 张量并行，使用 <code>grpc</code> 实现流水并行</p>
+<h2 id="roadmap"><a class="markdownIt-Anchor" href="#roadmap"></a> RoadMap</h2>
+<p>使用 <code>torch.dist</code> 实现 张量并行，使用 <code>grpc</code> 实现流水并行</p>
 <ul>
-<li>[x] Web UI<ul>
-<li>[x] Node Status<ul>
+<li>[x] Web UI
+<ul>
+<li>[x] Node Status
+<ul>
 <li>[ ] Display Multi Model</li>
 </ul>
 </li>
-<li>[x] ChatWeb Demo by Gradio<ul>
+<li>[x] ChatWeb Demo by Gradio
+<ul>
 <li>[x] Parameters</li>
 <li>[x] System</li>
 <li>[x] Button</li>
@@ -259,7 +263,8 @@
 </li>
 </ul>
 </li>
-<li>[x] OpenAI API format<ul>
+<li>[x] OpenAI API format
+<ul>
 <li>[x] Streaming Output</li>
 <li>[x] chat completion(stream)</li>
 <li>[x] chat completion(non-stream)</li>
@@ -267,14 +272,16 @@
 </ul>
 </li>
 <li>[x] Client Send Url and Port</li>
-<li>[ ] Auto Layer Split<ul>
+<li>[ ] Auto Layer Split
+<ul>
 <li>[x] get free layer idx</li>
 <li>[x] fix split layer pipeline</li>
 <li>[x] calculate layer memory and recommend split</li>
 <li>[ ] split model before load</li>
 </ul>
 </li>
-<li>[x] Async Generation<ul>
+<li>[x] Async Generation
+<ul>
 <li>[x] Multi-Sequence Batch=1</li>
 <li>[x] Queuing mechanism</li>
 <li>[x] Continuous Batch</li>
@@ -283,24 +290,28 @@
 <li>[x] await Event</li>
 </ul>
 </li>
-<li>[x] Communication<ul>
+<li>[x] Communication
+<ul>
 <li>[x] Communication Time Benchmark</li>
 <li>[x] Async GRPC</li>
 <li>[x] Ring Communication</li>
 </ul>
 </li>
-<li>[x] Auto Find Node<ul>
+<li>[x] Auto Find Node
+<ul>
 <li>[x] WebSocket Communication</li>
 <li>[x] Client Retry Connect</li>
-<li>[x] Client auto update url </li>
+<li>[x] Client auto update url</li>
 <li>[x] Master Exit</li>
 </ul>
 </li>
 <li>[x] Auto Download</li>
 </ul>
-<h2 id="初始化方法"><a href="#初始化方法" class="headerlink" title="初始化方法"></a>初始化方法</h2><p>Master 和 Client 交互方式 http</p>
+<h2 id="初始化方法"><a class="markdownIt-Anchor" href="#初始化方法"></a> 初始化方法</h2>
+<p>Master 和 Client 交互方式 http</p>
 <ul>
-<li><p>Master 先启动，已知模型名和层数</p>
+<li>
+<p>Master 先启动，已知模型名和层数</p>
 <ul>
 <li>Client 启动 grpc，HTTP 发送可连接到地址信息（TODO 内存/显存大小/算力等信息）到 Master</li>
 <li>Master 返回模型名，分配的起始和结束层数（同步操作，不需要状态）</li>
@@ -308,35 +319,42 @@
 <li>之后 Master 会向 Client 定时发送心跳包，确保 Client 连接正常</li>
 </ul>
 </li>
-<li><p>如果 Master 重启，Master 会丢失所有的 Client 信息</p>
+<li>
+<p>如果 Master 重启，Master 会丢失所有的 Client 信息</p>
 <ul>
 <li>Client 会有定时心跳检查，带着已有状态重新连接</li>
 </ul>
 </li>
 </ul>
-<h2 id="Engine-和-HTTP-Server-架构分离"><a href="#Engine-和-HTTP-Server-架构分离" class="headerlink" title="Engine 和 HTTP Server 架构分离"></a>Engine 和 HTTP Server 架构分离</h2><p>LLM 可以被视作一个独立的超级重<strong>计算</strong>的进程，所以跟 HTTP Server 放到一个进程中会导致 CPU 资源被抢占。</p>
+<h2 id="engine-和-http-server-架构分离"><a class="markdownIt-Anchor" href="#engine-和-http-server-架构分离"></a> Engine 和 HTTP Server 架构分离</h2>
+<p>LLM 可以被视作一个独立的超级重<strong>计算</strong>的进程，所以跟 HTTP Server 放到一个进程中会导致 CPU 资源被抢占。</p>
 <p>所以需要额外用一个进程来负责 Engine 的计算，HTTP Server 负责接收请求，将请求转发给 Engine，然后将 Engine 的结果返回给请求者。</p>
 <p>但 tllm 本身是跨机器的，并不需要所有层都在一个进程中，所以这里分离的对象有所不同。这里的 Engine 和 HTTP Server 是在同一个机器上的。而把客户端的 Engine 独立了一个进程。</p>
 <p>当然，对于多模态的情况，可能还是需要把 Engine 这部分分离处理，避免占用资源。但由于消息传递暂时不好处理，这部分暂未实现。</p>
-<h2 id="CPU-死循环问题"><a href="#CPU-死循环问题" class="headerlink" title="CPU 死循环问题"></a>CPU 死循环问题</h2><p>Engine 本身是一个<strong>死循环</strong>的函数。哪怕在没有任务的时候，一直处于死循环状态，这样会导致 CPU 占用过高。如下所示</p>
+<h2 id="cpu-死循环问题"><a class="markdownIt-Anchor" href="#cpu-死循环问题"></a> CPU 死循环问题</h2>
+<p>Engine 本身是一个<strong>死循环</strong>的函数。哪怕在没有任务的时候，一直处于死循环状态，这样会导致 CPU 占用过高。如下所示</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">_generate</span>(<span class="params">self</span>):</span><br><span class="line">    <span class="comment"># 死循环，持续从队列中获取数据</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        <span class="comment"># 做一些事情</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">generate_stream</span>(<span class="params">self, request_data: SequenceRequestData</span>):</span><br><span class="line">    <span class="comment"># 数据进入到工作队列</span></span><br><span class="line">    <span class="variable language_">self</span>.prefill_queue.put_nowait(request_data)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 等待队列完成</span></span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
 <p>在 python 的异步队列中有一个 <code>asyncio.Event()</code>。这个事件对象可以用来在多个协程之间传递信号。当一个协程调用了 <code>set()</code> 方法，其他协程调用 <code>wait()</code> 方法就会立即返回。这样就可以实现协程之间的通信。</p>
 <p>所以可以用这个信号来避免 CPU 过高占用。如下所示</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">AsyncEngine</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, generator: <span class="type">Union</span>[LLMGenerator, ImageGenerator], sleep_time: <span class="built_in">float</span> = <span class="number">0.0</span>, limit_size: <span class="built_in">int</span> = <span class="number">5</span></span>):</span><br><span class="line">        ...</span><br><span class="line">        <span class="variable language_">self</span>.queue_not_empty: asyncio.Event = asyncio.Event()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">_generate</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            <span class="keyword">await</span> <span class="variable language_">self</span>.queue_not_empty.wait()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">generate_stream</span>(<span class="params">self, request_data: SequenceRequestData</span>):</span><br><span class="line">        <span class="variable language_">self</span>.prefill_queue.put_nowait(request_data)</span><br><span class="line">        <span class="variable language_">self</span>.queue_not_empty.<span class="built_in">set</span>()</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 等待队列完成</span></span><br><span class="line">        ...</span><br></pre></td></tr></table></figure>
-<h2 id="请求排队问题"><a href="#请求排队问题" class="headerlink" title="请求排队问题"></a>请求排队问题</h2><p>考虑到下面几个原因，在 Engine 中需要设计三个队列来处理不同的请求。</p>
+<h2 id="请求排队问题"><a class="markdownIt-Anchor" href="#请求排队问题"></a> 请求排队问题</h2>
+<p>考虑到下面几个原因，在 Engine 中需要设计三个队列来处理不同的请求。</p>
 <ul>
-<li><p>LLM 对应的深度学习模型是一个计算密集型的任务，所以在处理请求的时候，可能会有多个请求同时进入。需要一个队列来处理这些请求。（传统叫攒 Batch，批量处理若干请求的计算效率最高）</p>
+<li>
+<p>LLM 对应的深度学习模型是一个计算密集型的任务，所以在处理请求的时候，可能会有多个请求同时进入。需要一个队列来处理这些请求。（传统叫攒 Batch，批量处理若干请求的计算效率最高）</p>
 </li>
-<li><p>LLM 是 token by token 生成的，一个请求会反复被处理。</p>
+<li>
+<p>LLM 是 token by token 生成的，一个请求会反复被处理。</p>
 </li>
-<li><p>由于 LLM 生成时间过长，可能会被随时中断，所以需要一个队列来处理中断请求。</p>
+<li>
+<p>由于 LLM 生成时间过长，可能会被随时中断，所以需要一个队列来处理中断请求。</p>
 </li>
 </ul>
 <p>所以设计了三个队列，分别是 <code>prefill_queue</code>、<code>decoding_queue</code> 和 <code>abort_queue</code>。如下所示。</p>
 <p>并且在每次进行计算前，都会通过 <code>fetch_data</code> 函数来控制哪些请求需要被处理。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">AsyncEngine</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, generator: <span class="type">Union</span>[LLMGenerator, ImageGenerator], sleep_time: <span class="built_in">float</span> = <span class="number">0.0</span>, limit_size: <span class="built_in">int</span> = <span class="number">5</span></span>):</span><br><span class="line">        ...</span><br><span class="line">        <span class="variable language_">self</span>.prefill_queue: asyncio.Queue = asyncio.Queue()</span><br><span class="line">        <span class="variable language_">self</span>.decoding_queue: asyncio.Queue = asyncio.Queue()</span><br><span class="line">        <span class="variable language_">self</span>.abort_queue: asyncio.Queue = asyncio.Queue()</span><br><span class="line">        ...</span><br><span class="line"></span><br><span class="line">    <span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">fetch_data</span>(<span class="params">self</span>):</span><br><span class="line">        aborting_request_ids = <span class="built_in">set</span>()</span><br><span class="line">        <span class="keyword">while</span> <span class="keyword">not</span> <span class="variable language_">self</span>.abort_queue.empty():</span><br><span class="line">            request_id = <span class="variable language_">self</span>.abort_queue.get_nowait()</span><br><span class="line">            aborting_request_ids.add(request_id)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">aborting_filter</span>(<span class="params">request_data</span>) -&gt; <span class="built_in">bool</span>:</span><br><span class="line">            <span class="keyword">if</span> request_data.request_id <span class="keyword">in</span> aborting_request_ids:</span><br><span class="line">                <span class="variable language_">self</span>.logger.debug(<span class="string">f&quot;aborting generate request_id: <span class="subst">&#123;request_data.request_id&#125;</span>&quot;</span>)</span><br><span class="line">                request_data.is_stop = <span class="literal">True</span></span><br><span class="line">                request_data.finish_reason_list = [<span class="string">&quot;abort&quot;</span>]</span><br><span class="line">                aborting_request_ids.remove(request_data.request_id)</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># prefill 队列和 decoding 队列的调度逻辑</span></span><br><span class="line">        request_data_list = []</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 优先从 decoding_queue 取数据</span></span><br><span class="line">        <span class="keyword">while</span> <span class="keyword">not</span> <span class="variable language_">self</span>.decoding_queue.empty() <span class="keyword">and</span> <span class="built_in">len</span>(request_data_list) &lt; <span class="variable language_">self</span>.limit_size:</span><br><span class="line">            request_data = <span class="variable language_">self</span>.decoding_queue.get_nowait()</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">await</span> aborting_filter(request_data):</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            request_data_list.append(request_data)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 从 prefill_queue 中取数据，直到达到限制</span></span><br><span class="line">        <span class="keyword">while</span> <span class="keyword">not</span> <span class="variable language_">self</span>.prefill_queue.empty() <span class="keyword">and</span> <span class="built_in">len</span>(request_data_list) &lt; <span class="variable language_">self</span>.limit_size:</span><br><span class="line">            request_data = <span class="variable language_">self</span>.prefill_queue.get_nowait()</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">await</span> aborting_filter(request_data):</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            request_data_list.append(request_data)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> request_data_list</span><br><span class="line"></span><br><span class="line">    <span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">_generate</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            request_data_list: <span class="type">List</span>[SequenceRequestData] = <span class="keyword">await</span> <span class="variable language_">self</span>.fetch_data()</span><br><span class="line">            </span><br><span class="line"></span><br><span class="line">    <span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">generate_stream</span>(<span class="params">self, request_data: SequenceRequestData</span>):</span><br><span class="line">        <span class="variable language_">self</span>.prefill_queue.put_nowait(request_data)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 等待队列完成</span></span><br><span class="line">        ...</span><br><span class="line"></span><br><span class="line">    <span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">abort</span>(<span class="params">self, request_id: <span class="built_in">str</span></span>):</span><br><span class="line">        <span class="comment"># 从 prefill_queue 和 decoding_queue 中移除 request_id</span></span><br><span class="line">        <span class="variable language_">self</span>.abort_queue.put_nowait(request_id)</span><br></pre></td></tr></table></figure>
-<h2 id="v0-性能测试"><a href="#v0-性能测试" class="headerlink" title="v0 性能测试"></a>v0 性能测试</h2><p>Mac Mini M4 (16G) </p>
-<div class="table-container">
+<h2 id="v0-性能测试"><a class="markdownIt-Anchor" href="#v0-性能测试"></a> v0 性能测试</h2>
+<p>Mac Mini M4 (16G)</p>
 <table>
 <thead>
 <tr>
@@ -350,14 +368,14 @@
 <tbody>
 <tr>
 <td>Engine, Baseline</td>
-<td>98.10 tok/s</td>
+<td>98.10 tok/s</td>
 <td>35.45 tok/s</td>
 <td>20.68 tok/s</td>
 <td>No Memory</td>
 </tr>
 <tr>
 <td>Local</td>
-<td>61.83 tok/s</td>
+<td>61.83 tok/s</td>
 <td>34.54 tok/s</td>
 <td>14.91 tok/s</td>
 <td>No Memory</td>
@@ -371,7 +389,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p>Q: Why Local is slower than Server+Client?</p>
 <p>A:</p>
 <ul>
@@ -478,7 +495,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#RoadMap"><span class="nav-text">RoadMap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E6%96%B9%E6%B3%95"><span class="nav-text">初始化方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Engine-%E5%92%8C-HTTP-Server-%E6%9E%B6%E6%9E%84%E5%88%86%E7%A6%BB"><span class="nav-text">Engine 和 HTTP Server 架构分离</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CPU-%E6%AD%BB%E5%BE%AA%E7%8E%AF%E9%97%AE%E9%A2%98"><span class="nav-text">CPU 死循环问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%B7%E6%B1%82%E6%8E%92%E9%98%9F%E9%97%AE%E9%A2%98"><span class="nav-text">请求排队问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#v0-%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95"><span class="nav-text">v0 性能测试</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#roadmap"><span class="nav-text"> RoadMap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E6%96%B9%E6%B3%95"><span class="nav-text"> 初始化方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#engine-%E5%92%8C-http-server-%E6%9E%B6%E6%9E%84%E5%88%86%E7%A6%BB"><span class="nav-text"> Engine 和 HTTP Server 架构分离</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cpu-%E6%AD%BB%E5%BE%AA%E7%8E%AF%E9%97%AE%E9%A2%98"><span class="nav-text"> CPU 死循环问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%B7%E6%B1%82%E6%8E%92%E9%98%9F%E9%97%AE%E9%A2%98"><span class="nav-text"> 请求排队问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#v0-%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95"><span class="nav-text"> v0 性能测试</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -494,20 +511,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/hexo_blog/archives/">
         
-          <span class="site-state-item-count">80</span>
+          <span class="site-state-item-count">82</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/hexo_blog/categories/">
           
-        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-count">20</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/hexo_blog/tags/">
           
-        <span class="site-state-item-count">91</span>
+        <span class="site-state-item-count">93</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

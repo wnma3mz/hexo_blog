@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/hexo_blog/css/main.css">
+
+
+<link rel="stylesheet" href="/hexo_blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wnma3mz.github.io","root":"/hexo_blog/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Git 操作查询">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git 操作查询">
+<meta property="og:url" content="https://wnma3mz.github.io/2025/09/06/%E8%BF%90%E7%BB%B4/Git%E6%93%8D%E4%BD%9C/index.html">
+<meta property="og:site_name" content="Wnma&#39;s Blogs">
+<meta property="og:description" content="Git 操作查询">
+<meta property="og:locale">
+<meta property="article:published_time" content="2025-09-06T02:33:52.000Z">
+<meta property="article:modified_time" content="2025-09-06T02:37:45.386Z">
+<meta property="article:author" content="wnma3mz">
+<meta property="article:tag" content="Note">
+<meta property="article:tag" content="Git">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://wnma3mz.github.io/2025/09/06/%E8%BF%90%E7%BB%B4/Git%E6%93%8D%E4%BD%9C/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>Git 操作查询 | Wnma's Blogs</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="تشغيل شريط التصفح">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hexo_blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Wnma's Blogs</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/hexo_blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/hexo_blog/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/hexo_blog/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/hexo_blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-bookmark">
+
+    <a href="https://wnma3mz.github.io/bookmark/index.html" rel="section"><i class="fa fa-bookmark fa-fw"></i>书签</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/2025/09/06/%E8%BF%90%E7%BB%B4/Git%E6%93%8D%E4%BD%9C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
+      <meta itemprop="name" content="wnma3mz">
+      <meta itemprop="description" content="Day Day Up">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wnma's Blogs">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Git 操作查询
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建于：2025-09-06 10:33:52 / عُدل：10:37:45" itemprop="dateCreated datePublished" datetime="2025-09-06T10:33:52+08:00">2025-09-06</time>
+
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+                  ， 
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/Linux/Git/" itemprop="url" rel="index"><span itemprop="name">Git</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Git 操作查询</p>
+<span id="more"></span>
+<h3 id="q1-如何将已提交并推送到远程的文件恢复到之前的版本"><a class="markdownIt-Anchor" href="#q1-如何将已提交并推送到远程的文件恢复到之前的版本"></a> Q1: 如何将已提交并推送到远程的文件恢复到之前的版本？</h3>
+<p>如果您想把一个文件恢复到之前的某个历史版本，可以按照以下步骤操作：</p>
+<ol>
+<li>
+<p><strong>查找目标版本的提交哈希值。</strong><br />
+使用 <code>git log</code> 命令查看该文件的提交历史，找到您想要恢复到的那个版本的提交 ID。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">log</span> -- &lt;文件名&gt;</span><br></pre></td></tr></table></figure>
+<p>找到并复制该提交的哈希值（例如：<code>abcdef123456...</code>）。</p>
+</li>
+<li>
+<p><strong>恢复文件到指定版本。</strong><br />
+使用 <code>git checkout</code> 命令将文件恢复到工作目录中。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout &lt;提交哈希值&gt; -- &lt;文件名&gt;</span><br></pre></td></tr></table></figure>
+<p>例如：<code>git checkout abcdef123456 -- your_file.txt</code></p>
+</li>
+<li>
+<p><strong>提交恢复后的更改。</strong><br />
+此时文件已经恢复，但更改还在本地工作区，需要将其暂存并提交。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git add &lt;文件名&gt;</span><br><span class="line">git commit -m <span class="string">&quot;恢复 &lt;文件名&gt; 到版本 &lt;提交哈希值&gt;&quot;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p><strong>推送新的提交到远程仓库。</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="q2-如何撤销一个已提交的文件并重新提交"><a class="markdownIt-Anchor" href="#q2-如何撤销一个已提交的文件并重新提交"></a> Q2: 如何撤销一个已提交的文件，并重新提交？</h3>
+<p>如果您只是想撤销某个文件在最近一次提交中的更改，可以这样做：</p>
+<ol>
+<li>
+<p><strong>使用 <code>git checkout</code> 撤销文件更改。</strong><br />
+这个命令可以把文件恢复到上一个提交的状态。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 恢复到上一个提交（HEAD^）的状态</span></span><br><span class="line">git checkout HEAD^ -- &lt;文件名&gt;</span><br></pre></td></tr></table></figure>
+<p>如果您想恢复到更早的某个特定提交，可以使用：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 恢复到某个特定提交的状态</span></span><br><span class="line">git checkout &lt;commit_hash&gt; -- &lt;文件名&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p><strong>重新提交。</strong><br />
+执行 <code>git checkout</code> 后，文件会恢复到指定状态，并出现在您的工作区。您需要重新添加和提交这个更改。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git add &lt;文件名&gt;</span><br><span class="line">git commit -m <span class="string">&quot;撤销了 &lt;文件名&gt; 上的特定更改&quot;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="q3-如何比较两个不同标签tag之间某个文件的差异"><a class="markdownIt-Anchor" href="#q3-如何比较两个不同标签tag之间某个文件的差异"></a> Q3: 如何比较两个不同标签（tag）之间某个文件的差异？</h3>
+<p>您可以使用 <code>git diff</code> 命令来对比两个标签（或其他任何提交）之间某个文件的内容差异。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git diff &lt;tag1&gt; &lt;tag2&gt; -- &lt;文件路径&gt;</span><br></pre></td></tr></table></figure>
+<p>例如：<code>git diff v1.0 v1.1 -- src/main.js</code></p>
+<h3 id="q4-如何重命名一个-git-分支"><a class="markdownIt-Anchor" href="#q4-如何重命名一个-git-分支"></a> Q4: 如何重命名一个 Git 分支？</h3>
+<p>重命名分支需要同时操作本地和远程仓库。</p>
+<ol>
+<li>
+<p><strong>重命名本地分支。</strong><br />
+首先，确保您不在要重命名的分支上。然后使用 <code>-m</code> 选项进行重命名。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch -m &lt;旧分支名&gt; &lt;新分支名&gt;</span><br></pre></td></tr></table></figure>
+<p>例如：<code>git branch -m feature/login feature/authentication</code></p>
+</li>
+<li>
+<p><strong>删除远程旧分支。</strong><br />
+远程仓库仍然保留着旧分支名，您需要手动删除它。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push origin --delete &lt;旧分支名&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p><strong>推送并设置新的上游分支。</strong><br />
+最后，将重命名后的本地分支推送到远程，并设置其上游追踪关系。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push origin -u &lt;新分支名&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="q5-遇到fast-forward-merge-is-not-possible-to-merge-this-request-first-rebase-locally错误该如何操作"><a class="markdownIt-Anchor" href="#q5-遇到fast-forward-merge-is-not-possible-to-merge-this-request-first-rebase-locally错误该如何操作"></a> Q5: 遇到“fast-forward merge is not possible. To merge this request, first rebase locally.”错误，该如何操作？</h3>
+<p>这个错误提示意味着您的分支落后于主分支，需要先更新本地分支历史。最干净的做法是使用 <code>git rebase</code>。</p>
+<p>假设您在 <code>feature-branch</code> 上，要变基到 <code>main</code> 分支上：</p>
+<ol>
+<li>
+<p><strong>切换到您的功能分支。</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout feature-branch</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p><strong>拉取目标分支的最新更改。</strong><br />
+先确保本地的 <code>main</code> 分支是最新的。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git checkout main</span><br><span class="line">git pull origin main</span><br><span class="line">git checkout feature-branch</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p><strong>执行变基操作。</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git rebase main</span><br></pre></td></tr></table></figure>
+<p>这个命令会将 <code>feature-branch</code> 上的提交“重演”在 <code>main</code> 分支的最新状态之上。</p>
+</li>
+<li>
+<p><strong>解决冲突（如果发生）。</strong><br />
+在变基过程中，如果出现冲突，Git 会暂停。您需要手动解决冲突，然后使用 <code>git add &lt;文件名&gt;</code> 标记为已解决，最后运行 <code>git rebase --continue</code>。</p>
+<p>如果想中止变基，可以使用 <code>git rebase --abort</code>。</p>
+</li>
+<li>
+<p><strong>强制推送您的分支。</strong><br />
+由于变基重写了提交历史，普通的 <code>git push</code> 会被拒绝。您需要强制推送。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 推荐使用，更安全</span></span><br><span class="line">git push origin feature-branch --force-with-lease</span><br><span class="line"><span class="comment"># 或</span></span><br><span class="line">git push origin feature-branch --force</span><br></pre></td></tr></table></figure>
+<p><strong>请注意</strong>：对共享分支进行强制推送非常危险，请务必谨慎！</p>
+</li>
+</ol>
+<h3 id="q6-在合并merge或变基rebase时如何一键解决所有冲突并完全采纳其中一个分支的内容"><a class="markdownIt-Anchor" href="#q6-在合并merge或变基rebase时如何一键解决所有冲突并完全采纳其中一个分支的内容"></a> Q6: 在合并（merge）或变基（rebase）时，如何一键解决所有冲突，并完全采纳其中一个分支的内容？</h3>
+<p>Git 提供了 <code>-X</code> 选项来指定合并策略。</p>
+<h4 id="在-git-merge-中"><a class="markdownIt-Anchor" href="#在-git-merge-中"></a> 在 <code>git merge</code> 中：</h4>
+<p>如果您在 <code>target-branch</code> 上，想要合并 <code>source-branch</code> 的内容，并且在冲突时完全采纳 <code>source-branch</code> 的更改：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git merge &lt;source-branch&gt; --strategy-option=theirs</span><br></pre></td></tr></table></figure>
+<p>如果您想保留 <code>target-branch</code> 的内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git merge &lt;source-branch&gt; --strategy-option=ours</span><br></pre></td></tr></table></figure>
+<h4 id="在-git-rebase-中"><a class="markdownIt-Anchor" href="#在-git-rebase-中"></a> 在 <code>git rebase</code> 中：</h4>
+<p>如果您希望在变基过程中，当冲突发生时始终使用当前分支（即 <code>ours</code>）的内容来解决：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git rebase &lt;目标分支&gt; -Xours</span><br></pre></td></tr></table></figure>
+<p>这个命令会尝试自动解决大多数冲突，但在非常复杂的情况下，仍可能需要您手动干预。</p>
+<h3 id="q7-如何完全丢弃某个分支或者在合并时完全采纳某个分支的更改"><a class="markdownIt-Anchor" href="#q7-如何完全丢弃某个分支或者在合并时完全采纳某个分支的更改"></a> Q7: 如何完全丢弃某个分支，或者在合并时完全采纳某个分支的更改？</h3>
+<ol>
+<li>
+<p><strong>完全丢弃某个分支。</strong></p>
+<ul>
+<li><strong>删除本地分支：</strong>
+<ul>
+<li><code>git branch -d &lt;分支名&gt;</code> (安全删除，分支必须已合并)</li>
+<li><code>git branch -D &lt;分支名&gt;</code> (强制删除，即使未合并)</li>
+</ul>
+</li>
+<li><strong>删除远程分支：</strong>
+<ul>
+<li><code>git push origin --delete &lt;分支名&gt;</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>完全采纳某个分支的更改。</strong></p>
+<p>如果您想让当前分支<strong>完全</strong>变成另一个分支的样子，包括提交历史和工作目录，可以使用 <code>git reset --hard</code>。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 切换到您的目标分支</span></span><br><span class="line">git checkout my-branch</span><br><span class="line"><span class="comment"># 硬重置，使其完全同步另一个分支的状态</span></span><br><span class="line">git reset --hard &lt;another-branch&gt;</span><br><span class="line"><span class="comment"># 之后如果需要更新远程，需要强制推送</span></span><br><span class="line">git push origin my-branch --force</span><br></pre></td></tr></table></figure>
+<p>这是一个非常强大的命令，会丢失 <code>my-branch</code> 上所有独有的、未推送到远程的提交，请务必谨慎使用。</p>
+</li>
+</ol>
+<h3 id="代码统计篇"><a class="markdownIt-Anchor" href="#代码统计篇"></a> 代码统计篇</h3>
+<h4 id="q8-如何统计某个-git-仓库在不同版本的代码行数"><a class="markdownIt-Anchor" href="#q8-如何统计某个-git-仓库在不同版本的代码行数"></a> Q8: 如何统计某个 Git 仓库在不同版本的代码行数？</h4>
+<p>有时候，你可能想知道一个项目在某个特定时间点（即某个提交版本）有多少行代码，或者只想统计特定类型文件的代码行数。你可以通过结合 <code>git checkout</code> 和一些命令行工具来实现。</p>
+<ol>
+<li>
+<p><strong>切换到目标提交版本。</strong><br />
+首先，使用 <code>git checkout</code> 命令切换到你想要统计的那个提交。你可以用完整的提交哈希值或者其缩写。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout &lt;commit_id&gt;</span><br></pre></td></tr></table></figure>
+<p><strong>注意：</strong> 这会让你进入“分离头指针”（detached HEAD）状态，这是一种正常的临时状态。</p>
+</li>
+<li>
+<p><strong>执行代码行数统计。</strong><br />
+接下来，使用 <code>find</code> 和 <code>wc -l</code> 命令来统计代码行数。下面这个示例统计了所有 <code>.py</code> 文件的代码行数：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find . -name <span class="string">&quot;*.py&quot;</span> | xargs <span class="built_in">cat</span> | <span class="built_in">wc</span> -l</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>find . -name &quot;*.py&quot;</code>：在当前目录及其子目录中查找所有 <code>.py</code> 结尾的文件。</li>
+<li><code>xargs cat</code>：将 <code>find</code> 命令找到的所有文件路径作为参数传递给 <code>cat</code> 命令，<code>cat</code> 会将这些文件的内容输出到标准输出。</li>
+<li><code>wc -l</code>：统计来自 <code>cat</code> 输出的行数。</li>
+</ul>
+</li>
+<li>
+<p><strong>返回到原来的分支。</strong><br />
+完成统计后，不要忘记切回你之前工作的分支。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout &lt;分支名&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<hr />
+<h3 id="提交与修改撤销篇"><a class="markdownIt-Anchor" href="#提交与修改撤销篇"></a> 提交与修改撤销篇</h3>
+<h4 id="q9-如何撤销一个已提交commit的更改"><a class="markdownIt-Anchor" href="#q9-如何撤销一个已提交commit的更改"></a> Q9: 如何撤销一个已提交（commit）的更改？</h4>
+<p>当你提交了一个包含错误的更改，或者你想取消某个提交的效果时，可以使用 <code>git revert</code>。</p>
+<p><code>git revert</code> 是一个<strong>安全</strong>的撤销方法，它会创建一个新的提交，来反向抵消目标提交所做的更改。这样做的好处是<strong>不会改写历史</strong>，这对于共享分支尤其重要。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git revert &lt;commit_id&gt;</span><br></pre></td></tr></table></figure>
+<p>执行此命令后，Git 会打开一个编辑器，让你为这个“反向”提交填写提交信息。保存并关闭后，一个新的提交就诞生了，它有效地撤销了 <code>&lt;commit_id&gt;</code> 所引入的更改。</p>
+<hr />
+<h4 id="q10-如果我只想撤销某个文件的修改但不想撤销整个提交该怎么办"><a class="markdownIt-Anchor" href="#q10-如果我只想撤销某个文件的修改但不想撤销整个提交该怎么办"></a> Q10: 如果我只想撤销某个文件的修改，但不想撤销整个提交，该怎么办？</h4>
+<p>如果你只是在工作区（尚未 <code>git add</code> 或 <code>git commit</code>）对某个文件进行了修改，想回到上一次提交时的状态，可以使用 <code>git checkout</code>。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout HEAD -- &lt;文件路径&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>HEAD</code>：代表当前分支的最新提交。</li>
+<li><code>--</code>：这个双破折号是用来分隔命令选项和文件路径的，以防你的文件路径和 Git 命令有冲突。</li>
+</ul>
+<p>这个命令会将指定文件恢复到它在 <code>HEAD</code> 处的状态，<strong>丢弃所有本地修改</strong>。请谨慎使用，因为一旦执行，未提交的更改就会丢失。</p>
+<h3 id="暂存篇"><a class="markdownIt-Anchor" href="#暂存篇"></a> 暂存篇</h3>
+<h4 id="q11-git-stash-是什么如何使用它来临时保存我的工作"><a class="markdownIt-Anchor" href="#q11-git-stash-是什么如何使用它来临时保存我的工作"></a> Q11: <code>git stash</code> 是什么？如何使用它来临时保存我的工作？</h4>
+<p><code>git stash</code> 是一个非常实用的命令，它能将你工作区和暂存区的所有<strong>未提交</strong>的更改临时保存起来，让你回到一个干净的工作目录。这在你需要快速切换分支来处理紧急任务时非常有用。</p>
+<ol>
+<li>
+<p><strong>保存你的更改。</strong><br />
+当你正在一个分支上工作，但需要切换到另一个分支时，可以使用 <code>git stash</code> 将当前未提交的更改暂存起来。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git stash</span><br></pre></td></tr></table></figure>
+<p>你也可以加上 <code>save</code> 和一个描述信息，方便以后识别。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git stash save <span class="string">&quot;正在处理登录页面&quot;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p><strong>恢复你的更改。</strong><br />
+当你完成紧急任务并回到原来的分支后，可以使用 <code>git stash pop</code> 命令来恢复你之前暂存的更改。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git stash pop</span><br></pre></td></tr></table></figure>
+<p><code>git stash pop</code> 会将最近的一次暂存恢复到你的工作区，并<strong>自动删除</strong>该暂存记录。如果你只想恢复而不删除，可以使用 <code>git stash apply</code>。</p>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>wnma3mz
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wnma3mz.github.io/2025/09/06/%E8%BF%90%E7%BB%B4/Git%E6%93%8D%E4%BD%9C/" title="Git 操作查询">https://wnma3mz.github.io/2025/09/06/运维/Git操作/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hexo_blog/tags/Note/" rel="tag"># Note</a>
+              <a href="/hexo_blog/tags/Git/" rel="tag"># Git</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2025/08/30/LLM/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-STAND/" rel="prev" title="LLM的推理加速-STAND">
+      <i class="fa fa-chevron-left"></i> LLM的推理加速-STAND
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2025/09/06/%E8%BF%90%E7%BB%B4/Bash%E6%93%8D%E4%BD%9C/" rel="next" title="Bash 操作查询">
+      Bash 操作查询 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#q1-%E5%A6%82%E4%BD%95%E5%B0%86%E5%B7%B2%E6%8F%90%E4%BA%A4%E5%B9%B6%E6%8E%A8%E9%80%81%E5%88%B0%E8%BF%9C%E7%A8%8B%E7%9A%84%E6%96%87%E4%BB%B6%E6%81%A2%E5%A4%8D%E5%88%B0%E4%B9%8B%E5%89%8D%E7%9A%84%E7%89%88%E6%9C%AC"><span class="nav-text"> Q1: 如何将已提交并推送到远程的文件恢复到之前的版本？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q2-%E5%A6%82%E4%BD%95%E6%92%A4%E9%94%80%E4%B8%80%E4%B8%AA%E5%B7%B2%E6%8F%90%E4%BA%A4%E7%9A%84%E6%96%87%E4%BB%B6%E5%B9%B6%E9%87%8D%E6%96%B0%E6%8F%90%E4%BA%A4"><span class="nav-text"> Q2: 如何撤销一个已提交的文件，并重新提交？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q3-%E5%A6%82%E4%BD%95%E6%AF%94%E8%BE%83%E4%B8%A4%E4%B8%AA%E4%B8%8D%E5%90%8C%E6%A0%87%E7%AD%BEtag%E4%B9%8B%E9%97%B4%E6%9F%90%E4%B8%AA%E6%96%87%E4%BB%B6%E7%9A%84%E5%B7%AE%E5%BC%82"><span class="nav-text"> Q3: 如何比较两个不同标签（tag）之间某个文件的差异？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q4-%E5%A6%82%E4%BD%95%E9%87%8D%E5%91%BD%E5%90%8D%E4%B8%80%E4%B8%AA-git-%E5%88%86%E6%94%AF"><span class="nav-text"> Q4: 如何重命名一个 Git 分支？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q5-%E9%81%87%E5%88%B0fast-forward-merge-is-not-possible-to-merge-this-request-first-rebase-locally%E9%94%99%E8%AF%AF%E8%AF%A5%E5%A6%82%E4%BD%95%E6%93%8D%E4%BD%9C"><span class="nav-text"> Q5: 遇到“fast-forward merge is not possible. To merge this request, first rebase locally.”错误，该如何操作？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q6-%E5%9C%A8%E5%90%88%E5%B9%B6merge%E6%88%96%E5%8F%98%E5%9F%BArebase%E6%97%B6%E5%A6%82%E4%BD%95%E4%B8%80%E9%94%AE%E8%A7%A3%E5%86%B3%E6%89%80%E6%9C%89%E5%86%B2%E7%AA%81%E5%B9%B6%E5%AE%8C%E5%85%A8%E9%87%87%E7%BA%B3%E5%85%B6%E4%B8%AD%E4%B8%80%E4%B8%AA%E5%88%86%E6%94%AF%E7%9A%84%E5%86%85%E5%AE%B9"><span class="nav-text"> Q6: 在合并（merge）或变基（rebase）时，如何一键解决所有冲突，并完全采纳其中一个分支的内容？</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%A8-git-merge-%E4%B8%AD"><span class="nav-text"> 在 git merge 中：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%A8-git-rebase-%E4%B8%AD"><span class="nav-text"> 在 git rebase 中：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q7-%E5%A6%82%E4%BD%95%E5%AE%8C%E5%85%A8%E4%B8%A2%E5%BC%83%E6%9F%90%E4%B8%AA%E5%88%86%E6%94%AF%E6%88%96%E8%80%85%E5%9C%A8%E5%90%88%E5%B9%B6%E6%97%B6%E5%AE%8C%E5%85%A8%E9%87%87%E7%BA%B3%E6%9F%90%E4%B8%AA%E5%88%86%E6%94%AF%E7%9A%84%E6%9B%B4%E6%94%B9"><span class="nav-text"> Q7: 如何完全丢弃某个分支，或者在合并时完全采纳某个分支的更改？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E7%BB%9F%E8%AE%A1%E7%AF%87"><span class="nav-text"> 代码统计篇</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#q8-%E5%A6%82%E4%BD%95%E7%BB%9F%E8%AE%A1%E6%9F%90%E4%B8%AA-git-%E4%BB%93%E5%BA%93%E5%9C%A8%E4%B8%8D%E5%90%8C%E7%89%88%E6%9C%AC%E7%9A%84%E4%BB%A3%E7%A0%81%E8%A1%8C%E6%95%B0"><span class="nav-text"> Q8: 如何统计某个 Git 仓库在不同版本的代码行数？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%90%E4%BA%A4%E4%B8%8E%E4%BF%AE%E6%94%B9%E6%92%A4%E9%94%80%E7%AF%87"><span class="nav-text"> 提交与修改撤销篇</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#q9-%E5%A6%82%E4%BD%95%E6%92%A4%E9%94%80%E4%B8%80%E4%B8%AA%E5%B7%B2%E6%8F%90%E4%BA%A4commit%E7%9A%84%E6%9B%B4%E6%94%B9"><span class="nav-text"> Q9: 如何撤销一个已提交（commit）的更改？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#q10-%E5%A6%82%E6%9E%9C%E6%88%91%E5%8F%AA%E6%83%B3%E6%92%A4%E9%94%80%E6%9F%90%E4%B8%AA%E6%96%87%E4%BB%B6%E7%9A%84%E4%BF%AE%E6%94%B9%E4%BD%86%E4%B8%8D%E6%83%B3%E6%92%A4%E9%94%80%E6%95%B4%E4%B8%AA%E6%8F%90%E4%BA%A4%E8%AF%A5%E6%80%8E%E4%B9%88%E5%8A%9E"><span class="nav-text"> Q10: 如果我只想撤销某个文件的修改，但不想撤销整个提交，该怎么办？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9A%82%E5%AD%98%E7%AF%87"><span class="nav-text"> 暂存篇</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#q11-git-stash-%E6%98%AF%E4%BB%80%E4%B9%88%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E5%AE%83%E6%9D%A5%E4%B8%B4%E6%97%B6%E4%BF%9D%E5%AD%98%E6%88%91%E7%9A%84%E5%B7%A5%E4%BD%9C"><span class="nav-text"> Q11: git stash 是什么？如何使用它来临时保存我的工作？</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="wnma3mz"
+      src="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
+  <p class="site-author-name" itemprop="name">wnma3mz</p>
+  <div class="site-description" itemprop="description">Day Day Up</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/hexo_blog/archives/">
+        
+          <span class="site-state-item-count">82</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/hexo_blog/categories/">
+          
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/hexo_blog/tags/">
+          
+        <span class="site-state-item-count">93</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wnma3mz" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wnma3mz" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wnma3mz@gmail.com" title="E-Mail → mailto:wnma3mz@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wnma3mz</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='99' src="/hexo_blog/lib/canvas-nest/canvas-nest-nomobile.min.js"></script>
+  <script src="/hexo_blog/lib/anime.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/hexo_blog/js/utils.js"></script>
+
+<script src="/hexo_blog/js/motion.js"></script>
+
+
+<script src="/hexo_blog/js/schemes/muse.js"></script>
+
+
+<script src="/hexo_blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/hexo_blog/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme    : 'forest',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -259,53 +259,78 @@
       
         <p>介绍手中各种电子产品及各自的拓展玩法</p>
 <span id="more"></span>
-<h2 id="对各种电子产品的拓展玩法与互联"><a href="#对各种电子产品的拓展玩法与互联" class="headerlink" title="对各种电子产品的拓展玩法与互联"></a>对各种电子产品的拓展玩法与互联</h2><p>手上有的电子产品，其中大部分应该是每个人都有的。</p>
+<h2 id="对各种电子产品的拓展玩法与互联"><a class="markdownIt-Anchor" href="#对各种电子产品的拓展玩法与互联"></a> 对各种电子产品的拓展玩法与互联</h2>
+<p>手上有的电子产品，其中大部分应该是每个人都有的。</p>
 <ul>
-<li><p>魅族手机</p>
+<li>
+<p>魅族手机</p>
 </li>
-<li><p>笔记本电脑（Win10）</p>
+<li>
+<p>笔记本电脑（Win10）</p>
 </li>
-<li><p>1T的机械移动硬盘</p>
+<li>
+<p>1T的机械移动硬盘</p>
 </li>
-<li><p>若干U盘。。</p>
+<li>
+<p>若干U盘。。</p>
 </li>
-<li><p>Kindle Paper White 3</p>
+<li>
+<p>Kindle Paper White 3</p>
 </li>
-<li><p>树莓派Zero</p>
+<li>
+<p>树莓派Zero</p>
 </li>
-<li><p>IPad 2018（IOS13前）</p>
+<li>
+<p>IPad 2018（IOS13前）</p>
 </li>
 </ul>
-<h3 id="手机与IPad"><a href="#手机与IPad" class="headerlink" title="手机与IPad"></a>手机与IPad</h3><p>这两个放在一起的原因是，在IOS13之前，IPad其实差不多可以等同于大尺寸IPone。所以这里就是一个安卓手机（未ROOT）与IPone的介绍，这里的玩法也算是比较多的，下面一一介绍。关于APP的安装包在此就不提供了，请读者自行搜索。当然还有ADB这种玩法，也不做介绍，可参考 <a href="/hexo_blog/2018/01/25/IOT/%E7%94%A8ADB%E8%B0%83%E8%AF%95%E5%AE%89%E5%8D%93%E6%89%8B%E6%9C%BA/" title="用ADB调试安卓手机">用ADB调试安卓手机</a></p>
-<h4 id="Termux与JuiceSSH"><a href="#Termux与JuiceSSH" class="headerlink" title="Termux与JuiceSSH"></a>Termux与JuiceSSH</h4><p>放在搜索引擎一搜，其实这两个APP就有很多相关介绍了。但这里我想介绍一些不一样的玩法。关于Termux操作不方便这一点，可以使用JuiceSSH连接localhost来操作，具体操作不介绍。</p>
+<h3 id="手机与ipad"><a class="markdownIt-Anchor" href="#手机与ipad"></a> 手机与IPad</h3>
+<p>这两个放在一起的原因是，在IOS13之前，IPad其实差不多可以等同于大尺寸IPone。所以这里就是一个安卓手机（未ROOT）与IPone的介绍，这里的玩法也算是比较多的，下面一一介绍。关于APP的安装包在此就不提供了，请读者自行搜索。当然还有ADB这种玩法，也不做介绍，可参考 <a href="/hexo_blog/2018/01/25/IOT/%E7%94%A8ADB%E8%B0%83%E8%AF%95%E5%AE%89%E5%8D%93%E6%89%8B%E6%9C%BA/" title="用ADB调试安卓手机">用ADB调试安卓手机</a></p>
+<h4 id="termux与juicessh"><a class="markdownIt-Anchor" href="#termux与juicessh"></a> Termux与JuiceSSH</h4>
+<p>放在搜索引擎一搜，其实这两个APP就有很多相关介绍了。但这里我想介绍一些不一样的玩法。关于Termux操作不方便这一点，可以使用JuiceSSH连接localhost来操作，具体操作不介绍。</p>
 <p><strong>下载</strong>：如何在手机上实现多线程下载？下一个ADM？当然这样很方便，但我们同样可以使用Termux来完成这一点。Termux安装Axel（<code>pkg install axel</code>），下载<code>axel -n 32 url</code>，使用32个线程下载链接。建议先<code>cd /sdcard/</code>中。</p>
 <p><strong>数据传输</strong>：一个手机和一个IPad，如何在不借助其他介质的前提下快速传输。QQ、微信、快牙等传输文件工具都行，但这里我自己实测速度都不如这里的方法快。就拿快牙举例，它实际是用手机开放一个<code>2.4G</code>的热点，然后用二维码进行链接传输。同样的，我们用同样的思路，手机开放<code>5G</code>热点，IPad手动连接此WIFI。打开Termux，先<code>ifconfig</code>知道本地IP，形如<code>192.168.x.1</code>这种，再<code>cd</code>到传输文件的目录，利用Python的静态资源服务器<code>python3 -m http.server</code>，这样，资源就对局域网内设备（连接到手机热点的设备）开放。接下来操作IPad，由于IOS13之前，<code>Safari</code>不支持输入链接下载，所以这里推荐<code>Alook</code>与<code>Documents</code>（后者免费），在<code>Documents</code>中的浏览器输入刚刚的手机<code>ip:8000</code>，这样就能看到手机资源所在文件目录的所有文件，点击即可下载。实测单个文件速度大概比<code>2.4G</code>快3倍（无需流量）。当然这里手机和IPad也可以同时连接同一个WIFI，然后使用同上方法进行传输（速度取决于路由器和网络带宽）。</p>
 <p><strong>远程手机</strong>：如何在手机不连接WIFI，不连接数据线的前提下，用其他设备访问手机（手机与其他设备的实际距离也可以很远），前提手机能上网。这一方法个人暂没有特别用途，但<code>Just for fun</code>。首先，需要一个公网IP服务器；接下来需要会玩ssh，<code>Termux</code>与服务器配置好ssh，<code>Termux</code>能够ssh到服务器上即可。最后一步，参考 <a href="/hexo_blog/2018/02/11/%E8%BF%90%E7%BB%B4/ssh/" title="ssh笔记（端口转发）">ssh 笔记（端口转发）</a>。</p>
-<h4 id="spacedesk"><a href="#spacedesk" class="headerlink" title="spacedesk"></a>spacedesk</h4><p>电脑投屏，使用USB数据线连接设备和电脑，用这个软件进行投屏。我觉得挺鸡肋的。。。安卓手机屏幕又太小，测试IPad的时候发现闪退。</p>
-<h4 id="AndroidHttpCapture和HttpCanary"><a href="#AndroidHttpCapture和HttpCanary" class="headerlink" title="AndroidHttpCapture和HttpCanary"></a>AndroidHttpCapture和HttpCanary</h4><p>安卓抓包工具，后者的功能比前者更强大一些。有时候身边没有电脑，需要手机抓包看数据，所以就只能直接用手机看数据包了。前者基本满足了大部分场景的抓包数据。但当某些时候（比如某些APP的数据交互不是使用HTTP等常用协议，可能就没办法抓包，此时电脑上没办法直接抓包），所以就需要使用<code>HttpCanary</code>（需要ROOT）来对网络进行代理，在解析数据。测试如果电脑上使用<code>WireShark</code>，确实是可以抓到包的，但是会乱码。所以可能使用<code>HttpCanary</code>还更为方便一些。</p>
-<h4 id="NetX与Net-Analyzer"><a href="#NetX与Net-Analyzer" class="headerlink" title="NetX与Net Analyzer"></a>NetX与Net Analyzer</h4><p>安卓局域网设备分析工具，用的不多，具体不介绍，有兴趣自行下载、</p>
-<h4 id="IOS同类软件，免费"><a href="#IOS同类软件，免费" class="headerlink" title="IOS同类软件，免费"></a>IOS同类软件，免费</h4><ul>
-<li><p><code>iTerminal</code>，同<code>JuiceSSH</code></p>
-</li>
-<li><p><code>Stream</code>，同<code>AndroidHttpCapture</code></p>
-</li>
-<li><p><code>Fing</code>，同<code>NetX</code></p>
-</li>
-</ul>
-<h4 id="scrcpy"><a href="#scrcpy" class="headerlink" title="scrcpy"></a>scrcpy</h4><p>在电脑上使用，安卓投屏工具，<a target="_blank" rel="noopener" href="https://github.com/Genymobile/scrcpy">scrcpy</a>，由于魅族手机一些独特的操作，所以需要替换jar文件，<a target="_blank" rel="noopener" href="https://github.com/taie02/taie02.github.io/tree/master/2019/03/03/scrcpy_usage">此项目</a>。</p>
-<h4 id="OTG"><a href="#OTG" class="headerlink" title="OTG"></a>OTG</h4><p>关于OTG这一项，其实是属于外接设备这一项，通过充电接口转USB接口可以接大部分usb设备，比如u盘这种。甚至还可以反向充电，接鼠标键盘等。</p>
-<h3 id="U盘与移动硬盘"><a href="#U盘与移动硬盘" class="headerlink" title="U盘与移动硬盘"></a>U盘与移动硬盘</h3><p>二者都属于移动存储介质，其实也没什么好介绍的。。。可以提几点，Windows To Go（WTG）可以搞（高性能的移动盘），自己没尝试过。在移动硬盘上装了两个Linux系统。</p>
-<p>关于如何装系统就不介绍了，这里只有一点需要注意的是备份好数据再分区，在装系统的时候引导装载移动硬盘上，要不然移动硬盘上只能在装系统的设备上启动。</p>
-<h3 id="Kindle"><a href="#Kindle" class="headerlink" title="Kindle"></a>Kindle</h3><p>这里不介绍越狱之类的操作，只有常规操作。。。</p>
+<h4 id="spacedesk"><a class="markdownIt-Anchor" href="#spacedesk"></a> spacedesk</h4>
+<p>电脑投屏，使用USB数据线连接设备和电脑，用这个软件进行投屏。我觉得挺鸡肋的。。。安卓手机屏幕又太小，测试IPad的时候发现闪退。</p>
+<h4 id="androidhttpcapture和httpcanary"><a class="markdownIt-Anchor" href="#androidhttpcapture和httpcanary"></a> AndroidHttpCapture和HttpCanary</h4>
+<p>安卓抓包工具，后者的功能比前者更强大一些。有时候身边没有电脑，需要手机抓包看数据，所以就只能直接用手机看数据包了。前者基本满足了大部分场景的抓包数据。但当某些时候（比如某些APP的数据交互不是使用HTTP等常用协议，可能就没办法抓包，此时电脑上没办法直接抓包），所以就需要使用<code>HttpCanary</code>（需要ROOT）来对网络进行代理，在解析数据。测试如果电脑上使用<code>WireShark</code>，确实是可以抓到包的，但是会乱码。所以可能使用<code>HttpCanary</code>还更为方便一些。</p>
+<h4 id="netx与net-analyzer"><a class="markdownIt-Anchor" href="#netx与net-analyzer"></a> NetX与Net Analyzer</h4>
+<p>安卓局域网设备分析工具，用的不多，具体不介绍，有兴趣自行下载、</p>
+<h4 id="ios同类软件免费"><a class="markdownIt-Anchor" href="#ios同类软件免费"></a> IOS同类软件，免费</h4>
 <ul>
-<li><p><a target="_blank" rel="noopener" href="https://bookfere.com/post/19.html">搭建个人推送网站</a></p>
+<li>
+<p><code>iTerminal</code>，同<code>JuiceSSH</code></p>
 </li>
-<li><p><a target="_blank" rel="noopener" href="https://volmoe.com/">漫画</a></p>
+<li>
+<p><code>Stream</code>，同<code>AndroidHttpCapture</code></p>
 </li>
-<li><p>Chrome插件：Push to Kindle</p>
+<li>
+<p><code>Fing</code>，同<code>NetX</code></p>
 </li>
 </ul>
-<h3 id="树莓派"><a href="#树莓派" class="headerlink" title="树莓派"></a>树莓派</h3><p>吃灰派。。。大概也就能跑跑小demo，爬数据，利用空闲网络带宽下东西。同样也可以利用ssh，进行端口转发，远程连接。</p>
+<h4 id="scrcpy"><a class="markdownIt-Anchor" href="#scrcpy"></a> scrcpy</h4>
+<p>在电脑上使用，安卓投屏工具，<a target="_blank" rel="noopener" href="https://github.com/Genymobile/scrcpy">scrcpy</a>，由于魅族手机一些独特的操作，所以需要替换jar文件，<a target="_blank" rel="noopener" href="https://github.com/taie02/taie02.github.io/tree/master/2019/03/03/scrcpy_usage">此项目</a>。</p>
+<h4 id="otg"><a class="markdownIt-Anchor" href="#otg"></a> OTG</h4>
+<p>关于OTG这一项，其实是属于外接设备这一项，通过充电接口转USB接口可以接大部分usb设备，比如u盘这种。甚至还可以反向充电，接鼠标键盘等。</p>
+<h3 id="u盘与移动硬盘"><a class="markdownIt-Anchor" href="#u盘与移动硬盘"></a> U盘与移动硬盘</h3>
+<p>二者都属于移动存储介质，其实也没什么好介绍的。。。可以提几点，Windows To Go（WTG）可以搞（高性能的移动盘），自己没尝试过。在移动硬盘上装了两个Linux系统。</p>
+<p>关于如何装系统就不介绍了，这里只有一点需要注意的是备份好数据再分区，在装系统的时候引导装载移动硬盘上，要不然移动硬盘上只能在装系统的设备上启动。</p>
+<h3 id="kindle"><a class="markdownIt-Anchor" href="#kindle"></a> Kindle</h3>
+<p>这里不介绍越狱之类的操作，只有常规操作。。。</p>
+<ul>
+<li>
+<p><a target="_blank" rel="noopener" href="https://bookfere.com/post/19.html">搭建个人推送网站</a></p>
+</li>
+<li>
+<p><a target="_blank" rel="noopener" href="https://volmoe.com/">漫画</a></p>
+</li>
+<li>
+<p>Chrome插件：Push to Kindle</p>
+</li>
+</ul>
+<h3 id="树莓派"><a class="markdownIt-Anchor" href="#树莓派"></a> 树莓派</h3>
+<p>吃灰派。。。大概也就能跑跑小demo，爬数据，利用空闲网络带宽下东西。同样也可以利用ssh，进行端口转发，远程连接。</p>
 <p>后续再更。。。</p>
 
     </div>
@@ -412,7 +437,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E5%90%84%E7%A7%8D%E7%94%B5%E5%AD%90%E4%BA%A7%E5%93%81%E7%9A%84%E6%8B%93%E5%B1%95%E7%8E%A9%E6%B3%95%E4%B8%8E%E4%BA%92%E8%81%94"><span class="nav-text">对各种电子产品的拓展玩法与互联</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%8B%E6%9C%BA%E4%B8%8EIPad"><span class="nav-text">手机与IPad</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Termux%E4%B8%8EJuiceSSH"><span class="nav-text">Termux与JuiceSSH</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#spacedesk"><span class="nav-text">spacedesk</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AndroidHttpCapture%E5%92%8CHttpCanary"><span class="nav-text">AndroidHttpCapture和HttpCanary</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#NetX%E4%B8%8ENet-Analyzer"><span class="nav-text">NetX与Net Analyzer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#IOS%E5%90%8C%E7%B1%BB%E8%BD%AF%E4%BB%B6%EF%BC%8C%E5%85%8D%E8%B4%B9"><span class="nav-text">IOS同类软件，免费</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#scrcpy"><span class="nav-text">scrcpy</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#OTG"><span class="nav-text">OTG</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#U%E7%9B%98%E4%B8%8E%E7%A7%BB%E5%8A%A8%E7%A1%AC%E7%9B%98"><span class="nav-text">U盘与移动硬盘</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kindle"><span class="nav-text">Kindle</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%91%E8%8E%93%E6%B4%BE"><span class="nav-text">树莓派</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E5%90%84%E7%A7%8D%E7%94%B5%E5%AD%90%E4%BA%A7%E5%93%81%E7%9A%84%E6%8B%93%E5%B1%95%E7%8E%A9%E6%B3%95%E4%B8%8E%E4%BA%92%E8%81%94"><span class="nav-text"> 对各种电子产品的拓展玩法与互联</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%8B%E6%9C%BA%E4%B8%8Eipad"><span class="nav-text"> 手机与IPad</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#termux%E4%B8%8Ejuicessh"><span class="nav-text"> Termux与JuiceSSH</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#spacedesk"><span class="nav-text"> spacedesk</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#androidhttpcapture%E5%92%8Chttpcanary"><span class="nav-text"> AndroidHttpCapture和HttpCanary</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#netx%E4%B8%8Enet-analyzer"><span class="nav-text"> NetX与Net Analyzer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ios%E5%90%8C%E7%B1%BB%E8%BD%AF%E4%BB%B6%E5%85%8D%E8%B4%B9"><span class="nav-text"> IOS同类软件，免费</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#scrcpy"><span class="nav-text"> scrcpy</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#otg"><span class="nav-text"> OTG</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#u%E7%9B%98%E4%B8%8E%E7%A7%BB%E5%8A%A8%E7%A1%AC%E7%9B%98"><span class="nav-text"> U盘与移动硬盘</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kindle"><span class="nav-text"> Kindle</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%91%E8%8E%93%E6%B4%BE"><span class="nav-text"> 树莓派</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -428,20 +453,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/hexo_blog/archives/">
         
-          <span class="site-state-item-count">80</span>
+          <span class="site-state-item-count">82</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/hexo_blog/categories/">
           
-        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-count">20</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/hexo_blog/tags/">
           
-        <span class="site-state-item-count">91</span>
+        <span class="site-state-item-count">93</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

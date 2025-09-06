@@ -254,10 +254,13 @@
       
         <p>字符串刷题分类</p>
 <span id="more"></span>
-<h2 id="滑动窗口"><a href="#滑动窗口" class="headerlink" title="滑动窗口"></a>滑动窗口</h2><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/longest-substring-without-repeating-characters/">3. 无重复字符的最长子串</a></p>
+<h2 id="滑动窗口"><a class="markdownIt-Anchor" href="#滑动窗口"></a> 滑动窗口</h2>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/longest-substring-without-repeating-characters/">3. 无重复字符的最长子串</a></p>
 <p>从左向右滑，需要一个数据结构（A）记录已经遍历的字符，还有一个变量（B）记录最大长度</p>
 <p>注：每次不需要从头开始，而是可以从重复那个字符的后一个开始，所以A需要记录一下索引</p>
-<h2 id="KMP"><a href="#KMP" class="headerlink" title="KMP"></a>KMP</h2><h2 id="动态规划"><a href="#动态规划" class="headerlink" title="动态规划"></a>动态规划</h2><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/longest-palindromic-substring/">5. 最长回文子串</a></p>
+<h2 id="kmp"><a class="markdownIt-Anchor" href="#kmp"></a> KMP</h2>
+<h2 id="动态规划"><a class="markdownIt-Anchor" href="#动态规划"></a> 动态规划</h2>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/longest-palindromic-substring/">5. 最长回文子串</a></p>
 <p>两个指针从两头开始，所以需要二维DP，元素是bool判断</p>
 <p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/interleaving-string/">97. 交错字符串</a></p>
 <p>两个字符串组成新的字符串，二维DP，元素是bool判断</p>
@@ -276,11 +279,15 @@
 <p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/jump-game-vii/">1871. 跳跃游戏 VII</a></p>
 <p>能否到达终点，一维DP，反向思考，能否到达该点，所以元素为bool。+前缀和优化时间</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 回文串</span></span><br><span class="line">dp = [[<span class="literal">False</span> <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(n)] <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(n)]</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(n):</span><br><span class="line">    dp[i][i] = <span class="literal">True</span></span><br><span class="line">    <span class="comment"># 从i到j是否组成回文串</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(n-<span class="number">1</span>)[::-<span class="number">1</span>]:</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(i+<span class="number">1</span>, n):</span><br><span class="line">            <span class="keyword">if</span> s[i] == s[j] <span class="keyword">and</span> (j - i &lt;= <span class="number">2</span> <span class="keyword">or</span> dp[i+<span class="number">1</span>][j-<span class="number">1</span>]):</span><br><span class="line">                dp[i][j] = <span class="literal">True</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h2 id="双指针"><a href="#双指针" class="headerlink" title="双指针"></a>双指针</h2><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/longest-repeating-character-replacement/">424. 替换后的最长重复字符</a></p>
+<h2 id="双指针"><a class="markdownIt-Anchor" href="#双指针"></a> 双指针</h2>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/longest-repeating-character-replacement/">424. 替换后的最长重复字符</a></p>
 <p>枚举右端点，如果没超过限制就继续移动右指针，否则移动左指针</p>
-<h2 id="栈"><a href="#栈" class="headerlink" title="栈"></a>栈</h2><p>PASS</p>
-<h2 id="字典树"><a href="#字典树" class="headerlink" title="字典树"></a>字典树</h2><p>PASS</p>
-<h2 id="模拟-深搜"><a href="#模拟-深搜" class="headerlink" title="模拟/深搜"></a>模拟/深搜</h2><p>PASS</p>
+<h2 id="栈"><a class="markdownIt-Anchor" href="#栈"></a> 栈</h2>
+<p>PASS</p>
+<h2 id="字典树"><a class="markdownIt-Anchor" href="#字典树"></a> 字典树</h2>
+<p>PASS</p>
+<h2 id="模拟深搜"><a class="markdownIt-Anchor" href="#模拟深搜"></a> 模拟/深搜</h2>
+<p>PASS</p>
 
     </div>
 
@@ -381,7 +388,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3"><span class="nav-text">滑动窗口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#KMP"><span class="nav-text">KMP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92"><span class="nav-text">动态规划</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8C%E6%8C%87%E9%92%88"><span class="nav-text">双指针</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%88"><span class="nav-text">栈</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E5%85%B8%E6%A0%91"><span class="nav-text">字典树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E6%8B%9F-%E6%B7%B1%E6%90%9C"><span class="nav-text">模拟&#x2F;深搜</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3"><span class="nav-text"> 滑动窗口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kmp"><span class="nav-text"> KMP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92"><span class="nav-text"> 动态规划</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8C%E6%8C%87%E9%92%88"><span class="nav-text"> 双指针</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%88"><span class="nav-text"> 栈</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E5%85%B8%E6%A0%91"><span class="nav-text"> 字典树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E6%8B%9F%E6%B7%B1%E6%90%9C"><span class="nav-text"> 模拟&#x2F;深搜</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -397,20 +404,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/hexo_blog/archives/">
         
-          <span class="site-state-item-count">80</span>
+          <span class="site-state-item-count">82</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/hexo_blog/categories/">
           
-        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-count">20</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/hexo_blog/tags/">
           
-        <span class="site-state-item-count">91</span>
+        <span class="site-state-item-count">93</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

@@ -20,12 +20,12 @@
     var CONFIG = {"hostname":"wnma3mz.github.io","root":"/hexo_blog/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="A Survey on In-context Learning  On the Effect of Pretraining Corpora on In-context Learning by a Large-scale Language Model In-context Learning and Induction Heads 接 LLM 复杂推理的来源分析I">
+  <meta name="description" content="A Survey on In-context Learning On the Effect of Pretraining Corpora on In-context Learning by a Large-scale Language Model In-context Learning and Induction Heads 接 LLM 复杂推理的来源分析I">
 <meta property="og:type" content="article">
 <meta property="og:title" content="LLM 复杂推理的来源分析II">
 <meta property="og:url" content="https://wnma3mz.github.io/2025/08/20/LLM/In-contextLearning%E7%9A%84%E6%9D%A5%E6%BA%90%E5%88%86%E6%9E%90II/index.html">
 <meta property="og:site_name" content="Wnma&#39;s Blogs">
-<meta property="og:description" content="A Survey on In-context Learning  On the Effect of Pretraining Corpora on In-context Learning by a Large-scale Language Model In-context Learning and Induction Heads 接 LLM 复杂推理的来源分析I">
+<meta property="og:description" content="A Survey on In-context Learning On the Effect of Pretraining Corpora on In-context Learning by a Large-scale Language Model In-context Learning and Induction Heads 接 LLM 复杂推理的来源分析I">
 <meta property="og:locale">
 <meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/ChatGPT%E8%83%BD%E5%8A%9B/image6.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/ChatGPT%E8%83%BD%E5%8A%9B/image7.png">
@@ -258,14 +258,16 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2301.00234v4">A Survey on In-context Learning</a> </p>
+        <p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2301.00234v4">A Survey on In-context Learning</a></p>
 <p><a target="_blank" rel="noopener" href="https://aclanthology.org/2022.naacl-main.380.pdf">On the Effect of Pretraining Corpora on In-context Learning by a Large-scale Language Model</a></p>
 <p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2209.11895">In-context Learning and Induction Heads</a></p>
 <p>接 <a href="/hexo_blog/2025/08/20/LLM/In-contextLearning%E7%9A%84%E6%9D%A5%E6%BA%90%E5%88%86%E6%9E%90I/" title="LLM 复杂推理的来源分析I">LLM 复杂推理的来源分析I</a></p>
 <span id="more"></span>
 <p>24 年 10 月：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2301.00234v4"><strong>A Survey on In-context Learning</strong></a> <strong>—— Analysis</strong></p>
-<h2 id="预训练数据的多样性"><a href="#预训练数据的多样性" class="headerlink" title="预训练数据的多样性"></a>预训练数据的多样性</h2><p><a target="_blank" rel="noopener" href="https://aclanthology.org/2022.naacl-main.380.pdf">On the Effect of Pretraining Corpora on In-context Learning by a Large-scale Language Model</a></p>
-<h3 id="语料库的来源"><a href="#语料库的来源" class="headerlink" title="语料库的来源"></a>语料库的来源</h3><p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/ChatGPT能力/image6.png" alt=""></p>
+<h2 id="预训练数据的多样性"><a class="markdownIt-Anchor" href="#预训练数据的多样性"></a> 预训练数据的多样性</h2>
+<p><a target="_blank" rel="noopener" href="https://aclanthology.org/2022.naacl-main.380.pdf">On the Effect of Pretraining Corpora on In-context Learning by a Large-scale Language Model</a></p>
+<h3 id="语料库的来源"><a class="markdownIt-Anchor" href="#语料库的来源"></a> 语料库的来源</h3>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/ChatGPT%E8%83%BD%E5%8A%9B/image6.png" alt="" /></p>
 <p>说明</p>
 <ul>
 <li>左侧列是语料库；最上面一行是指标（用 Few-Shot 评测）</li>
@@ -273,21 +275,25 @@
 <li>1.3B 模型</li>
 </ul>
 <p>发现：比较不同单一语料库模型（如Blog、Cafe、News）的性能，上下文学习能力<strong>高度依赖于语料库的领域来源</strong>。比如，Blog 54B</p>
-<h3 id="语料库的多样性"><a href="#语料库的多样性" class="headerlink" title="语料库的多样性"></a>语料库的多样性</h3><p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/ChatGPT能力/image7.png" alt=""></p>
+<h3 id="语料库的多样性"><a class="markdownIt-Anchor" href="#语料库的多样性"></a> 语料库的多样性</h3>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/ChatGPT%E8%83%BD%E5%8A%9B/image7.png" alt="" /></p>
 <p>发现：</p>
 <ul>
 <li>单独使用 Cafe 或  KiN 语料库时未观察到上下文少样本学习能力，但<strong>组合训练两者（KiN+Ency）则使这种能力得以出现</strong>。</li>
 <li>但并非所有组合都有效（如Cafe+News组合可能表现不佳甚至下降）</li>
 </ul>
-<h3 id="语料库的大小"><a href="#语料库的大小" class="headerlink" title="语料库的大小"></a>语料库的大小</h3><p>用单一语料库 HyperCLOVA 训练</p>
-<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/ChatGPT能力/image8.png" alt=""></p>
+<h3 id="语料库的大小"><a class="markdownIt-Anchor" href="#语料库的大小"></a> 语料库的大小</h3>
+<p>用单一语料库 HyperCLOVA 训练</p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/ChatGPT%E8%83%BD%E5%8A%9B/image8.png" alt="" /></p>
 <ul>
-<li>数据量很重要：6B → 56B 会有显著提升 </li>
+<li>数据量很重要：6B → 56B 会有显著提升</li>
 <li>多样性很重要：56B → 150B  并不会有显著提升</li>
 </ul>
-<h2 id="模型架构-——-Attention"><a href="#模型架构-——-Attention" class="headerlink" title="模型架构 —— Attention"></a>模型架构 —— Attention</h2><p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2209.11895">In-context Learning and Induction Heads</a></p>
+<h2 id="模型架构-attention"><a class="markdownIt-Anchor" href="#模型架构-attention"></a> 模型架构 —— Attention</h2>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2209.11895">In-context Learning and Induction Heads</a></p>
 <p>评测分数：上下文中第 500 个 token 的 loss - 第 50 个 token 的 loss，取平均。</p>
-<h3 id="怎么理解这个评测指标"><a href="#怎么理解这个评测指标" class="headerlink" title="怎么理解这个评测指标"></a>怎么理解这个评测指标</h3><p>背景知识：现代语言模型中，语境中后面的标记（token）比前面的标记更容易预测，即随着语境变长，损失（loss）会下降。</p>
+<h3 id="怎么理解这个评测指标"><a class="markdownIt-Anchor" href="#怎么理解这个评测指标"></a> 怎么理解这个评测指标</h3>
+<p>背景知识：现代语言模型中，语境中后面的标记（token）比前面的标记更容易预测，即随着语境变长，损失（loss）会下降。</p>
 <p>→ 利用更长的语境信息，从而提高预测能力的现象，就是所谓的<strong>上下文学习</strong>（In-context learning）</p>
 <p><strong>Loss 的下降意味着模型的预测能力得到提高</strong>（提高了 ICL 能力），即第 500 个 token 的损失低于第 50 个标记的 token（Loss(500) &lt; Loss(50)）。</p>
 <p>因此 Loss(500) - Loss(50) 的结果通常为负值。<strong>分数越负，表明模型的 ICL 能力越强</strong></p>
@@ -304,12 +310,14 @@
 <li>单独看第 500 个 token 的 loss，只能反映模型在该语境长度下的最终预测效果，无法体现语境的增长对预测能力带来了多少提升。</li>
 <li>如果只看第 500 个 token 的 loss ，大模型无疑会表现出更低的 loss。但这并不能直接说明其<strong>上下文学习</strong>比小模型更强</li>
 </ul>
-<h3 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h3><p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/ChatGPT能力/image9.png" alt=""></p>
+<h3 id="结果"><a class="markdownIt-Anchor" href="#结果"></a> 结果</h3>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/ChatGPT%E8%83%BD%E5%8A%9B/image9.png" alt="" /></p>
 <ul>
 <li>如果只有一层，随着训练 token 增加，分数不会显著变化</li>
 <li>当有 2-3 层 attention 的时候，会在某个时间发生“相变”</li>
 </ul>
-<h3 id="Q-amp-A"><a href="#Q-amp-A" class="headerlink" title="Q &amp; A"></a>Q &amp; A</h3><p>Q：为什么是 Attention？</p>
+<h3 id="q-a"><a class="markdownIt-Anchor" href="#q-a"></a> Q &amp; A</h3>
+<p>Q：为什么是 Attention？</p>
 <p>A：</p>
 <ul>
 <li>文章中有其他地方补充了实验，如果去掉 Attention 效果会变差。</li>
@@ -417,7 +425,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%84%E8%AE%AD%E7%BB%83%E6%95%B0%E6%8D%AE%E7%9A%84%E5%A4%9A%E6%A0%B7%E6%80%A7"><span class="nav-text">预训练数据的多样性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%AD%E6%96%99%E5%BA%93%E7%9A%84%E6%9D%A5%E6%BA%90"><span class="nav-text">语料库的来源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%AD%E6%96%99%E5%BA%93%E7%9A%84%E5%A4%9A%E6%A0%B7%E6%80%A7"><span class="nav-text">语料库的多样性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%AD%E6%96%99%E5%BA%93%E7%9A%84%E5%A4%A7%E5%B0%8F"><span class="nav-text">语料库的大小</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E6%9E%B6%E6%9E%84-%E2%80%94%E2%80%94-Attention"><span class="nav-text">模型架构 —— Attention</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%8E%E4%B9%88%E7%90%86%E8%A7%A3%E8%BF%99%E4%B8%AA%E8%AF%84%E6%B5%8B%E6%8C%87%E6%A0%87"><span class="nav-text">怎么理解这个评测指标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E6%9E%9C"><span class="nav-text">结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Q-amp-A"><span class="nav-text">Q &amp; A</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%84%E8%AE%AD%E7%BB%83%E6%95%B0%E6%8D%AE%E7%9A%84%E5%A4%9A%E6%A0%B7%E6%80%A7"><span class="nav-text"> 预训练数据的多样性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%AD%E6%96%99%E5%BA%93%E7%9A%84%E6%9D%A5%E6%BA%90"><span class="nav-text"> 语料库的来源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%AD%E6%96%99%E5%BA%93%E7%9A%84%E5%A4%9A%E6%A0%B7%E6%80%A7"><span class="nav-text"> 语料库的多样性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%AD%E6%96%99%E5%BA%93%E7%9A%84%E5%A4%A7%E5%B0%8F"><span class="nav-text"> 语料库的大小</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E6%9E%B6%E6%9E%84-attention"><span class="nav-text"> 模型架构 —— Attention</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%8E%E4%B9%88%E7%90%86%E8%A7%A3%E8%BF%99%E4%B8%AA%E8%AF%84%E6%B5%8B%E6%8C%87%E6%A0%87"><span class="nav-text"> 怎么理解这个评测指标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E6%9E%9C"><span class="nav-text"> 结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#q-a"><span class="nav-text"> Q &amp; A</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -433,20 +441,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/hexo_blog/archives/">
         
-          <span class="site-state-item-count">80</span>
+          <span class="site-state-item-count">82</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/hexo_blog/categories/">
           
-        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-count">20</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/hexo_blog/tags/">
           
-        <span class="site-state-item-count">91</span>
+        <span class="site-state-item-count">93</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

@@ -258,8 +258,8 @@
       
         <p>以模型视角对比不同模态输入的效果</p>
 <span id="more"></span>
-<h2 id="推理层面"><a href="#推理层面" class="headerlink" title="推理层面"></a>推理层面</h2><p>输入对比</p>
-<div class="table-container">
+<h2 id="推理层面"><a class="markdownIt-Anchor" href="#推理层面"></a> 推理层面</h2>
+<p>输入对比</p>
 <table>
 <thead>
 <tr>
@@ -272,21 +272,21 @@
 <tr>
 <td>形态</td>
 <td>3. 下列传统节日与习俗对应错误的是（ ）（2分）<br/>A. 中秋节：赏月、登高 <br/>B. 元宵节：吃元宵、猜灯谜<br/>C. 清明节：扫墓、踏青<br/>D. 端午节：吃粽子、赛龙舟</td>
-<td><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/VLM/029038fc4c286a111609944bf60f2e14_200_433_305_75_240.jpg" alt=""></td>
+<td><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/VLM/029038fc4c286a111609944bf60f2e14_200_433_305_75_240.jpg" alt="" /></td>
 </tr>
 <tr>
 <td>token 数</td>
 <td>69</td>
-<td>size：240x75 <br> smart_resize：252<em>84 <br>84 </em> 252 // 28 //28=27</td>
+<td>size：240x75 <br> smart_resize：252*84 <br>84 * 252 // 28 //28=27</td>
 </tr>
 </tbody>
 </table>
-</div>
 <p>不同模态的输入给模型是不一样的信息。</p>
 <p>对于一般 LLM 来说，文本模态有 69 个 token 需要理解并进行作答。而相同含义的输入，图片模态只有 27 个 token（小于 69 个 token）。</p>
 <p>即，图片模态的 27 个 token 等效于文本模态的 69 个 token。</p>
 <p>所以，直觉上，模型对于小图输入的问题，会更难以作答。即模型能够把 27 个 token “解压”回 69 个 token，才能与文本模态进行公平比较。</p>
-<h2 id="训练层面"><a href="#训练层面" class="headerlink" title="训练层面"></a>训练层面</h2><p>基于上述发现，现在的训练相当于是基于一个压缩程度较高的数据进行学习的（增加了训练难度），推理的时候相当于降低了难度。</p>
+<h2 id="训练层面"><a class="markdownIt-Anchor" href="#训练层面"></a> 训练层面</h2>
+<p>基于上述发现，现在的训练相当于是基于一个压缩程度较高的数据进行学习的（增加了训练难度），推理的时候相当于降低了难度。</p>
 <p>所以，如果在训练的时候把图片缩小 1/2，是不是进一步加剧训练难度，更大程度“强化”模型学习知识。</p>
 
     </div>
@@ -390,7 +390,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A8%E7%90%86%E5%B1%82%E9%9D%A2"><span class="nav-text">推理层面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83%E5%B1%82%E9%9D%A2"><span class="nav-text">训练层面</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A8%E7%90%86%E5%B1%82%E9%9D%A2"><span class="nav-text"> 推理层面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83%E5%B1%82%E9%9D%A2"><span class="nav-text"> 训练层面</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -406,20 +406,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/hexo_blog/archives/">
         
-          <span class="site-state-item-count">80</span>
+          <span class="site-state-item-count">82</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/hexo_blog/categories/">
           
-        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-count">20</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/hexo_blog/tags/">
           
-        <span class="site-state-item-count">91</span>
+        <span class="site-state-item-count">93</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

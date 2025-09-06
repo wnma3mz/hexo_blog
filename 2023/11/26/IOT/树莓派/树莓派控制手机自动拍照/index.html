@@ -257,33 +257,41 @@
       
         <p>树莓派使用 Python 控制手机上的 DroidCam 自动拍照</p>
 <span id="more"></span>
-<h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p>新买了个盆栽，想要关注盆栽的生长情况。如果是摄像，“代价”又有点大。想到了 DroidCam 这个软件，能够让手机变成监控摄像头。于是，可以利用它做一个自动拍照的延时摄影。</p>
-<h2 id="前期准备"><a href="#前期准备" class="headerlink" title="前期准备"></a>前期准备</h2><ul>
+<h2 id="需求"><a class="markdownIt-Anchor" href="#需求"></a> 需求</h2>
+<p>新买了个盆栽，想要关注盆栽的生长情况。如果是摄像，“代价”又有点大。想到了 DroidCam 这个软件，能够让手机变成监控摄像头。于是，可以利用它做一个自动拍照的延时摄影。</p>
+<h2 id="前期准备"><a class="markdownIt-Anchor" href="#前期准备"></a> 前期准备</h2>
+<ul>
 <li>手机（IOS、Android 均可） + DroidCam 软件</li>
 <li>树莓派（常年开机的小主机，能用 Python就行）</li>
-<li>其他重要的内容：<ul>
+<li>其他重要的内容：
+<ul>
 <li>手机支架</li>
 <li>手机充电的电源</li>
 </ul>
 </li>
 </ul>
 <p>大致效果如图</p>
-<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/raspberry_droidcam/IMG_20201126_201708.jpg" alt=""></p>
-<h2 id="v1-0"><a href="#v1-0" class="headerlink" title="v1.0"></a>v1.0</h2><p>在搭建完基本的设施之后，首先测试拍照功能，命令如下所示，将 $IP_ADDR 换成手机 IP 地址即可，DroidCam 主界面也会显示。默认端口是 4747</p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/raspberry_droidcam/IMG_20201126_201708.jpg" alt="" /></p>
+<h2 id="v10"><a class="markdownIt-Anchor" href="#v10"></a> v1.0</h2>
+<p>在搭建完基本的设施之后，首先测试拍照功能，命令如下所示，将 $IP_ADDR 换成手机 IP 地址即可，DroidCam 主界面也会显示。默认端口是 4747</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget <span class="string">&quot;http://<span class="variable">$IP_ADDR</span>:4747/cam/1/frame.jpg&quot;</span> -O $(<span class="built_in">date</span> +<span class="string">&quot;%s&quot;</span>).jpg</span><br></pre></td></tr></table></figure>
 <p>然而，在把这行命令放到树莓派上的定时任务中时，遇到了几个问题</p>
-<h3 id="晚上光线暗"><a href="#晚上光线暗" class="headerlink" title="晚上光线暗"></a>晚上光线暗</h3><p>打开手机摄像头的闪光灯，命令如下所示</p>
+<h3 id="晚上光线暗"><a class="markdownIt-Anchor" href="#晚上光线暗"></a> 晚上光线暗</h3>
+<p>打开手机摄像头的闪光灯，命令如下所示</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">curl <span class="string">&quot;http://<span class="variable">$IP_ADDR</span>:4747/cam/1/led_toggle&quot;</span> \</span><br><span class="line">  --compressed \</span><br><span class="line">  --insecure</span><br></pre></td></tr></table></figure>
-<h3 id="没有对焦"><a href="#没有对焦" class="headerlink" title="没有对焦"></a>没有对焦</h3><p>自动对焦命令如下所示</p>
+<h3 id="没有对焦"><a class="markdownIt-Anchor" href="#没有对焦"></a> 没有对焦</h3>
+<p>自动对焦命令如下所示</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">af_cmd = f<span class="string">&quot;&quot;</span><span class="string">&quot;curl &quot;</span>http://<span class="variable">$IP_ADDR</span>:4747/cam/1/af<span class="string">&quot; \</span></span><br><span class="line"><span class="string">  --compressed \</span></span><br><span class="line"><span class="string">  --insecure</span></span><br></pre></td></tr></table></figure>
 <p>这两个问题算是可以通过软件本身进行解决。但引发了一个新问题就是，不能知道手机是否已经开启闪光灯、是否已经对焦。前者可以通过时间判断，如果是白天则不开，但后者没办法控制。DroidCam 的逻辑是，每次只能有一个客户端打开网址，如果有多个客户端打开，后者会把前者踢下线，且状态为止。因此，最后决定每次拍两张照片，用照片大小来判断图片质量。</p>
-<h3 id="DroidCam-要求启动摄像头后，才能拍照"><a href="#DroidCam-要求启动摄像头后，才能拍照" class="headerlink" title="DroidCam 要求启动摄像头后，才能拍照"></a>DroidCam 要求启动摄像头后，才能拍照</h3><p>一个比较大的问题是，DroidCam 要求启动摄像头后，才能拍照。而如果没有客户端打开网址，则摄像头不会启动。因此，需要在请求前，去开启网址。</p>
+<h3 id="droidcam-要求启动摄像头后才能拍照"><a class="markdownIt-Anchor" href="#droidcam-要求启动摄像头后才能拍照"></a> DroidCam 要求启动摄像头后，才能拍照</h3>
+<p>一个比较大的问题是，DroidCam 要求启动摄像头后，才能拍照。而如果没有客户端打开网址，则摄像头不会启动。因此，需要在请求前，去开启网址。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">start_func</span>():</span><br><span class="line">    video_url = <span class="string">&quot;http://&#123;&#125;/video?640x480&quot;</span>.<span class="built_in">format</span>(ip_addr)</span><br><span class="line">    response = requests.get(video_url, stream=<span class="literal">True</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;start_func&quot;</span>)</span><br></pre></td></tr></table></figure>
 <p>如果长时间没有启动 DroidCam，手机则会自动息屏，导致之后的拍照全部失败。</p>
-<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>见下面代码的 <code>take_picture.py</code> 部分，只需将其设置为定时任务即可 <code>*/10 * * * * cd /root/pics &amp;&amp; /usr/bin/python3 take_picture.py</code>。每 10 分钟会去拍一次照，且会拍两张，以时间戳保存在 <code>/root/pics</code> 目录下。</p>
+<h2 id="实现"><a class="markdownIt-Anchor" href="#实现"></a> 实现</h2>
+<p>见下面代码的 <code>take_picture.py</code> 部分，只需将其设置为定时任务即可 <code>*/10 * * * * cd /root/pics &amp;&amp; /usr/bin/python3 take_picture.py</code>。每 10 分钟会去拍一次照，且会拍两张，以时间戳保存在 <code>/root/pics</code> 目录下。</p>
 <script src="https://gist.github.com/wnma3mz/a583832cbca9965a733834fbcae42352.js"></script>
-
-<h2 id="v2-0"><a href="#v2-0" class="headerlink" title="v2.0"></a>v2.0</h2><p>照片数据问题解决了，接下来就要处理照片的删除、处理、合成逻辑了。</p>
+<h2 id="v20"><a class="markdownIt-Anchor" href="#v20"></a> v2.0</h2>
+<p>照片数据问题解决了，接下来就要处理照片的删除、处理、合成逻辑了。</p>
 <p>见上面代码的 <code>process.py</code> 部分</p>
 <p>简单来说分为三个部分：</p>
 <ol>
@@ -293,8 +301,10 @@
 </ol>
 <p>ffmpeg 合并命令如下所示，会预先按照时间戳排序，写入到 <code>input.txt</code> 文件中，然后合并成视频。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -f concat -i input.txt -vf <span class="string">&quot;fps=25&quot;</span> <span class="variable">$OUTPUT</span></span><br></pre></td></tr></table></figure>
-<h2 id="成品"><a href="#成品" class="headerlink" title="成品"></a>成品</h2><p><video id="video" controls="" preload="none"><br>    <source id="mp4" src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/raspberry_droidcam/301_1697855508.mp4" type="video/mp4"><br>&lt;/videos&gt;</p>
-
+<h2 id="成品"><a class="markdownIt-Anchor" href="#成品"></a> 成品</h2>
+<video id="video" controls="" preload="none">
+    <source id="mp4" src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/raspberry_droidcam/301_1697855508.mp4" type="video/mp4">
+</videos>
     </div>
 
     
@@ -395,7 +405,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9C%80%E6%B1%82"><span class="nav-text">需求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E6%9C%9F%E5%87%86%E5%A4%87"><span class="nav-text">前期准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#v1-0"><span class="nav-text">v1.0</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%99%9A%E4%B8%8A%E5%85%89%E7%BA%BF%E6%9A%97"><span class="nav-text">晚上光线暗</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B2%A1%E6%9C%89%E5%AF%B9%E7%84%A6"><span class="nav-text">没有对焦</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DroidCam-%E8%A6%81%E6%B1%82%E5%90%AF%E5%8A%A8%E6%91%84%E5%83%8F%E5%A4%B4%E5%90%8E%EF%BC%8C%E6%89%8D%E8%83%BD%E6%8B%8D%E7%85%A7"><span class="nav-text">DroidCam 要求启动摄像头后，才能拍照</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0"><span class="nav-text">实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#v2-0"><span class="nav-text">v2.0</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%90%E5%93%81"><span class="nav-text">成品</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9C%80%E6%B1%82"><span class="nav-text"> 需求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E6%9C%9F%E5%87%86%E5%A4%87"><span class="nav-text"> 前期准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#v10"><span class="nav-text"> v1.0</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%99%9A%E4%B8%8A%E5%85%89%E7%BA%BF%E6%9A%97"><span class="nav-text"> 晚上光线暗</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B2%A1%E6%9C%89%E5%AF%B9%E7%84%A6"><span class="nav-text"> 没有对焦</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#droidcam-%E8%A6%81%E6%B1%82%E5%90%AF%E5%8A%A8%E6%91%84%E5%83%8F%E5%A4%B4%E5%90%8E%E6%89%8D%E8%83%BD%E6%8B%8D%E7%85%A7"><span class="nav-text"> DroidCam 要求启动摄像头后，才能拍照</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0"><span class="nav-text"> 实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#v20"><span class="nav-text"> v2.0</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%90%E5%93%81"><span class="nav-text"> 成品</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -411,20 +421,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/hexo_blog/archives/">
         
-          <span class="site-state-item-count">80</span>
+          <span class="site-state-item-count">82</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/hexo_blog/categories/">
           
-        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-count">20</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/hexo_blog/tags/">
           
-        <span class="site-state-item-count">91</span>
+        <span class="site-state-item-count">93</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

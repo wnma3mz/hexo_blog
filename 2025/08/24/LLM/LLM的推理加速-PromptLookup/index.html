@@ -250,11 +250,14 @@
       
         <p><a target="_blank" rel="noopener" href="https://github.com/apoorvumang/prompt-lookup-decoding/?tab=readme-ov-file">GitHub</a></p>
 <span id="more"></span>
-<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p><a target="_blank" rel="noopener" href="https://platform.openai.com/docs/guides/predicted-outputs?lang=python">OpenAI 文档</a></p>
-<p>当使用 LLM 重构下面代码的时候（比如想把 <code>username</code> 改成 <code>email</code>），模型必须 token by token 的输出所有内容。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">User</span> &#123;</span><br><span class="line">  <span class="attr">firstName</span>: string = <span class="string">&quot;&quot;</span>;</span><br><span class="line">  <span class="attr">lastName</span>: string = <span class="string">&quot;&quot;</span>;</span><br><span class="line">  <span class="attr">username</span>: string = <span class="string">&quot;&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title class_">User</span>;</span><br></pre></td></tr></table></figure></p>
-<p>但实际上，有大部分内容都是在输入（Prompt）中，无需模型“动脑子”输出<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">User</span> &#123;</span><br><span class="line">  <span class="attr">firstName</span>: string = <span class="string">&quot;&quot;</span>;</span><br><span class="line">  <span class="attr">lastName</span>: string = <span class="string">&quot;&quot;</span>;</span><br></pre></td></tr></table></figure></p>
-<h2 id="实现方式"><a href="#实现方式" class="headerlink" title="实现方式"></a>实现方式</h2><p>以 <code>What is the capital of South Korea?</code> 输入为例，模型会构建一个查询表</p>
-<div class="table-container">
+<h2 id="背景"><a class="markdownIt-Anchor" href="#背景"></a> 背景</h2>
+<p><a target="_blank" rel="noopener" href="https://platform.openai.com/docs/guides/predicted-outputs?lang=python">OpenAI 文档</a></p>
+<p>当使用 LLM 重构下面代码的时候（比如想把 <code>username</code> 改成 <code>email</code>），模型必须 token by token 的输出所有内容。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">User</span> &#123;</span><br><span class="line">  <span class="attr">firstName</span>: string = <span class="string">&quot;&quot;</span>;</span><br><span class="line">  <span class="attr">lastName</span>: string = <span class="string">&quot;&quot;</span>;</span><br><span class="line">  <span class="attr">username</span>: string = <span class="string">&quot;&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title class_">User</span>;</span><br></pre></td></tr></table></figure>
+<p>但实际上，有大部分内容都是在输入（Prompt）中，无需模型“动脑子”输出</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">User</span> &#123;</span><br><span class="line">  <span class="attr">firstName</span>: string = <span class="string">&quot;&quot;</span>;</span><br><span class="line">  <span class="attr">lastName</span>: string = <span class="string">&quot;&quot;</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="实现方式"><a class="markdownIt-Anchor" href="#实现方式"></a> 实现方式</h2>
+<p>以 <code>What is the capital of South Korea?</code> 输入为例，模型会构建一个查询表</p>
 <table>
 <thead>
 <tr>
@@ -277,7 +280,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p>模型在生成过程中，当生成到 <code>the capital</code> 时，会命中表中的内容。将 <code>of South Korea</code> 拼接到输出后面，并且用模型校验这个输出。</p>
 <p>如果模型接受这个输出，那么模型就不需要 token by token 的生成 <code>of</code>、<code>South</code>、<code>Korea</code> 了。</p>
 <p>参考：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/1920447613800547342">https://zhuanlan.zhihu.com/p/1920447613800547342</a></p>
@@ -384,7 +386,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F"><span class="nav-text">实现方式</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-text"> 背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F"><span class="nav-text"> 实现方式</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -400,20 +402,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/hexo_blog/archives/">
         
-          <span class="site-state-item-count">80</span>
+          <span class="site-state-item-count">82</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/hexo_blog/categories/">
           
-        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-count">20</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/hexo_blog/tags/">
           
-        <span class="site-state-item-count">91</span>
+        <span class="site-state-item-count">93</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
