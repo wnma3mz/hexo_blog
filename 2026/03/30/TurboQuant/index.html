@@ -27,7 +27,6 @@
 <meta property="og:site_name" content="Wnma&#39;s Blogs">
 <meta property="og:description" content="本文从基础的量化开始，介绍 TurboQuant（arXiv:2504.19874）的核心设计。">
 <meta property="og:locale">
-<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/TurboQuant/Gemini_Generated_Image_xy7z6kxy7z6kxy7z.png">
 <meta property="article:published_time" content="2026-03-30T03:00:00.000Z">
 <meta property="article:modified_time" content="2026-04-02T12:55:43.986Z">
 <meta property="article:author" content="wnma3mz">
@@ -37,7 +36,6 @@
 <meta property="article:tag" content="向量检索">
 <meta property="article:tag" content="信息论">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/TurboQuant/Gemini_Generated_Image_xy7z6kxy7z6kxy7z.png">
 
 <link rel="canonical" href="https://wnma3mz.github.io/2026/03/30/TurboQuant/">
 
@@ -262,240 +260,432 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>本文从基础的量化开始，介绍 TurboQuant（arXiv:2504.19874）的核心设计。</p>
+        <p>本文从基础的量化开始，介绍
+TurboQuant（arXiv:2504.19874）的核心设计。</p>
 <span id="more"></span>
-<h1 id="量化到底在做什么"><a href="#量化到底在做什么" class="headerlink" title="量化到底在做什么"></a>量化到底在做什么</h1><h2 id="一句话讲清楚"><a href="#一句话讲清楚" class="headerlink" title="一句话讲清楚"></a>一句话讲清楚</h2><p>量化就是把连续实数映射成有限个离散值，用一点误差换更小存储和更高速度。</p>
+<h1 id="量化到底在做什么">量化到底在做什么</h1>
+<h2 id="一句话讲清楚">一句话讲清楚</h2>
+<p>量化就是把连续实数映射成有限个离散值，用一点误差换更小存储和更高速度。</p>
 <p>更形式化地说，它是一个映射：</p>
-<script type="math/tex; mode=display">Q: \mathbb{R}^d \to \{0,1\}^B</script><p>其中 $B = b \cdot d$，$b$ 是每个坐标的平均 bit 数。还需要一个反映射（反量化）：</p>
-<script type="math/tex; mode=display">Q^{-1}: \{0,1\}^B \to \mathbb{R}^d</script><p>这个变换天生有损——$Q$ 不是双射，所以永远不可能完美还原原始向量。能做的，是让损失变得可控。</p>
-<h2 id="为什么量化在-LLM-里很重要"><a href="#为什么量化在-LLM-里很重要" class="headerlink" title="为什么量化在 LLM 里很重要"></a>为什么量化在 LLM 里很重要</h2><p>大模型推理有三个硬约束：</p>
-<p><strong>显存</strong>：可近似写成 $\text{参数个数} \times \text{每个参数的字节数}$。</p>
+<p><span class="math display">\[Q: \mathbb{R}^d \to
+\{0,1\}^B\]</span></p>
+<p>其中 <span class="math inline">\(B = b \cdot d\)</span>，<span
+class="math inline">\(b\)</span> 是每个坐标的平均 bit
+数。还需要一个反映射（反量化）：</p>
+<p><span class="math display">\[Q^{-1}: \{0,1\}^B \to
+\mathbb{R}^d\]</span></p>
+<p>这个变换天生有损——<span class="math inline">\(Q\)</span>
+不是双射，所以永远不可能完美还原原始向量。能做的，是让损失变得可控。</p>
+<h2 id="为什么量化在-llm-里很重要">为什么量化在 LLM 里很重要</h2>
+<p>大模型推理有三个硬约束：</p>
+<p><strong>显存</strong>：可近似写成 <span
+class="math inline">\(\text{参数个数} \times
+\text{每个参数的字节数}\)</span>。</p>
 <ul>
 <li>同样 10 亿参数，FP16 约 2 GB，INT4 只需约 0.5 GB。</li>
 </ul>
-<p><strong>带宽</strong>：很多推理场景的瓶颈不在算力，而在 HBM 带宽（GPU 的”传送带”）。</p>
+<p><strong>带宽</strong>：很多推理场景的瓶颈不在算力，而在 HBM 带宽（GPU
+的"传送带"）。</p>
 <ul>
 <li>量化后需要搬运的数据变少，传送带压力下降，速度就上去了。</li>
 </ul>
-<p><strong>KV cache</strong>：Decoder-only 模型必须把每一层的 key/value embedding 存在 cache 里。</p>
+<p><strong>KV cache</strong>：Decoder-only 模型必须把每一层的 key/value
+embedding 存在 cache 里。</p>
 <ul>
-<li>cache 大小随层数、注意力头数、上下文长度三重增长，是长上下文推理的核心瓶颈。</li>
+<li>cache
+大小随层数、注意力头数、上下文长度三重增长，是长上下文推理的核心瓶颈。</li>
 </ul>
 <p>所以量化可以省显存，是否加速取决于硬件与实现。</p>
-<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><p>假设有一个长度为 4 的向量：$x = [0.8, -0.5, 0.2, -0.9]$，每个数字原本是 32-bit 的浮点数。</p>
+<h2 id="例子">例子</h2>
+<p>假设有一个长度为 4 的向量：<span class="math inline">\(x = [0.8,
+-0.5, 0.2, -0.9]\)</span>，每个数字原本是 32-bit 的浮点数。</p>
 <p>为了省显存，我们决定把每个数字压缩到 <strong>1-bit</strong>。</p>
-<p>1-bit 意味着我们只能使用 $2^1 = 2$ 种状态（0 或 1）。这就引出了量化的四个关键步骤：</p>
-<h3 id="1-Codebook（定义码本）"><a href="#1-Codebook（定义码本）" class="headerlink" title="1. Codebook（定义码本）"></a>1. Codebook（定义码本）</h3><p>既然只有 2 种状态，我们就只能选出 2 个“代表值”来近似所有可能的数字。</p>
-<p>这两个代表值可以人为规定，也可以用 K-Means 对数据进行聚类求中心点。</p>
-<p>假设经过统计，得出最优的两个代表值是 <code>&#123;-0.6, 0.6&#125;</code>。这就是<strong>码本（Codebook）</strong>。</p>
-<h3 id="2-Quant（量化-编码）"><a href="#2-Quant（量化-编码）" class="headerlink" title="2. Quant（量化/编码）"></a>2. Quant（量化/编码）</h3><p>接下来，把原向量 <code>[0.8, -0.5, 0.2, -0.9]</code> 中的每个数，<strong>就近映射</strong>到码本里，并记录它的<strong>索引</strong>：</p>
+<p>1-bit 意味着我们只能使用 <span class="math inline">\(2^1 = 2\)</span>
+种状态（0 或 1）。这就引出了量化的四个关键步骤：</p>
+<h3 id="codebook定义码本">1. Codebook（定义码本）</h3>
+<p>既然只有 2 种状态，我们就只能选出 2
+个“代表值”来近似所有可能的数字。</p>
+<p>这两个代表值可以人为规定，也可以用 K-Means
+对数据进行聚类求中心点。</p>
+<p>假设经过统计，得出最优的两个代表值是
+<code>&#123;-0.6, 0.6&#125;</code>。这就是<strong>码本（Codebook）</strong>。</p>
+<h3 id="quant量化编码">2. Quant（量化/编码）</h3>
+<p>接下来，把原向量 <code>[0.8, -0.5, 0.2, -0.9]</code>
+中的每个数，<strong>就近映射</strong>到码本里，并记录它的<strong>索引</strong>：</p>
 <ul>
-<li><p><code>0.8</code> 离 <code>0.6</code> 更近 $\to$ 选大号代表值，存为索引 <code>1</code></p>
-</li>
-<li><p><code>-0.5</code> 离 <code>-0.6</code> 更近 $\to$ 选小号代表值，存为索引 <code>0</code></p>
-</li>
-<li><p><code>0.2</code> 离 <code>0.6</code> 更近 $\to$ 选大号代表值，存为索引 <code>1</code></p>
-</li>
-<li><p><code>-0.9</code> 离 <code>-0.6</code> 更近 $\to$ 选小号代表值，存为索引 <code>0</code></p>
-</li>
+<li><p><code>0.8</code> 离 <code>0.6</code> 更近 <span
+class="math inline">\(\to\)</span> 选大号代表值，存为索引
+<code>1</code></p></li>
+<li><p><code>-0.5</code> 离 <code>-0.6</code> 更近 <span
+class="math inline">\(\to\)</span> 选小号代表值，存为索引
+<code>0</code></p></li>
+<li><p><code>0.2</code> 离 <code>0.6</code> 更近 <span
+class="math inline">\(\to\)</span> 选大号代表值，存为索引
+<code>1</code></p></li>
+<li><p><code>-0.9</code> 离 <code>-0.6</code> 更近 <span
+class="math inline">\(\to\)</span> 选小号代表值，存为索引
+<code>0</code></p></li>
 </ul>
 <p>最终存进显存的只有比特串：<code>1010</code>。</p>
-<p><strong>这一步，32-bit 变成了 1-bit，这就是空间被省下来的地方。</strong></p>
-<h3 id="3-Dequant（反量化-解码）"><a href="#3-Dequant（反量化-解码）" class="headerlink" title="3. Dequant（反量化/解码）"></a>3. Dequant（反量化/解码）</h3><p>当 GPU 需要拿这串数字去做矩阵乘法时，它会根据索引去查码本，把比特串 <code>1010</code> 还原出来。</p>
-<p>还原出的近似值是：$\hat{x} = [0.6, -0.6, 0.6, -0.6]$。可以看到，它与原向量 <code>x</code> 接近，但不完全一致。</p>
-<h3 id="4-Metric（评估误差）"><a href="#4-Metric（评估误差）" class="headerlink" title="4. Metric（评估误差）"></a>4. Metric（评估误差）</h3><p>因为还原回来的值与原值不相等，误差就产生了。</p>
+<p><strong>这一步，32-bit 变成了
+1-bit，这就是空间被省下来的地方。</strong></p>
+<h3 id="dequant反量化解码">3. Dequant（反量化/解码）</h3>
+<p>当 GPU 需要拿这串数字去做矩阵乘法时，它会根据索引去查码本，把比特串
+<code>1010</code> 还原出来。</p>
+<p>还原出的近似值是：<span class="math inline">\(\hat{x} = [0.6, -0.6,
+0.6, -0.6]\)</span>。可以看到，它与原向量 <code>x</code>
+接近，但不完全一致。</p>
+<h3 id="metric评估误差">4. Metric（评估误差）</h3>
+<p>因为还原回来的值与原值不相等，误差就产生了。</p>
 <p>怎么评估这个量化算法好不好？</p>
 <p>最常用的指标有两个：</p>
 <ul>
-<li><p><strong>MSE（均方误差）</strong>：算一下原值 $x$ 和近似值 $\hat{x}$ 之间差异的平方和的平均值。</p>
-<p>即 $D_{\text{mse}} = \mathbb{E}\left[\lVert x - \hat{x}\rVert_2^2\right]$。</p>
-<p>这是评估失真最基础的指标。</p>
-</li>
-<li><p><strong>IP-RMSE / IP-Bias（内积误差）</strong>：在 LLM 的注意力机制和向量检索中，真正频繁做的是<strong>点积计算</strong>。</p>
-<p>如果还原后的点积和真实的点积 $\langle x, y \rangle$ 总是有系统性地偏高或偏低，这就是 Bias（偏差）。</p>
-</li>
+<li><p><strong>MSE（均方误差）</strong>：算一下原值 <span
+class="math inline">\(x\)</span> 和近似值 <span
+class="math inline">\(\hat{x}\)</span> 之间差异的平方和的平均值。</p>
+<p>即 <span class="math inline">\(D_{\text{mse}} =
+\mathbb{E}\left[\lVert x - \hat{x}\rVert_2^2\right]\)</span>。</p>
+<p>这是评估失真最基础的指标。</p></li>
+<li><p><strong>IP-RMSE / IP-Bias（内积误差）</strong>：在 LLM
+的注意力机制和向量检索中，真正频繁做的是<strong>点积计算</strong>。</p>
+<p>如果还原后的点积和真实的点积 <span class="math inline">\(\langle x, y
+\rangle\)</span> 总是有系统性地偏高或偏低，这就是
+Bias（偏差）。</p></li>
 </ul>
 <blockquote>
 <p>注意：不要只看 MSE。</p>
-<p>MSE 低不等于内积一定准确，TurboQuant 的重要贡献之一就是修正内积偏差。</p>
+<p>MSE 低不等于内积一定准确，TurboQuant
+的重要贡献之一就是修正内积偏差。</p>
 </blockquote>
-<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/TurboQuant/Gemini_Generated_Image_xy7z6kxy7z6kxy7z.png" alt=""></p>
-<h2 id="有损-vs-无损（容易混淆的地方）"><a href="#有损-vs-无损（容易混淆的地方）" class="headerlink" title="有损 vs 无损（容易混淆的地方）"></a>有损 vs 无损（容易混淆的地方）</h2><p>在量化的语境里，很多人会把一些概念搞混：</p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/TurboQuant/Gemini_Generated_Image_xy7z6kxy7z6kxy7z.png" /></p>
+<h2 id="有损-vs-无损容易混淆的地方">有损 vs 无损（容易混淆的地方）</h2>
+<p>在量化的语境里，很多人会把一些概念搞混：</p>
 <ul>
-<li><p><strong>有损（Lossy）</strong>：从 <code>0.8</code> 变成 <code>0.6</code> 这个过程（即 Quant），误差是绝对不可逆转的。因此，<strong>量化本身天生是有损的</strong>。</p>
-</li>
-<li><p><strong>无损（Lossless）</strong>：针对索引串 <code>1010</code>，如果能用类似 ZIP 压缩（如 Huffman 编码或 ANS 等信息论方法）把它压得更小，解压后依然是完美还原的 <code>1010</code> 索引串，这就叫无损压缩。</p>
-</li>
+<li><p><strong>有损（Lossy）</strong>：从 <code>0.8</code> 变成
+<code>0.6</code> 这个过程（即
+Quant），误差是绝对不可逆转的。因此，<strong>量化本身天生是有损的</strong>。</p></li>
+<li><p><strong>无损（Lossless）</strong>：针对索引串
+<code>1010</code>，如果能用类似 ZIP 压缩（如 Huffman 编码或 ANS
+等信息论方法）把它压得更小，解压后依然是完美还原的 <code>1010</code>
+索引串，这就叫无损压缩。</p></li>
 </ul>
-<p>所以”无损压缩”不是说量化无损，而是指<strong>在索引编码层的无损存储压缩</strong>。</p>
-<hr>
-<h1 id="论文的动机"><a href="#论文的动机" class="headerlink" title="论文的动机"></a>论文的动机</h1><p>在长上下文大模型推理（KV Cache 压缩）和亿级向量检索场景中，传统的量化方法面临着一个不可调和的矛盾。可以把现有方法简单分为两派：</p>
-<h2 id="痛点-1：简单方法（如均匀量化）速度快，但精度差、空间利用率低"><a href="#痛点-1：简单方法（如均匀量化）速度快，但精度差、空间利用率低" class="headerlink" title="痛点 1：简单方法（如均匀量化）速度快，但精度差、空间利用率低"></a>痛点 1：简单方法（如均匀量化）速度快，但精度差、空间利用率低</h2><p>均匀量化直接把数据按等间距切分（就像尺子上的等距刻度）。计算极快，不需要提前分析数据分布。但这在数据分布不均匀时会带来巨大的误差。</p>
+<p>所以"无损压缩"不是说量化无损，而是指<strong>在索引编码层的无损存储压缩</strong>。</p>
+<hr />
+<h1 id="论文的动机">论文的动机</h1>
+<p>在长上下文大模型推理（KV Cache
+压缩）和亿级向量检索场景中，传统的量化方法面临着一个不可调和的矛盾。可以把现有方法简单分为两派：</p>
+<h2 id="痛点-1简单方法如均匀量化速度快但精度差空间利用率低">痛点
+1：简单方法（如均匀量化）速度快，但精度差、空间利用率低</h2>
+<p>均匀量化直接把数据按等间距切分（就像尺子上的等距刻度）。计算极快，不需要提前分析数据分布。但这在数据分布不均匀时会带来巨大的误差。</p>
 <p>例子：</p>
-<script type="math/tex; mode=display">x = [-0.92,\ -0.31,\ -0.08,\ 0.15,\ 0.44,\ 0.97]</script><p>2-bit 意味着每个坐标只能落在 $2^2 = 4$ 个代表值之一。</p>
+<p><span class="math display">\[x = [-0.92,\ -0.31,\ -0.08,\ 0.15,\
+0.44,\ 0.97]\]</span></p>
+<p>2-bit 意味着每个坐标只能落在 <span class="math inline">\(2^2 =
+4\)</span> 个代表值之一。</p>
 <p><strong>如果用均匀码本</strong>（等间距）：</p>
-<script type="math/tex; mode=display">C_{\text{uniform}} = \{-0.75,\ -0.25,\ 0.25,\ 0.75\}</script><p>最近邻量化后：</p>
-<script type="math/tex; mode=display">\hat{x}_{\text{uniform}} = [-0.75,\ -0.25,\ -0.25,\ 0.25,\ 0.25,\ 0.75]</script><script type="math/tex; mode=display">\text{MSE}_{\text{uniform}} = 0.02598</script><p><strong>如果用非均匀码本</strong>（码本点更贴近数据密集的区域）：</p>
-<script type="math/tex; mode=display">C_{\text{non-uniform}} = \{-0.90,\ -0.20,\ 0.20,\ 0.90\}</script><p>量化后：</p>
-<script type="math/tex; mode=display">\hat{x}_{\text{non-uniform}} = [-0.90,\ -0.20,\ -0.20,\ 0.20,\ 0.20,\ 0.90]</script><script type="math/tex; mode=display">\text{MSE}_{\text{non-uniform}} = 0.01532</script><p>这就是均匀量化最大的缺点：真实世界的数据（如模型激活值）往往集中在某一区域（比如高斯分布的数值大多集中在 0 附近），等间距切分会把大量宝贵的编码空间（bit）浪费在几乎没有数据的边缘区域。</p>
-<p>就像把一条路分成 16 段测车流密度，如果车都挤在市中心，你却把郊区和市中心切得一样细，这就是在浪费分辨率。</p>
+<p><span class="math display">\[C_{\text{uniform}} = \{-0.75,\ -0.25,\
+0.25,\ 0.75\}\]</span></p>
+<p>最近邻量化后：</p>
+<p><span class="math display">\[\hat{x}_{\text{uniform}} = [-0.75,\
+-0.25,\ -0.25,\ 0.25,\ 0.25,\ 0.75]\]</span></p>
+<p><span class="math display">\[\text{MSE}_{\text{uniform}} =
+0.02598\]</span></p>
+<p><strong>如果用非均匀码本</strong>（码本点更贴近数据密集的区域）：</p>
+<p><span class="math display">\[C_{\text{non-uniform}} = \{-0.90,\
+-0.20,\ 0.20,\ 0.90\}\]</span></p>
+<p>量化后：</p>
+<p><span class="math display">\[\hat{x}_{\text{non-uniform}} = [-0.90,\
+-0.20,\ -0.20,\ 0.20,\ 0.20,\ 0.90]\]</span></p>
+<p><span class="math display">\[\text{MSE}_{\text{non-uniform}} =
+0.01532\]</span></p>
+<p>这就是均匀量化最大的缺点：真实世界的数据（如模型激活值）往往集中在某一区域（比如高斯分布的数值大多集中在
+0
+附近），等间距切分会把大量宝贵的编码空间（bit）浪费在几乎没有数据的边缘区域。</p>
+<p>就像把一条路分成 16
+段测车流密度，如果车都挤在市中心，你却把郊区和市中心切得一样细，这就是在浪费分辨率。</p>
 <p>这种浪费导致了<strong>均方误差（MSE）极大，同等空间下的精度极低</strong>。</p>
-<h2 id="痛点-2：高级方法（如乘积量化-PQ-K-Means）精度高，但耗时且难以在线流式处理"><a href="#痛点-2：高级方法（如乘积量化-PQ-K-Means）精度高，但耗时且难以在线流式处理" class="headerlink" title="痛点 2：高级方法（如乘积量化 PQ / K-Means）精度高，但耗时且难以在线流式处理"></a>痛点 2：高级方法（如乘积量化 PQ / K-Means）精度高，但耗时且难以在线流式处理</h2><p>既然均匀量化不好，那怎么找到上面的“非均匀最优码本”呢？</p>
-<p>最经典的方法是 Lloyd-Max 算法（可以把它理解为一维数据上的连续 K-Means 聚类）。</p>
-<p>它的核心思想是“两步交替优化”。用一个包含 4 个数字的极简数组 <code>[1, 2, 8, 9]</code> 来演示，假设把它量化成 $K=2$ 个代表值（1-bit）：</p>
-<p><strong>初始化</strong>：瞎猜两个初始代表值（码本），比如 $c_1 = 3$ 和 $c_2 = 6$。</p>
+<h2
+id="痛点-2高级方法如乘积量化-pq-k-means精度高但耗时且难以在线流式处理">痛点
+2：高级方法（如乘积量化 PQ /
+K-Means）精度高，但耗时且难以在线流式处理</h2>
+<p>既然均匀量化不好，那怎么找到上面的“非均匀最优码本”呢？</p>
+<p>最经典的方法是 Lloyd-Max 算法（可以把它理解为一维数据上的连续 K-Means
+聚类）。</p>
+<p>它的核心思想是“两步交替优化”。用一个包含 4 个数字的极简数组
+<code>[1, 2, 8, 9]</code> 来演示，假设把它量化成 <span
+class="math inline">\(K=2\)</span> 个代表值（1-bit）：</p>
+<p><strong>初始化</strong>：瞎猜两个初始代表值（码本），比如 <span
+class="math inline">\(c_1 = 3\)</span> 和 <span
+class="math inline">\(c_2 = 6\)</span>。</p>
 <p><strong>第一轮迭代：</strong></p>
-<ol>
-<li><p><strong>固定代表值，更新边界</strong>（划定地盘）：<br>计算 3 和 6 的中点边界：$t = (3 + 6) / 2 = 4.5$。</p>
+<ol type="1">
+<li><p><strong>固定代表值，更新边界</strong>（划定地盘）： 计算 3 和 6
+的中点边界：<span class="math inline">\(t = (3 + 6) / 2 =
+4.5\)</span>。</p>
 <p>这就把数据切成了两块：小于 4.5 的归左边，大于 4.5 的归右边。</p>
-<p>所以：左阵营分到了 <code>&#123;1, 2&#125;</code>，右阵营分到了 <code>&#123;8, 9&#125;</code>。</p>
-</li>
-<li><p><strong>固定边界，更新代表值</strong>（选新代表）：<br>计算每个阵营内部的“平均值”（均值能让该阵营内部的 MSE 最小）：</p>
-<p>左边的新代表值：$c_1 = (1 + 2) / 2 = 1.5$</p>
-<p>右边的新代表值：$c_2 = (8 + 9) / 2 = 8.5$</p>
-</li>
+<p>所以：左阵营分到了 <code>&#123;1, 2&#125;</code>，右阵营分到了
+<code>&#123;8, 9&#125;</code>。</p></li>
+<li><p><strong>固定边界，更新代表值</strong>（选新代表）：
+计算每个阵营内部的“平均值”（均值能让该阵营内部的 MSE 最小）：</p>
+<p>左边的新代表值：<span class="math inline">\(c_1 = (1 + 2) / 2 =
+1.5\)</span></p>
+<p>右边的新代表值：<span class="math inline">\(c_2 = (8 + 9) / 2 =
+8.5\)</span></p></li>
 </ol>
 <p><strong>第二轮迭代：</strong></p>
-<ol>
-<li><strong>更新边界</strong>：计算新中点 $t = (1.5 + 8.5) / 2 = 5$。</li>
-<li><p><strong>更新代表值</strong>：小于 5 的还是 <code>&#123;1, 2&#125;</code>，大于 5 的还是 <code>&#123;8, 9&#125;</code>。</p>
-<p>阵营<strong>没有变化</strong>，新的代表值依然是 <code>1.5</code> 和 <code>8.5</code>。</p>
-<p>由于没有变化，所以算法收敛，到此结束！</p>
-</li>
+<ol type="1">
+<li><p><strong>更新边界</strong>：计算新中点 <span
+class="math inline">\(t = (1.5 + 8.5) / 2 = 5\)</span>。</p></li>
+<li><p><strong>更新代表值</strong>：小于 5 的还是
+<code>&#123;1, 2&#125;</code>，大于 5 的还是 <code>&#123;8, 9&#125;</code>。</p>
+<p>阵营<strong>没有变化</strong>，新的代表值依然是 <code>1.5</code> 和
+<code>8.5</code>。</p>
+<p>由于没有变化，所以算法收敛，到此结束！</p></li>
 </ol>
 <p>最终，找到了完美贴合数据分布的最优码本 <code>&#123;1.5, 8.5&#125;</code>。</p>
 <p>通过这种聚类找码本的方法，空间利用率极高，MSE 极低。</p>
-<p><strong>但这带来一个致命缺陷：需要在线聚类拟合（Online Fitting）！</strong></p>
+<p><strong>但这带来一个致命缺陷：需要在线聚类拟合（Online
+Fitting）！</strong></p>
 <p>每次来新数据，必须先攒齐一大批数据，跑一遍耗时的迭代算法才能得到最优码本。</p>
-<p>在 KV Cache 这种 Token 逐字输出的场景下，根本等不起聚类的时间；在向量数据库中，这也意味着极其漫长的数据建索引时间。</p>
-<h2 id="痛点-3：指标错位，MSE-低不代表“内积”一定准"><a href="#痛点-3：指标错位，MSE-低不代表“内积”一定准" class="headerlink" title="痛点 3：指标错位，MSE 低不代表“内积”一定准"></a>痛点 3：指标错位，MSE 低不代表“内积”一定准</h2><p>几乎所有的传统量化方法都在死磕如何降低 MSE（重建误差）。</p>
-<p>但是在 LLM 的注意力机制（Attention）和向量检索中，<strong>底层频繁计算的其实是两个向量的内积（Inner Product）</strong>，而不是简单衡量它们长得有多像。</p>
-<p>还是刚刚的 2-bit </p>
-<script type="math/tex; mode=display">x = [-0.92,\ -0.31,\ -0.08,\ 0.15,\ 0.44,\ 0.97]</script><p>假设现在来了一个查询向量（Query）$y$：</p>
-<script type="math/tex; mode=display">y = [0.8,\ -0.4,\ 1.2,\ 0.5,\ -1.0,\ 0.3]</script><p>我们先算一下 $y$ 和刚才那个真实原始向量 $x$ 的点积：</p>
-<p>真实内积 $\langle y, x \rangle = -0.782$</p>
-<p>在实际的量化检索中，我们拿不到真实的 $x$，只能用量化后的 $\hat{x}$ 来算内积，结果会怎样？</p>
-<script type="math/tex; mode=display">\hat{x}_{\text{uniform}} = [-0.75,\ -0.25,\ -0.25,\ 0.25,\ 0.25,\ 0.75]</script><ul>
-<li>$y$ 与均匀量化结果 $\hat{x}_{\text{uniform}}$ 的内积 = <strong>-0.700</strong> （内积绝对误差 $\Delta = 0.082$）</li>
+<p>在 KV Cache 这种 Token
+逐字输出的场景下，根本等不起聚类的时间；在向量数据库中，这也意味着极其漫长的数据建索引时间。</p>
+<h2 id="痛点-3指标错位mse-低不代表内积一定准">痛点 3：指标错位，MSE
+低不代表“内积”一定准</h2>
+<p>几乎所有的传统量化方法都在死磕如何降低 MSE（重建误差）。</p>
+<p>但是在 LLM
+的注意力机制（Attention）和向量检索中，<strong>底层频繁计算的其实是两个向量的内积（Inner
+Product）</strong>，而不是简单衡量它们长得有多像。</p>
+<p>还是刚刚的 2-bit</p>
+<p><span class="math display">\[x = [-0.92,\ -0.31,\ -0.08,\ 0.15,\
+0.44,\ 0.97]\]</span></p>
+<p>假设现在来了一个查询向量（Query）<span
+class="math inline">\(y\)</span>：</p>
+<p><span class="math display">\[y = [0.8,\ -0.4,\ 1.2,\ 0.5,\ -1.0,\
+0.3]\]</span></p>
+<p>我们先算一下 <span class="math inline">\(y\)</span>
+和刚才那个真实原始向量 <span class="math inline">\(x\)</span>
+的点积：</p>
+<p>真实内积 <span class="math inline">\(\langle y, x \rangle =
+-0.782\)</span></p>
+<p>在实际的量化检索中，我们拿不到真实的 <span
+class="math inline">\(x\)</span>，只能用量化后的 <span
+class="math inline">\(\hat{x}\)</span> 来算内积，结果会怎样？</p>
+<p><span class="math display">\[\hat{x}_{\text{uniform}} = [-0.75,\
+-0.25,\ -0.25,\ 0.25,\ 0.25,\ 0.75]\]</span></p>
+<ul>
+<li><span class="math inline">\(y\)</span> 与均匀量化结果 <span
+class="math inline">\(\hat{x}_{\text{uniform}}\)</span> 的内积 =
+<strong>-0.700</strong> （内积绝对误差 <span
+class="math inline">\(\Delta = 0.082\)</span>）</li>
 </ul>
-<script type="math/tex; mode=display">\hat{x}_{\text{non-uniform}} = [-0.90,\ -0.20,\ -0.20,\ 0.20,\ 0.20,\ 0.90]</script><ul>
-<li>$y$ 与非均匀量化结果 $\hat{x}_{\text{non-uniform}}$ 的内积 = <strong>-0.710</strong> （内积绝对误差 $\Delta = 0.072$）</li>
+<p><span class="math display">\[\hat{x}_{\text{non-uniform}} = [-0.90,\
+-0.20,\ -0.20,\ 0.20,\ 0.20,\ 0.90]\]</span></p>
+<ul>
+<li><span class="math inline">\(y\)</span> 与非均匀量化结果 <span
+class="math inline">\(\hat{x}_{\text{non-uniform}}\)</span> 的内积 =
+<strong>-0.710</strong> （内积绝对误差 <span
+class="math inline">\(\Delta = 0.072\)</span>）</li>
 </ul>
-<p>尽管聚类优化把 MSE 降低了 <strong>41%</strong>，但内积误差只从 0.082 降到 0.072，改善幅度有限。</p>
+<p>尽管聚类优化把 MSE 降低了 <strong>41%</strong>，但内积误差只从 0.082
+降到 0.072，改善幅度有限。</p>
 <p>这种因为有损压缩引发的内积计算误差，往往不是正负抵消的随机噪声，而是会引入<strong>系统性的内积偏差（Bias）</strong></p>
-<p>如果内积估计有系统偏差，在向量检索的 Top-K 排序或 Attention 打分中就会出现<strong>持续的定向偏移</strong>。</p>
-<hr>
-<h1 id="TurboQuant-的思路"><a href="#TurboQuant-的思路" class="headerlink" title="TurboQuant 的思路"></a>TurboQuant 的思路</h1><p>论文尝试用一套方法同时处理上述三个痛点：</p>
-<ol>
+<p>如果内积估计有系统偏差，在向量检索的 Top-K 排序或 Attention
+打分中就会出现<strong>持续的定向偏移</strong>。</p>
+<hr />
+<h1 id="turboquant-的思路">TurboQuant 的思路</h1>
+<p>论文尝试用一套方法同时处理上述三个痛点：</p>
+<ol type="1">
 <li><strong>精度</strong>：要达到高级聚类算法的极限压缩精度（逼近信息论的理论下界）；</li>
-<li><strong>速度</strong>：接近均匀量化的在线效率，<strong>免去在线拟合（Zero online fitting）</strong>，支持数据的即写即查；</li>
+<li><strong>速度</strong>：接近均匀量化的在线效率，<strong>免去在线拟合（Zero
+online fitting）</strong>，支持数据的即写即查；</li>
 <li><strong>无偏</strong>：通过巧妙的残差补偿算法，<strong>彻底消除内积计算的系统性偏差</strong>。</li>
 </ol>
-<h2 id="关键洞察：先旋转，让分布变得可预测"><a href="#关键洞察：先旋转，让分布变得可预测" class="headerlink" title="关键洞察：先旋转，让分布变得可预测"></a>关键洞察：先旋转，让分布变得可预测</h2><p>TurboQuant 的第一步是在量化前做一次<strong>随机正交旋转</strong>。</p>
+<h2
+id="关键洞察先旋转让分布变得可预测">关键洞察：先旋转，让分布变得可预测</h2>
+<p>TurboQuant
+的第一步是在量化前做一次<strong>随机正交旋转</strong>。</p>
 <p>核心直觉是：如果原始分布形态复杂（长尾、极值），在线切分和聚类会很慢；那能否先通过变换，把未知分布转成一种稳定、可建模的分布？</p>
 <p>只要分布稳定，就可以<strong>离线（Offline）预计算码本</strong>，数据到达后直接查表（Look-up），从而去掉耗时的在线拟合。</p>
-<p>发现：<strong>对于任意高维向量，乘上随机正交矩阵后，其坐标分布会收敛到固定形式，即（缩放/平移后的）Beta 分布。</strong></p>
-<script type="math/tex; mode=display">f_X(x) = \frac{\Gamma(d/2)}{\sqrt{\pi} \cdot \Gamma((d-1)/2)} (1 - x^2)^{(d-3)/2}</script><h2 id="TurboQuant-mse：例子"><a href="#TurboQuant-mse：例子" class="headerlink" title="TurboQuant_mse：例子"></a>TurboQuant_mse：例子</h2><p>假设有一个极度“偏科”（长尾极值）的输入向量：</p>
-<script type="math/tex; mode=display">x = [1.0,\ 0.0]</script><p>所有的能量都集中在第一维，第二维是 0。</p>
-<p>直接拿它去量化，码本很容易“跑偏”。对它进行 1-bit（即 2 个代表值）的量化。</p>
-<p><strong>Step 1：准备旋转矩阵 $R$</strong></p>
-<p>系统预先生成好了一个随机正交矩阵 $R$。在 2D 里，我们可以假设它恰好是一个逆时针旋转 45 度的矩阵：</p>
-<script type="math/tex; mode=display">R = \begin{bmatrix} 0.707 & -0.707 \\ 0.707 & 0.707 \end{bmatrix}</script><p><strong>Step 2：旋转打散偏置（$y = Rx$）</strong></p>
-<p>对 $x$ 乘以旋转矩阵 $R$：</p>
-<script type="math/tex; mode=display">y = [0.707 \times 1.0 + 0,\ 0.707 \times 1.0 + 0] = [0.707,\ 0.707]</script><p>可以看到，原本偏向单一维度的 <code>[1.0, 0.0]</code> 被打散成 <code>[0.707, 0.707]</code>。</p>
-<p><strong>Step 3：查表量化（$\hat{y}$）</strong></p>
-<p>既然现在的分布变成了极其标准的稳定分布，根据事先针对 Beta 分布离线算好的 1-bit 最优码本，假设算出来是 <code>&#123;-0.6, 0.6&#125;</code>。</p>
+<p>发现：<strong>对于任意高维向量，乘上随机正交矩阵后，其坐标分布会收敛到固定形式，即（缩放/平移后的）Beta
+分布。</strong></p>
+<p><span class="math display">\[f_X(x) = \frac{\Gamma(d/2)}{\sqrt{\pi}
+\cdot \Gamma((d-1)/2)} (1 - x^2)^{(d-3)/2}\]</span></p>
+<h2 id="turboquant_mse例子">TurboQuant_mse：例子</h2>
+<p>假设有一个极度“偏科”（长尾极值）的输入向量：</p>
+<p><span class="math display">\[x = [1.0,\ 0.0]\]</span></p>
+<p>所有的能量都集中在第一维，第二维是 0。</p>
+<p>直接拿它去量化，码本很容易“跑偏”。对它进行 1-bit（即 2
+个代表值）的量化。</p>
+<p><strong>Step 1：准备旋转矩阵 <span
+class="math inline">\(R\)</span></strong></p>
+<p>系统预先生成好了一个随机正交矩阵 <span
+class="math inline">\(R\)</span>。在 2D
+里，我们可以假设它恰好是一个逆时针旋转 45 度的矩阵：</p>
+<p><span class="math display">\[R = \begin{bmatrix} 0.707 &amp; -0.707
+\\ 0.707 &amp; 0.707 \end{bmatrix}\]</span></p>
+<p><strong>Step 2：旋转打散偏置（<span class="math inline">\(y =
+Rx\)</span>）</strong></p>
+<p>对 <span class="math inline">\(x\)</span> 乘以旋转矩阵 <span
+class="math inline">\(R\)</span>：</p>
+<p><span class="math display">\[y = [0.707 \times 1.0 + 0,\ 0.707 \times
+1.0 + 0] = [0.707,\ 0.707]\]</span></p>
+<p>可以看到，原本偏向单一维度的 <code>[1.0, 0.0]</code> 被打散成
+<code>[0.707, 0.707]</code>。</p>
+<p><strong>Step 3：查表量化（<span
+class="math inline">\(\hat{y}\)</span>）</strong></p>
+<p>既然现在的分布变成了极其标准的稳定分布，根据事先针对 Beta
+分布离线算好的 1-bit 最优码本，假设算出来是
+<code>&#123;-0.6, 0.6&#125;</code>。</p>
 <ul>
-<li>$y_1 = 0.707$ 离 $0.6$ 更近 $\to$ 映射为 $0.6$</li>
-<li>$y_2 = 0.707$ 离 $0.6$ 更近 $\to$ 映射为 $0.6$</li>
+<li><span class="math inline">\(y_1 = 0.707\)</span> 离 <span
+class="math inline">\(0.6\)</span> 更近 <span
+class="math inline">\(\to\)</span> 映射为 <span
+class="math inline">\(0.6\)</span></li>
+<li><span class="math inline">\(y_2 = 0.707\)</span> 离 <span
+class="math inline">\(0.6\)</span> 更近 <span
+class="math inline">\(\to\)</span> 映射为 <span
+class="math inline">\(0.6\)</span></li>
 </ul>
-<p>所以中间向量就变成了 $\hat{y} = [0.6,\ 0.6]$（存进显存的只有比特串，即索引 <code>[1, 1]</code>）。</p>
-<p><strong>Step 4：反旋转重建（$\hat{x} = R^\top \hat{y}$）</strong></p>
-<p>当矩阵乘法需要用到原始向量时，GPU 根据索引查出 <code>[0.6, 0.6]</code>，再乘以反向旋转矩阵 $R^\top$ 进行恢复：</p>
-<script type="math/tex; mode=display">R^\top = \begin{bmatrix} 0.707 & 0.707 \\ -0.707 & 0.707 \end{bmatrix}</script><script type="math/tex; mode=display">\hat{x} = R^\top \hat{y} = [0.6 \times 0.707 + 0.6 \times 0.707,\ -0.6 \times 0.707 + 0.6 \times 0.707] = [0.8484,\ 0.0]</script><p>整个过程很快，旋转矩阵和码表都可以预先准备好，查表的复杂度是 O(1)，量化的时候做一次矩阵乘法，重建的时候也是做一次矩阵乘法。</p>
-<hr>
+<p>所以中间向量就变成了 <span class="math inline">\(\hat{y} = [0.6,\
+0.6]\)</span>（存进显存的只有比特串，即索引 <code>[1, 1]</code>）。</p>
+<p><strong>Step 4：反旋转重建（<span class="math inline">\(\hat{x} =
+R^\top \hat{y}\)</span>）</strong></p>
+<p>当矩阵乘法需要用到原始向量时，GPU 根据索引查出
+<code>[0.6, 0.6]</code>，再乘以反向旋转矩阵 <span
+class="math inline">\(R^\top\)</span> 进行恢复：</p>
+<p><span class="math display">\[R^\top = \begin{bmatrix} 0.707 &amp;
+0.707 \\ -0.707 &amp; 0.707 \end{bmatrix}\]</span></p>
+<p><span class="math display">\[\hat{x} = R^\top \hat{y} = [0.6 \times
+0.707 + 0.6 \times 0.707,\ -0.6 \times 0.707 + 0.6 \times 0.707] =
+[0.8484,\ 0.0]\]</span></p>
+<p>整个过程很快，旋转矩阵和码表都可以预先准备好，查表的复杂度是
+O(1)，量化的时候做一次矩阵乘法，重建的时候也是做一次矩阵乘法。</p>
+<hr />
 <p>再看 TurboQuant_mse 的官方步骤会更直接：</p>
-<script type="math/tex; mode=display">x \xrightarrow{R} y \xrightarrow{\text{量化}} \hat{y} \xrightarrow{R^\top} \hat{x}</script><ol>
-<li><strong>生成随机正交矩阵</strong> $R \in \mathbb{R}^{d \times d}$（对高斯矩阵做 QR 分解）。</li>
-<li><strong>旋转</strong>：$y = Rx$。</li>
-<li><p><strong>查表量化</strong>：对每维做标量量化 $y<em>i \to c</em>{k^<em>}$，其中 $k^</em> = \arg\min_k |y_i - c_k|$。</p>
-<p>这里的码本 $C$ 就是针对 Beta 分布<strong>预先离线计算好</strong>的最优码本。</p>
-</li>
-<li><strong>获取存储形式</strong>：得到 $\hat{y} = [c<em>{k^*(1)}, \dots, c</em>{k^*(d)}]$。</li>
-<li><strong>反旋转（重建）</strong>：$\hat{x} = R^\top \hat{y}$。</li>
+<p><span class="math display">\[x \xrightarrow{R} y
+\xrightarrow{\text{量化}} \hat{y} \xrightarrow{R^\top}
+\hat{x}\]</span></p>
+<ol type="1">
+<li><p><strong>生成随机正交矩阵</strong> <span class="math inline">\(R
+\in \mathbb{R}^{d \times d}\)</span>（对高斯矩阵做 QR 分解）。</p></li>
+<li><p><strong>旋转</strong>：<span class="math inline">\(y =
+Rx\)</span>。</p></li>
+<li><p><strong>查表量化</strong>：对每维做标量量化 <span
+class="math inline">\(y_i \to c_{k^*}\)</span>，其中 <span
+class="math inline">\(k^* = \arg\min_k |y_i - c_k|\)</span>。</p>
+<p>这里的码本 <span class="math inline">\(C\)</span> 就是针对 Beta
+分布<strong>预先离线计算好</strong>的最优码本。</p></li>
+<li><p><strong>获取存储形式</strong>：得到 <span
+class="math inline">\(\hat{y} = [c_{k^*(1)}, \dots,
+c_{k^*(d)}]\)</span>。</p></li>
+<li><p><strong>反旋转（重建）</strong>：<span
+class="math inline">\(\hat{x} = R^\top \hat{y}\)</span>。</p></li>
 </ol>
 <p>再回过头来看其他收益</p>
 <ul>
-<li><p>打散方向性偏置：原始向量某些维度可能异常值很大，某些维度很平，这会让逐维量化不稳定。旋转可以把这种偏置分散到各维度。</p>
-</li>
-<li><p>让逐维独立量化更合理：论文推导表明，随机旋转后各维度不仅分布稳定，而且近似<strong>相互独立</strong>。</p>
-</li>
+<li><p>打散方向性偏置：原始向量某些维度可能异常值很大，某些维度很平，这会让逐维量化不稳定。旋转可以把这种偏置分散到各维度。</p></li>
+<li><p>让逐维独立量化更合理：论文推导表明，随机旋转后各维度不仅分布稳定，而且近似<strong>相互独立</strong>。</p></li>
 </ul>
-<p>正交矩阵满足 $R^\top R = I$，因此 $|x|_2 = |Rx|_2$，向量长度和内积结构都保持不变。</p>
+<p>正交矩阵满足 <span class="math inline">\(R^\top R = I\)</span>，因此
+<span class="math inline">\(\|x\|_2 =
+\|Rx\|_2\)</span>，向量长度和内积结构都保持不变。</p>
 <p>更重要的一点是：旋转保持了优化目标不变——</p>
-<script type="math/tex; mode=display">\lVert x - \hat{x} \rVert_2^2 = \lVert Rx - R\hat{x} \rVert_2^2 = \lVert y - \hat{y} \rVert_2^2</script><p>在旋转域最小化 MSE，完全等价于在原始域最小化 MSE。</p>
-<p>Q：针对 Beta 分布离线计算的最优码本，是否意味着所有数据都可共用一个固定码本？</p>
+<p><span class="math display">\[\lVert x - \hat{x} \rVert_2^2 = \lVert
+Rx - R\hat{x} \rVert_2^2 = \lVert y - \hat{y} \rVert_2^2\]</span></p>
+<p>在旋转域最小化 MSE，完全等价于在原始域最小化 MSE。</p>
+<p>Q：针对 Beta
+分布离线计算的最优码本，是否意味着所有数据都可共用一个固定码本？</p>
 <p>A：是的。</p>
 <p>这正是 TurboQuant 摆脱“在线拟合”的关键。</p>
-<p>无论输入是文本 embedding 还是视觉特征，只要乘上随机旋转矩阵 $R$，其坐标分布就会落到固定的 Beta 形式。</p>
-<p>所以只需准备这一个全局码本。这个全局码本只和两个参数有关：<strong>向量的维度 $d$</strong> 和 <strong>目标压缩位数 $b$</strong>，<strong>完全与输入数据无关</strong>。</p>
-<p>唯一需要注意的是，由于 Beta 分布的推导前提是向量在单位球面上（即长度为 1，$|x|_2 = 1$）。</p>
-<p>所以在工程实现中，我们只需要把真实向量的“长度（L2 Norm）”单独抽出来存成一个 16-bit 浮点数，然后把剩下的方向向量（即除以长度归一化后的向量）交给这个固定的码本去查表量化，最后反量化重建时再把长度乘回去即可。</p>
-<p>通过这种“前处理 + 静态全局码表”的设计，论文 Theorem 1 证明：对任意 $|x|_2 = 1$ 的向量，均方误差存在明确上界：</p>
-<div class="table-container">
+<p>无论输入是文本 embedding 还是视觉特征，只要乘上随机旋转矩阵 <span
+class="math inline">\(R\)</span>，其坐标分布就会落到固定的 Beta
+形式。</p>
+<p>所以只需准备这一个全局码本。这个全局码本只和两个参数有关：<strong>向量的维度
+<span class="math inline">\(d\)</span></strong> 和 <strong>目标压缩位数
+<span
+class="math inline">\(b\)</span></strong>，<strong>完全与输入数据无关</strong>。</p>
+<p>唯一需要注意的是，由于 Beta
+分布的推导前提是向量在单位球面上（即长度为 1，<span
+class="math inline">\(\|x\|_2 = 1\)</span>）。</p>
+<p>所以在工程实现中，我们只需要把真实向量的“长度（L2
+Norm）”单独抽出来存成一个 16-bit
+浮点数，然后把剩下的方向向量（即除以长度归一化后的向量）交给这个固定的码本去查表量化，最后反量化重建时再把长度乘回去即可。</p>
+<p>通过这种“前处理 + 静态全局码表”的设计，论文 Theorem 1 证明：对任意
+<span class="math inline">\(\|x\|_2 = 1\)</span>
+的向量，均方误差存在明确上界：</p>
 <table>
 <thead>
 <tr>
-<th style="text-align:center">$b$</th>
-<th style="text-align:center">$D_{\text{mse}}$ 上界</th>
+<th style="text-align: center;"><span
+class="math inline">\(b\)</span></th>
+<th style="text-align: center;"><span
+class="math inline">\(D_{\text{mse}}\)</span> 上界</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">≈ 0.36</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">≈ 0.36</td>
 </tr>
 <tr>
-<td style="text-align:center">2</td>
-<td style="text-align:center">≈ 0.117</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">≈ 0.117</td>
 </tr>
 <tr>
-<td style="text-align:center">3</td>
-<td style="text-align:center">≈ 0.03</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">≈ 0.03</td>
 </tr>
 <tr>
-<td style="text-align:center">4</td>
-<td style="text-align:center">≈ 0.009</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">≈ 0.009</td>
 </tr>
 </tbody>
 </table>
-</div>
 <p>这个上界已经非常接近信息论下界，两者仅差约 2.7 倍常数因子。</p>
 <p>也就是说，TurboQuant_mse 在 MSE 方向已经接近理论极限。</p>
-<p>到这里，通过<strong>前处理预旋转 + 全局固定离线码本查表</strong>，TurboQuant 已经解决前两个痛点：既保留免拟合的在线效率，也接近高级聚类方法的压缩精度。</p>
-<h2 id="TurboQuant-prod：用残差补偿修正内积偏差"><a href="#TurboQuant-prod：用残差补偿修正内积偏差" class="headerlink" title="TurboQuant_prod：用残差补偿修正内积偏差"></a>TurboQuant_prod：用残差补偿修正内积偏差</h2><p>论文提出两阶段方案来解决第三个痛点：指标错位，内积偏差。</p>
-<p>假设真实向量是 $x = [0.8, 0.5]$。</p>
-<p>有个查询向量 $y = [1.0, 0.0]$ 算内积，真实内积是 $\langle y, x \rangle = 0.8 \times 1.0 + 0.5 \times 0.0 = 0.8$。</p>
-<p>假设用刚才讲的 TurboQuant<em>mse 算法，把 $x$ 量化成了 $\hat{x}</em>{\text{mse}} = [0.7, 0.6]$。</p>
-<h3 id="例子-1"><a href="#例子-1" class="headerlink" title="例子"></a>例子</h3><p>约定把随机矩阵 $S$ 取成一个便于手算的 45 度旋转矩阵，并约定 $\operatorname{sign}(0)=+1$。</p>
+<p>到这里，通过<strong>前处理预旋转 +
+全局固定离线码本查表</strong>，TurboQuant
+已经解决前两个痛点：既保留免拟合的在线效率，也接近高级聚类方法的压缩精度。</p>
+<h2
+id="turboquant_prod用残差补偿修正内积偏差">TurboQuant_prod：用残差补偿修正内积偏差</h2>
+<p>论文提出两阶段方案来解决第三个痛点：指标错位，内积偏差。</p>
+<p>假设真实向量是 <span class="math inline">\(x = [0.8,
+0.5]\)</span>。</p>
+<p>有个查询向量 <span class="math inline">\(y = [1.0, 0.0]\)</span>
+算内积，真实内积是 <span class="math inline">\(\langle y, x \rangle =
+0.8 \times 1.0 + 0.5 \times 0.0 = 0.8\)</span>。</p>
+<p>假设用刚才讲的 TurboQuant_mse 算法，把 <span
+class="math inline">\(x\)</span> 量化成了 <span
+class="math inline">\(\hat{x}_{\text{mse}} = [0.7, 0.6]\)</span>。</p>
+<h3 id="例子-1">例子</h3>
+<p>约定把随机矩阵 <span class="math inline">\(S\)</span>
+取成一个便于手算的 45 度旋转矩阵，并约定 <span
+class="math inline">\(\operatorname{sign}(0)=+1\)</span>。</p>
 <p><strong>计算“漏掉的误差”</strong></p>
 <ul>
-<li><p>残差 $r$：</p>
-<script type="math/tex; mode=display">r = x - \hat{x}_{\text{mse}} = [0.8, 0.5] - [0.7, 0.6] = [0.1, -0.1]</script></li>
-<li><p>残差长度 $\gamma$：</p>
-<script type="math/tex; mode=display">\gamma = \lVert r \rVert_2 = \sqrt{0.1^2 + (-0.1)^2} \approx 0.1414</script></li>
+<li><p>残差 <span class="math inline">\(r\)</span>：</p>
+<p><span class="math display">\[r = x - \hat{x}_{\text{mse}} = [0.8,
+0.5] - [0.7, 0.6] = [0.1, -0.1]\]</span></p></li>
+<li><p>残差长度 <span class="math inline">\(\gamma\)</span>：</p>
+<p><span class="math display">\[\gamma = \lVert r \rVert_2 = \sqrt{0.1^2
++ (-0.1)^2} \approx 0.1414\]</span></p></li>
 </ul>
 <p><strong>压缩误差方向（QJL）</strong></p>
-<p>不能直接存残差 $r$，因为那太占空间了。</p>
+<p>不能直接存残差 <span
+class="math inline">\(r\)</span>，因为那太占空间了。</p>
 <p>于是改用 QJL，只存它的“方向”。</p>
-<ol>
-<li><p>随机旋转：把残差 $r$ 乘以矩阵 $S$。</p>
+<ol type="1">
+<li><p>随机旋转：把残差 <span class="math inline">\(r\)</span> 乘以矩阵
+<span class="math inline">\(S\)</span>。</p>
 <p>这里取</p>
-<script type="math/tex; mode=display">S = \begin{bmatrix} 0.707 & -0.707 \\ 0.707 & 0.707 \end{bmatrix}</script><p>则</p>
-<script type="math/tex; mode=display">Sr =
+<p><span class="math display">\[S = \begin{bmatrix} 0.707 &amp; -0.707
+\\ 0.707 &amp; 0.707 \end{bmatrix}\]</span></p>
+<p>则</p>
+<p><span class="math display">\[Sr =
 \begin{bmatrix}
-0.707 & -0.707 \\
-0.707 & 0.707
+0.707 &amp; -0.707 \\
+0.707 &amp; 0.707
 \end{bmatrix}
 \begin{bmatrix}
 0.1 \\
@@ -505,24 +695,29 @@
 \begin{bmatrix}
 0.1414 \\
 0
-\end{bmatrix}</script></li>
+\end{bmatrix}\]</span></p></li>
 <li><p>只取符号：不再存具体数值，只看正负。</p>
 <ul>
-<li>$0.1414$ 是正的，对应 <code>+1</code></li>
-<li>$0$ 在这个例子里按 <code>+1</code> 处理</li>
+<li><span class="math inline">\(0.1414\)</span> 是正的，对应
+<code>+1</code></li>
+<li><span class="math inline">\(0\)</span> 在这个例子里按
+<code>+1</code> 处理</li>
 </ul>
 <p>所以得到</p>
-<script type="math/tex; mode=display">q = \operatorname{sign}(Sr) = [+1, +1]</script></li>
+<p><span class="math display">\[q = \operatorname{sign}(Sr) = [+1,
++1]\]</span></p></li>
 </ol>
 <p>现在，原本复杂的残差向量就被压成了两个 1-bit 符号。</p>
 <p><strong>还原“补丁向量”</strong></p>
-<p>当你需要用它修正内积时，算法会根据 $q$ 和前面存下来的长度 $\gamma$ 还原出一个补丁：</p>
-<ol>
-<li><p>先乘回 $S^\top$：</p>
-<script type="math/tex; mode=display">S^\top q =
+<p>当你需要用它修正内积时，算法会根据 <span
+class="math inline">\(q\)</span> 和前面存下来的长度 <span
+class="math inline">\(\gamma\)</span> 还原出一个补丁：</p>
+<ol type="1">
+<li><p>先乘回 <span class="math inline">\(S^\top\)</span>：</p>
+<p><span class="math display">\[S^\top q =
 \begin{bmatrix}
-0.707 & 0.707 \\
--0.707 & 0.707
+0.707 &amp; 0.707 \\
+-0.707 &amp; 0.707
 \end{bmatrix}
 \begin{bmatrix}
 1 \\
@@ -532,133 +727,208 @@
 \begin{bmatrix}
 1.414 \\
 0
-\end{bmatrix}</script></li>
+\end{bmatrix}\]</span></p></li>
 <li><p>再乘上缩放系数：</p>
-<script type="math/tex; mode=display">\gamma \cdot \frac{\sqrt{\pi/2}}{d} = 0.1414 \cdot \frac{1.2533}{2} \approx 0.0886</script><p>所以补丁向量约为</p>
-<script type="math/tex; mode=display">\text{corr} \approx 0.0886 \cdot [1.414, 0] \approx [0.125, 0]</script></li>
+<p><span class="math display">\[\gamma \cdot \frac{\sqrt{\pi/2}}{d} =
+0.1414 \cdot \frac{1.2533}{2} \approx 0.0886\]</span></p>
+<p>所以补丁向量约为</p>
+<p><span class="math display">\[\text{corr} \approx 0.0886 \cdot [1.414,
+0] \approx [0.125, 0]\]</span></p></li>
 </ol>
 <p><strong>把补丁加回去</strong></p>
 <p>最终重建向量变成：</p>
-<script type="math/tex; mode=display">\hat{x}_{\text{prod}} = [0.7, 0.6] + [0.125, 0] = [0.825, 0.6]</script><p>如果查询向量仍取 $y = [1.0, 0.0]$，那么新的内积就是：</p>
-<script type="math/tex; mode=display">\langle y, \hat{x}_{\text{prod}} \rangle = [1.0, 0.0] \cdot [0.825, 0.6] = 0.825</script><p>真实内积是 0.8，而如果只用 MSE 量化，内积就是 $0.7 \times 1.0 + 0.6 \times 0.0 = 0.7$。 </p>
+<p><span class="math display">\[\hat{x}_{\text{prod}} = [0.7, 0.6] +
+[0.125, 0] = [0.825, 0.6]\]</span></p>
+<p>如果查询向量仍取 <span class="math inline">\(y = [1.0,
+0.0]\)</span>，那么新的内积就是：</p>
+<p><span class="math display">\[\langle y, \hat{x}_{\text{prod}} \rangle
+= [1.0, 0.0] \cdot [0.825, 0.6] = 0.825\]</span></p>
+<p>真实内积是 0.8，而如果只用 MSE 量化，内积就是 <span
+class="math inline">\(0.7 \times 1.0 + 0.6 \times 0.0 =
+0.7\)</span>。</p>
 <ul>
-<li><strong>阶段 A（大头）</strong>：用 MSE 量化保证尽量靠近真实向量；</li>
-<li><strong>阶段 B（修正）</strong>：通常带有系统方向偏差，因此先计算残差，再用极小代价（1-bit）提取偏差方向，修复偏差。</li>
+<li><strong>阶段 A（大头）</strong>：用 MSE
+量化保证尽量靠近真实向量；</li>
+<li><strong>阶段
+B（修正）</strong>：通常带有系统方向偏差，因此先计算残差，再用极小代价（1-bit）提取偏差方向，修复偏差。</li>
 </ul>
-<hr>
-<h1 id="工程落地：如何选-bit-width"><a href="#工程落地：如何选-bit-width" class="headerlink" title="工程落地：如何选 bit-width"></a>工程落地：如何选 bit-width</h1><h2 id="核心框架"><a href="#核心框架" class="headerlink" title="核心框架"></a>核心框架</h2><p>bit-width 选择本质是一个有约束的优化问题：</p>
-<script type="math/tex; mode=display">\min \text{Cost} \quad \text{s.t.} \quad \text{Quality} \geq \tau</script><p>Cost 包含显存、时延、吞吐；Quality 包含任务分数、召回率、内积误差、生成质量。</p>
+<hr />
+<h1 id="工程落地如何选-bit-width">工程落地：如何选 bit-width</h1>
+<h2 id="核心框架">核心框架</h2>
+<p>bit-width 选择本质是一个有约束的优化问题：</p>
+<p><span class="math display">\[\min \text{Cost} \quad \text{s.t.} \quad
+\text{Quality} \geq \tau\]</span></p>
+<p>Cost 包含显存、时延、吞吐；Quality
+包含任务分数、召回率、内积误差、生成质量。</p>
 <p><strong>最低 bit 不是最优方案，达标集合里成本最低才是。</strong></p>
-<h2 id="先定三类门槛"><a href="#先定三类门槛" class="headerlink" title="先定三类门槛"></a>先定三类门槛</h2><p>上线前先写死：</p>
-<ol>
-<li><strong>质量门槛</strong>：任务分数下降不超过 N%，或检索 Hit@k 不低于阈值</li>
-<li><strong>性能门槛</strong>：P95 时延下降至少 M%，或在时延持平前提下降低显存</li>
+<h2 id="先定三类门槛">先定三类门槛</h2>
+<p>上线前先写死：</p>
+<ol type="1">
+<li><strong>质量门槛</strong>：任务分数下降不超过 N%，或检索 Hit@k
+不低于阈值</li>
+<li><strong>性能门槛</strong>：P95 时延下降至少
+M%，或在时延持平前提下降低显存</li>
 <li><strong>稳定性门槛</strong>：长上下文任务不能出现系统性退化</li>
 </ol>
 <p>没有门槛，就没办法做理性比较。</p>
-<h2 id="论文给出的关键数据点"><a href="#论文给出的关键数据点" class="headerlink" title="论文给出的关键数据点"></a>论文给出的关键数据点</h2><p>来自 KV cache 量化实验：</p>
+<h2 id="论文给出的关键数据点">论文给出的关键数据点</h2>
+<p>来自 KV cache 量化实验：</p>
 <ul>
-<li><strong>3.5 bit/channel</strong>：可实现质量中性（quality neutrality）</li>
-<li><strong>2.5 bit/channel</strong>：只有轻微质量退化（marginal degradation）</li>
+<li><strong>3.5 bit/channel</strong>：可实现质量中性（quality
+neutrality）</li>
+<li><strong>2.5 bit/channel</strong>：只有轻微质量退化（marginal
+degradation）</li>
 </ul>
 <p>这两个数据点是论文的核心工程结论，可以直接作为初始实验的基准配置。</p>
-<h2 id="一个具体例子：KV-Cache-在-prefill-和-decode-里怎么量化"><a href="#一个具体例子：KV-Cache-在-prefill-和-decode-里怎么量化" class="headerlink" title="一个具体例子：KV Cache 在 prefill 和 decode 里怎么量化"></a>一个具体例子：KV Cache 在 prefill 和 decode 里怎么量化</h2><h2 id="prefill-阶段：写入多，读取少"><a href="#prefill-阶段：写入多，读取少" class="headerlink" title="prefill 阶段：写入多，读取少"></a>prefill 阶段：写入多，读取少</h2><p>假设用户一次性输入了 <code>1024</code> 个 prompt tokens。</p>
-<p>prefill 的特点是：<strong>这 1024 个 token 的 K/V 要批量生成并写入 cache，但它们在这一轮里主要是“刚算出来就立刻参与注意力”，不会像 decode 那样被反复从历史 cache 中读取。</strong></p>
+<h2
+id="一个具体例子kv-cache-在-prefill-和-decode-里怎么量化">一个具体例子：KV
+Cache 在 prefill 和 decode 里怎么量化</h2>
+<h2 id="prefill-阶段写入多读取少">prefill 阶段：写入多，读取少</h2>
+<p>假设用户一次性输入了 <code>1024</code> 个 prompt tokens。</p>
+<p>prefill 的特点是：<strong>这 1024 个 token 的 K/V 要批量生成并写入
+cache，但它们在这一轮里主要是“刚算出来就立刻参与注意力”，不会像 decode
+那样被反复从历史 cache 中读取。</strong></p>
 <p>工程上比较常见的做法是：</p>
-<ol>
-<li>模型先正常算出这一批 token 的 <code>K</code> 和 <code>V</code>，这时它们还在 <code>BF16/FP16</code></li>
+<ol type="1">
+<li>模型先正常算出这一批 token 的 <code>K</code> 和
+<code>V</code>，这时它们还在 <code>BF16/FP16</code></li>
 <li>当前层 attention 直接消费这批高精度 K/V，完成本轮 prefill 计算</li>
-<li>等本轮该写 cache 时，再对每个 token、每个 head 的 K/V 做 TurboQuant 压缩</li>
-<li>压缩后的 bit-packed 结果写进持久化 KV cache，供后面的 decode 使用</li>
+<li>等本轮该写 cache 时，再对每个 token、每个 head 的 K/V 做 TurboQuant
+压缩</li>
+<li>压缩后的 bit-packed 结果写进持久化 KV cache，供后面的 decode
+使用</li>
 </ol>
-<p>这里的关键点是：<strong>prefill 阶段量化主要发生在“写 cache”这一步。</strong></p>
-<p>拿其中某一层、某一个 head、某一个 token 的 key/value 向量举例。原始向量长度是 <code>128</code>：</p>
-<script type="math/tex; mode=display">k = [0.42,\ -1.10,\ 0.08,\ \dots] \in \mathbb{R}^{128}</script><p>用 TurboQuant_mse 时，这个 token 的 key/value 向量大致会经历下面几步：</p>
-<ol>
-<li>先取 L2 norm：$s = |k|_2$</li>
-<li>做归一化：$u = k / s$</li>
-<li>乘随机正交矩阵：$y = Ru$</li>
+<p>这里的关键点是：<strong>prefill 阶段量化主要发生在“写
+cache”这一步。</strong></p>
+<p>拿其中某一层、某一个 head、某一个 token 的 key/value
+向量举例。原始向量长度是 <code>128</code>：</p>
+<p><span class="math display">\[k = [0.42,\ -1.10,\ 0.08,\ \dots] \in
+\mathbb{R}^{128}\]</span></p>
+<p>用 TurboQuant_mse 时，这个 token 的 key/value
+向量大致会经历下面几步：</p>
+<ol type="1">
+<li>先取 L2 norm：<span class="math inline">\(s = \|k\|_2\)</span></li>
+<li>做归一化：<span class="math inline">\(u = k / s\)</span></li>
+<li>乘随机正交矩阵：<span class="math inline">\(y = Ru\)</span></li>
 <li>对 <code>y</code> 的每个坐标查离线码本，得到 3-bit 索引</li>
 <li>把 <code>128</code> 个 3-bit 索引打包成紧凑 bitstream</li>
 <li>单独存下 <code>s</code></li>
 </ol>
 <p>这时候，prefill 的收益主要有两个：</p>
 <ul>
-<li><strong>省显存</strong>：<code>1024</code> 个 prompt tokens 如果都写成压缩 cache，后续 decode 的历史负担会小很多</li>
-<li><strong>减少后续带宽</strong>：虽然 prefill 当下不一定明显变快，但后面每一步 decode 都要反复读取这批历史 KV</li>
+<li><strong>省显存</strong>：<code>1024</code> 个 prompt tokens
+如果都写成压缩 cache，后续 decode 的历史负担会小很多</li>
+<li><strong>减少后续带宽</strong>：虽然 prefill
+当下不一定明显变快，但后面每一步 decode 都要反复读取这批历史 KV</li>
 </ul>
-<p>但要注意，<strong>prefill 本身不一定因为 KV 量化就显著加速</strong>。</p>
-<p>因为 prefill 往往更像一个大 batch 的矩阵计算，瓶颈常常在 GEMM，而不是在读历史 cache。</p>
+<p>但要注意，<strong>prefill 本身不一定因为 KV
+量化就显著加速</strong>。</p>
+<p>因为 prefill 往往更像一个大 batch 的矩阵计算，瓶颈常常在
+GEMM，而不是在读历史 cache。</p>
 <p>它更直接的收益是把“后面要背着走的包袱”先减掉。</p>
-<h2 id="decode-阶段：写入少，但每步都要读取历史-cache"><a href="#decode-阶段：写入少，但每步都要读取历史-cache" class="headerlink" title="decode 阶段：写入少，但每步都要读取历史 cache"></a>decode 阶段：写入少，但每步都要读取历史 cache</h2><p>decode 的情况完全不一样。</p>
-<p>假设 prompt 已经是 <code>1024</code> 个 tokens，现在模型开始一个一个往后生成。</p>
+<h2 id="decode-阶段写入少但每步都要读取历史-cache">decode
+阶段：写入少，但每步都要读取历史 cache</h2>
+<p>decode 的情况完全不一样。</p>
+<p>假设 prompt 已经是 <code>1024</code> 个
+tokens，现在模型开始一个一个往后生成。</p>
 <p>当生成第 <code>1025</code> 个 token 时，会发生两件事：</p>
-<ol>
+<ol type="1">
 <li>当前 token 会新产生一份 K/V，并立刻追加到 cache 末尾</li>
-<li>当前 token 的 query 要和前面 <code>1024</code> 个 token 的所有 key 做注意力，再用所有 value 做加权求和</li>
+<li>当前 token 的 query 要和前面 <code>1024</code> 个 token 的所有 key
+做注意力，再用所有 value 做加权求和</li>
 </ol>
-<p>也就是说，decode 每走一步，都要把“历史上所有 token 的 KV cache”重新读出来一遍。</p>
+<p>也就是说，decode 每走一步，都要把“历史上所有 token 的 KV
+cache”重新读出来一遍。</p>
 <p>到了第 <code>2048</code> 个 token，这个读取量会比刚开始大很多。</p>
-<p><strong>所以 decode 更像是带宽受限的问题，而不是纯算力问题。</strong></p>
+<p><strong>所以 decode
+更像是带宽受限的问题，而不是纯算力问题。</strong></p>
 <p>这正是 KV cache 量化最容易见到真实加速的地方。</p>
 <p>对某一层来说：</p>
 <ul>
-<li>不压缩时，读 $1024$ 个历史 tokens 的 KV，需要约 $1024 \times 4\,\mathrm{KB} = 4\,\mathrm{MB}$</li>
-<li>压缩后，读同样 $1024$ 个历史 tokens，只需要约 $1024 \times 672\,\mathrm{B} \approx 672\,\mathrm{KB}$</li>
+<li>不压缩时，读 <span class="math inline">\(1024\)</span> 个历史 tokens
+的 KV，需要约 <span class="math inline">\(1024 \times 4\,\mathrm{KB} =
+4\,\mathrm{MB}\)</span></li>
+<li>压缩后，读同样 <span class="math inline">\(1024\)</span> 个历史
+tokens，只需要约 <span class="math inline">\(1024 \times 672\,\mathrm{B}
+\approx 672\,\mathrm{KB}\)</span></li>
 </ul>
 <p>读流量一下子从 <code>4 MB</code> 降到不到 <code>0.7 MB</code>。</p>
-<p>如果 decode 的瓶颈本来就在 HBM 带宽，这种下降就很可能直接转成时延收益。</p>
-<h2 id="decode-阶段到底怎么“用”这些压缩后的-KV"><a href="#decode-阶段到底怎么“用”这些压缩后的-KV" class="headerlink" title="decode 阶段到底怎么“用”这些压缩后的 KV"></a>decode 阶段到底怎么“用”这些压缩后的 KV</h2><p>读压缩 cache 时，工程上一般有两条路：</p>
+<p>如果 decode 的瓶颈本来就在 HBM
+带宽，这种下降就很可能直接转成时延收益。</p>
+<h2 id="decode-阶段到底怎么用这些压缩后的-kv">decode
+阶段到底怎么“用”这些压缩后的 KV</h2>
+<p>读压缩 cache 时，工程上一般有两条路：</p>
 <p><strong>第一条路：先反量化，再算 attention。</strong></p>
 <p>流程是：</p>
-<ol>
+<ol type="1">
 <li>从 HBM 读出 bit-packed 的 key/value</li>
 <li>unpack 出索引</li>
-<li>按码本查表，恢复旋转域里的近似向量 $\hat{y}$</li>
-<li>乘回 $R^\top$，再乘 norm，得到近似的 $\hat{k}, \hat{v}$</li>
+<li>按码本查表，恢复旋转域里的近似向量 <span
+class="math inline">\(\hat{y}\)</span></li>
+<li>乘回 <span class="math inline">\(R^\top\)</span>，再乘
+norm，得到近似的 <span class="math inline">\(\hat{k},
+\hat{v}\)</span></li>
 <li>用这些近似值去做标准 attention</li>
 </ol>
-<p>这条路实现最直接，但有个问题：如果先把整段历史 cache 全部恢复成 FP16 再送去 attention，中间会产生额外访存，容易抵消前面节省的带宽。</p>
+<p>这条路实现最直接，但有个问题：如果先把整段历史 cache 全部恢复成 FP16
+再送去 attention，中间会产生额外访存，容易抵消前面节省的带宽。</p>
 <p><strong>第二条路：把反量化融合进 attention kernel。</strong></p>
 <p>更实用的实现通常是：</p>
-<ol>
+<ol type="1">
 <li>读压缩 bitstream</li>
 <li>在 kernel 内部边 unpack、边查表、边做缩放</li>
 <li>立刻和当前 query 做点积，或者立刻参与 value 的加权累加</li>
 </ol>
 <p>这样就不会在显存里额外 materialize 一份完整的 FP16 KV cache。</p>
-<p>很多 KV cache 量化实现能否真正加速，差别往往在这里：<strong>不仅要能压缩，还要避免先解压成大块中间张量再计算。</strong></p>
-<h2 id="为什么-prefill-和-decode-的优化重点不同"><a href="#为什么-prefill-和-decode-的优化重点不同" class="headerlink" title="为什么 prefill 和 decode 的优化重点不同"></a>为什么 prefill 和 decode 的优化重点不同</h2><p>把前面的流程压缩成一句话：</p>
+<p>很多 KV cache
+量化实现能否真正加速，差别往往在这里：<strong>不仅要能压缩，还要避免先解压成大块中间张量再计算。</strong></p>
+<h2 id="为什么-prefill-和-decode-的优化重点不同">为什么 prefill 和
+decode 的优化重点不同</h2>
+<p>把前面的流程压缩成一句话：</p>
 <ul>
-<li><strong>prefill</strong> 更像“批量生产 + 一次性写库”，重点是低开销写入压缩 cache</li>
-<li><strong>decode</strong> 更像“每步反复读取历史”，重点是低带宽读取和融合式反量化</li>
+<li><strong>prefill</strong> 更像“批量生产 +
+一次性写库”，重点是低开销写入压缩 cache</li>
+<li><strong>decode</strong>
+更像“每步反复读取历史”，重点是低带宽读取和融合式反量化</li>
 </ul>
 <p>所以在工程上，大家通常会看到这样的现象：</p>
 <ul>
 <li><code>prefill</code> 的主要收益是显存下降，速度提升未必明显</li>
-<li><code>decode</code> 的主要收益是带宽压力下降，因此更容易带来实际吞吐提升</li>
+<li><code>decode</code>
+的主要收益是带宽压力下降，因此更容易带来实际吞吐提升</li>
 </ul>
 <blockquote>
-<p>总结来说，KV cache 量化在 prefill 中更偏向“降低存储负担”，在 decode 中更偏向“换取时延与吞吐收益”。</p>
+<p>总结来说，KV cache 量化在 prefill 中更偏向“降低存储负担”，在 decode
+中更偏向“换取时延与吞吐收益”。</p>
 </blockquote>
-<h2 id="放到-TurboQuant-里，这套流程有什么特别之处"><a href="#放到-TurboQuant-里，这套流程有什么特别之处" class="headerlink" title="放到 TurboQuant 里，这套流程有什么特别之处"></a>放到 TurboQuant 里，这套流程有什么特别之处</h2><p>TurboQuant 比较适合这个场景，不是因为它只追求压缩率，而是因为它有两个很工程化的性质：</p>
-<ol>
-<li><p><strong>零在线拟合</strong>：不会像 PQ / K-Means 那样，来了新 token 还得先聚类再编码。</p>
-<p>token 一算出来就能立即量化写 cache。</p>
-</li>
+<h2 id="放到-turboquant-里这套流程有什么特别之处">放到 TurboQuant
+里，这套流程有什么特别之处</h2>
+<p>TurboQuant
+比较适合这个场景，不是因为它只追求压缩率，而是因为它有两个很工程化的性质：</p>
+<ol type="1">
+<li><p><strong>零在线拟合</strong>：不会像 PQ / K-Means 那样，来了新
+token 还得先聚类再编码。</p>
+<p>token 一算出来就能立即量化写 cache。</p></li>
 <li><p><strong>码本固定、查表简单</strong>：旋转后坐标分布稳定，码本可以离线预计算。</p>
-<p>在线阶段只做旋转、查表和 bit packing。</p>
-</li>
+<p>在线阶段只做旋转、查表和 bit packing。</p></li>
 </ol>
 <p>这两点对 decode 很关键。</p>
-<p>因为 decode 是一个 token 一个 token 往前走的流式过程，任何需要“攒一批数据再拟合”的方案，到了这里都会非常难用。</p>
-<hr>
-<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul>
-<li><strong>TurboQuant</strong>: “TurboQuant: Online Vector Quantization with Near-optimal Distortion Rate” (Zandieh et al., 2025) — arXiv:2504.19874</li>
-<li><strong>Lloyd-Max</strong>: “Least squares quantization in PCM” (Lloyd, 1982); “Quantizing for minimum distortion” (Max, 1960)</li>
-<li><strong>QJL</strong>: “Quantized Johnson-Lindenstrauss” (arXiv:2411.10355)</li>
-<li><strong>Shannon Source Coding</strong>: Shannon, C.E. (1948). “A Mathematical Theory of Communication”</li>
-<li><strong>KV Cache 量化</strong>: “KIVI: A Tuning-Free Asymmetric 2bit Quantization for KV Cache” (Liu et al., 2024)</li>
+<p>因为 decode 是一个 token 一个 token
+往前走的流式过程，任何需要“攒一批数据再拟合”的方案，到了这里都会非常难用。</p>
+<hr />
+<h1 id="参考文献">参考文献</h1>
+<ul>
+<li><strong>TurboQuant</strong>: "TurboQuant: Online Vector Quantization
+with Near-optimal Distortion Rate" (Zandieh et al., 2025) —
+arXiv:2504.19874</li>
+<li><strong>Lloyd-Max</strong>: "Least squares quantization in PCM"
+(Lloyd, 1982); "Quantizing for minimum distortion" (Max, 1960)</li>
+<li><strong>QJL</strong>: "Quantized Johnson-Lindenstrauss"
+(arXiv:2411.10355)</li>
+<li><strong>Shannon Source Coding</strong>: Shannon, C.E. (1948). "A
+Mathematical Theory of Communication"</li>
+<li><strong>KV Cache 量化</strong>: "KIVI: A Tuning-Free Asymmetric 2bit
+Quantization for KV Cache" (Liu et al., 2024)</li>
 </ul>
 
     </div>
@@ -702,7 +972,10 @@
     <a href="/hexo_blog/2026/03/09/%E6%88%91%E7%9A%84ETF%E9%87%8F%E5%8C%96%E6%8A%95%E8%B5%84%E5%AE%9E%E8%B7%B5/" rel="prev" title="我的ETF量化投资实践">
       <i class="fa fa-chevron-left"></i> 我的ETF量化投资实践
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2026/04/03/ParameterGolf/" rel="next" title="Parameter Golf：16MB 内存下的大模型极限压缩">
+      Parameter Golf：16MB 内存下的大模型极限压缩 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -761,7 +1034,16 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%87%8F%E5%8C%96%E5%88%B0%E5%BA%95%E5%9C%A8%E5%81%9A%E4%BB%80%E4%B9%88"><span class="nav-text">量化到底在做什么</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E5%8F%A5%E8%AF%9D%E8%AE%B2%E6%B8%85%E6%A5%9A"><span class="nav-text">一句话讲清楚</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%87%8F%E5%8C%96%E5%9C%A8-LLM-%E9%87%8C%E5%BE%88%E9%87%8D%E8%A6%81"><span class="nav-text">为什么量化在 LLM 里很重要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BE%8B%E5%AD%90"><span class="nav-text">例子</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Codebook%EF%BC%88%E5%AE%9A%E4%B9%89%E7%A0%81%E6%9C%AC%EF%BC%89"><span class="nav-text">1. Codebook（定义码本）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Quant%EF%BC%88%E9%87%8F%E5%8C%96-%E7%BC%96%E7%A0%81%EF%BC%89"><span class="nav-text">2. Quant（量化&#x2F;编码）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Dequant%EF%BC%88%E5%8F%8D%E9%87%8F%E5%8C%96-%E8%A7%A3%E7%A0%81%EF%BC%89"><span class="nav-text">3. Dequant（反量化&#x2F;解码）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Metric%EF%BC%88%E8%AF%84%E4%BC%B0%E8%AF%AF%E5%B7%AE%EF%BC%89"><span class="nav-text">4. Metric（评估误差）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%89%E6%8D%9F-vs-%E6%97%A0%E6%8D%9F%EF%BC%88%E5%AE%B9%E6%98%93%E6%B7%B7%E6%B7%86%E7%9A%84%E5%9C%B0%E6%96%B9%EF%BC%89"><span class="nav-text">有损 vs 无损（容易混淆的地方）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%BA%E6%96%87%E7%9A%84%E5%8A%A8%E6%9C%BA"><span class="nav-text">论文的动机</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%97%9B%E7%82%B9-1%EF%BC%9A%E7%AE%80%E5%8D%95%E6%96%B9%E6%B3%95%EF%BC%88%E5%A6%82%E5%9D%87%E5%8C%80%E9%87%8F%E5%8C%96%EF%BC%89%E9%80%9F%E5%BA%A6%E5%BF%AB%EF%BC%8C%E4%BD%86%E7%B2%BE%E5%BA%A6%E5%B7%AE%E3%80%81%E7%A9%BA%E9%97%B4%E5%88%A9%E7%94%A8%E7%8E%87%E4%BD%8E"><span class="nav-text">痛点 1：简单方法（如均匀量化）速度快，但精度差、空间利用率低</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%97%9B%E7%82%B9-2%EF%BC%9A%E9%AB%98%E7%BA%A7%E6%96%B9%E6%B3%95%EF%BC%88%E5%A6%82%E4%B9%98%E7%A7%AF%E9%87%8F%E5%8C%96-PQ-K-Means%EF%BC%89%E7%B2%BE%E5%BA%A6%E9%AB%98%EF%BC%8C%E4%BD%86%E8%80%97%E6%97%B6%E4%B8%94%E9%9A%BE%E4%BB%A5%E5%9C%A8%E7%BA%BF%E6%B5%81%E5%BC%8F%E5%A4%84%E7%90%86"><span class="nav-text">痛点 2：高级方法（如乘积量化 PQ &#x2F; K-Means）精度高，但耗时且难以在线流式处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%97%9B%E7%82%B9-3%EF%BC%9A%E6%8C%87%E6%A0%87%E9%94%99%E4%BD%8D%EF%BC%8CMSE-%E4%BD%8E%E4%B8%8D%E4%BB%A3%E8%A1%A8%E2%80%9C%E5%86%85%E7%A7%AF%E2%80%9D%E4%B8%80%E5%AE%9A%E5%87%86"><span class="nav-text">痛点 3：指标错位，MSE 低不代表“内积”一定准</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TurboQuant-%E7%9A%84%E6%80%9D%E8%B7%AF"><span class="nav-text">TurboQuant 的思路</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E6%B4%9E%E5%AF%9F%EF%BC%9A%E5%85%88%E6%97%8B%E8%BD%AC%EF%BC%8C%E8%AE%A9%E5%88%86%E5%B8%83%E5%8F%98%E5%BE%97%E5%8F%AF%E9%A2%84%E6%B5%8B"><span class="nav-text">关键洞察：先旋转，让分布变得可预测</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TurboQuant-mse%EF%BC%9A%E4%BE%8B%E5%AD%90"><span class="nav-text">TurboQuant_mse：例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TurboQuant-prod%EF%BC%9A%E7%94%A8%E6%AE%8B%E5%B7%AE%E8%A1%A5%E5%81%BF%E4%BF%AE%E6%AD%A3%E5%86%85%E7%A7%AF%E5%81%8F%E5%B7%AE"><span class="nav-text">TurboQuant_prod：用残差补偿修正内积偏差</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BE%8B%E5%AD%90-1"><span class="nav-text">例子</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B7%A5%E7%A8%8B%E8%90%BD%E5%9C%B0%EF%BC%9A%E5%A6%82%E4%BD%95%E9%80%89-bit-width"><span class="nav-text">工程落地：如何选 bit-width</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%A1%86%E6%9E%B6"><span class="nav-text">核心框架</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%88%E5%AE%9A%E4%B8%89%E7%B1%BB%E9%97%A8%E6%A7%9B"><span class="nav-text">先定三类门槛</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BA%E6%96%87%E7%BB%99%E5%87%BA%E7%9A%84%E5%85%B3%E9%94%AE%E6%95%B0%E6%8D%AE%E7%82%B9"><span class="nav-text">论文给出的关键数据点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%B8%AA%E5%85%B7%E4%BD%93%E4%BE%8B%E5%AD%90%EF%BC%9AKV-Cache-%E5%9C%A8-prefill-%E5%92%8C-decode-%E9%87%8C%E6%80%8E%E4%B9%88%E9%87%8F%E5%8C%96"><span class="nav-text">一个具体例子：KV Cache 在 prefill 和 decode 里怎么量化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#prefill-%E9%98%B6%E6%AE%B5%EF%BC%9A%E5%86%99%E5%85%A5%E5%A4%9A%EF%BC%8C%E8%AF%BB%E5%8F%96%E5%B0%91"><span class="nav-text">prefill 阶段：写入多，读取少</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#decode-%E9%98%B6%E6%AE%B5%EF%BC%9A%E5%86%99%E5%85%A5%E5%B0%91%EF%BC%8C%E4%BD%86%E6%AF%8F%E6%AD%A5%E9%83%BD%E8%A6%81%E8%AF%BB%E5%8F%96%E5%8E%86%E5%8F%B2-cache"><span class="nav-text">decode 阶段：写入少，但每步都要读取历史 cache</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#decode-%E9%98%B6%E6%AE%B5%E5%88%B0%E5%BA%95%E6%80%8E%E4%B9%88%E2%80%9C%E7%94%A8%E2%80%9D%E8%BF%99%E4%BA%9B%E5%8E%8B%E7%BC%A9%E5%90%8E%E7%9A%84-KV"><span class="nav-text">decode 阶段到底怎么“用”这些压缩后的 KV</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88-prefill-%E5%92%8C-decode-%E7%9A%84%E4%BC%98%E5%8C%96%E9%87%8D%E7%82%B9%E4%B8%8D%E5%90%8C"><span class="nav-text">为什么 prefill 和 decode 的优化重点不同</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%BE%E5%88%B0-TurboQuant-%E9%87%8C%EF%BC%8C%E8%BF%99%E5%A5%97%E6%B5%81%E7%A8%8B%E6%9C%89%E4%BB%80%E4%B9%88%E7%89%B9%E5%88%AB%E4%B9%8B%E5%A4%84"><span class="nav-text">放到 TurboQuant 里，这套流程有什么特别之处</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-text">参考文献</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%87%8F%E5%8C%96%E5%88%B0%E5%BA%95%E5%9C%A8%E5%81%9A%E4%BB%80%E4%B9%88"><span class="nav-text">量化到底在做什么</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E5%8F%A5%E8%AF%9D%E8%AE%B2%E6%B8%85%E6%A5%9A"><span class="nav-text">一句话讲清楚</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%87%8F%E5%8C%96%E5%9C%A8-llm-%E9%87%8C%E5%BE%88%E9%87%8D%E8%A6%81"><span class="nav-text">为什么量化在 LLM 里很重要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BE%8B%E5%AD%90"><span class="nav-text">例子</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#codebook%E5%AE%9A%E4%B9%89%E7%A0%81%E6%9C%AC"><span class="nav-text">1. Codebook（定义码本）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#quant%E9%87%8F%E5%8C%96%E7%BC%96%E7%A0%81"><span class="nav-text">2. Quant（量化&#x2F;编码）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dequant%E5%8F%8D%E9%87%8F%E5%8C%96%E8%A7%A3%E7%A0%81"><span class="nav-text">3. Dequant（反量化&#x2F;解码）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#metric%E8%AF%84%E4%BC%B0%E8%AF%AF%E5%B7%AE"><span class="nav-text">4. Metric（评估误差）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%89%E6%8D%9F-vs-%E6%97%A0%E6%8D%9F%E5%AE%B9%E6%98%93%E6%B7%B7%E6%B7%86%E7%9A%84%E5%9C%B0%E6%96%B9"><span class="nav-text">有损 vs 无损（容易混淆的地方）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%BA%E6%96%87%E7%9A%84%E5%8A%A8%E6%9C%BA"><span class="nav-text">论文的动机</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%97%9B%E7%82%B9-1%E7%AE%80%E5%8D%95%E6%96%B9%E6%B3%95%E5%A6%82%E5%9D%87%E5%8C%80%E9%87%8F%E5%8C%96%E9%80%9F%E5%BA%A6%E5%BF%AB%E4%BD%86%E7%B2%BE%E5%BA%A6%E5%B7%AE%E7%A9%BA%E9%97%B4%E5%88%A9%E7%94%A8%E7%8E%87%E4%BD%8E"><span class="nav-text">痛点
+1：简单方法（如均匀量化）速度快，但精度差、空间利用率低</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%97%9B%E7%82%B9-2%E9%AB%98%E7%BA%A7%E6%96%B9%E6%B3%95%E5%A6%82%E4%B9%98%E7%A7%AF%E9%87%8F%E5%8C%96-pq-k-means%E7%B2%BE%E5%BA%A6%E9%AB%98%E4%BD%86%E8%80%97%E6%97%B6%E4%B8%94%E9%9A%BE%E4%BB%A5%E5%9C%A8%E7%BA%BF%E6%B5%81%E5%BC%8F%E5%A4%84%E7%90%86"><span class="nav-text">痛点
+2：高级方法（如乘积量化 PQ &#x2F;
+K-Means）精度高，但耗时且难以在线流式处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%97%9B%E7%82%B9-3%E6%8C%87%E6%A0%87%E9%94%99%E4%BD%8Dmse-%E4%BD%8E%E4%B8%8D%E4%BB%A3%E8%A1%A8%E5%86%85%E7%A7%AF%E4%B8%80%E5%AE%9A%E5%87%86"><span class="nav-text">痛点 3：指标错位，MSE
+低不代表“内积”一定准</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#turboquant-%E7%9A%84%E6%80%9D%E8%B7%AF"><span class="nav-text">TurboQuant 的思路</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E6%B4%9E%E5%AF%9F%E5%85%88%E6%97%8B%E8%BD%AC%E8%AE%A9%E5%88%86%E5%B8%83%E5%8F%98%E5%BE%97%E5%8F%AF%E9%A2%84%E6%B5%8B"><span class="nav-text">关键洞察：先旋转，让分布变得可预测</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#turboquant_mse%E4%BE%8B%E5%AD%90"><span class="nav-text">TurboQuant_mse：例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#turboquant_prod%E7%94%A8%E6%AE%8B%E5%B7%AE%E8%A1%A5%E5%81%BF%E4%BF%AE%E6%AD%A3%E5%86%85%E7%A7%AF%E5%81%8F%E5%B7%AE"><span class="nav-text">TurboQuant_prod：用残差补偿修正内积偏差</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BE%8B%E5%AD%90-1"><span class="nav-text">例子</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B7%A5%E7%A8%8B%E8%90%BD%E5%9C%B0%E5%A6%82%E4%BD%95%E9%80%89-bit-width"><span class="nav-text">工程落地：如何选 bit-width</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%A1%86%E6%9E%B6"><span class="nav-text">核心框架</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%88%E5%AE%9A%E4%B8%89%E7%B1%BB%E9%97%A8%E6%A7%9B"><span class="nav-text">先定三类门槛</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BA%E6%96%87%E7%BB%99%E5%87%BA%E7%9A%84%E5%85%B3%E9%94%AE%E6%95%B0%E6%8D%AE%E7%82%B9"><span class="nav-text">论文给出的关键数据点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%B8%AA%E5%85%B7%E4%BD%93%E4%BE%8B%E5%AD%90kv-cache-%E5%9C%A8-prefill-%E5%92%8C-decode-%E9%87%8C%E6%80%8E%E4%B9%88%E9%87%8F%E5%8C%96"><span class="nav-text">一个具体例子：KV
+Cache 在 prefill 和 decode 里怎么量化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#prefill-%E9%98%B6%E6%AE%B5%E5%86%99%E5%85%A5%E5%A4%9A%E8%AF%BB%E5%8F%96%E5%B0%91"><span class="nav-text">prefill 阶段：写入多，读取少</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#decode-%E9%98%B6%E6%AE%B5%E5%86%99%E5%85%A5%E5%B0%91%E4%BD%86%E6%AF%8F%E6%AD%A5%E9%83%BD%E8%A6%81%E8%AF%BB%E5%8F%96%E5%8E%86%E5%8F%B2-cache"><span class="nav-text">decode
+阶段：写入少，但每步都要读取历史 cache</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#decode-%E9%98%B6%E6%AE%B5%E5%88%B0%E5%BA%95%E6%80%8E%E4%B9%88%E7%94%A8%E8%BF%99%E4%BA%9B%E5%8E%8B%E7%BC%A9%E5%90%8E%E7%9A%84-kv"><span class="nav-text">decode
+阶段到底怎么“用”这些压缩后的 KV</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88-prefill-%E5%92%8C-decode-%E7%9A%84%E4%BC%98%E5%8C%96%E9%87%8D%E7%82%B9%E4%B8%8D%E5%90%8C"><span class="nav-text">为什么 prefill 和
+decode 的优化重点不同</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%BE%E5%88%B0-turboquant-%E9%87%8C%E8%BF%99%E5%A5%97%E6%B5%81%E7%A8%8B%E6%9C%89%E4%BB%80%E4%B9%88%E7%89%B9%E5%88%AB%E4%B9%8B%E5%A4%84"><span class="nav-text">放到 TurboQuant
+里，这套流程有什么特别之处</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-text">参考文献</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -777,7 +1059,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/hexo_blog/archives/">
         
-          <span class="site-state-item-count">85</span>
+          <span class="site-state-item-count">86</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -790,7 +1072,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/hexo_blog/tags/">
           
-        <span class="site-state-item-count">105</span>
+        <span class="site-state-item-count">107</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
