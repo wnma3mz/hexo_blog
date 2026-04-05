@@ -27,12 +27,42 @@
 <meta property="og:site_name" content="Wnma&#39;s Blogs">
 <meta property="og:description" content="从标准的自回归解码开始，介绍 EAGLE 系列（EAGLE、EAGLE-2和EAGLE-3）的演进历程。 GitHub">
 <meta property="og:locale">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image3.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image4.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image5.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image6.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image7.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image8.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image26.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image9.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image10.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/demosmall.gif">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image11.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image12.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image13.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image14.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image15.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image16.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image17.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image18.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image19.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/eagle2.gif">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image20.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image21.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image22.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image23.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image24.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image25.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/e3.gif">
 <meta property="article:published_time" content="2025-05-12T06:23:00.000Z">
 <meta property="article:modified_time" content="2025-08-30T13:35:16.051Z">
 <meta property="article:author" content="wnma3mz">
 <meta property="article:tag" content="NLP">
 <meta property="article:tag" content="Attention">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image.png">
 
 <link rel="canonical" href="https://wnma3mz.github.io/2025/05/12/LLM/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/">
 
@@ -91,7 +121,7 @@
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="تشغيل شريط التصفح">
+    <div class="toggle" aria-label="Navigationsleiste an/ausschalten">
       <span class="toggle-line toggle-line-first"></span>
       <span class="toggle-line toggle-line-middle"></span>
       <span class="toggle-line toggle-line-last"></span>
@@ -230,7 +260,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="عُدل：2025-08-30 21:35:16" itemprop="dateModified" datetime="2025-08-30T21:35:16+08:00">2025-08-30</time>
+                <time title="Geändert am：2025-08-30 21:35:16" itemprop="dateModified" datetime="2025-08-30T21:35:16+08:00">2025-08-30</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -253,55 +283,35 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>从标准的自回归解码开始，介绍 EAGLE
-系列（EAGLE、EAGLE-2和EAGLE-3）的演进历程。</p>
+        <p>从标准的自回归解码开始，介绍 EAGLE 系列（EAGLE、EAGLE-2和EAGLE-3）的演进历程。</p>
 <p><a target="_blank" rel="noopener" href="https://github.com/SafeAILab/EAGLE/tree/main">GitHub</a></p>
 <span id="more"></span>
-<h2 id="llm-的标准生成过程">LLM 的标准生成过程</h2>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-EAGLE三部曲/image.png" /></p>
-<p>瓶颈：<strong>token by token</strong> 生成，生成单个 token
-的时间很快，但由于要生成<strong>多个</strong>
-token，导致整个句子的生成时间变久。</p>
-<p>如果能减少生成 token
-的<strong>次数</strong>，那么就能加速句子的生成。</p>
+<h2 id="llm-的标准生成过程"><a class="markdownIt-Anchor" href="#llm-的标准生成过程"></a> LLM 的标准生成过程</h2>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image.png" alt="" /></p>
+<p>瓶颈：<strong>token by token</strong> 生成，生成单个 token 的时间很快，但由于要生成<strong>多个</strong> token，导致整个句子的生成时间变久。</p>
+<p>如果能减少生成 token 的<strong>次数</strong>，那么就能加速句子的生成。</p>
 <p>一种代表性的优化方法是<strong>投机解码</strong>。</p>
-<p>相关引用：<a
-target="_blank" rel="noopener" href="https://huggingface.co/blog/tngtech/llm-performance-prefill-decode-concurrent-requests">https://huggingface.co/blog/tngtech/llm-performance-prefill-decode-concurrent-requests</a></p>
-<h2 id="投机解码">投机解码</h2>
+<p>相关引用：<a target="_blank" rel="noopener" href="https://huggingface.co/blog/tngtech/llm-performance-prefill-decode-concurrent-requests">https://huggingface.co/blog/tngtech/llm-performance-prefill-decode-concurrent-requests</a></p>
+<h2 id="投机解码"><a class="markdownIt-Anchor" href="#投机解码"></a> 投机解码</h2>
 <p>见：<a href="/hexo_blog/2025/08/30/LLM/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-%E6%8A%95%E6%9C%BA%E8%A7%A3%E7%A0%81/" title="LLM的推理加速-投机解码">LLM的推理加速-投机解码</a></p>
-<h2 id="eagle-1特征层面的投机解码">EAGLE-1：特征层面的投机解码</h2>
-<p><a
-target="_blank" rel="noopener" href="https://arxiv.org/pdf/2401.15077">https://arxiv.org/pdf/2401.15077</a></p>
-<h3 id="eagle-1-的动机">EAGLE-1 的动机</h3>
-<p><strong>特征（feature）</strong> 是指下图中的 Output Token
-Embeddings，即过完 Decoder-Only Transformer 后的输出</p>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-EAGLE三部曲/image2.png" /></p>
+<h2 id="eagle-1特征层面的投机解码"><a class="markdownIt-Anchor" href="#eagle-1特征层面的投机解码"></a> EAGLE-1：特征层面的投机解码</h2>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2401.15077">https://arxiv.org/pdf/2401.15077</a></p>
+<h3 id="eagle-1-的动机"><a class="markdownIt-Anchor" href="#eagle-1-的动机"></a> EAGLE-1 的动机</h3>
+<p><strong>特征（feature）</strong> 是指下图中的 Output Token Embeddings，即过完 Decoder-Only Transformer 后的输出</p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image2.png" alt="" /></p>
 <p>动机一：<strong>采样过程中的不确定性</strong></p>
-<p>下图中的 <span class="math inline">\(f_I\)</span>
-就是上面说的特征，这个特征会再过 LM Head，得到 logits。这个 logtis
-再采样生成 token。</p>
-<p>I 后面为是 always 和 am 的概率差不多，如果用 token
-级别的采样，可能会漏掉被接受的 token。</p>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-EAGLE三部曲/image3.png" /></p>
-<p>动机二： <strong>feature 级别的自回归是比 token
-级别的自回归更容易预测</strong></p>
+<p>下图中的 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>I</mi></msub></mrow><annotation encoding="application/x-tex">f_I</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.10764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.07847em;">I</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>  就是上面说的特征，这个特征会再过 LM Head，得到 logits。这个 logtis 再采样生成 token。</p>
+<p>I 后面为是 always 和 am 的概率差不多，如果用 token 级别的采样，可能会漏掉被接受的 token。</p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image3.png" alt="" /></p>
+<p>动机二： <strong>feature 级别的自回归是比 token 级别的自回归更容易预测</strong></p>
 <p>作者是先进行了该项假设，再实现了 EAGLE-1，最后再画了下面这张图。</p>
 <ul>
-<li>feature&amp;shifted-token：使用特征序列和前一个 token
-序列（embedding）进行作为输入</li>
+<li>feature&amp;shifted-token：使用特征序列和前一个 token 序列（embedding）进行作为输入</li>
 </ul>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-EAGLE三部曲/image4.png" /></p>
-<h3 id="prefill-阶段">prefill 阶段</h3>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image4.png" alt="" /></p>
+<h3 id="prefill-阶段"><a class="markdownIt-Anchor" href="#prefill-阶段"></a> prefill 阶段</h3>
 <p>额外保存变量 + 输出第一个 token</p>
 <table>
-<colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
-</colgroup>
 <thead>
 <tr>
 <th>示例图</th>
@@ -310,30 +320,19 @@ src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推�
 </thead>
 <tbody>
 <tr>
-<td><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-EAGLE三部曲/image5.png" /></td>
-<td>从下往上看输入<br>「how」和「can」 两个 token <br><span
-class="math inline">\(e_{how}\)</span> 表示「how」这个 token 过完
-Embedding 之后的 tensor <br> <span
-class="math inline">\(f_{how}\)</span> 表示 「how」这个 token 进入 LM
-Head 之前的 tensor<br>预测的 token 为「I」</td>
+<td><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image5.png" alt="" /></td>
+<td>从下往上看输入<br>「how」和「can」 两个 token <br><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>e</mi><mrow><mi>h</mi><mi>o</mi><mi>w</mi></mrow></msub></mrow><annotation encoding="application/x-tex">e_{how}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">e</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">h</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight" style="margin-right:0.02691em;">w</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>  表示「how」这个 token 过完 Embedding 之后的 tensor <br> <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mrow><mi>h</mi><mi>o</mi><mi>w</mi></mrow></msub></mrow><annotation encoding="application/x-tex">f_{how}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.10764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">h</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight" style="margin-right:0.02691em;">w</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>  表示 「how」这个 token 进入 LM Head 之前的 tensor<br>预测的 token 为「I」</td>
 </tr>
 </tbody>
 </table>
-<h3 id="decode-阶段输出-token">decode 阶段输出 token</h3>
+<h3 id="decode-阶段输出-token"><a class="markdownIt-Anchor" href="#decode-阶段输出-token"></a> decode 阶段输出 token</h3>
 <p>回顾</p>
 <ul>
 <li>输入的是「how」和「can」，prefill 阶段输出的是「I」</li>
 <li>现在的目标是预测「I」的下一个 token</li>
 </ul>
-<p>EAGLE 的想法：用训练后的 One Auto-regression Head 代替 <strong>N x
-transformer layers</strong>。</p>
+<p>EAGLE 的想法：用训练后的 One Auto-regression Head 代替 <strong>N x transformer layers</strong>。</p>
 <table>
-<colgroup>
-<col style="width: 33%" />
-<col style="width: 33%" />
-<col style="width: 33%" />
-</colgroup>
 <thead>
 <tr>
 <th>标准解码</th>
@@ -343,16 +342,9 @@ transformer layers</strong>。</p>
 </thead>
 <tbody>
 <tr>
-<td><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-EAGLE三部曲/image6.png" /></td>
-<td><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-EAGLE三部曲/image7.png" /></td>
-<td>Step 1:在 prefill 阶段得到前两个 token 的
-feature（黄色）以及最新两个 token 的
-embedding（绿色）。把它们组合<br>Step 2: 输入到训练后的 One
-Auto-regression Head 中<br>Step 3: 输出得到新的特征 <span
-class="math inline">\(f_I\)</span> <br>Step 4: 经过 LM
-Head，采样得到下一个 token，「make」</td>
+<td><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image6.png" alt="" /></td>
+<td><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image7.png" alt="" /></td>
+<td>Step 1:在 prefill 阶段得到前两个 token 的 feature（黄色）以及最新两个 token 的 embedding（绿色）。把它们组合<br>Step 2: 输入到训练后的 One Auto-regression Head 中<br>Step 3: 输出得到新的特征 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>I</mi></msub></mrow><annotation encoding="application/x-tex">f_I</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.10764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.07847em;">I</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> <br>Step 4: 经过 LM Head，采样得到下一个 token，「make」</td>
 </tr>
 </tbody>
 </table>
@@ -364,30 +356,22 @@ Head，采样得到下一个 token，「make」</td>
 <li>FC 的权重：[2*hidden_size, hidden_size]</li>
 <li>FC 的输出：[2, hidden_size]</li>
 </ul>
-<h3 id="draft-modelone-auto-regression-head">Draft Model——One
-Auto-regression Head</h3>
-<h4 id="pipeline">Pipeline</h4>
+<h3 id="draft-modelone-auto-regression-head"><a class="markdownIt-Anchor" href="#draft-modelone-auto-regression-head"></a> Draft Model——One Auto-regression Head</h3>
+<h4 id="pipeline"><a class="markdownIt-Anchor" href="#pipeline"></a> Pipeline</h4>
 <ul>
-<li>在 Forward 1 中，生成的 f_I 过完 LM Head
-后可以采样<strong>多个</strong> token</li>
-<li>在 Forward 2 中，用上一轮生成的 token，make 和 help
-分别进行下一次循环生成
+<li>在 Forward 1 中，生成的 f_I  过完 LM Head 后可以采样<strong>多个</strong> token</li>
+<li>在 Forward 2 中，用上一轮生成的 token，make 和 help 分别进行下一次循环生成
 <ul>
-<li>此时，只需要上一次采样生成的 token 信息（Draft Model 信息），而无需
-Target Model 的信息</li>
-</ul></li>
-<li>在 Forward 3 中，同 Forward 2，这里只展示用 with 和 you
-进行推理，实际上 a 和 our 也会继续生成</li>
-<li>Draft Model （One Auto-regression Head）参数量小，生成 token
-的速度<strong>很快</strong>。重复这个步骤</li>
+<li>此时，只需要上一次采样生成的 token 信息（Draft Model 信息），而无需 Target Model 的信息</li>
 </ul>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-EAGLE三部曲/image8.png" /></p>
-<h4 id="draft-tree-每次生成多组可能">Draft Tree 每次生成多组可能</h4>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-EAGLE三部曲/image26.png" /></p>
-<p>在一次 Draft Model 推理时，会生成 (Forward 次数)^(采样 token 个数)
-的方案</p>
+</li>
+<li>在 Forward 3 中，同 Forward 2，这里只展示用 with 和 you 进行推理，实际上 a 和 our 也会继续生成</li>
+<li>Draft Model （One Auto-regression Head）参数量小，生成 token 的速度<strong>很快</strong>。重复这个步骤</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image8.png" alt="" /></p>
+<h4 id="draft-tree-每次生成多组可能"><a class="markdownIt-Anchor" href="#draft-tree-每次生成多组可能"></a> Draft Tree 每次生成多组可能</h4>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image26.png" alt="" /></p>
+<p>在一次 Draft Model 推理时，会生成 (Forward 次数)^(采样 token 个数) 的方案</p>
 <ul>
 <li>make a</li>
 <li>make our</li>
@@ -396,12 +380,8 @@ src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推�
 <li>help you to</li>
 <li>help you feel</li>
 </ul>
-<h4 id="工程设计attention-mask">工程设计：Attention Mask</h4>
+<h4 id="工程设计attention-mask"><a class="markdownIt-Anchor" href="#工程设计attention-mask"></a> 工程设计：Attention Mask</h4>
 <table>
-<colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
-</colgroup>
 <thead>
 <tr>
 <th>标准</th>
@@ -410,18 +390,15 @@ src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推�
 </thead>
 <tbody>
 <tr>
-<td><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-EAGLE三部曲/image9.png" /></td>
-<td><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-EAGLE三部曲/image10.png" /></td>
+<td><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image9.png" alt="" /></td>
+<td><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image10.png" alt="" /></td>
 </tr>
 </tbody>
 </table>
 <ul>
-<li>以「we」为例，这个 token
-只能看到「How」和「can」，不能看到「are」</li>
+<li>以「we」为例，这个 token 只能看到「How」和「can」，不能看到「are」</li>
 </ul>
-<h3 id="对比经典投机采样">对比经典投机采样</h3>
+<h3 id="对比经典投机采样"><a class="markdownIt-Anchor" href="#对比经典投机采样"></a> 对比经典投机采样</h3>
 <p>回顾投机采样的收益</p>
 <ul>
 <li>Draft Model 生成的速度 → 模型的参数量</li>
@@ -429,11 +406,6 @@ src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推�
 </ul>
 <p>以 72B（Target Model）和 7B（Draft Model）为例</p>
 <table>
-<colgroup>
-<col style="width: 6%" />
-<col style="width: 49%" />
-<col style="width: 44%" />
-</colgroup>
 <thead>
 <tr>
 <th></th>
@@ -449,9 +421,7 @@ src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推�
 </tr>
 <tr>
 <td>EAGLE</td>
-<td><a
-target="_blank" rel="noopener" href="https://docs.vllm.ai/en/latest/features/spec_decode.html?h=speculative#speculating-using-eagle-based-draft-models">0.99B</a>
-= 一层 Decoder + FC</td>
+<td><a target="_blank" rel="noopener" href="https://docs.vllm.ai/en/latest/features/spec_decode.html?h=speculative#speculating-using-eagle-based-draft-models">0.99B</a> = 一层 Decoder + FC</td>
 <td>生成多组方案，并且是基于 Target Model 训练的</td>
 </tr>
 <tr>
@@ -471,163 +441,115 @@ target="_blank" rel="noopener" href="https://docs.vllm.ai/en/latest/features/spe
 <ul>
 <li>2x faster than Lookahead (13B).</li>
 <li>1.6x faster than Medusa (13B).</li>
-</ul></li>
 </ul>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-EAGLE三部曲/demosmall.gif" /></p>
-<h2 id="eagle-2工程优化动态草稿树">EAGLE-2：工程优化——动态草稿树</h2>
-<p><a
-target="_blank" rel="noopener" href="https://arxiv.org/pdf/2406.16858">https://arxiv.org/pdf/2406.16858</a></p>
-<p>个人评价：在 Draft Model 生成时用 Beam Search，始终选分数最高的 N
-组方案。</p>
-<h3 id="eagle-2-的动机">EAGLE-2 的动机</h3>
-<h4 id="beam-search">Beam Search</h4>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-EAGLE三部曲/image11.png" /></p>
-<ol type="1">
-<li>Pos 1：选择 <strong>K
-个概率最高的词元</strong>（通常是词语或字符）。这里的 K 是设定的
-<strong>束宽 (Beam Width)</strong>。</li>
-<li>Pos 2：从两组概率中，结合第一个位置的概率，选出 <strong>K
-个最佳的“两词元”序列</strong>。并且是从所有可能的组合中，根据它们的<strong>累积概率</strong>进行排序。</li>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/demosmall.gif" alt="" /></p>
+<h2 id="eagle-2工程优化动态草稿树"><a class="markdownIt-Anchor" href="#eagle-2工程优化动态草稿树"></a> EAGLE-2：工程优化——动态草稿树</h2>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2406.16858">https://arxiv.org/pdf/2406.16858</a></p>
+<p>个人评价：在 Draft Model 生成时用 Beam Search，始终选分数最高的 N 组方案。</p>
+<h3 id="eagle-2-的动机"><a class="markdownIt-Anchor" href="#eagle-2-的动机"></a> EAGLE-2 的动机</h3>
+<h4 id="beam-search"><a class="markdownIt-Anchor" href="#beam-search"></a> Beam Search</h4>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image11.png" alt="" /></p>
+<ol>
+<li>Pos 1：选择 <strong>K 个概率最高的词元</strong>（通常是词语或字符）。这里的 K 是设定的 <strong>束宽 (Beam Width)</strong>。</li>
+<li>Pos 2：从两组概率中，结合第一个位置的概率，选出 <strong>K 个最佳的“两词元”序列</strong>。并且是从所有可能的组合中，根据它们的<strong>累积概率</strong>进行排序。</li>
 <li>Pos 3：重复上面过程</li>
 </ol>
-<p>在 EAGLE-1 中提到，Draft Model 每次会生成若干组方案（称为
-<strong>Draft Tree</strong>）。</p>
+<p>在 EAGLE-1 中提到，Draft Model 每次会生成若干组方案（称为 <strong>Draft Tree</strong>）。</p>
 <p>而“若干”是被限定的，如下图所示，每次只采样 2 个 token。</p>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-EAGLE三部曲/image12.png" /></p>
-<p>期望更精准地确定 Draft Model 生成的哪些 token
-是可靠的（剪枝），<strong>降低 Target Model 验证成本</strong>。</p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image12.png" alt="" /></p>
+<p>期望更精准地确定 Draft Model 生成的哪些 token 是可靠的（剪枝），<strong>降低 Target Model 验证成本</strong>。</p>
 <p>举个例子</p>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-EAGLE三部曲/image13.png" /></p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image13.png" alt="" /></p>
 <p>限定最大采样 token 数为 2，在生成第二个 token 时，</p>
 <ul>
 <li>在 EAGLE-1 中，「10+2=」会采样两个 token，1 和 3</li>
-<li>在 EAGLE-2 中，「10+2=」只会采样一个 token，1。进而下一个 token 生成
-2。</li>
+<li>在 EAGLE-2 中，「10+2=」只会采样一个 token，1。进而下一个 token 生成 2。</li>
 </ul>
-<h3 id="验证观察现象">验证/观察现象</h3>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-EAGLE三部曲/image14.png" /></p>
-<p>在 <strong>Alpaca 数据集</strong>上，使用 <strong>Vicuna 7B
-模型</strong>作为 Target Model，测试 Draft Tree 上不同位置的 Token
-接受率。</p>
+<h3 id="验证观察现象"><a class="markdownIt-Anchor" href="#验证观察现象"></a> 验证/观察现象</h3>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image14.png" alt="" /></p>
+<p>在 <strong>Alpaca 数据集</strong>上，使用 <strong>Vicuna 7B 模型</strong>作为 Target Model，测试 Draft Tree 上不同位置的 Token 接受率。</p>
 <ul>
 <li>横坐标：不同位置，对应左图 P1-P6。</li>
 <li>纵坐标：每个位置的 Token 接受率</li>
 </ul>
 <p>小结：</p>
 <ul>
-<li>位置依赖性：P1 （左上角）的接受率相对较高，P6（右下角）
-的接受率相对低</li>
+<li>位置依赖性：P1 （左上角）的接受率相对较高，P6（右下角） 的接受率相对低</li>
 <li>上下文依赖：哪怕都在一个位置，接受率存在显著差异。
 <ul>
 <li>每次 Target Model 校验完，Draft Model 需要重新生成 Draft Tree</li>
-</ul></li>
 </ul>
-<p>为了低成本估计 Draft Token 的接受率，探究了 Draft Model
-的置信度分数（即模型输出 token 的概率）与实际接受率之间的关系</p>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-EAGLE三部曲/image15.png" /></p>
-<p>同样是在 <strong>Alpaca
-数据集</strong>上进行了实验（模型大概也是同一个，<strong>Vicuna
-7B</strong>）</p>
+</li>
+</ul>
+<p>为了低成本估计 Draft Token 的接受率，探究了 Draft Model 的置信度分数（即模型输出 token 的概率）与实际接受率之间的关系</p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image15.png" alt="" /></p>
+<p>同样是在 <strong>Alpaca 数据集</strong>上进行了实验（模型大概也是同一个，<strong>Vicuna 7B</strong>）</p>
 <p>如图所示，置信度分数和接受率是<strong>强正相关的。</strong></p>
 <ul>
 <li>置信度分数低于 0.05 的草稿 token 的接受率约为 0.04</li>
 <li>置信度分数高于 0.95 的 token 的接受率约为 0.98</li>
 </ul>
-<h4 id="置信度具体计算">置信度具体计算</h4>
-<p>在过完 Model 后得到 hidden_states，再过 LM head，此时得到的 logits
-。最后进行 softmax ，得到每个 token 的置信度。</p>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-EAGLE三部曲/image16.png" /></p>
-<h3 id="方法">方法</h3>
+<h4 id="置信度具体计算"><a class="markdownIt-Anchor" href="#置信度具体计算"></a> 置信度具体计算</h4>
+<p>在过完 Model 后得到 hidden_states，再过 LM head，此时得到的 logits 。最后进行 softmax ，得到每个 token 的置信度。</p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image16.png" alt="" /></p>
+<h3 id="方法"><a class="markdownIt-Anchor" href="#方法"></a> 方法</h3>
 <p>定义两个整型变量 K 和 M</p>
 <ul>
 <li>K 决定每次采样几个 Token（同 EAGLE-1）</li>
 <li>M 决定最后生成的 Token 总数</li>
 </ul>
 <p>假设 K = 2，M = 8</p>
-<p>Step 1：每次都生成 2 个 Token，保留每次生成 Token
-的概率值。直到所有步骤生成的 Token 总数 &gt; 8</p>
-<p>Step 2：每个 Token 的概率值 = 生成该 Token 的概率值 *
-父节点的价值。比如 good = It is a good → 1×0.6×0.8×0.7 = 0.34。</p>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-EAGLE三部曲/image17.png" /></p>
-<p>Step 3：排序所有 Token 的概率值，选出最大 M=8
-个。剩下的不继续向下扩展</p>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-EAGLE三部曲/image18.png" /></p>
-<h3 id="比-eagle-1-快在哪">比 EAGLE-1 快在哪？</h3>
+<p>Step 1：每次都生成 2 个 Token，保留每次生成 Token 的概率值。直到所有步骤生成的 Token 总数 &gt; 8</p>
+<p>Step 2：每个 Token 的概率值 = 生成该 Token 的概率值 * 父节点的价值。比如 good = It is a good → 1×0.6×0.8×0.7 = 0.34。</p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image17.png" alt="" /></p>
+<p>Step 3：排序所有 Token 的概率值，选出最大 M=8 个。剩下的不继续向下扩展</p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image18.png" alt="" /></p>
+<h3 id="比-eagle-1-快在哪"><a class="markdownIt-Anchor" href="#比-eagle-1-快在哪"></a> 比 EAGLE-1 快在哪？</h3>
 <p>Draft Model 生成 token 的<strong>平均接受长度</strong> τ</p>
-<p>V 表示 Vicuna
-模型，在不同数据集，不同模型尺寸，相较于标准投机解码方法（SpS）的加速比，以及平均接受长度。</p>
+<p>V 表示 Vicuna 模型，在不同数据集，不同模型尺寸，相较于标准投机解码方法（SpS）的加速比，以及平均接受长度。</p>
 <p>最后两列是均值。</p>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-EAGLE三部曲/image19.png" /></p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image19.png" alt="" /></p>
 <p>官方结果</p>
 <ul>
 <li><strong>4x</strong> faster than vanilla decoding (13B).</li>
 <li><strong>1.4x</strong> faster than EAGLE-1 (13B).</li>
 </ul>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-EAGLE三部曲/eagle2.gif" /></p>
-<h2 id="eagle-3多层特征融合">EAGLE-3：多层特征融合</h2>
-<p><a
-target="_blank" rel="noopener" href="https://arxiv.org/pdf/2503.01840">https://arxiv.org/pdf/2503.01840</a></p>
-<p>个人评价：feature 雕花 + <strong>训推一致</strong> +
-让模型学更难的东西（预测 token vs. 预测 feature）。</p>
-<h3 id="eagle-3-的动机">EAGLE-3 的动机</h3>
-<p>动机一：基于 EAGLE-2，发现增加训练数据量并不能增加 Draft Model
-的平均接受长度。</p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/eagle2.gif" alt="" /></p>
+<h2 id="eagle-3多层特征融合"><a class="markdownIt-Anchor" href="#eagle-3多层特征融合"></a> EAGLE-3：多层特征融合</h2>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2503.01840">https://arxiv.org/pdf/2503.01840</a></p>
+<p>个人评价：feature 雕花  + <strong>训推一致</strong> + 让模型学更难的东西（预测 token vs. 预测 feature）。</p>
+<h3 id="eagle-3-的动机"><a class="markdownIt-Anchor" href="#eagle-3-的动机"></a> EAGLE-3 的动机</h3>
+<p>动机一：基于 EAGLE-2，发现增加训练数据量并不能增加 Draft Model 的平均接受长度。</p>
 <p>期望<strong>平均接受长度能随着训练数据量的增加而提高</strong>。</p>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-EAGLE三部曲/image20.png" /></p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image20.png" alt="" /></p>
 <ul>
 <li>横坐标是相对于 ShareGPT 训练数据量，1x、2x、4x、8x
 <ul>
 <li>ShareGPT 是一个数据集</li>
-</ul></li>
+</ul>
+</li>
 </ul>
 <p>动机二：特征误差会不断累积</p>
-<p>EAGLE 的本质是想用 Draft Model 的输出特征来<strong>近似</strong>
-Target Model 的输出特征。</p>
-<p>而随着 Draft Model 生成的 token
-越多，那么这个近似就会越来越不准（特征误差累积）。</p>
+<p>EAGLE 的本质是想用 Draft Model 的输出特征来<strong>近似</strong> Target Model 的输出特征。</p>
+<p>而随着 Draft Model 生成的 token 越多，那么这个近似就会越来越不准（特征误差累积）。</p>
 <p>（每次 Target Model 校验后，这个误差会归零）</p>
 <ul>
-<li><span class="math inline">\(f_t\)</span> 后面会不断增加 <span
-class="math inline">\(\hat{f}_{t+1}\)</span> 、 <span
-class="math inline">\(\hat{f}_{t+2}\)</span> …</li>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">f_t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.10764em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>  后面会不断增加 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover accent="true"><mi>f</mi><mo>^</mo></mover><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub></mrow><annotation encoding="application/x-tex">\hat{f}_{t+1}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.1662109999999999em;vertical-align:-0.208331em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9578799999999998em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span></span></span><span style="top:-3.26344em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.08332999999999999em;"><span class="mord">^</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.19444em;"><span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.301108em;"><span style="top:-2.5500000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mbin mtight">+</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span></span></span></span> 、 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover accent="true"><mi>f</mi><mo>^</mo></mover><mrow><mi>t</mi><mo>+</mo><mn>2</mn></mrow></msub></mrow><annotation encoding="application/x-tex">\hat{f}_{t+2}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.1662109999999999em;vertical-align:-0.208331em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9578799999999998em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span></span></span><span style="top:-3.26344em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.08332999999999999em;"><span class="mord">^</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.19444em;"><span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.301108em;"><span style="top:-2.5500000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mbin mtight">+</span><span class="mord mtight">2</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span></span></span></span> …</li>
 </ul>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-EAGLE三部曲/image21.png" /></p>
-<h3 id="推理">推理</h3>
-<p>Step 1：输入「How can」，Target Model 生成下一个
-token，「I」。同时保存<strong>低层特征（l）、中层特征（m）和高层特征（h）</strong></p>
-<p>Step 2：拼接低层 l、中层 m 和高层 h 特征，输入至 <strong>FC</strong>
-进行降维，得到<strong>融合特征 g</strong></p>
-<p>Step 3：拼接 Step 2 的融合特征 g 和 embedding 信息，再过 FC + Decoder
-Layer（EAGLE-1 中的 One Auto-regression Head）</p>
-<p>Step 4：采样生成下一个 token「do」，再生成下一个 token
-时，会把之前全部信息保留以进行下一次预测。</p>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-EAGLE三部曲/image22.png" /></p>
-<p>Q：为什么要保留 <span class="math inline">\(g_{how}\)</span> 、 <span
-class="math inline">\(g_{can}\)</span> 作为下一次输入，kv cache
-已经有了？</p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image21.png" alt="" /></p>
+<h3 id="推理"><a class="markdownIt-Anchor" href="#推理"></a> 推理</h3>
+<p>Step 1：输入「How can」，Target Model 生成下一个 token，「I」。同时保存<strong>低层特征（l）、中层特征（m）和高层特征（h）</strong></p>
+<p>Step 2：拼接低层 l、中层 m 和高层 h 特征，输入至 <strong>FC</strong> 进行降维，得到<strong>融合特征 g</strong></p>
+<p>Step 3：拼接 Step 2 的融合特征 g 和 embedding 信息，再过 FC + Decoder Layer（EAGLE-1 中的 One Auto-regression Head）</p>
+<p>Step 4：采样生成下一个 token「do」，再生成下一个 token 时，会把之前全部信息保留以进行下一次预测。</p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image22.png" alt="" /></p>
+<p>Q：为什么要保留 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mrow><mi>h</mi><mi>o</mi><mi>w</mi></mrow></msub></mrow><annotation encoding="application/x-tex">g_{how}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">h</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight" style="margin-right:0.02691em;">w</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 、 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mrow><mi>c</mi><mi>a</mi><mi>n</mi></mrow></msub></mrow><annotation encoding="application/x-tex">g_{can}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">c</span><span class="mord mathnormal mtight">a</span><span class="mord mathnormal mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>  作为下一次输入，kv cache 已经有了？</p>
 <p>A：这里仅做示意，实际代码中无需再输入</p>
-<h3 id="eagle-1-vs-eagle-3">EAGLE-1 vs EAGLE-3</h3>
-<h4 id="架构和输入">架构和输入</h4>
+<h3 id="eagle-1-vs-eagle-3"><a class="markdownIt-Anchor" href="#eagle-1-vs-eagle-3"></a> EAGLE-1 vs EAGLE-3</h3>
+<h4 id="架构和输入"><a class="markdownIt-Anchor" href="#架构和输入"></a> 架构和输入</h4>
 <table>
-<colgroup>
-<col style="width: 8%" />
-<col style="width: 43%" />
-<col style="width: 48%" />
-</colgroup>
 <thead>
 <tr>
 <th></th>
@@ -639,8 +561,7 @@ class="math inline">\(g_{can}\)</span> 作为下一次输入，kv cache
 <tr>
 <td>架构</td>
 <td>FC-1：[2*hidden_size, hidden_size]Single Decoder Layer</td>
-<td>FC-0：[3*hidden_size, hidden_size]FC-1：[2*hidden_size,
-hidden_size]Single Decoder Layer</td>
+<td>FC-0：[3<em>hidden_size, hidden_size]FC-1：[2</em>hidden_size, hidden_size]Single Decoder Layer</td>
 </tr>
 <tr>
 <td>FC-1 的输入</td>
@@ -650,12 +571,8 @@ hidden_size]Single Decoder Layer</td>
 </tbody>
 </table>
 <p>从架构来看，EAGLE-3 中间占用了更多显存（影响并发上限）</p>
-<h4 id="训练对比">训练对比</h4>
+<h4 id="训练对比"><a class="markdownIt-Anchor" href="#训练对比"></a> 训练对比</h4>
 <table>
-<colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
-</colgroup>
 <thead>
 <tr>
 <th><strong>EAGLE-1</strong></th>
@@ -664,50 +581,32 @@ hidden_size]Single Decoder Layer</td>
 </thead>
 <tbody>
 <tr>
-<td><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-EAGLE三部曲/image23.png" /></td>
-<td><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-EAGLE三部曲/image24.png" /></td>
+<td><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image23.png" alt="" /></td>
+<td><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image24.png" alt="" /></td>
 </tr>
 </tbody>
 </table>
 <ul>
-<li>在 EAGLE-1 中，这里的 <span
-class="math inline">\(\hat{f}_{t+1}\)</span> 会随着 Step
-的增加而越来越偏（误差累积）</li>
-<li>而 EAGLE-3 中，移除了这个 feature 的
-loss，并且用<strong>多步生成</strong>的方式训练
+<li>在 EAGLE-1 中，这里的 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover accent="true"><mi>f</mi><mo>^</mo></mover><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub></mrow><annotation encoding="application/x-tex">\hat{f}_{t+1}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.1662109999999999em;vertical-align:-0.208331em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9578799999999998em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span></span></span><span style="top:-3.26344em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.08332999999999999em;"><span class="mord">^</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.19444em;"><span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.301108em;"><span style="top:-2.5500000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mbin mtight">+</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.208331em;"><span></span></span></span></span></span></span></span></span></span> 会随着 Step 的增加而越来越偏（误差累积）</li>
+<li>而 EAGLE-3 中，移除了这个 feature 的 loss，并且用<strong>多步生成</strong>的方式训练
 <ul>
-<li>Draft Model 在第 t 步做出预测 <span
-class="math inline">\(\hat{a}_t\)</span> 并采样得到令牌 <span
-class="math inline">\(token_t\)</span>
-后，在训练下一步时，它会<strong>将自身的预测</strong> <span
-class="math inline">\(\hat{a}_t\)</span> <strong>和采样得到的 <span
-class="math inline">\(token_t\)</span> 的嵌入作为输入</strong></li>
+<li>Draft Model 在第 t  步做出预测 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover accent="true"><mi>a</mi><mo>^</mo></mover><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">\hat{a}_t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.84444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.69444em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">a</span></span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.25em;"><span class="mord">^</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>   并采样得到令牌 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mi>o</mi><mi>k</mi><mi>e</mi><msub><mi>n</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">token_t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.84444em;vertical-align:-0.15em;"></span><span class="mord mathnormal">t</span><span class="mord mathnormal">o</span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mord mathnormal">e</span><span class="mord"><span class="mord mathnormal">n</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 后，在训练下一步时，它会<strong>将自身的预测</strong> <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover accent="true"><mi>a</mi><mo>^</mo></mover><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">\hat{a}_t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.84444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.69444em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">a</span></span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.25em;"><span class="mord">^</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>  <strong>和采样得到的 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mi>o</mi><mi>k</mi><mi>e</mi><msub><mi>n</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">token_t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.84444em;vertical-align:-0.15em;"></span><span class="mord mathnormal">t</span><span class="mord mathnormal">o</span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mord mathnormal">e</span><span class="mord"><span class="mord mathnormal">n</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2805559999999999em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 的嵌入作为输入</strong></li>
 <li>EAGLE-1 会依赖 Target Model 真实的中间特征</li>
-</ul></li>
 </ul>
-<h4 id="损失函数">损失函数</h4>
+</li>
+</ul>
+<h4 id="损失函数"><a class="markdownIt-Anchor" href="#损失函数"></a> 损失函数</h4>
 <ul>
-<li>EAGLE-1：特征预测损失 <span class="math inline">\(l_{fea}\)</span> +
-token 预测损失 <span class="math inline">\(l_{token}\)</span> = <span
-class="math inline">\(l_{fea}\)</span> + <span
-class="math inline">\(l_{token}\)</span> * 0.1</li>
-<li>EAGLE-3：token 预测损失 <span
-class="math inline">\(l_{token}\)</span></li>
+<li>EAGLE-1：特征预测损失  <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>l</mi><mrow><mi>f</mi><mi>e</mi><mi>a</mi></mrow></msub></mrow><annotation encoding="application/x-tex">l_{fea}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.980548em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361079999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.01968em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.10764em;">f</span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight">a</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span></span>  + token 预测损失 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>l</mi><mrow><mi>t</mi><mi>o</mi><mi>k</mi><mi>e</mi><mi>n</mi></mrow></msub></mrow><annotation encoding="application/x-tex">l_{token}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.84444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.01968em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>  =  <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>l</mi><mrow><mi>f</mi><mi>e</mi><mi>a</mi></mrow></msub></mrow><annotation encoding="application/x-tex">l_{fea}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.980548em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361079999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.01968em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.10764em;">f</span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight">a</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span></span>  +  <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>l</mi><mrow><mi>t</mi><mi>o</mi><mi>k</mi><mi>e</mi><mi>n</mi></mrow></msub></mrow><annotation encoding="application/x-tex">l_{token}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.84444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.01968em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>  * 0.1</li>
+<li>EAGLE-3：token 预测损失 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>l</mi><mrow><mi>t</mi><mi>o</mi><mi>k</mi><mi>e</mi><mi>n</mi></mrow></msub></mrow><annotation encoding="application/x-tex">l_{token}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.84444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.01968em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></li>
 </ul>
 <p>具体来说</p>
 <ul>
-<li><strong>特征预测损失</strong> <span
-class="math inline">\(l_{fea}\)</span>
-：将下一特征的预测视为回归任务，使用 Smooth L1 损失</li>
-<li><strong>token 预测损失</strong> <span
-class="math inline">\(l_{token}\)</span> ：基于特征预测通过 LM 头计算
-token 分布，使用交叉熵损失</li>
+<li><strong>特征预测损失</strong>  <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>l</mi><mrow><mi>f</mi><mi>e</mi><mi>a</mi></mrow></msub></mrow><annotation encoding="application/x-tex">l_{fea}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.980548em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361079999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.01968em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.10764em;">f</span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight">a</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span></span>  ：将下一特征的预测视为回归任务，使用 Smooth L1 损失</li>
+<li><strong>token 预测损失</strong>  <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>l</mi><mrow><mi>t</mi><mi>o</mi><mi>k</mi><mi>e</mi><mi>n</mi></mrow></msub></mrow><annotation encoding="application/x-tex">l_{token}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.84444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.01968em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>  ：基于特征预测通过 LM 头计算 token 分布，使用交叉熵损失</li>
 </ul>
-<h3 id="比-eagle-2-快在哪">比 EAGLE-2 快在哪？</h3>
-<p>在训练阶段，加大了训练数据。最终提升 Draft Model
-的平均接受长度<em>（尽管牺牲了生成 Token 的速度）</em></p>
+<h3 id="比-eagle-2-快在哪"><a class="markdownIt-Anchor" href="#比-eagle-2-快在哪"></a> 比 EAGLE-2 快在哪？</h3>
+<p>在训练阶段，加大了训练数据。最终提升 Draft Model 的平均接受长度*（尽管牺牲了生成 Token 的速度）*</p>
 <p>模型</p>
 <ul>
 <li>V represents Vicuna</li>
@@ -719,15 +618,13 @@ token 分布，使用交叉熵损失</li>
 <ul>
 <li>SpS 标准投机解码，Draft Model 是 Vicuna-68M</li>
 </ul>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-EAGLE三部曲/image25.png" /></p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/image25.png" alt="" /></p>
 <p>官方结果</p>
 <ul>
 <li><strong>5.6x</strong> faster than vanilla decoding (13B).</li>
 <li><strong>1.8x</strong> faster than EAGLE-1 (13B).</li>
 </ul>
-<p><img
-src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-EAGLE三部曲/e3.gif" /></p>
+<p><img src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/e3.gif" alt="" /></p>
 
     </div>
 
@@ -829,8 +726,7 @@ src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推�
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#llm-%E7%9A%84%E6%A0%87%E5%87%86%E7%94%9F%E6%88%90%E8%BF%87%E7%A8%8B"><span class="nav-text">LLM 的标准生成过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%95%E6%9C%BA%E8%A7%A3%E7%A0%81"><span class="nav-text">投机解码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#eagle-1%E7%89%B9%E5%BE%81%E5%B1%82%E9%9D%A2%E7%9A%84%E6%8A%95%E6%9C%BA%E8%A7%A3%E7%A0%81"><span class="nav-text">EAGLE-1：特征层面的投机解码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#eagle-1-%E7%9A%84%E5%8A%A8%E6%9C%BA"><span class="nav-text">EAGLE-1 的动机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#prefill-%E9%98%B6%E6%AE%B5"><span class="nav-text">prefill 阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#decode-%E9%98%B6%E6%AE%B5%E8%BE%93%E5%87%BA-token"><span class="nav-text">decode 阶段输出 token</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#draft-modelone-auto-regression-head"><span class="nav-text">Draft Model——One
-Auto-regression Head</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#pipeline"><span class="nav-text">Pipeline</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#draft-tree-%E6%AF%8F%E6%AC%A1%E7%94%9F%E6%88%90%E5%A4%9A%E7%BB%84%E5%8F%AF%E8%83%BD"><span class="nav-text">Draft Tree 每次生成多组可能</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B7%A5%E7%A8%8B%E8%AE%BE%E8%AE%A1attention-mask"><span class="nav-text">工程设计：Attention Mask</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E6%AF%94%E7%BB%8F%E5%85%B8%E6%8A%95%E6%9C%BA%E9%87%87%E6%A0%B7"><span class="nav-text">对比经典投机采样</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#eagle-2%E5%B7%A5%E7%A8%8B%E4%BC%98%E5%8C%96%E5%8A%A8%E6%80%81%E8%8D%89%E7%A8%BF%E6%A0%91"><span class="nav-text">EAGLE-2：工程优化——动态草稿树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#eagle-2-%E7%9A%84%E5%8A%A8%E6%9C%BA"><span class="nav-text">EAGLE-2 的动机</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#beam-search"><span class="nav-text">Beam Search</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%AA%8C%E8%AF%81%E8%A7%82%E5%AF%9F%E7%8E%B0%E8%B1%A1"><span class="nav-text">验证&#x2F;观察现象</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BD%AE%E4%BF%A1%E5%BA%A6%E5%85%B7%E4%BD%93%E8%AE%A1%E7%AE%97"><span class="nav-text">置信度具体计算</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95"><span class="nav-text">方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AF%94-eagle-1-%E5%BF%AB%E5%9C%A8%E5%93%AA"><span class="nav-text">比 EAGLE-1 快在哪？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#eagle-3%E5%A4%9A%E5%B1%82%E7%89%B9%E5%BE%81%E8%9E%8D%E5%90%88"><span class="nav-text">EAGLE-3：多层特征融合</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#eagle-3-%E7%9A%84%E5%8A%A8%E6%9C%BA"><span class="nav-text">EAGLE-3 的动机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A8%E7%90%86"><span class="nav-text">推理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#eagle-1-vs-eagle-3"><span class="nav-text">EAGLE-1 vs EAGLE-3</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9E%B6%E6%9E%84%E5%92%8C%E8%BE%93%E5%85%A5"><span class="nav-text">架构和输入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83%E5%AF%B9%E6%AF%94"><span class="nav-text">训练对比</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0"><span class="nav-text">损失函数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AF%94-eagle-2-%E5%BF%AB%E5%9C%A8%E5%93%AA"><span class="nav-text">比 EAGLE-2 快在哪？</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#llm-%E7%9A%84%E6%A0%87%E5%87%86%E7%94%9F%E6%88%90%E8%BF%87%E7%A8%8B"><span class="nav-text"> LLM 的标准生成过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%95%E6%9C%BA%E8%A7%A3%E7%A0%81"><span class="nav-text"> 投机解码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#eagle-1%E7%89%B9%E5%BE%81%E5%B1%82%E9%9D%A2%E7%9A%84%E6%8A%95%E6%9C%BA%E8%A7%A3%E7%A0%81"><span class="nav-text"> EAGLE-1：特征层面的投机解码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#eagle-1-%E7%9A%84%E5%8A%A8%E6%9C%BA"><span class="nav-text"> EAGLE-1 的动机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#prefill-%E9%98%B6%E6%AE%B5"><span class="nav-text"> prefill 阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#decode-%E9%98%B6%E6%AE%B5%E8%BE%93%E5%87%BA-token"><span class="nav-text"> decode 阶段输出 token</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#draft-modelone-auto-regression-head"><span class="nav-text"> Draft Model——One Auto-regression Head</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#pipeline"><span class="nav-text"> Pipeline</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#draft-tree-%E6%AF%8F%E6%AC%A1%E7%94%9F%E6%88%90%E5%A4%9A%E7%BB%84%E5%8F%AF%E8%83%BD"><span class="nav-text"> Draft Tree 每次生成多组可能</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B7%A5%E7%A8%8B%E8%AE%BE%E8%AE%A1attention-mask"><span class="nav-text"> 工程设计：Attention Mask</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E6%AF%94%E7%BB%8F%E5%85%B8%E6%8A%95%E6%9C%BA%E9%87%87%E6%A0%B7"><span class="nav-text"> 对比经典投机采样</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#eagle-2%E5%B7%A5%E7%A8%8B%E4%BC%98%E5%8C%96%E5%8A%A8%E6%80%81%E8%8D%89%E7%A8%BF%E6%A0%91"><span class="nav-text"> EAGLE-2：工程优化——动态草稿树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#eagle-2-%E7%9A%84%E5%8A%A8%E6%9C%BA"><span class="nav-text"> EAGLE-2 的动机</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#beam-search"><span class="nav-text"> Beam Search</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%AA%8C%E8%AF%81%E8%A7%82%E5%AF%9F%E7%8E%B0%E8%B1%A1"><span class="nav-text"> 验证&#x2F;观察现象</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BD%AE%E4%BF%A1%E5%BA%A6%E5%85%B7%E4%BD%93%E8%AE%A1%E7%AE%97"><span class="nav-text"> 置信度具体计算</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95"><span class="nav-text"> 方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AF%94-eagle-1-%E5%BF%AB%E5%9C%A8%E5%93%AA"><span class="nav-text"> 比 EAGLE-1 快在哪？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#eagle-3%E5%A4%9A%E5%B1%82%E7%89%B9%E5%BE%81%E8%9E%8D%E5%90%88"><span class="nav-text"> EAGLE-3：多层特征融合</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#eagle-3-%E7%9A%84%E5%8A%A8%E6%9C%BA"><span class="nav-text"> EAGLE-3 的动机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A8%E7%90%86"><span class="nav-text"> 推理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#eagle-1-vs-eagle-3"><span class="nav-text"> EAGLE-1 vs EAGLE-3</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9E%B6%E6%9E%84%E5%92%8C%E8%BE%93%E5%85%A5"><span class="nav-text"> 架构和输入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83%E5%AF%B9%E6%AF%94"><span class="nav-text"> 训练对比</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0"><span class="nav-text"> 损失函数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AF%94-eagle-2-%E5%BF%AB%E5%9C%A8%E5%93%AA"><span class="nav-text"> 比 EAGLE-2 快在哪？</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -846,7 +742,7 @@ Auto-regression Head</span></a><ol class="nav-child"><li class="nav-item nav-lev
       <div class="site-state-item site-state-posts">
           <a href="/hexo_blog/archives/">
         
-          <span class="site-state-item-count">86</span>
+          <span class="site-state-item-count">87</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -859,7 +755,7 @@ Auto-regression Head</span></a><ol class="nav-child"><li class="nav-item nav-lev
       <div class="site-state-item site-state-tags">
             <a href="/hexo_blog/tags/">
           
-        <span class="site-state-item-count">107</span>
+        <span class="site-state-item-count">111</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
