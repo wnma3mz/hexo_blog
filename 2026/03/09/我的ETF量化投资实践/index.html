@@ -248,10 +248,12 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>分享一套自用的 ETF 组合投资策略，基于动量、低相关性和均线趋势保护，用 Python 实现自动化选股和风控。</p>
+        <p>分享一套自用的 ETF 组合投资策略，基于动量、低相关性和均线趋势保护，用
+Python 实现自动化选股和风控。</p>
 <span id="more"></span>
-<h2 id="出发点"><a class="markdownIt-Anchor" href="#出发点"></a> 出发点</h2>
-<p>投资分析师布朗提出了一个叫做<strong>永久投资组合（Permanent Portfolio）</strong>。这个思路很简单：把钱等分成四份，分别买入四种在不同经济环境下表现好的资产：</p>
+<h2 id="出发点">出发点</h2>
+<p>投资分析师布朗提出了一个叫做<strong>永久投资组合（Permanent
+Portfolio）</strong>。这个思路很简单：把钱等分成四份，分别买入四种在不同经济环境下表现好的资产：</p>
 <table>
 <thead>
 <tr>
@@ -288,8 +290,12 @@
 </tr>
 </tbody>
 </table>
-<p>这四类资产的逻辑很清晰：经济好的时候股票涨，经济差的时候国债涨，通胀来了黄金涨，实在拿不准就有现金兜底。无论经济处在什么周期，总有一块在赚钱，亏的那部分被其他资产对冲掉。2008 年金融危机的时候，这类多元化配置就比单押股市的跌幅小很多。</p>
-<p>操作上也很简单：每半年或一年做一次再平衡，把各资产的比例调回 25%。比如股市涨多了占到 35%，就卖掉一些股票，买入跌了的债券或黄金——本质上就是在自动&quot;卖高买低&quot;。如果某类资产偏离太大（比如超过 35% 或低于 15%），也可以提前触发再平衡。</p>
+<p>这四类资产的逻辑很清晰：经济好的时候股票涨，经济差的时候国债涨，通胀来了黄金涨，实在拿不准就有现金兜底。无论经济处在什么周期，总有一块在赚钱，亏的那部分被其他资产对冲掉。2008
+年金融危机的时候，这类多元化配置就比单押股市的跌幅小很多。</p>
+<p>操作上也很简单：每半年或一年做一次再平衡，把各资产的比例调回
+25%。比如股市涨多了占到
+35%，就卖掉一些股票，买入跌了的债券或黄金——本质上就是在自动"卖高买低"。如果某类资产偏离太大（比如超过
+35% 或低于 15%），也可以提前触发再平衡。</p>
 <p>这个方案的优点是<strong>极其简单，几乎不需要判断</strong>，买了就放着，定期调一下就行。</p>
 <p>而投资里面有一个说法是：人是靠不住的。涨了拿不住，跌了不敢买，追涨杀跌这种事说起来都知道不对，真到了自己头上还是很难克制。所以一套规则化的东西，用代码做决策，至少在执行层面不受情绪干扰。</p>
 <p>永久投资组合是个很好的起点，但有一些问题：</p>
@@ -298,28 +304,42 @@
 <li>如何管理仓位？</li>
 <li>如何应对市场变化？</li>
 </ul>
-<p>在开始之前，先铺垫几个基础概念——如果你已经有投资经验，可以直接跳到&quot;三条核心逻辑&quot;。</p>
-<h2 id="几个基础概念"><a class="markdownIt-Anchor" href="#几个基础概念"></a> 几个基础概念</h2>
-<h3 id="etf-是什么"><a class="markdownIt-Anchor" href="#etf-是什么"></a> ETF 是什么</h3>
-<p>ETF（Exchange Traded Fund，交易所交易基金）你可以把它理解成&quot;一篮子股票打包卖&quot;。比如沪深 300 ETF，买一份就等于同时持有了 A 股市值最大的 300 家公司的股票，省去了自己一只一只挑的麻烦。它跟普通股票一样在证券账户里买卖，门槛很低，一手通常只要几百块。</p>
-<p>选择 ETF 而不是个股，主要两个原因：一是单只 ETF 本身就有分散效果，不会因为某一家公司暴雷就血本无归；二是 ETF 不需要研究财报和基本面，适合用量化的方式来做。</p>
-<h3 id="均线ma"><a class="markdownIt-Anchor" href="#均线ma"></a> 均线（MA）</h3>
-<p>均线就是过去 N 天收盘价的平均值。比如 MA100 就是过去 100 个交易日的均价连成的一条线。它的作用是把日常的涨跌波动&quot;抹平&quot;，看清价格的大方向：价格在均线上方，说明整体趋势向上；反之向下。</p>
-<p>后面会用到 MA100 来做趋势判断——连续多天跌破这条线，就认为趋势走坏了。</p>
-<h3 id="相关性"><a class="markdownIt-Anchor" href="#相关性"></a> 相关性</h3>
-<p>相关性衡量的是两个东西&quot;是不是总一起动&quot;。相关系数范围从 -1 到 1：接近 1 说明涨跌几乎同步（比如沪深 300 和中证 500，都是 A 股大盘，走势很像），接近 0 说明没什么关系（比如黄金和半导体），接近 -1 说明反着来。</p>
-<p>做投资组合时，我们希望持有的几只 ETF 相关性尽量低。如果你买了四只涨跌都同步的 ETF，看起来是分散了，其实跟只买了一只没区别。</p>
-<h3 id="回测"><a class="markdownIt-Anchor" href="#回测"></a> 回测</h3>
-<p>回测就是把策略拿到历史数据上模拟运行一遍，看看如果过去按这个策略操作，收益和风险会怎样。它不能预测未来，但至少能帮你排除那些在历史上就不 work 的烂主意。</p>
+<p>在开始之前，先铺垫几个基础概念——如果你已经有投资经验，可以直接跳到"三条核心逻辑"。</p>
+<h2 id="几个基础概念">几个基础概念</h2>
+<h3 id="etf-是什么">ETF 是什么</h3>
+<p>ETF（Exchange Traded
+Fund，交易所交易基金）你可以把它理解成"一篮子股票打包卖"。比如沪深 300
+ETF，买一份就等于同时持有了 A 股市值最大的 300
+家公司的股票，省去了自己一只一只挑的麻烦。它跟普通股票一样在证券账户里买卖，门槛很低，一手通常只要几百块。</p>
+<p>选择 ETF 而不是个股，主要两个原因：一是单只 ETF
+本身就有分散效果，不会因为某一家公司暴雷就血本无归；二是 ETF
+不需要研究财报和基本面，适合用量化的方式来做。</p>
+<h3 id="均线ma">均线（MA）</h3>
+<p>均线就是过去 N 天收盘价的平均值。比如 MA100 就是过去 100
+个交易日的均价连成的一条线。它的作用是把日常的涨跌波动"抹平"，看清价格的大方向：价格在均线上方，说明整体趋势向上；反之向下。</p>
+<p>后面会用到 MA100
+来做趋势判断——连续多天跌破这条线，就认为趋势走坏了。</p>
+<h3 id="相关性">相关性</h3>
+<p>相关性衡量的是两个东西"是不是总一起动"。相关系数范围从 -1 到 1：接近
+1 说明涨跌几乎同步（比如沪深 300 和中证 500，都是 A
+股大盘，走势很像），接近 0 说明没什么关系（比如黄金和半导体），接近 -1
+说明反着来。</p>
+<p>做投资组合时，我们希望持有的几只 ETF
+相关性尽量低。如果你买了四只涨跌都同步的
+ETF，看起来是分散了，其实跟只买了一只没区别。</p>
+<h3 id="回测">回测</h3>
+<p>回测就是把策略拿到历史数据上模拟运行一遍，看看如果过去按这个策略操作，收益和风险会怎样。它不能预测未来，但至少能帮你排除那些在历史上就不
+work 的烂主意。</p>
 <p>这套策略跑了 2013 到 2025 年共 13 年的历史数据。</p>
-<h2 id="三条核心逻辑"><a class="markdownIt-Anchor" href="#三条核心逻辑"></a> 三条核心逻辑</h2>
+<h2 id="三条核心逻辑">三条核心逻辑</h2>
 <p>理解了上面这些概念，核心思路就好说了：</p>
-<ol>
-<li><strong>动量效应</strong>：过去一年涨得好的资产，短期内大概率还能继续涨。学术上叫&quot;动量因子&quot;，是被大量研究验证过的市场规律。当然不是百分百，但概率站在你这边。</li>
-<li><strong>低相关性</strong>：选出来的几只 ETF 之间相关性要低，涨跌不能太同步。这样一只跌了，另外几只不一定跟着跌，组合整体的波动会小很多。</li>
+<ol type="1">
+<li><strong>动量效应</strong>：过去一年涨得好的资产，短期内大概率还能继续涨。学术上叫"动量因子"，是被大量研究验证过的市场规律。当然不是百分百，但概率站在你这边。</li>
+<li><strong>低相关性</strong>：选出来的几只 ETF
+之间相关性要低，涨跌不能太同步。这样一只跌了，另外几只不一定跟着跌，组合整体的波动会小很多。</li>
 <li><strong>趋势保护</strong>：跌破均线就跑，别硬扛。不去猜底部在哪，让均线替你判断。留得青山在，不怕没柴烧。</li>
 </ol>
-<h2 id="资产池都选了些什么"><a class="markdownIt-Anchor" href="#资产池都选了些什么"></a> 资产池：都选了些什么</h2>
+<h2 id="资产池都选了些什么">资产池：都选了些什么</h2>
 <p>ETF 池子里可以把所有ETF都放进去，下面仅作例子说明。</p>
 <pre class="mermaid">mindmap
   root((全天候 ETF 池))
@@ -342,31 +362,47 @@
       REITs / 国债</pre>
 <p>简单解释一下这四类：</p>
 <ul>
-<li><strong>A 股宽基</strong>：跟踪国内大盘指数，比如沪深 300 代表大公司，中证 500 代表中型公司，科创 50 和创业板偏成长型。这些是组合的&quot;基本盘&quot;。</li>
+<li><strong>A 股宽基</strong>：跟踪国内大盘指数，比如沪深 300
+代表大公司，中证 500 代表中型公司，科创 50
+和创业板偏成长型。这些是组合的"基本盘"。</li>
 <li><strong>行业赛道</strong>：押注特定行业。行业之间周期不同——医药跟半导体的涨跌节奏差别很大，放在一起有天然的分散效果。</li>
-<li><strong>海外市场</strong>：纳指和标普 500 跟踪美股，跟 A 股走势经常不同步，是分散风险的好帮手。</li>
-<li><strong>防守与另类</strong>：红利 ETF 靠分红提供稳定回报；黄金白银在通胀和避险的时候表现好；REITs（房地产信托基金）和国债则是跟股市相关性较低的资产。</li>
+<li><strong>海外市场</strong>：纳指和标普 500 跟踪美股，跟 A
+股走势经常不同步，是分散风险的好帮手。</li>
+<li><strong>防守与另类</strong>：红利 ETF
+靠分红提供稳定回报；黄金白银在通胀和避险的时候表现好；REITs（房地产信托基金）和国债则是跟股市相关性较低的资产。</li>
 </ul>
 <p>为什么要覆盖这么广？因为市场是轮动的——经济好的时候股票涨，经济差的时候黄金和国债涨，通胀的时候大宗商品涨。池子里什么都放一点，策略才有得选。</p>
-<h2 id="每年怎么选出最优组合"><a class="markdownIt-Anchor" href="#每年怎么选出最优组合"></a> 每年怎么选出最优组合</h2>
+<h2 id="每年怎么选出最优组合">每年怎么选出最优组合</h2>
 <p>每年年初换仓一次，选股流程：</p>
-<ol>
+<ol type="1">
 <li>算出池子中所有ETF各自过去一年的收益率</li>
 <li>把池子中所有ETF里所有 4 只一组的排列组合都列出来</li>
-<li>过滤掉任意两只相关系数超过 0.7 的组合——这一步是关键，把那些&quot;看着是四只、实际涨跌差不多&quot;的假分散给去掉</li>
+<li>过滤掉任意两只相关系数超过 0.7
+的组合——这一步是关键，把那些"看着是四只、实际涨跌差不多"的假分散给去掉</li>
 <li>剩下的里面，选过去一年总收益最高的那个组合</li>
 </ol>
 <p>4 只仅是为了对齐永久投资组合，可以自己调整。</p>
 <p>这里有一个隐含的假设：去年表现好且低相关的组合，今年大概率也不差。这就是动量效应在起作用。</p>
-<h2 id="买入之后怎么管理"><a class="markdownIt-Anchor" href="#买入之后怎么管理"></a> 买入之后怎么管理</h2>
-<p>选好 4 只 ETF 后，等权买入（每只分配 ¥10,000，也就是总共 ¥40,000），然后进入日常监控。日常操作就两件事：</p>
-<h3 id="趋势保护最重要的机制"><a class="markdownIt-Anchor" href="#趋势保护最重要的机制"></a> 趋势保护（最重要的机制）</h3>
-<p>价格连续 10 个交易日低于 MA100 就清仓，重新站上 MA100 再买回来。举个具体例子：假设你持有纳指 ETF，某天收盘价跌到了 MA100 以下，系统开始计数。如果第二天涨回去了，计数清零，什么都不做。但如果连续 10 天都在 MA100 下方，系统判定趋势走坏，全部卖出。之后每天继续观察，哪天收盘价重新站上 MA100，再买回来。</p>
-<p>为什么是 10 天而不是 1 天？因为价格在均线附近反复穿越是很正常的事，如果一跌破就跑，会被频繁&quot;假突破&quot;折腾死。等 10 天是为了确认趋势真的变了，代价是真跌的时候会晚走几天。</p>
-<h3 id="再平衡"><a class="markdownIt-Anchor" href="#再平衡"></a> 再平衡</h3>
-<p>假设你四只 ETF 各买了 ¥10,000，过了一段时间，其中一只涨到了 ¥12,000，另一只跌到了 ¥8,000，它们的权重就不再是各 25% 了。当某只偏离超过 5%，就调整回等权状态——卖掉涨多的，买入跌多的。</p>
-<h2 id="整体运行流程"><a class="markdownIt-Anchor" href="#整体运行流程"></a> 整体运行流程</h2>
-<p>最后用一张流程图串起来。策略用&quot;滚动窗口&quot;运行：拿上一年（T-1 年）的数据选组合，在当年（T 年）执行交易，每年年初重新来一轮。</p>
+<h2 id="买入之后怎么管理">买入之后怎么管理</h2>
+<p>选好 4 只 ETF 后，等权买入（每只分配 ¥10,000，也就是总共
+¥40,000），然后进入日常监控。日常操作就两件事：</p>
+<h3 id="趋势保护最重要的机制">趋势保护（最重要的机制）</h3>
+<p>价格连续 10 个交易日低于 MA100 就清仓，重新站上 MA100
+再买回来。举个具体例子：假设你持有纳指 ETF，某天收盘价跌到了 MA100
+以下，系统开始计数。如果第二天涨回去了，计数清零，什么都不做。但如果连续
+10 天都在 MA100
+下方，系统判定趋势走坏，全部卖出。之后每天继续观察，哪天收盘价重新站上
+MA100，再买回来。</p>
+<p>为什么是 10 天而不是 1
+天？因为价格在均线附近反复穿越是很正常的事，如果一跌破就跑，会被频繁"假突破"折腾死。等
+10 天是为了确认趋势真的变了，代价是真跌的时候会晚走几天。</p>
+<h3 id="再平衡">再平衡</h3>
+<p>假设你四只 ETF 各买了 ¥10,000，过了一段时间，其中一只涨到了
+¥12,000，另一只跌到了 ¥8,000，它们的权重就不再是各 25%
+了。当某只偏离超过 5%，就调整回等权状态——卖掉涨多的，买入跌多的。</p>
+<h2 id="整体运行流程">整体运行流程</h2>
+<p>最后用一张流程图串起来。策略用"滚动窗口"运行：拿上一年（T-1
+年）的数据选组合，在当年（T 年）执行交易，每年年初重新来一轮。</p>
 <pre class="mermaid">graph TD
     subgraph Year_T_Minus_1 [训练年 T-1]
         Data[获取全市场数据] --> Calc[计算所有 4只ETF 组合收益]
@@ -391,12 +427,13 @@
     end
 
     Year_T_Minus_1 --> Year_T</pre>
-<h2 id="回测表现"><a class="markdownIt-Anchor" href="#回测表现"></a> 回测表现</h2>
+<h2 id="回测表现">回测表现</h2>
 <p>来看看回测表现：</p>
 <p>TODO: 回测表现</p>
 <p>这套系统不是用来暴富的，本质上是一个纪律框架：资产池保证选择面够广，相关性过滤保证不会齐涨齐跌，均线保护保证大跌的时候人不在场。</p>
-<h2 id="存在的问题"><a class="markdownIt-Anchor" href="#存在的问题"></a> 存在的问题</h2>
-<p>建仓时间是不确定的，所以模拟的时候是在 Q1 随机选择一天进行建仓，然后随机五次，收益取平均。</p>
+<h2 id="存在的问题">存在的问题</h2>
+<p>建仓时间是不确定的，所以模拟的时候是在 Q1
+随机选择一天进行建仓，然后随机五次，收益取平均。</p>
 
     </div>
 
@@ -499,7 +536,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BA%E5%8F%91%E7%82%B9"><span class="nav-text"> 出发点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%A0%E4%B8%AA%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5"><span class="nav-text"> 几个基础概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#etf-%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-text"> ETF 是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9D%87%E7%BA%BFma"><span class="nav-text"> 均线（MA）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E6%80%A7"><span class="nav-text"> 相关性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9E%E6%B5%8B"><span class="nav-text"> 回测</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E6%9D%A1%E6%A0%B8%E5%BF%83%E9%80%BB%E8%BE%91"><span class="nav-text"> 三条核心逻辑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B5%84%E4%BA%A7%E6%B1%A0%E9%83%BD%E9%80%89%E4%BA%86%E4%BA%9B%E4%BB%80%E4%B9%88"><span class="nav-text"> 资产池：都选了些什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AF%8F%E5%B9%B4%E6%80%8E%E4%B9%88%E9%80%89%E5%87%BA%E6%9C%80%E4%BC%98%E7%BB%84%E5%90%88"><span class="nav-text"> 每年怎么选出最优组合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B9%B0%E5%85%A5%E4%B9%8B%E5%90%8E%E6%80%8E%E4%B9%88%E7%AE%A1%E7%90%86"><span class="nav-text"> 买入之后怎么管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B6%8B%E5%8A%BF%E4%BF%9D%E6%8A%A4%E6%9C%80%E9%87%8D%E8%A6%81%E7%9A%84%E6%9C%BA%E5%88%B6"><span class="nav-text"> 趋势保护（最重要的机制）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%8D%E5%B9%B3%E8%A1%A1"><span class="nav-text"> 再平衡</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B4%E4%BD%93%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="nav-text"> 整体运行流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9E%E6%B5%8B%E8%A1%A8%E7%8E%B0"><span class="nav-text"> 回测表现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-text"> 存在的问题</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BA%E5%8F%91%E7%82%B9"><span class="nav-text">出发点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%A0%E4%B8%AA%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5"><span class="nav-text">几个基础概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#etf-%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-text">ETF 是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9D%87%E7%BA%BFma"><span class="nav-text">均线（MA）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E6%80%A7"><span class="nav-text">相关性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9E%E6%B5%8B"><span class="nav-text">回测</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E6%9D%A1%E6%A0%B8%E5%BF%83%E9%80%BB%E8%BE%91"><span class="nav-text">三条核心逻辑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B5%84%E4%BA%A7%E6%B1%A0%E9%83%BD%E9%80%89%E4%BA%86%E4%BA%9B%E4%BB%80%E4%B9%88"><span class="nav-text">资产池：都选了些什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AF%8F%E5%B9%B4%E6%80%8E%E4%B9%88%E9%80%89%E5%87%BA%E6%9C%80%E4%BC%98%E7%BB%84%E5%90%88"><span class="nav-text">每年怎么选出最优组合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B9%B0%E5%85%A5%E4%B9%8B%E5%90%8E%E6%80%8E%E4%B9%88%E7%AE%A1%E7%90%86"><span class="nav-text">买入之后怎么管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B6%8B%E5%8A%BF%E4%BF%9D%E6%8A%A4%E6%9C%80%E9%87%8D%E8%A6%81%E7%9A%84%E6%9C%BA%E5%88%B6"><span class="nav-text">趋势保护（最重要的机制）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%8D%E5%B9%B3%E8%A1%A1"><span class="nav-text">再平衡</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B4%E4%BD%93%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="nav-text">整体运行流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9E%E6%B5%8B%E8%A1%A8%E7%8E%B0"><span class="nav-text">回测表现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-text">存在的问题</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
