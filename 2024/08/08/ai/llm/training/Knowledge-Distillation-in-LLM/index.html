@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/hexo_blog/css/main.css">
+
+
+<link rel="stylesheet" href="/hexo_blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wnma3mz.github.io","root":"/hexo_blog/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="从知识蒸馏的概念出发，介绍 LLM 中的知识蒸馏">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Knowledge Distillation in LLM">
+<meta property="og:url" content="https://wnma3mz.github.io/2024/08/08/ai/llm/training/Knowledge-Distillation-in-LLM/index.html">
+<meta property="og:site_name" content="Wnma&#39;s Blogs">
+<meta property="og:description" content="从知识蒸馏的概念出发，介绍 LLM 中的知识蒸馏">
+<meta property="og:locale">
+<meta property="article:published_time" content="2024-08-08T02:44:12.000Z">
+<meta property="article:modified_time" content="2026-04-06T14:32:19.536Z">
+<meta property="article:author" content="wnma3mz">
+<meta property="article:tag" content="LLM">
+<meta property="article:tag" content="Knowledge Distillation">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://wnma3mz.github.io/2024/08/08/ai/llm/training/Knowledge-Distillation-in-LLM/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>Knowledge Distillation in LLM | Wnma's Blogs</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="تشغيل شريط التصفح">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hexo_blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Wnma's Blogs</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/hexo_blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/hexo_blog/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/hexo_blog/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/hexo_blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-bookmark">
+
+    <a href="https://wnma3mz.github.io/bookmark/index.html" rel="section"><i class="fa fa-bookmark fa-fw"></i>书签</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/2024/08/08/ai/llm/training/Knowledge-Distillation-in-LLM/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
+      <meta itemprop="name" content="wnma3mz">
+      <meta itemprop="description" content="Day Day Up">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wnma's Blogs">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Knowledge Distillation in LLM
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建于：2024-08-08 10:44:12" itemprop="dateCreated datePublished" datetime="2024-08-08T10:44:12+08:00">2024-08-08</time>
+
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="عُدل：2026-04-06 22:32:19" itemprop="dateModified" datetime="2026-04-06T22:32:19+08:00">2026-04-06</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/PaperReading/" itemprop="url" rel="index"><span itemprop="name">PaperReading</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>从知识蒸馏的概念出发，介绍 LLM 中的知识蒸馏</p>
+<span id="more"></span>
+<h2 id="outlines">Outlines</h2>
+<ul>
+<li>Knowledge Distillation（知识蒸馏）
+<ul>
+<li>是什么</li>
+<li>怎么做</li>
+</ul></li>
+<li>LLM 中的 KD 及其变种
+<ul>
+<li>Reverse KD</li>
+<li>JS 散度</li>
+</ul></li>
+<li>论文
+<ul>
+<li>MiniLLM: Knowledge Distillation of Large Language Models</li>
+<li>Revisiting Knowledge Distillation for Autoregressive Language
+Models</li>
+</ul></li>
+</ul>
+<h2 id="知识蒸馏是什么">知识蒸馏是什么</h2>
+<p><strong>蒸馏的作用</strong>：清除绝大部分杂质和杀死微生物</p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/kdinLLM/kd1.png" /></p>
+<p><strong>知识</strong>：高度抽象的概念</p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/kdinLLM/kd2.png" /></p>
+<p>在深度学习模型里面，将其具象为：</p>
+<ul>
+<li><p>模型权重：若干固定好的矩阵</p></li>
+<li><p>模型输出：模型对于输入的响应</p></li>
+</ul>
+<p>更具体的，对于一个三分类模型，模型最后输出的是 logits。</p>
+<p>如：<span class="math inline">\([0.2, 0.3,
+0.5]\)</span>，这个可以被认为是模型知识的一种。</p>
+<h2 id="怎么做知识蒸馏">怎么做知识蒸馏</h2>
+<h3 id="经典的训练方法">经典的训练方法</h3>
+<p>三分类任务，对于输入 <span class="math inline">\(X\)</span></p>
+<p>真实标签是第 0 个类别，会将其 one-hot 为 <span
+class="math inline">\([1, 0, 0]\)</span></p>
+<p>模型是输出是 <span class="math inline">\([0.1, 0.5,
+0.4]\)</span>，</p>
+<p>模型在训练的时候，是让模型的输出去拟合该 one-hot
+结果，计算方法如交叉熵损失。</p>
+<h3 id="知识蒸馏的训练方法">知识蒸馏的训练方法</h3>
+<p>2014 年，Hinton 提出了<a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/1503.02531">知识蒸馏</a>的概念，旨在将大模型（教师）的知识传递给小模型（学生），以提升学生的能力，实现模型压缩的目的。</p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/kdinLLM/kd3.png" /></p>
+<p>步骤：</p>
+<ol type="1">
+<li><p>教师通过某个任务训练后（确保教师是收敛的）。</p></li>
+<li><p>学生在训练同样任务时，对于同一个输入，老师和学生会有不同的输出，令学生的输出去拟合教师的输出。计算方法如
+<a
+target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence">Kullback–Leibler
+divergence</a>（KL 散度）。</p></li>
+</ol>
+<p>注：此时学生的输出同时会拟合 one-hot 标签，交叉熵。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> torch.nn.functional <span class="keyword">as</span> F</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>kl_loss = nn.KLDivLoss(reduction=<span class="string">&quot;batchmean&quot;</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>stu_logits = torch.randn(<span class="number">3</span>, <span class="number">5</span>, requires_grad=<span class="literal">True</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>tea_logits = torch.randn(<span class="number">3</span>, <span class="number">5</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="built_in">input</span> = F.log_softmax(stu_logits, dim=<span class="number">1</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>target = F.softmax(tea_logits, dim=<span class="number">1</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>output = kl_loss(<span class="built_in">input</span>, target)</span><br></pre></td></tr></table></figure>
+<p><strong>KL 散度</strong></p>
+<p>衡量概率分布 <span
+class="math inline">\(Q\)</span>（学生）与第二个参考概率分布 <span
+class="math inline">\(P\)</span> （教师）有多大的不同。或者说，<span
+class="math inline">\(P\)</span> 相对于 <span
+class="math inline">\(Q\)</span> 的相对熵</p>
+<p><span class="math display">\[
+L(Q, P) = {\displaystyle D_{\text{KL}}(P\parallel Q)=\sum _{x\in
+{\mathcal {X}}}P(x)\ \log \left({\frac {\ P(x)\ }{Q(x)}}\right).}
+\]</span></p>
+<p>其中，<span class="math inline">\(P\)</span> 和 <span
+class="math inline">\(Q\)</span> 作为概率分布可以用一个温度 <span
+class="math inline">\(T\)</span> 来 平滑/尖锐 分布</p>
+<h3 id="知识蒸馏的变种">知识蒸馏的变种</h3>
+<p>由于「知识」可以包含太多东西，所以只要跟模型相关的东西，都可以被认为是知识。</p>
+<ul>
+<li><p>本身的权重 → 模型融合</p></li>
+<li><p>中间层输出的特征 → 预训练后做下游的 Fine-tuning</p></li>
+<li><p>最后一层输出的 logits → 经典知识蒸馏</p></li>
+<li><p>模型输出的 logits 被解码成硬标签（类别信息、文本…） →
+“隐式”的知识蒸馏</p></li>
+</ul>
+<h3 id="知识蒸馏的-q-a">知识蒸馏的 Q &amp; A</h3>
+<p>Q：为什么是 KL 散度？</p>
+<p>A：如果有更好、更简单的度量方式也可以替换，比如 <a
+target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Wasserstein_metric">Wasserstein
+metric</a></p>
+<p>Q：为什么是大模型做教师？</p>
+<p>A：</p>
+<ul>
+<li><p>以压缩作为出发点，就是需要更好效果的模型来引导。</p></li>
+<li><p>也可以是同等尺寸的模型做教师，只要能够在某项任务上表现足够好。关键词：自蒸馏</p></li>
+</ul>
+<p>Q：预先训练一个教师模型有点麻烦</p>
+<p>A：</p>
+<ul>
+<li><p>消除掉这个过程。就类似于在线学习，关键词：在线蒸馏。</p></li>
+<li><p>大模型通常收敛的会比小模型更快。（同时训练，并不是不训练）</p></li>
+<li><p>教师模型通常会被“好心人”提供出来，做的工作不需要太多</p></li>
+</ul>
+<p>Q：为什么用最后一层的 logits，中间层的行不行？</p>
+<p>A：</p>
+<ul>
+<li><p>可以用中间层，但会有些限制，需要引入额外的优化。关键词：特征蒸馏</p></li>
+<li><p>架构可能不一样</p></li>
+<li><p>选哪些层蒸馏哪些层。比如教师有20层，学生有10层，哪些层的输出作为拟合对象是不好确定的。</p></li>
+</ul>
+<p>Q：其他 tricks</p>
+<p>A：</p>
+<ul>
+<li><p>温度 temperature，超参数。</p></li>
+<li><p>KL 的权重系数</p></li>
+<li><p>蒸馏的计算方法</p></li>
+</ul>
+<p>……</p>
+<h2 id="在-llm-中的知识蒸馏"><a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.13116">在 LLM 中的知识蒸馏</a></h2>
+<p>由于算力、数据等原因，开源模型往往弱于闭源模型。知识蒸馏是一种可能缩小这两者差距的手段。</p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/kdinLLM/kd4.png" /></p>
+<h3 id="三种方法">三种方法</h3>
+<ul>
+<li><p>针对特定领域，固定知识种子(凝练出若干特定的问题），用闭源模型生成更多的数据（隐式的知识蒸馏）。（PASS）</p></li>
+<li><p>模型压缩（PASS）</p></li>
+<li><p>自我提升（self-improvement）</p>
+<ul>
+<li><p>SFT 模型生成数据标注后作为 DPO 的的训练数据，<a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.18290">https://arxiv.org/abs/2305.18290</a></p></li>
+<li><p>用开源模型生成 Q &amp; A 作为 SFT 训练数据， <a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.08464">https://arxiv.org/abs/2406.08464</a></p></li>
+</ul></li>
+</ul>
+<p>注：自我提升在蒸馏里面又被叫做自蒸馏</p>
+<h2 id="llm-sft-中蒸馏的类别">LLM SFT 中蒸馏的类别</h2>
+<p>LLM：在超多分类任务上进行训练的大尺寸模型。所以，相较于经典知识蒸馏，会有一些不同。</p>
+<p>$p(x) $ 表示教师输出，$q(x) $ 表示学生输出</p>
+<ul>
+<li><p>Forward KD（经典蒸馏）: <span
+class="math display">\[D_{\text{KL}}(P\parallel Q)=\sum_x p(x) \log
+[\frac{p(x)}{q(x)}]\]</span></p></li>
+<li><p>Reverse KD: <span class="math display">\[D_{\text{KL}}(Q\parallel
+P)=\sum_x q(x) \log [\frac{q(x)}{p(x)}]\]</span></p></li>
+<li><p>JS Divergence: <span
+class="math display">\[\frac{1}{2}(D_{\text{KL}}(P\parallel
+Q)+D_{\text{KL}}(Q\parallel P))\]</span></p></li>
+</ul>
+<p>其他：对于模型中间层的输出进行对齐</p>
+<h2 id="reverse-kd">Reverse KD</h2>
+<p>来源：<a
+target="_blank" rel="noopener" href="https://agustinus.kristia.de/techblog/2016/12/21/forward-reverse-kl/">https://agustinus.kristia.de/techblog/2016/12/21/forward-reverse-kl/</a></p>
+<h3 id="回顾-kl-损失">回顾 KL 损失</h3>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/kdinLLM/kd5.png" /></p>
+<p>蓝线（教师）是 p(x)，绿线（学生）是 q(x)。KL 散度的就是计算
+加权平均值。</p>
+<p><span class="math display">\[
+\sum_x p(x) \log [\frac{p(x)}{q(x)}]
+\]</span></p>
+<p>那么，出现下面的情况时，KL 散度就会特别大（蓝线两个凸的区域）</p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/kdinLLM/kd6.png" /></p>
+<p>绿线拟合蓝线之后，会让绿线分布的更广泛（原来没有值的地方有值了）。</p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/kdinLLM/kd7.png" /></p>
+<p>导致不应该有值的地方有值，对于某些输入x，有些类别概率应该为 0。</p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/kdinLLM/kd8.gif" /></p>
+<h3 id="方法">方法</h3>
+<p>Reverse KL 就是将 <span class="math inline">\(p\)</span>、<span
+class="math inline">\(q\)</span> 位置互换，</p>
+<p><span class="math display">\[
+\sum_x q(x) \log [\frac{q(x)}{p(x)}]
+\]</span></p>
+<p>此时，再看刚刚这张图</p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/kdinLLM/kd9.png" /></p>
+<p><span class="math inline">\(q(x)\)</span>
+此时作为权重，会让绿线凸出来的地方更凹一些。但不会学习蓝色右侧凸的地方。</p>
+<p>在 LLM 上，类别标签特别多，Forward KL 会使得各个 token id
+更加“均匀”。</p>
+<ul>
+<li><p>好：可以增加多样性</p></li>
+<li><p>坏：学生可能会学到一些低质量的概率标签，从而导致生成幻觉和低质量文本</p></li>
+</ul>
+<p>Reverse KL</p>
+<ul>
+<li><p>好：避免了低质量标签</p></li>
+<li><p>坏：过于相信学生的预测，如果学生的预测不是最优的（即绿色在蓝色的第二个凸出），会变差</p></li>
+</ul>
+<h3 id="小结">小结</h3>
+<ul>
+<li><p>监督学习用 Forward KL → SFT 模型做教师</p></li>
+<li><p>强化学习用 Reverse KL → DPO 训练模型做学生</p></li>
+</ul>
+<p>Q：为什么 RL 用 Reverse KL？</p>
+<p>A：强化学习在训练的时候，会“克隆”模型并更新原来的模型。如果用 Forward
+KL，在某些情况下 KL 值过高会导致模型不收敛。而 Reverse KL
+一种更加稳妥的方式，能够保证 KL
+散度足够小。且由于模型是克隆的，所以教师和学生的预测结果会比较相像，即不会出现学生预测在教师的次优上。</p>
+<p><a
+target="_blank" rel="noopener" href="https://www.reddit.com/r/reinforcementlearning/comments/kcqbhv/hi_all_can_anyone_please_help_me_understand_how/">https://www.reddit.com/r/reinforcementlearning/comments/kcqbhv/hi_all_can_anyone_please_help_me_understand_how/</a></p>
+<p><strong>Summary</strong></p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/kdinLLM/kd10.png" /></p>
+<p>Jenson–Shannon (JS) Divergence</p>
+<p><span class="math display">\[
+\frac{1}{2}(D_{\text{KL}}(P\parallel Q)+D_{\text{KL}}(Q\parallel P)）
+\]</span></p>
+<p><span class="math display">\[
+\frac{1}{2}(\sum p(x) \log\frac{2p(x)}{p(x)+q(x)} + \sum
+q(x)\log\frac{2q(x)}{p(x)+q(x)})
+\]</span></p>
+<p>KL 是非对称的， JS 把两种分布的 KL
+都算一遍，以此取得了对称的结果。</p>
+<p>引入对称性带来的缺点：</p>
+<ul>
+<li><p>计算复杂度高：计算了两次 KL Divergence</p></li>
+<li><p>数值稳定性差：如果 P 和 Q
+的概率分布差异较大，可能会出现零或非常小的概率值。比如 p(x) 某项为
+0</p></li>
+</ul>
+<p>且非对称性有时候不是一种缺点，是一个 feature。</p>
+<p><strong>非对称性</strong>带来了什么：保留「预测分布」到「目标分布」的方向信息</p>
+<ul>
+<li>在真实分布 P 中常见的事件，如果在预测分布 Q
+中的概率较低。有助于模型优化。</li>
+</ul>
+<p>注：还有一个 <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2302.13344">TVD</a>
+方法，类似于 JS 度量，但它用 L1 范数代替了 KL</p>
+<h2 id="forward-kd经典蒸馏">Forward KD（经典蒸馏）</h2>
+<p>Baby Llama：<a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2308.02019">https://arxiv.org/abs/2308.02019</a></p>
+<p>Less is More：<a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2210.01351">https://arxiv.org/abs/2210.01351</a>
+（Bert）</p>
+<p>分两阶段蒸馏</p>
+<ul>
+<li><p>Stage 1: 蒸馏训练最后一层</p></li>
+<li><p>Stage 2: 蒸馏训练中间层，每层有一个 loss</p></li>
+</ul>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/kdinLLM/kd11.png" /></p>
+<h2 id="reverse-kd-1">Reverse KD</h2>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2306.08543">论文</a></p>
+<p><a
+target="_blank" rel="noopener" href="https://github.com/microsoft/LMOps/tree/main/minillm">论文代码</a></p>
+<h3 id="动机">动机</h3>
+<p>void regions (空洞区域)</p>
+<p>where 𝑝′ can be real data distribution (word-level KD) or teacher
+distribution 𝑝 (sequence-level KD). Though widely used, KL[𝑝||𝑞𝜃] has
+been shown to overestimate the void regions of 𝑝 in language generation
+tasks when 𝑞𝜃 is insufficiently expressive to cover all the modes of
+𝑝′</p>
+<p>. KD for LLMs fits the case because LLMs perform various tasks in a
+generative manner, such that the low-capacity student models cannot
+perfectly imitate the complex language generation distribution of the
+teacher models or humans.</p>
+<ul>
+<li><p>模式覆盖问题：真实数据（或教师模型）的分布 ( p )
+可能包含很多复杂和多样的语言模式，而学生模型 ( $q_{} $ )
+受限于模型复杂度或训练数据的局限，可能无法涵盖所有模式。</p></li>
+<li><p>生成质量问题：这会使得训练过程中更多关注这些难以覆盖的模式，导致学生模型无法有效提高在常见模式上的生成质量。</p></li>
+</ul>
+<h3 id="方法-1">方法</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">tea_probs = F.softmax(tea_logits, dim=-<span class="number">1</span>, dtype=torch.float32)</span><br><span class="line">stu_probs = F.log_softmax(logits, dim=-<span class="number">1</span>, dtype=torch.float32)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 标准 KD</span></span><br><span class="line">kd_loss = (tea_probs*(tea_probs.log()-stu_probs)).<span class="built_in">sum</span>()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 化简</span></span><br><span class="line">kd_loss = (tea_probs*std_probs).<span class="built_in">sum</span>()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 低方差估计，a low-variance estimation KD</span></span><br><span class="line"><span class="comment"># http://joschu.net/blog/kl-approx.html</span></span><br><span class="line">log_ratio = (stu_probs - tea_probs.log())</span><br><span class="line">kd_loss = log_ratio.<span class="built_in">float</span>().exp() - <span class="number">1</span> - log_ratio</span><br></pre></td></tr></table></figure>
+<h4 id="approximating-kl-divergence"><a
+target="_blank" rel="noopener" href="http://joschu.net/blog/kl-approx.html">Approximating KL
+Divergence</a></h4>
+<p>标准的 KD</p>
+<p><span class="math display">\[
+KL[q, p] = \sum_x q(x) \log [\frac{q(x)}{p(x)}] = E_{ x \sim q}[\log
+\frac{q(x)}{p(x)} ]
+\]</span></p>
+<p>由于精确计算需要花费更多的内存，所以期望对齐进行估计，从而减少计算量。</p>
+<p><strong>Step 1</strong></p>
+<p>一种直接的思路是直接去掉最外面的 <span
+class="math inline">\(q(x)\)</span>，演变成了</p>
+<p><span class="math display">\[
+-\log\frac{p(x)}{q(x)}
+\]</span></p>
+<p>因为舍去了系数，它会使得方差变高</p>
+<p><strong>Step 2</strong></p>
+<p>加上平方，降低方差</p>
+<p><span class="math display">\[
+\frac{1}{2}(\log\frac{p(x)}{q(x)})^2
+\]</span></p>
+<p><strong>Step 3</strong></p>
+<p>依赖数学背景公式</p>
+<p><span class="math display">\[
+\log(x)\leq x-1
+\]</span></p>
+<p>但保证该公式 <span class="math inline">\(&gt;= 0\)</span>
+时，就有</p>
+<p><span class="math display">\[
+(x-1) - \log(x) \geq 0
+\]</span></p>
+<p>把这里 <span class="math inline">\(x\)</span> 换成 <span
+class="math inline">\(p(x) / q(x)\)</span> 就得到了代码的计算方法</p>
+<h4 id="optimization-with-policy-gradient">Optimization with Policy
+Gradient</h4>
+<p>优化公式</p>
+<p><span
+class="math display">\[\theta=\arg\min\limits_{\theta}\mathcal{L}(\theta)=\arg\min\limits_{\theta}\mathrm{KL}[q_{\theta}||p]=\arg\operatorname*{min}_{\theta}\left[-\operatorname*{lim}_{x\sim
+p_{\infty},y\sim
+q_{\theta}}\log{\frac{p(y|x)}{q_{\theta}(y|x)}}\right]\]</span></p>
+<p>Policy Gradient Theore 求导</p>
+<p><span
+class="math display">\[\nabla{\mathcal{L}}(\theta)=-\operatorname*{\mathbb{E}}_{\mathbf{x}\sim
+p_{\mathbf{x}},y\sim
+q_{\theta}(\,\cdot\,|\mathbf{x})}\sum_{t=1}^T(R_{t}-1)\nabla\log
+q_{\theta}(y_{t}|\mathbf{y}_{&lt;t},\mathbf{x}),\]</span></p>
+<p>其中，$R_t $ 是每一步生成的累积，衡量每一步的生成质量</p>
+<p><span
+class="math display">\[R_{t}=\sum_{t^{\prime}=t}^{T}\log\,\frac{p(y_{t^{\prime}}|y_{&lt;t^{\prime}},\mathbf{x})}{q_{\theta}(y_{t^{\prime}}|y_{&lt;t^{\prime}},\mathbf{x})}\]</span></p>
+<p>三个优化</p>
+<p><strong>优化1：Single-Step Decomposition</strong></p>
+<p>单步生成的质量都很重要，所以把单步生成和累积生成拆开，并直接计算单步生成的梯度</p>
+$$
+<span class="math display">\[\begin{array}{c}
+\nabla \mathcal{L}(\theta) = \mathbb{E}_{x\sim p_{x},y\sim
+q_{\theta}(\,\cdot\,|x)}\left[-\sum\limits_{t=1}^{T}\nabla\mathbb{E}_{p_{t}\sim
+q_{\theta}(t)}[r_t]\right]+{\mathbb{E}}_{x\sim p_{x},y\sim
+q_{\theta}(\,\cdot\,|x)}\left[-\sum\limits_{t=1}^{T}R_{t+1}\nabla\log
+q_{\theta}(y_{t}|\bm{y}_{&lt;t},\bm{x})\right]\\
+
+=(\nabla \mathcal{L})_\mathrm{single}+(\nabla
+\mathcal{L})_{\mathrm{Long}}
+\end{array}\]</span>
+<p>$$</p>
+<p><strong>优化2：Teacher-Mixed Sampling</strong></p>
+<p>教师生成的句子可能会重复，所以用教师和学生的混合分布来代替原有的教师分布
+(px)，并且用 $$ 来控制强度。</p>
+<p><span
+class="math display">\[\tilde{p}(y_{t}\,|\,y_{&lt;\,t},x)=\alpha\cdot
+p(y_{t}\,|\,y_{&lt;\,t},x)+(1-\alpha)\cdot
+q_{\theta}(y_{t}\,|\,y_{&lt;\,t},x),\]</span></p>
+<p>即，</p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/kdinLLM/kd17.png" /></p>
+<p><strong>优化3：Length Normalization</strong></p>
+<p>模型会为了更低的损失，容易“偷懒”生成短文本。为了消除长度影响，加入长短文本的归一化操作</p>
+<p><span
+class="math display">\[R_{t+1}^{\mathrm{Norm}}=\frac{1}{T-t-1}\sum_{t^{\prime}=t+1}^{T}\log\frac{p(y_{t^{\prime}}|y_{&lt;t^{\prime}},\mathbf{x})}{q_{\theta}(y_{t^{\prime}}|y_{&lt;t^{\prime}},\mathbf{x})}.\]</span></p>
+<p>综上，最后的公式为</p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/kdinLLM/kd19.png" /></p>
+<p>结果</p>
+<ul>
+<li><p>SFT w/o KD：标准 SFT</p></li>
+<li><p>KD： 标准 SFT 加入 KD 损失，又称为 Word-Level KD</p></li>
+<li><p>SeqKD：句子级别的KD，在教师模型生成的数据上进行微调</p></li>
+<li><p>MINILLM：提出的方法，reverse KD + PPO + 若干 tricks</p></li>
+</ul>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/kdinLLM/kd20.png" /></p>
+<h3 id="消融实验">消融实验</h3>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/kdinLLM/kd21.png" /></p>
+<h2 id="解耦知识蒸馏">解耦知识蒸馏</h2>
+<p><a
+target="_blank" rel="noopener" href="https://openreview.net/pdf/73503af2a5797fb9046f0fa702c3a4d5ea5ceaf8.pdf">论文</a></p>
+<h3 id="背景知识">背景知识</h3>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2203.08679">论文</a></p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/kdinLLM/kd22.png" /></p>
+<p>把 KD 拆成了两个部分，DKD+TKD。其中，</p>
+<ul>
+<li><p>TKD 指的是 ground truth 对应的 logits （TCKD）</p></li>
+<li><p>DKD 指的是非 ground truth 对应的 logits（NCKD）</p></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> torch.nn.functional <span class="keyword">as</span> F</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>kl_loss = nn.KLDivLoss(reduction=<span class="string">&quot;batchmean&quot;</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>stu_logits = torch.randn(<span class="number">3</span>, <span class="number">5</span>, requires_grad=<span class="literal">True</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>tea_logits = torch.randn(<span class="number">3</span>, <span class="number">5</span>)</span><br></pre></td></tr></table></figure>
+<p>经典 KD</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="built_in">input</span> = F.log_softmax(stu_logits, dim=<span class="number">1</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>target = F.softmax(tea_logits, dim=<span class="number">1</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>loss = kl_loss(<span class="built_in">input</span>, target)</span><br></pre></td></tr></table></figure>
+<p>DKD + TKD <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>dkd_tea = F.softmax(tea_logits - <span class="number">1000</span> * gt_mask, dim=<span class="number">1</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>dkd_stu = F.log_softmax(stu_logits - <span class="number">1000</span> * gt_mask, dim=<span class="number">1</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>dkd_loss = kl_loss(dkd_stu, dkd_tea)</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>tea_probs = F.softmax(tea_logits)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>stu_probs = F.softmax(stu_logits)</span><br><span class="line"><span class="comment"># 假设 tea_probs = [0.4, 0.3, 0.3], stu_probs = [0.2, 0.6, 0.2]</span></span><br><span class="line"><span class="comment"># target 为第 0 个位置</span></span><br><span class="line"><span class="comment"># tkd_loss  为 [0.4, 0.6] 和 [0.2, 0.8] 它们的 kl 散度</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>output = w1*dkd_loss + w2*tkd_loss</span><br></pre></td></tr></table></figure></p>
+<p>TKD：样本的“难度”信息</p>
+<blockquote>
+<p>transfers the knowledge concerning the “difficulty” of training
+samples.</p>
+</blockquote>
+<p>DKD：样本的“暗知识”</p>
+<blockquote>
+<p>is the prominent reason why logit distillation works but is greatly
+suppressed.</p>
+</blockquote>
+<p><strong>结果</strong></p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/kdinLLM/kd23.png" /></p>
+<p>特征蒸馏：在模型中间层增加度量的损失函数</p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/kdinLLM/kd24.png" /></p>
+<p><a
+target="_blank" rel="noopener" href="https://github.com/megvii-research/mdistiller/blob/master/mdistiller/distillers/DKD.py">代码</a></p>
+<h3 id="发现">发现</h3>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/kdinLLM/kd25.png" /></p>
+<ul>
+<li><p>大部分情况下，非 ground truth
+（DKD）蒸馏效果会优于其他效果</p></li>
+<li><p>小部分情况（难学的情况），加上 TKD 会更好。</p></li>
+</ul>
+<h3 id="方法-2">方法</h3>
+<p>hard to learn 的定义</p>
+<p><span class="math display">\[
+p_{g_{t}}^{t}=\frac{\exp(z_{g_{t}}^{t})}{\sum_{j=1}^{C}\exp(z_{j}^{t})},p_{\backslash
+g_{t}}^{t}=\frac{\sum_{k=1,k\neq
+g_{t}}^{C}\exp(z_{k}^{t})}{\sum_{j=1}^{C}\exp(z_{j}^{t})}
+\]</span></p>
+<p>对于每个要预测的 token，教师模型会输出一个 logits，gt 表示 ground
+truth 的 token，而 表示非 ground truth 的 token。</p>
+<p>补充，</p>
+<ul>
+<li><p><span class="math inline">\([0.1,0.9]\)</span> 好学</p></li>
+<li><p><span class="math inline">\([0.5,0.5]\)</span> 不好学</p></li>
+</ul>
+<p>所以，这里是对 logits 取 softmax 后的结果（概率），UNC 为 非 ground
+truth token 的 概率值之和。其越大则表示这个越难学。</p>
+<p>通过 UNC 这个指标变成成 TKD 的系数，自适应的训练。</p>
+<h3 id="结果">结果</h3>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/kdinLLM/kd27.png" /></p>
+<h2 id="写在最后">写在最后</h2>
+<p>「你好，」后面可以接「世界」，可以接「北京」。</p>
+<p>在训练的时候，有两条样本「你好，世界」和「你好，北京」。这个时候，对于任意一条样本，「世界」和「北京」的
+one-shot 编码是 [0, 1, 0] 和 [0, 0, 1] 。</p>
+<p>两个不确定：</p>
+<ul>
+<li><p>无法控制模型最终学到的概率分布是什么样的</p></li>
+<li><p>不知道最佳分布是什么</p></li>
+</ul>
+<p>知识蒸馏：</p>
+<ul>
+<li><p>可以更容易控制学生模型学习哪种分布</p></li>
+<li><p>教师模型会输出一种更好的分布</p></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>wnma3mz
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wnma3mz.github.io/2024/08/08/ai/llm/training/Knowledge-Distillation-in-LLM/" title="Knowledge Distillation in LLM">https://wnma3mz.github.io/2024/08/08/ai/llm/training/Knowledge-Distillation-in-LLM/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hexo_blog/tags/LLM/" rel="tag"># LLM</a>
+              <a href="/hexo_blog/tags/Knowledge-Distillation/" rel="tag"># Knowledge Distillation</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2024/07/21/ai/llm/inference/LLM%E7%A1%AC%E4%BB%B6%E6%AF%94%E4%BB%B7/" rel="prev" title="LLM 不同硬件推理速度对比">
+      <i class="fa fa-chevron-left"></i> LLM 不同硬件推理速度对比
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2024/09/05/ai/llm/inference/LLM%E6%8E%A8%E7%90%86%E7%9B%B8%E5%85%B3%E8%AE%A1%E7%AE%97%E5%85%AC%E5%BC%8F/" rel="next" title="LLM的推理相关计算公式">
+      LLM的推理相关计算公式 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#outlines"><span class="nav-text">Outlines</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9F%A5%E8%AF%86%E8%92%B8%E9%A6%8F%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-text">知识蒸馏是什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%8E%E4%B9%88%E5%81%9A%E7%9F%A5%E8%AF%86%E8%92%B8%E9%A6%8F"><span class="nav-text">怎么做知识蒸馏</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%8F%E5%85%B8%E7%9A%84%E8%AE%AD%E7%BB%83%E6%96%B9%E6%B3%95"><span class="nav-text">经典的训练方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9F%A5%E8%AF%86%E8%92%B8%E9%A6%8F%E7%9A%84%E8%AE%AD%E7%BB%83%E6%96%B9%E6%B3%95"><span class="nav-text">知识蒸馏的训练方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9F%A5%E8%AF%86%E8%92%B8%E9%A6%8F%E7%9A%84%E5%8F%98%E7%A7%8D"><span class="nav-text">知识蒸馏的变种</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9F%A5%E8%AF%86%E8%92%B8%E9%A6%8F%E7%9A%84-q-a"><span class="nav-text">知识蒸馏的 Q &amp; A</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8-llm-%E4%B8%AD%E7%9A%84%E7%9F%A5%E8%AF%86%E8%92%B8%E9%A6%8F"><span class="nav-text">在 LLM 中的知识蒸馏</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E7%A7%8D%E6%96%B9%E6%B3%95"><span class="nav-text">三种方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#llm-sft-%E4%B8%AD%E8%92%B8%E9%A6%8F%E7%9A%84%E7%B1%BB%E5%88%AB"><span class="nav-text">LLM SFT 中蒸馏的类别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reverse-kd"><span class="nav-text">Reverse KD</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9E%E9%A1%BE-kl-%E6%8D%9F%E5%A4%B1"><span class="nav-text">回顾 KL 损失</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95"><span class="nav-text">方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#forward-kd%E7%BB%8F%E5%85%B8%E8%92%B8%E9%A6%8F"><span class="nav-text">Forward KD（经典蒸馏）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reverse-kd-1"><span class="nav-text">Reverse KD</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A8%E6%9C%BA"><span class="nav-text">动机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95-1"><span class="nav-text">方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#approximating-kl-divergence"><span class="nav-text">Approximating KL
+Divergence</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#optimization-with-policy-gradient"><span class="nav-text">Optimization with Policy
+Gradient</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B6%88%E8%9E%8D%E5%AE%9E%E9%AA%8C"><span class="nav-text">消融实验</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E8%80%A6%E7%9F%A5%E8%AF%86%E8%92%B8%E9%A6%8F"><span class="nav-text">解耦知识蒸馏</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%83%8C%E6%99%AF%E7%9F%A5%E8%AF%86"><span class="nav-text">背景知识</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%91%E7%8E%B0"><span class="nav-text">发现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95-2"><span class="nav-text">方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E6%9E%9C"><span class="nav-text">结果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E6%9C%80%E5%90%8E"><span class="nav-text">写在最后</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="wnma3mz"
+      src="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
+  <p class="site-author-name" itemprop="name">wnma3mz</p>
+  <div class="site-description" itemprop="description">Day Day Up</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/hexo_blog/archives/">
+        
+          <span class="site-state-item-count">89</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/hexo_blog/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/hexo_blog/tags/">
+          
+        <span class="site-state-item-count">162</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wnma3mz" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wnma3mz" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wnma3mz@gmail.com" title="E-Mail → mailto:wnma3mz@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wnma3mz</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='99' src="/hexo_blog/lib/canvas-nest/canvas-nest-nomobile.min.js"></script>
+  <script src="/hexo_blog/lib/anime.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/hexo_blog/js/utils.js"></script>
+
+<script src="/hexo_blog/js/motion.js"></script>
+
+
+<script src="/hexo_blog/js/schemes/muse.js"></script>
+
+
+<script src="/hexo_blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/hexo_blog/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme    : 'forest',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
