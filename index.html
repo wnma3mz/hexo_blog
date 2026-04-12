@@ -194,92 +194,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/2026/04/12/humanized/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
-      <meta itemprop="name" content="wnma3mz">
-      <meta itemprop="description" content="Day Day Up">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wnma's Blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/hexo_blog/2026/04/12/humanized/" class="post-title-link" itemprop="url">LLM的推理加速-DFlash：用扩散模型做投机解码</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建于：2026-04-12 14:00:00 / عُدل：14:09:17" itemprop="dateCreated datePublished" datetime="2026-04-12T14:00:00+08:00">2026-04-12</time>
-
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/Survey/" itemprop="url" rel="index"><span itemprop="name">Survey</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>EAGLE-3
-的自回归草稿器遇到了速度-质量的对立：想让草稿更准，就得加深模型；模型越深，串行生成的代价越大。DFlash
-的回答是：<strong>用块扩散模型替换自回归草稿器</strong>，单次前向传播并行生成整个
-block，让草稿成本与投机长度彻底脱钩。相比 EAGLE-3，加速约
-<strong>2.5×</strong>，平均接受长度提升约 <strong>2.2×</strong>。</p>
-<ul>
-<li><p>论文：<a
-target="_blank" rel="noopener" href="https://arxiv.org/abs/2602.06036">https://arxiv.org/abs/2602.06036</a></p></li>
-<li><p>代码：<a
-target="_blank" rel="noopener" href="https://github.com/z-lab/dflash">https://github.com/z-lab/dflash</a></p></li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/hexo_blog/2026/04/12/humanized/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/2026/04/12/ai/llm/inference/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-DFlash/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1043,6 +957,88 @@ Attention 到线性 Attention 的数学推导、DeltaNet
   
   
 
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/2025/09/06/engineering/linux/Bash%E6%93%8D%E4%BD%9C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
+      <meta itemprop="name" content="wnma3mz">
+      <meta itemprop="description" content="Day Day Up">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wnma's Blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/hexo_blog/2025/09/06/engineering/linux/Bash%E6%93%8D%E4%BD%9C/" class="post-title-link" itemprop="url">Bash 操作查询</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建于：2025-09-06 17:33:52" itemprop="dateCreated datePublished" datetime="2025-09-06T17:33:52+08:00">2025-09-06</time>
+
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="عُدل：2026-04-06 22:54:52" itemprop="dateModified" datetime="2026-04-06T22:54:52+08:00">2026-04-06</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/Reference/" itemprop="url" rel="index"><span itemprop="name">Reference</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>Bash 操作查询</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/hexo_blog/2025/09/06/engineering/linux/Bash%E6%93%8D%E4%BD%9C/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
 
   
   <nav class="pagination">
@@ -1114,7 +1110,7 @@ Attention 到线性 Attention 的数学推导、DeltaNet
       <div class="site-state-item site-state-posts">
           <a href="/hexo_blog/archives/">
         
-          <span class="site-state-item-count">92</span>
+          <span class="site-state-item-count">91</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
