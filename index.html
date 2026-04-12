@@ -194,6 +194,178 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/2026/04/12/humanized/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
+      <meta itemprop="name" content="wnma3mz">
+      <meta itemprop="description" content="Day Day Up">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wnma's Blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/hexo_blog/2026/04/12/humanized/" class="post-title-link" itemprop="url">LLM的推理加速-DFlash：用扩散模型做投机解码</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建于：2026-04-12 14:00:00 / عُدل：14:09:17" itemprop="dateCreated datePublished" datetime="2026-04-12T14:00:00+08:00">2026-04-12</time>
+
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/Survey/" itemprop="url" rel="index"><span itemprop="name">Survey</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>EAGLE-3
+的自回归草稿器遇到了速度-质量的对立：想让草稿更准，就得加深模型；模型越深，串行生成的代价越大。DFlash
+的回答是：<strong>用块扩散模型替换自回归草稿器</strong>，单次前向传播并行生成整个
+block，让草稿成本与投机长度彻底脱钩。相比 EAGLE-3，加速约
+<strong>2.5×</strong>，平均接受长度提升约 <strong>2.2×</strong>。</p>
+<ul>
+<li><p>论文：<a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2602.06036">https://arxiv.org/abs/2602.06036</a></p></li>
+<li><p>代码：<a
+target="_blank" rel="noopener" href="https://github.com/z-lab/dflash">https://github.com/z-lab/dflash</a></p></li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/hexo_blog/2026/04/12/humanized/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/2026/04/12/ai/llm/inference/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-DFlash/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
+      <meta itemprop="name" content="wnma3mz">
+      <meta itemprop="description" content="Day Day Up">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wnma's Blogs">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/hexo_blog/2026/04/12/ai/llm/inference/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-DFlash/" class="post-title-link" itemprop="url">LLM的推理加速-DFlash：用扩散模型做投机解码</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建于：2026-04-12 14:00:00 / عُدل：16:00:39" itemprop="dateCreated datePublished" datetime="2026-04-12T14:00:00+08:00">2026-04-12</time>
+
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/Survey/" itemprop="url" rel="index"><span itemprop="name">Survey</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>EAGLE-3
+的自回归草稿器卡在了“速度”和“质量”的对立里：想让草稿更准，就得加深模型；模型越深，串行生成的代价越大。DFlash
+的回答很直接：<strong>用块扩散模型替换自回归草稿器</strong>，单次前向传播并行生成整个
+block，让草稿成本与投机长度彻底脱钩。相比 EAGLE-3，加速约
+<strong>2.5×</strong>，平均接受长度提升约 <strong>2.2×</strong>。</p>
+<ul>
+<li><p>论文：<a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2602.06036">https://arxiv.org/abs/2602.06036</a></p></li>
+<li><p>代码：<a
+target="_blank" rel="noopener" href="https://github.com/z-lab/dflash">https://github.com/z-lab/dflash</a></p></li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/hexo_blog/2026/04/12/ai/llm/inference/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-DFlash/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/2026/04/08/ai/deep-learning/FFN%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0%E4%B8%8EMoE%E6%BC%94%E8%BF%9B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -296,7 +468,7 @@ SwiGLU，外部用路由决定激活哪些专家。</p>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/hexo_blog/2026/04/06/ai/deep-learning/%E4%BC%98%E5%8C%96%E5%99%A8%E4%BB%8ESGD%E5%88%B0Muon/" class="post-title-link" itemprop="url">优化器的前世今生：从 SGD 到 Muon</a>
+            <a href="/hexo_blog/2026/04/06/ai/deep-learning/%E4%BC%98%E5%8C%96%E5%99%A8%E4%BB%8ESGD%E5%88%B0Muon/" class="post-title-link" itemprop="url">从 SGD 到 Muon</a>
         </h2>
 
         <div class="post-meta">
@@ -305,11 +477,17 @@ SwiGLU，外部用路由决定激活哪些专家。</p>
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建于：2026-04-06 00:00:00 / عُدل：22:54:52" itemprop="dateCreated datePublished" datetime="2026-04-06T00:00:00+08:00">2026-04-06</time>
+              <time title="创建于：2026-04-06 00:00:00" itemprop="dateCreated datePublished" datetime="2026-04-06T00:00:00+08:00">2026-04-06</time>
 
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="عُدل：2026-04-09 22:36:28" itemprop="dateModified" datetime="2026-04-09T22:36:28+08:00">2026-04-09</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -373,7 +551,7 @@ Muon——这条演进路线的背后，其实是一个反复被追问的同一�
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/hexo_blog/2026/04/06/ai/deep-learning/%E5%BD%92%E4%B8%80%E5%8C%96%E5%B1%82%E7%9A%84%E6%BC%94%E8%BF%9B/" class="post-title-link" itemprop="url">深度学习的稳定剂：归一化层的演进</a>
+            <a href="/hexo_blog/2026/04/06/ai/deep-learning/%E5%BD%92%E4%B8%80%E5%8C%96%E5%B1%82%E7%9A%84%E6%BC%94%E8%BF%9B/" class="post-title-link" itemprop="url">归一化层的演进</a>
         </h2>
 
         <div class="post-meta">
@@ -382,11 +560,17 @@ Muon——这条演进路线的背后，其实是一个反复被追问的同一�
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建于：2026-04-06 00:00:00 / عُدل：22:54:52" itemprop="dateCreated datePublished" datetime="2026-04-06T00:00:00+08:00">2026-04-06</time>
+              <time title="创建于：2026-04-06 00:00:00" itemprop="dateCreated datePublished" datetime="2026-04-06T00:00:00+08:00">2026-04-06</time>
 
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="عُدل：2026-04-09 22:36:17" itemprop="dateModified" datetime="2026-04-09T22:36:17+08:00">2026-04-09</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -451,7 +635,7 @@ Muon——这条演进路线的背后，其实是一个反复被追问的同一�
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/hexo_blog/2026/04/05/ai/deep-learning/%E4%BD%8D%E7%BD%AE%E7%BC%96%E7%A0%81%E7%9A%84%E5%89%8D%E4%B8%96%E4%BB%8A%E7%94%9F/" class="post-title-link" itemprop="url">位置编码的前世今生：从 正弦位置编码 到 RoPE 再到 DroPE</a>
+            <a href="/hexo_blog/2026/04/05/ai/deep-learning/%E4%BD%8D%E7%BD%AE%E7%BC%96%E7%A0%81%E7%9A%84%E5%89%8D%E4%B8%96%E4%BB%8A%E7%94%9F/" class="post-title-link" itemprop="url">从 正弦位置编码 到 RoPE 再到 DroPE</a>
         </h2>
 
         <div class="post-meta">
@@ -469,7 +653,7 @@ Muon——这条演进路线的背后，其实是一个反复被追问的同一�
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="عُدل：2026-04-06 22:54:52" itemprop="dateModified" datetime="2026-04-06T22:54:52+08:00">2026-04-06</time>
+                <time title="عُدل：2026-04-09 22:36:22" itemprop="dateModified" datetime="2026-04-09T22:36:22+08:00">2026-04-09</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -859,174 +1043,10 @@ Attention 到线性 Attention 的数学推导、DeltaNet
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/2025/09/06/engineering/linux/Bash%E6%93%8D%E4%BD%9C/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
-      <meta itemprop="name" content="wnma3mz">
-      <meta itemprop="description" content="Day Day Up">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wnma's Blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/hexo_blog/2025/09/06/engineering/linux/Bash%E6%93%8D%E4%BD%9C/" class="post-title-link" itemprop="url">Bash 操作查询</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建于：2025-09-06 17:33:52" itemprop="dateCreated datePublished" datetime="2025-09-06T17:33:52+08:00">2025-09-06</time>
-
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="عُدل：2026-04-06 22:54:52" itemprop="dateModified" datetime="2026-04-06T22:54:52+08:00">2026-04-06</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/Reference/" itemprop="url" rel="index"><span itemprop="name">Reference</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Bash 操作查询</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/hexo_blog/2025/09/06/engineering/linux/Bash%E6%93%8D%E4%BD%9C/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/2025/09/06/engineering/linux/Git%E6%93%8D%E4%BD%9C/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
-      <meta itemprop="name" content="wnma3mz">
-      <meta itemprop="description" content="Day Day Up">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wnma's Blogs">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/hexo_blog/2025/09/06/engineering/linux/Git%E6%93%8D%E4%BD%9C/" class="post-title-link" itemprop="url">Git 操作查询</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建于：2025-09-06 10:33:52" itemprop="dateCreated datePublished" datetime="2025-09-06T10:33:52+08:00">2025-09-06</time>
-
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="عُدل：2026-04-06 22:54:52" itemprop="dateModified" datetime="2026-04-06T22:54:52+08:00">2026-04-06</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/hexo_blog/categories/Reference/" itemprop="url" rel="index"><span itemprop="name">Reference</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Git 操作查询</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/hexo_blog/2025/09/06/engineering/linux/Git%E6%93%8D%E4%BD%9C/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/hexo_blog/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/hexo_blog/page/9/">9</a><a class="extend next" rel="next" href="/hexo_blog/page/2/"><i class="fa fa-angle-right" aria-label="الصفحة التالية"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/hexo_blog/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/hexo_blog/page/10/">10</a><a class="extend next" rel="next" href="/hexo_blog/page/2/"><i class="fa fa-angle-right" aria-label="الصفحة التالية"></i></a>
   </nav>
 
 
@@ -1094,7 +1114,7 @@ Attention 到线性 Attention 的数学推导、DeltaNet
       <div class="site-state-item site-state-posts">
           <a href="/hexo_blog/archives/">
         
-          <span class="site-state-item-count">90</span>
+          <span class="site-state-item-count">92</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1107,7 +1127,7 @@ Attention 到线性 Attention 的数学推导、DeltaNet
       <div class="site-state-item site-state-tags">
             <a href="/hexo_blog/tags/">
           
-        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-count">29</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

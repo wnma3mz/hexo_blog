@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/hexo_blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/hexo_blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/hexo_blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/hexo_blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/hexo_blog/css/main.css">
+
+
+<link rel="stylesheet" href="/hexo_blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wnma3mz.github.io","root":"/hexo_blog/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="EAGLE-3 的自回归草稿器卡在了“速度”和“质量”的对立里：想让草稿更准，就得加深模型；模型越深，串行生成的代价越大。DFlash 的回答很直接：用块扩散模型替换自回归草稿器，单次前向传播并行生成整个 block，让草稿成本与投机长度彻底脱钩。相比 EAGLE-3，加速约 2.5×，平均接受长度提升约 2.2×。  论文：https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;2602.06036 代码：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LLM的推理加速-DFlash：用扩散模型做投机解码">
+<meta property="og:url" content="https://wnma3mz.github.io/2026/04/12/ai/llm/inference/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-DFlash/index.html">
+<meta property="og:site_name" content="Wnma&#39;s Blogs">
+<meta property="og:description" content="EAGLE-3 的自回归草稿器卡在了“速度”和“质量”的对立里：想让草稿更准，就得加深模型；模型越深，串行生成的代价越大。DFlash 的回答很直接：用块扩散模型替换自回归草稿器，单次前向传播并行生成整个 block，让草稿成本与投机长度彻底脱钩。相比 EAGLE-3，加速约 2.5×，平均接受长度提升约 2.2×。  论文：https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;2602.06036 代码：">
+<meta property="og:locale">
+<meta property="article:published_time" content="2026-04-12T06:00:00.000Z">
+<meta property="article:modified_time" content="2026-04-12T08:00:39.287Z">
+<meta property="article:author" content="wnma3mz">
+<meta property="article:tag" content="Speculative Decoding">
+<meta property="article:tag" content="Diffusion">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://wnma3mz.github.io/2026/04/12/ai/llm/inference/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-DFlash/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>LLM的推理加速-DFlash：用扩散模型做投机解码 | Wnma's Blogs</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="تشغيل شريط التصفح">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/hexo_blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Wnma's Blogs</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/hexo_blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/hexo_blog/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/hexo_blog/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/hexo_blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-bookmark">
+
+    <a href="https://wnma3mz.github.io/bookmark/index.html" rel="section"><i class="fa fa-bookmark fa-fw"></i>书签</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://wnma3mz.github.io/2026/04/12/ai/llm/inference/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-DFlash/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
+      <meta itemprop="name" content="wnma3mz">
+      <meta itemprop="description" content="Day Day Up">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wnma's Blogs">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          LLM的推理加速-DFlash：用扩散模型做投机解码
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建于：2026-04-12 14:00:00 / عُدل：16:00:39" itemprop="dateCreated datePublished" datetime="2026-04-12T14:00:00+08:00">2026-04-12</time>
+
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/hexo_blog/categories/Survey/" itemprop="url" rel="index"><span itemprop="name">Survey</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>EAGLE-3
+的自回归草稿器卡在了“速度”和“质量”的对立里：想让草稿更准，就得加深模型；模型越深，串行生成的代价越大。DFlash
+的回答很直接：<strong>用块扩散模型替换自回归草稿器</strong>，单次前向传播并行生成整个
+block，让草稿成本与投机长度彻底脱钩。相比 EAGLE-3，加速约
+<strong>2.5×</strong>，平均接受长度提升约 <strong>2.2×</strong>。</p>
+<ul>
+<li><p>论文：<a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2602.06036">https://arxiv.org/abs/2602.06036</a></p></li>
+<li><p>代码：<a
+target="_blank" rel="noopener" href="https://github.com/z-lab/dflash">https://github.com/z-lab/dflash</a></p></li>
+</ul>
+<span id="more"></span>
+<h1 id="前置知识">前置知识</h1>
+<ul>
+<li>投机解码：<a href="/hexo_blog/2025/08/30/ai/llm/inference/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-%E6%8A%95%E6%9C%BA%E8%A7%A3%E7%A0%81/" title="LLM的推理加速-投机解码">LLM的推理加速-投机解码</a></li>
+<li>EAGLE 系列：<a href="/hexo_blog/2025/05/12/ai/llm/inference/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-EAGLE%E4%B8%89%E9%83%A8%E6%9B%B2/" title="LLM的推理加速-EAGLE三部曲">LLM的推理加速-EAGLE三部曲</a></li>
+</ul>
+<hr />
+<h1 id="eagle-的天花板">EAGLE 的天花板</h1>
+<p>回顾 EAGLE-3：Draft Model 是 1 层
+Decoder，<strong>自回归</strong>地逐个生成草稿 token。投机长度为 <span
+class="math inline">\(\gamma\)</span> 时，草稿阶段的总耗时是：</p>
+<p><span class="math display">\[T_{\text{draft}}^{\text{AR}} = \gamma
+\cdot t_{\text{step}}\]</span></p>
+<p>但这带来了一个矛盾：</p>
+<ul>
+<li>想让草稿<strong>更准</strong>（提高平均接受长度）→ 需要加深 Draft
+Model，<span class="math inline">\(t_{\text{step}}\)</span> 变大</li>
+<li>想让草稿<strong>更快</strong> → 需要减小 <span
+class="math inline">\(t_{\text{step}}\)</span>，只能用更浅的模型</li>
+</ul>
+<p>两个目标天然对立，在自回归框架内无法同时满足。EAGLE-3
+实测的平均接受长度（AAL）在 Qwen3-8B 上约为
+3.4，继续扩大训练数据或加深模型，收益都趋于饱和。</p>
+<p><strong>如果草稿生成不再是串行的呢？</strong></p>
+<p>把 <span class="math inline">\(\gamma\)</span> 个 token
+一次性并行生成出来，草稿成本就变成：</p>
+<p><span class="math display">\[T_{\text{draft}}^{\text{parallel}} =
+t_{\text{parallel}}\]</span></p>
+<p>无论 <span class="math inline">\(\gamma\)</span>
+取多大，耗时都是一次前向传播。这样就可以用更深的模型（提升质量），而不必担心延迟随
+<span class="math inline">\(\gamma\)</span> 线性增长。</p>
+<p>这就是 DFlash
+的出发点。接下来的问题是：<strong>什么模型能在单次前向传播中并行生成多个
+token？</strong></p>
+<hr />
+<h1 id="扩散语言模型">扩散语言模型</h1>
+<p>语言扩散模型提供了答案。图像扩散（DDPM）的核心思路是从噪声出发多步去噪，迁移到语言上，“噪声”变成“被
+Mask 的 token”，“去噪”变成“预测被 Mask
+的位置”。关键在于，<strong>每步都可以并行预测所有被 Mask
+的位置</strong>，不受自回归串行限制。</p>
+<h2 id="llada从-mask-出发的扩散语言模型">LLaDA：从 Mask
+出发的扩散语言模型</h2>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2502.09992">LLaDA（2502.09992）</a>
+是一个从头预训练的扩散语言模型，是理解 DFlash 的基础。</p>
+<h3 id="训练">训练</h3>
+<p><strong>加噪：一次采样，不是 T 步链</strong></p>
+<p>标准图像扩散（DDPM）需要走完整的 T 步马尔科夫加噪链（通常
+T=1000）。LLaDA
+的做法更简单：对每条训练样本，<strong>只采样一个随机时间步</strong>
+<span class="math inline">\(t \sim \text{Uniform}(0,
+1)\)</span>，然后一次性按比例 <span class="math inline">\(t\)</span> 把
+token 替换为 <code>[M]</code>，就得到了训练输入。</p>
+<p>本质上，LLaDA 把“扩散”简化成了“随机 mask”，时间步 <span
+class="math inline">\(t\)</span> 是一个连续值，代表 mask
+的比例，没有离散的多步链。</p>
+<p>以句子 <code>The cat sat on the mat</code> 为例，假设采样到 <span
+class="math inline">\(t = 0.5\)</span>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">原句：  The   cat   sat   on   the   mat</span><br><span class="line">加噪：  [M]   cat   [M]   on   the   [M]</span><br></pre></td></tr></table></figure>
+<p>每条样本独立采样 <span
+class="math inline">\(t\)</span>，因此模型会见过各种各样的 mask 程度：从
+<span class="math inline">\(t \approx 0\)</span>（几乎不
+mask，相当于做完形填空）到 <span class="math inline">\(t \approx
+1\)</span>（几乎全 mask，相当于从头生成）。</p>
+<p><strong>为什么不像 BERT 固定 15%？</strong></p>
+<p>BERT 的 15% 是经验值，只让模型学会“在大量上下文下猜少数词”。LLaDA
+的随机比例让模型同时学会两件事：<span class="math inline">\(t\)</span>
+小时，模型练习精细的局部填补；<span class="math inline">\(t\)</span>
+大时，模型练习在上下文很少时凭借全局语义生成。推理阶段的多步去噪正好会用到这两种能力：前几步
+mask 比例大，后几步 mask 比例小，模型要覆盖整个区间。</p>
+<p><strong>预测与 Loss</strong></p>
+<p>将加噪序列输入模型，<strong>一次前向传播</strong>同时预测所有
+<code>[M]</code> 位置的原始 token。因为没有因果 mask，每个
+<code>[M]</code> 都能看到序列中所有未被 mask 的
+token（双向注意力）。</p>
+<p>训练 loss 只在被 mask 的位置计算交叉熵：</p>
+<p><span class="math display">\[\mathcal{L}(\theta) = -\mathbb{E}_{t,\,
+x_t} \left[ \frac{1}{L} \sum_{i:\, x_t^i = \text{M}} \log p_\theta(x_0^i
+\mid x_t) \right]\]</span></p>
+<p>上例中，loss 只由位置 1（The）、位置 3（sat）、位置
+6（mat）贡献；位置 2、4、5 不参与。</p>
+<h3 id="推理">推理</h3>
+<p>推理时需要事先确定输出长度 <span
+class="math inline">\(L\)</span>，从一条<strong>全 Mask
+序列</strong>出发，经过 <span class="math inline">\(T\)</span>
+步去噪逐步恢复。</p>
+<p>以生成 6 个 token（<code>on the mat . It was</code>）为例，共 <span
+class="math inline">\(T = 3\)</span> 步：</p>
+<p><strong>Step 1</strong>（<span class="math inline">\(t=1\)</span>，全
+Mask）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：  [M]  [M]  [M]  [M]  [M]  [M]</span><br><span class="line">预测：   on   the  mat   .   It   was</span><br><span class="line">置信：  0.9  0.8  0.9  0.6  0.5  0.5</span><br></pre></td></tr></table></figure>
+<p>当前步要解锁 <span class="math inline">\(\lfloor L \cdot (1 - s/T)
+\rfloor = \lfloor 6 \times (2/3) \rfloor = 4\)</span> 个
+token，保留置信度最高的 4 个：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">输出：   on   the  mat   .   [M]  [M]</span><br></pre></td></tr></table></figure>
+<p><strong>Step 2</strong>（<span
+class="math inline">\(t=0.67\)</span>）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：   on   the  mat   .   [M]  [M]</span><br><span class="line">预测（并行预测所有 [M] 位置）：     It   was</span><br><span class="line">置信：                            0.7  0.8</span><br></pre></td></tr></table></figure>
+<p>当前步要解锁 <span class="math inline">\(\lfloor 6 \times (1/3)
+\rfloor = 2\)</span> 个，但只剩 2 个 <code>[M]</code>，保留置信度高的 1
+个：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">输出：   on   the  mat   .   [M]  was</span><br></pre></td></tr></table></figure>
+<p><strong>Step 3</strong>（<span
+class="math inline">\(t=0.33\)</span>）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：   on   the  mat   .   [M]  was</span><br><span class="line">预测（并行预测所有 [M] 位置）：     It</span><br><span class="line">置信：                            0.85</span><br></pre></td></tr></table></figure>
+<p>最后一步，全部接受：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">最终：   on   the  mat   .   It   was</span><br></pre></td></tr></table></figure>
+<p><strong>置信度策略是推理时的超参，不是训练出来的</strong></p>
+<p>每一步要解锁多少个 token，由公式 <span
+class="math inline">\(n_{\text{unmask}} = \lfloor L(1 - s/T)
+\rfloor\)</span> 决定。它会随时间步 <span
+class="math inline">\(s\)</span>
+动态变化，越到后期解锁得越少，也越谨慎。模型输出的 softmax
+概率直接作为置信度，阈值由这个公式隐式确定，不需要额外训练任何参数。</p>
+<p>这和训练过程是对得上的：训练时模型见过各种 mask 比例，从 <span
+class="math inline">\(t\approx 1\)</span> 的“几乎全 mask”到 <span
+class="math inline">\(t\approx 0\)</span> 的“几乎不
+mask”都有；推理的每一步，恰好对应训练时的某个 <span
+class="math inline">\(t\)</span> 值。模型在高 mask
+比例下学会“大胆猜”，在低 mask
+比例下学会“精细填”，两种能力一起支撑了多步去噪。</p>
+<p>论文实验也证实，低置信度重 Mask 策略显著优于随机重 Mask（例如在 GSM8K
+上 70.0 vs 21.3）。</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-DFlash/fig1_llada_generation.svg"
+alt="LLaDA 的生成过程（逆向扩散）" />
+<figcaption aria-hidden="true">LLaDA 的生成过程（逆向扩散）</figcaption>
+</figure>
+<p>在 2.3T token 上预训练后，LLaDA 8B 在
+MMLU（65.5）、GSM8K（78.3）、HumanEval（59.8）上与同规模自回归模型相当，部分任务超越。</p>
+<p><strong>关键特性</strong>：每一步都是<strong>一次前向传播处理整个序列</strong>，所有
+<code>[M]</code>
+并行预测。代价也很明确：需要事先确定输出长度，而且要走多步迭代（通常
+<span class="math inline">\(T = 10 \sim 20\)</span> 步）。</p>
+<h2
+id="块扩散把自回归和扩散融合起来">块扩散：把自回归和扩散融合起来</h2>
+<p>纯扩散语言模型有一个实际问题：<strong>生成时需要提前确定输出长度</strong>，不如自回归模型灵活。而且其生成质量（尤其是长序列）通常弱于自回归模型。</p>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2503.09573">Block
+Diffusion（BD3-LM，2503.09573）</a>
+提出了一种折中方案：<strong>块间自回归，块内扩散</strong>。</p>
+<h3 id="核心思路">核心思路</h3>
+<p>将序列划分为 <span class="math inline">\(B\)</span> 个 block，每个
+block 含 <span class="math inline">\(L&#39;\)</span> 个 token：</p>
+<ul>
+<li><strong>块间</strong>：自回归——第 <span
+class="math inline">\(b\)</span> 个 block 以前面所有干净 block
+为条件，按顺序逐 block 生成</li>
+<li><strong>块内</strong>：扩散——每个 block 内部并行预测所有 <span
+class="math inline">\(L&#39;\)</span> 个 token，不受位置顺序限制</li>
+</ul>
+<p>以 12 个 token 分成 3 个 block（每块 4 个）为例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Block 1：the  quick  brown  fox</span><br><span class="line">Block 2：jumps  over  the  lazy</span><br><span class="line">Block 3：dog  sits  down  here</span><br></pre></td></tr></table></figure>
+<h3 id="训练-1">训练</h3>
+<h4 id="attention-mask-的精确设计">Attention Mask 的精确设计</h4>
+<p>块扩散的核心在于一套三层组合的 Attention
+Mask，同时编码了「块内双向」和「块间因果」两种约束。</p>
+<p>BD3-LM 把序列中的 token 分为两类：<strong>干净
+token</strong>（前面已完成的 block <span
+class="math inline">\(x^{&lt;b}\)</span>）和<strong>加噪
+token</strong>（当前 block <span
+class="math inline">\(x_t^b\)</span>）。针对这两类 token
+之间的交互，定义了三个子 mask：</p>
+<ul>
+<li><span
+class="math inline">\(M_{\text{BD}}\)</span>（Block-Diagonal）：加噪
+token 之间的自注意力，只能看到同一 block 内的其他加噪 token</li>
+<li><span class="math inline">\(M_{\text{OBC}}\)</span>（Offset
+Block-Causal）：加噪 token 对干净 token
+的跨块注意力，只能看到前面所有干净 block</li>
+<li><span
+class="math inline">\(M_{\text{BC}}\)</span>（Block-Causal）：干净 token
+的注意力，只能看到同 block 内以及前面 block 的 token（标准因果）</li>
+</ul>
+<p>完整 Attention Mask 的结构：</p>
+<p><span class="math display">\[M_{\text{full}} = \begin{bmatrix}
+M_{\text{BD}} &amp; M_{\text{OBC}} \\ 0 &amp; M_{\text{BC}}
+\end{bmatrix}\]</span></p>
+<p>用矩阵示意（3 个 block，每块 3 个 token，加噪 block = Block 2，干净
+block = Block 1 + Block 3 已完成部分）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">             B1t1 B1t2 B1t3 | B2t1 B2t2 B2t3 | B3t1 B3t2 B3t3</span><br><span class="line">             ← 干净 Block1 → | ← 加噪 Block2 → | ← 干净 Block3 →</span><br><span class="line"></span><br><span class="line">B1t1(干净) → [  1    1    1  |  0    0    0   |  0    0    0  ]  ← M_BC: 只看本块</span><br><span class="line">B1t2(干净) → [  1    1    1  |  0    0    0   |  0    0    0  ]</span><br><span class="line">B1t3(干净) → [  1    1    1  |  0    0    0   |  0    0    0  ]</span><br><span class="line">B2t1(加噪) → [  1    1    1  |  1    1    1   |  0    0    0  ]  ← M_OBC(看前块) + M_BD(看本块)</span><br><span class="line">B2t2(加噪) → [  1    1    1  |  1    1    1   |  0    0    0  ]</span><br><span class="line">B2t3(加噪) → [  1    1    1  |  1    1    1   |  0    0    0  ]</span><br><span class="line">B3t1(干净) → [  1    1    1  |  1    1    1   |  1    1    1  ]  ← M_BC: 看所有前块</span><br><span class="line">B3t2(干净) → [  1    1    1  |  1    1    1   |  1    1    1  ]</span><br><span class="line">B3t3(干净) → [  1    1    1  |  1    1    1   |  1    1    1  ]</span><br></pre></td></tr></table></figure>
+<p>关键点：<strong>加噪 block（Block 2）的每个 token
+都能看到所有干净的前置 block（Block 1），以及本 block 内的全部加噪
+token（双向）</strong>，但看不到后面的
+block。这让块内去噪时能充分利用前文语义，同时块内各位置并行预测。</p>
+<h4 id="训练时每个-block-独立采样噪声比例">训练时每个 block
+独立采样噪声比例</h4>
+<p>训练一条样本时，<strong>每个 block 独立采样自己的噪声时间步</strong>
+<span class="math inline">\(t_b \sim \text{Uniform}(0,
+1)\)</span>，互不干扰。这样一次前向传播就同时训练了所有 block
+的去噪能力，效率比逐 block 分开训练高约 20–25%。</p>
+<p>以 3 个 block 的样本为例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Block 1：t₁ = 0.8 → [M]   [M]   brown [M]    （80% 被 mask）</span><br><span class="line">Block 2：t₂ = 0.3 → jumps [M]   the   lazy    （30% 被 mask）</span><br><span class="line">Block 3：t₃ = 0.6 → [M]   sits  [M]   [M]    （60% 被 mask）</span><br></pre></td></tr></table></figure>
+<p>模型在一次前向传播中，同时以各 block 的干净前置内容为条件，预测三个
+block 中被 mask 的位置，loss 在所有被 mask 的位置上累加：</p>
+<p><span class="math display">\[\mathcal{L} = \sum_{b=1}^{B}
+\mathbb{E}_{t_b,\, x_{t_b}^b} \left[ \sum_{i:\, x_{t_b,i}^b = \text{M}}
+\log p_\theta(x_0^{b,i} \mid x_{t_b}^b,\, x^{&lt;b})
+\right]\]</span></p>
+<p>注意这里 <span class="math inline">\(x^{&lt;b}\)</span> 是该 block
+前面所有 block
+的<strong>干净</strong>版本。训练时模型始终以干净上下文为条件预测当前
+block，这和推理时的行为完全一致。</p>
+<h4 id="噪声调度按-block-大小优化裁剪范围">噪声调度：按 block
+大小优化裁剪范围</h4>
+<p>BD3-LM 的另一个细节是，mask 比例并非完全均匀采样，而是对每种 block
+大小 <span class="math inline">\(L&#39;\)</span>
+单独优化一个“裁剪窗口”<span class="math inline">\([\beta,
+\omega]\)</span>，在这个区间内均匀采样 <span
+class="math inline">\(t\)</span>，区间外设为 0 或
+1。这样可以降低梯度方差，稳定训练。实验发现：</p>
+<ul>
+<li><span class="math inline">\(L&#39; = 4\)</span>：使用 <span
+class="math inline">\([0, 1]\)</span>（不裁剪）</li>
+<li><span class="math inline">\(L&#39; = 16\)</span>：使用 <span
+class="math inline">\([0.3, 0.8]\)</span></li>
+<li><span class="math inline">\(L&#39; = 128\)</span>：使用 <span
+class="math inline">\([0.5, 1.0]\)</span>（倾向于高噪声）</li>
+</ul>
+<h3 id="推理kv-cache-跨-block-传递">推理：KV Cache 跨 block 传递</h3>
+<p>推理时逐 block 生成，每个 block
+内部走多步扩散去噪，完成后<strong>把该 block 的 KV Cache
+缓存起来</strong>，直接传给下一个
+block，避免对前置内容重复计算注意力。</p>
+<p><span class="math display">\[x_{\text{noisy}},\; K^b,\; V^b
+\;\leftarrow\; x_\theta(x_{t}^b,\; K^{1:b-1},\; V^{1:b-1})\]</span></p>
+<p>以生成 <code>jumps over the lazy dog sits down here</code>（2 个
+block，每块 4 token）为例：</p>
+<p><strong>生成 Block 1</strong>（无前置上下文）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">初始：  [M]  [M]  [M]  [M]</span><br><span class="line"></span><br><span class="line">扩散去噪（多步，置信度高的先解锁，解锁后不再重新 mask）：</span><br><span class="line">  步1：  [M]   [M]   the   [M]    （“the” 置信最高，先解锁）</span><br><span class="line">  步2：  jumps [M]   the   lazy   （再解锁两个）</span><br><span class="line">  步3：  jumps over  the   lazy   ← Block 1 完成，缓存 K¹, V¹</span><br></pre></td></tr></table></figure>
+<p><strong>生成 Block 2</strong>（以 Block 1 的 KV Cache 为条件）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">K¹, V¹ 已缓存（来自 Block 1 的 jumps over the lazy）</span><br><span class="line"></span><br><span class="line">初始：  [M]  [M]  [M]  [M]</span><br><span class="line"></span><br><span class="line">扩散去噪（每步 Attention 直接复用 K¹, V¹，无需重算 Block 1）：</span><br><span class="line">  步1：  dog  [M]   [M]  [M]</span><br><span class="line">  步2：  dog  sits  [M]  [M]</span><br><span class="line">  步3：  dog  sits  down here  ← Block 2 完成，缓存 K², V²</span><br></pre></td></tr></table></figure>
+<p>最终输出：<code>jumps over the lazy dog sits down here</code></p>
+<p><strong>“解锁后不再重新 mask”</strong>（Carry-Over
+Unmasking）是一个重要约束：块内一旦某个 token
+被解锁，后续去噪步骤就不会把它重新变回 <code>[M]</code>。这和 LLaDA
+的“低置信度重 Mask”策略不同。LLaDA 是全序列扩散，需要通过重 Mask
+迭代修正；BD3-LM 因为有块间因果依赖，一旦某个 block
+完成，就必须保持稳定，才能作为下一个 block 的可靠上下文。</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-DFlash/fig2_block_diffusion.svg"
+alt="Block Diffusion：块间 AR，块内扩散" />
+<figcaption aria-hidden="true">Block Diffusion：块间
+AR，块内扩散</figcaption>
+</figure>
+<h3 id="与纯扩散的对比">与纯扩散的对比</h3>
+<p>纯扩散模型（如 LLaDA）从全 mask 出发，没有任何上下文，必须多步迭代（T
+= 10～20
+步）才能逐步收敛。块扩散在生成质量和灵活性上比纯扩散更好，但块内仍然是扩散过程，需要若干步去噪。</p>
+<p>这里先澄清一点：<strong>块扩散本身并不等于单步生成</strong>。它只是把扩散的范围从全序列缩小到了一个
+block，具体还要走几步，取决于实现。DFlash
+借用了这套架构，但它为什么能做到单步，要到下一节才能说清楚。</p>
+<h3 id="关键权衡">关键权衡</h3>
+<ul>
+<li><span class="math inline">\(L&#39;=1\)</span>：退化为纯自回归（逐
+token 生成，无并行）</li>
+<li><span
+class="math inline">\(L&#39;=L\)</span>：退化为纯扩散（全序列一次生成，无法动态延伸长度）</li>
+<li>中间值（<span class="math inline">\(L&#39;=4\sim
+16\)</span>）：块内并行提速，块间 KV Cache 保持灵活性和生成质量</li>
+</ul>
+<p>BD3-LM 在 LM1B 上的困惑度：<span
+class="math inline">\(L&#39;=4\)</span> 达到 28.23，<span
+class="math inline">\(L&#39;=16\)</span> 为
+30.60，均优于同类扩散模型（MDLM 31.78），且不需要提前固定序列长度。</p>
+<hr />
+<h1
+id="dflash把块扩散变成投机解码的草稿器">DFlash：把块扩散变成投机解码的草稿器</h1>
+<p>回到最初的问题：既然扩散模型能一次并行生成 <span
+class="math inline">\(\gamma\)</span> 个 token，为什么 DFlash 不直接用
+LLaDA 这样的纯扩散模型，或者直接照搬块扩散？</p>
+<p>问题出在“多步”上。LLaDA 需要 <span class="math inline">\(T =
+10～20\)</span> 步去噪，每一步都是一次完整前向传播，草稿总成本是 <span
+class="math inline">\(T \times t_{\text{full}}\)</span>，并不比 EAGLE
+的串行生成便宜。块扩散同样有多步去噪，直接拿来用也解决不了这个问题。</p>
+<p>关键区别在条件强度。LLaDA 从全 mask
+开始，几乎是在“凭空生成”，所以只能靠多轮迭代一点点收敛。投机解码却完全不是这个场景：每次生成草稿时，<strong>前缀（prompt
++ 已生成内容）已经给全了</strong>，当前 block
+的不确定性小得多，一步预测往往就够。这和块扩散里“前置 block
+已完成，并作为当前 block 的条件”其实是同一类结构。</p>
+<p>所以 DFlash 只保留块扩散最有用的部分：<strong>attention
+结构</strong>。块内双向注意力负责并行预测 <span
+class="math inline">\(\gamma\)</span>
+个位置，块间因果结构负责和投机解码的左到右验证对齐。至于扩散里的加噪、去噪和多轮迭代，在这个场景里都被拿掉了。</p>
+<p>因此，DFlash 的 Draft Model 虽然沿用了块扩散的 attention
+架构，但<strong>训练目标是直接的 token
+级交叉熵，推理时也是单次前向传播直接取
+logits</strong>，没有任何迭代去噪步骤。它本质上是一个借用了块扩散
+attention mask 的并行预测器，草稿成本真正压缩到 <span
+class="math inline">\(1 \times t_{\text{draft}}\)</span>，与 <span
+class="math inline">\(\gamma\)</span> 无关。</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-DFlash/fig3_draft_cost_compare.svg"
+alt="投机解码草稿成本对比（γ=8 示意）" />
+<figcaption aria-hidden="true">投机解码草稿成本对比（γ=8
+示意）</figcaption>
+</figure>
+<h2 id="架构设计">架构设计</h2>
+<p>DFlash 的 Draft Model 是一个 <strong>5 层
+Transformer</strong>（Qwen3-Coder-30B 使用 8 层），与 Target Model 共享
+token embedding 和 LM Head。</p>
+<p><strong>关键创新：多层特征注入到每层 KV Cache</strong></p>
+<p><img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-DFlash/arch.png" /></p>
+<p>最朴素的做法，是把输入直接送进 Draft Model，让它自己完成并行预测。但
+Draft Model 只有 5 层，自身表达能力有限；反过来看，Target Model 跑完 32
+层之后，中间层隐向量里已经带着很丰富的上下文语义，例如词性、语义关联和长程依赖。这些信息，Draft
+Model 自己很难重新推一遍，Target Model 却已经算好了。</p>
+<p>DFlash 的做法就是把这些中间结果直接“喂”进 Draft
+Model，相当于给它开一条捷径。而且不是只注入一次，而是注入到每一层 KV
+里，让这条捷径在每一层都持续生效，不会随着深度增加而衰减。</p>
+<p>以 Target Model 有 32 层、hidden_size=4096、上下文长度为 10
+为例，具体步骤如下：</p>
+<p><strong>Step 1：从 Target Model 提取 3 个中间层的隐向量</strong></p>
+<p>在第 2 层到倒数第 3 层之间均匀采样 3 层（例如第 2、16、31
+层），每层输出形状为 <code>[batch, 10, 4096]</code>，共 3 份。</p>
+<p><strong>Step 2：拼接 + Projection 降维</strong></p>
+<p>把 3 份隐向量沿特征维度拼接：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[batch, 10, 4096] × 3  →  concat  →  [batch, 10, 12288]</span><br><span class="line">                          Proj(12288→4096)</span><br><span class="line">                          →  [batch, 10, 4096]   # 融合特征 g</span><br></pre></td></tr></table></figure>
+<p>Projection 是一个轻量线性层，把三层语义压缩回单份
+hidden_size，不引入额外参数量。</p>
+<p><strong>Step 3：注入到 Draft Model 每一层的 KV Cache</strong></p>
+<p>这里的注入方式值得细说。如果只是用一个没有注入的块扩散草稿器，Draft
+Model 每层的 Attention 只能在 <code>[M]</code> tokens 之间互相
+attend，外加前置 block 的 KV Cache：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">无注入时：</span><br><span class="line">  Query:  Q = [q₁, q₂, q₃]        ← 来自 [M][M][M]</span><br><span class="line">  Key:    K = [k₁, k₂, k₃]        ← 来自 [M][M][M] 自身</span><br><span class="line">  Value:  V = [v₁, v₂, v₃]</span><br><span class="line"></span><br><span class="line">  每个 [M] 只能 attend 到其他 [M]，看不到 Target 的语义</span><br></pre></td></tr></table></figure>
+<p>DFlash 把融合特征 <span class="math inline">\(g\)</span> 额外投影成
+<span class="math inline">\(K_g\)</span>、<span
+class="math inline">\(V_g\)</span>，并<strong>前置（prepend）到每一层 KV
+Cache 的头部</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">DFlash 注入后：</span><br><span class="line">  Query:  Q  = [q₁, q₂, q₃]                          ← 不变</span><br><span class="line">  Key:    K  = [k_g₁, k_g₂, k_g₃,  k₁, k₂, k₃]      ← Target特征在前，序列本身在后</span><br><span class="line">  Value:  V  = [v_g₁, v_g₂, v_g₃,  v₁, v₂, v₃]       （论文选择 prepend，append 效果也一样，</span><br><span class="line">                                                         softmax 对 K 的排列顺序不敏感）</span><br><span class="line"></span><br><span class="line">  每个 [M] 的 Query 打分对象变成 6 个 key，</span><br><span class="line">  Target 语义通过 K/V 通道直接参与每一层的 Attention 权重计算</span><br></pre></td></tr></table></figure>
+<p>这和 EAGLE-3 把 Target 特征拼在 input embedding
+上的做法有本质区别：EAGLE-3 的特征只影响第 1
+层输入，随着层加深会逐渐被稀释；DFlash 在<strong>每一层</strong>都把
+Target 特征放进 K/V，每一层 Attention 都能直接“看到” Target
+的语义，深度越深，收益越稳定。</p>
+<p><strong>与 EAGLE-3 的对比</strong></p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th></th>
+<th>EAGLE-3</th>
+<th>DFlash</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>特征注入位置</td>
+<td>只在 Draft Model 输入端（一次）</td>
+<td>Draft Model <strong>每一层</strong> KV Cache</td>
+</tr>
+<tr>
+<td>随层深度传播</td>
+<td>特征信息逐层稀释</td>
+<td>每层都能直接 attend 到 Target 特征</td>
+</tr>
+<tr>
+<td>Draft Model 深度</td>
+<td>1 层（加深收益有限）</td>
+<td>5 层（深度可扩展）</td>
+</tr>
+</tbody>
+</table>
+<p>正因为每层都有 Target 特征的直接注入，加深 Draft Model
+才能持续带来收益，而不会像 EAGLE-3 那样深度提升后接受率趋于饱和。</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-DFlash/fig4_architecture.svg"
+alt="DFlash 架构：Target Model 特征注入 Draft Model 各层" />
+<figcaption aria-hidden="true">DFlash 架构：Target Model 特征注入 Draft
+Model 各层</figcaption>
+</figure>
+<h2 id="训练位置权重衰减">训练：位置权重衰减</h2>
+<p>训练时，Draft Model 需要预测 block 内 <span
+class="math inline">\(\gamma\)</span> 个
+token。越靠后的位置越难预测，且实际上接受率也更低。DFlash
+用<strong>指数衰减权重</strong>来优先优化靠前的位置：</p>
+<p><span class="math display">\[\mathcal{L} = \sum_{k=1}^{\gamma} w_k
+\cdot \text{CE}\!\left(\hat{p}_k,\, p_k^*\right), \quad w_k =
+\exp\!\left(-\frac{k-1}{\gamma_{\text{decay}}}\right)\]</span></p>
+<table>
+<thead>
+<tr>
+<th>Block 大小 <span class="math inline">\(\gamma\)</span></th>
+<th><span class="math inline">\(\gamma_{\text{decay}}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>16</td>
+<td>7</td>
+</tr>
+<tr>
+<td>10</td>
+<td>5</td>
+</tr>
+<tr>
+<td>8</td>
+<td>4</td>
+</tr>
+</tbody>
+</table>
+<p>训练还使用了<strong>块间稀疏 Attention Mask</strong>：block 内全局
+Attention，block 间只能看到前一个 block，确保训练与推理的 Attention
+模式完全一致。</p>
+<p>训练超参数：6 epochs，AdamW，学习率 <span
+class="math inline">\(6\times 10^{-4}\)</span>，最大序列长度 3072
+tokens，每个序列随机采样 512 个 anchor 位置。</p>
+<h2 id="验证完全兼容标准投机解码">验证：完全兼容标准投机解码</h2>
+<p>DFlash
+不修改任何验证步骤，直接套用<strong>标准拒绝采样</strong>（Speculative
+Decoding 原论文的接受算法）：</p>
+<ol type="1">
+<li>Draft Model <strong>单次前向传播</strong>并行生成 <span
+class="math inline">\(\gamma\)</span> 个候选 token（一条线性序列）</li>
+<li>Target Model 并行计算每个位置的 logits</li>
+<li>按位从左到右验证，遇到第一个被拒绝的 token 则截断</li>
+<li>接受率保证：输出分布与 Target Model 直接自回归完全等价</li>
+</ol>
+<p>这是<strong>无损加速</strong>，没有任何质量妥协。</p>
+<p>把它和 EAGLE 系列放在一起看会更清楚：自回归草稿器每步只能生成一个
+token。为了提高覆盖率，只能在每个位置继续分叉，长成一棵草稿树，再用 tree
+attention 并行验证整棵树。DFlash 一步直接输出 <span
+class="math inline">\(\gamma\)</span> 个
+token，天然就是线性序列，不需要树结构，验证流程也更简单。换句话说，树是自回归草稿器为了补救串行生成缺陷才引入的结构，DFlash
+则绕开了这个补丁。</p>
+<h2 id="为什么-5-层-draft-model-比-1-层更快">为什么 5 层 Draft Model 比
+1 层更快？</h2>
+<p>这是 DFlash 最反直觉的地方。直觉上，5 层应该比 1 层慢。</p>
+<p>实际的对比：</p>
+<table>
+<colgroup>
+<col style="width: 17%" />
+<col style="width: 47%" />
+<col style="width: 35%" />
+</colgroup>
+<thead>
+<tr>
+<th>方法</th>
+<th>草稿过程</th>
+<th>实际延迟（<span class="math inline">\(\gamma=16\)</span>）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EAGLE-3 (1L)</td>
+<td>16 次串行 × 1 层前向</td>
+<td><span class="math inline">\(16 \times t_{1\text{L}}\)</span></td>
+</tr>
+<tr>
+<td>DFlash (5L)</td>
+<td>1 次并行 × 5 层前向</td>
+<td><span class="math inline">\(t_{5\text{L}}\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>由于矩阵乘法的并行性，<span class="math inline">\(t_{5\text{L}} \ll
+16 \times t_{1\text{L}}\)</span>。论文实测里，DFlash 的草稿成本低于
+EAGLE-3(16)：用 5 层换来了更低的总延迟，也换来了更高的预测质量。</p>
+<p>这里有一个值得细想的问题：既然已经有 Target Model 特征注入，用 1
+层草稿器不够吗？</p>
+<p>在 EAGLE 里，加深草稿器是两难的：1 层快，但质量有上限；加到 2
+层，每一步就多一层，<span class="math inline">\(\gamma\)</span>
+步累计下来延迟几乎翻倍，所以 EAGLE 很难跳出 1 层。到了
+DFlash，这个约束没了。不管草稿器是 1 层还是 5 层，都只需要 1
+次前向传播，加深带来的额外延迟很小。既然深度不再是主要负担，就可以用更多层做更充分的特征整合：每层变换都在继续融合
+Target 语义和块内各位置的依赖关系，对 <span
+class="math inline">\(\gamma\)</span> 个位置的联合预测也会更准。于是 5
+层比 1 层接受率更高，而延迟几乎不变，自然更划算。</p>
+<p>说白了，<strong>并行生成把“加深模型”这件事，从负担变成了收益</strong>。</p>
+<hr />
+<h1 id="实验结果">实验结果</h1>
+<h2 id="平均接受长度aal">平均接受长度（AAL）</h2>
+<p>在 Qwen3-8B 上：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>AAL（温度=0）</th>
+<th>AAL（温度=1）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EAGLE-3 (budget=16)</td>
+<td>2.96</td>
+<td>2.83</td>
+</tr>
+<tr>
+<td>EAGLE-3 (budget=60)</td>
+<td>3.40</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>DFlash（block=16）</strong></td>
+<td><strong>6.49</strong></td>
+<td><strong>5.48</strong></td>
+</tr>
+</tbody>
+</table>
+<p>DFlash 的 AAL 约为 EAGLE-3 的 <strong>2.2×</strong>。这意味着每轮
+Target Model 验证后平均接受的 token 更多，Target Model
+调用频率更低。</p>
+<figure>
+<img
+src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-DFlash/fig5_aal_bar.svg"
+alt="平均接受长度对比（Qwen3-8B，温度=0）" />
+<figcaption
+aria-hidden="true">平均接受长度对比（Qwen3-8B，温度=0）</figcaption>
+</figure>
+<h2 id="端到端加速比">端到端加速比</h2>
+<p><strong>Transformers 后端：</strong></p>
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th>DFlash 加速比</th>
+<th>vs EAGLE-3(16)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Qwen3-4B</td>
+<td><strong>4.91×</strong></td>
+<td>+2.47×</td>
+</tr>
+<tr>
+<td>Qwen3-8B</td>
+<td><strong>4.86×</strong></td>
+<td>+2.40×</td>
+</tr>
+</tbody>
+</table>
+<p>温度=1（采样模式）下：Qwen3-4B <strong>4.24×</strong>，Qwen3-8B
+<strong>4.03×</strong>。</p>
+<p><strong>SGLang 后端（B200 GPU，并发=1）：</strong></p>
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th>DFlash 加速比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Qwen3-4B（数学）</td>
+<td><strong>8.01×</strong></td>
+</tr>
+<tr>
+<td>Qwen3-8B（数学）</td>
+<td><strong>5.1×</strong></td>
+</tr>
+<tr>
+<td>Qwen3-Coder-30B</td>
+<td><strong>3.5×</strong></td>
+</tr>
+<tr>
+<td>LLaMA-3.1-8B（GSM8K）</td>
+<td><strong>2.4×</strong></td>
+</tr>
+<tr>
+<td>LLaMA-3.1-8B（HumanEval）</td>
+<td><strong>2.8×</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1
+id="diffuspec无需训练的扩散草稿器">DiffuSpec：无需训练的扩散草稿器</h1>
+<p>前面讲的是 DFlash 这条“强绑定 Target
+Model”的路线。下面再看两篇思路不同的工作：它们把扩散草稿器保持为独立模型，但也因此要额外处理和验证器之间的对齐问题。</p>
+<p><a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2510.02358">DiffuSpec（2510.02358）</a>
+是同期把扩散语言模型引入投机解码的工作。它最吸引人的地方是<strong>完全不需要额外训练</strong>，直接把一个预训练的扩散语言模型当草稿器插进去就能用。</p>
+<h2
+id="核心问题扩散是双向的验证是单向的">核心问题：扩散是双向的，验证是单向的</h2>
+<p>扩散语言模型用双向注意力，一次并行预测多个位置，输出的是对整个序列的联合分布。而投机解码的验证步骤需要的是<strong>从左到右的因果条件概率</strong>：<span
+class="math inline">\(p(t_k \mid t_1, \ldots,
+t_{k-1})\)</span>。这两者之间有根本性的对齐问题。</p>
+<p>DiffuSpec 用两个机制来弥合这个对齐缺口：</p>
+<p><strong>因果一致性路径搜索（CPS）</strong></p>
+<p>扩散模型一次前向传播后，对每个位置输出一个候选 token 集合（取 softmax
+概率最高的 top-M 个），<span class="math inline">\(\gamma\)</span>
+个位置合起来构成一个 token
+lattice。每个位置都有多个候选，所以所有位置拼起来的组合数是指数级的。</p>
+<p>问题在于：扩散模型选出的联合最优组合，不一定符合自回归的因果条件（即“用前
+<span class="math inline">\(k-1\)</span> 个 token 预测第 <span
+class="math inline">\(k\)</span> 个”）。CPS 在这个 lattice
+上做<strong>从左到右的 beam search</strong>（默认
+beam=3），对每条路径用两个分数的加权和打分：扩散模型对该 token
+的置信度，加上一个小型因果语言模型（n-gram 或轻量
+LM）对该路径因果一致性的评分。最终选出分数最高的那条路径作为草稿序列。</p>
+<p>以生成 4 个位置的草稿为例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">扩散模型输出的候选集合（每个位置 top-3）：</span><br><span class="line">  位置1: [To(0.6),  For(0.3),  The(0.1)]</span><br><span class="line">  位置2: [solve(0.7), find(0.2), get(0.1)]</span><br><span class="line">  位置3: [x(0.8),    it(0.1),   the(0.1)]</span><br><span class="line">  位置4: [,(0.5),    we(0.3),   .(0.2)]</span><br><span class="line"></span><br><span class="line">CPS beam search（beam=3）从左到右扩展：</span><br><span class="line">  步1: 保留 [To, For, The] 3条路径</span><br><span class="line">  步2: 每条路径扩展，保留综合分最高的3条：</span><br><span class="line">       [To solve, To find, For solve]</span><br><span class="line">  步3: → [To solve x, To solve it, To find x]</span><br><span class="line">  步4: → 最终选出 “To solve x ,”</span><br></pre></td></tr></table></figure>
+<p>候选集的大小根据每个位置的熵自适应调整：预测越确定的位置候选越少，越不确定的位置候选越多（上限
+<span
+class="math inline">\(M_{\max}=15\)</span>），这样可以同时兼顾搜索质量和效率。</p>
+<p><strong>自适应草稿长度（ADL）</strong></p>
+<p>草稿长度 <span class="math inline">\(\gamma\)</span>
+在推理过程中动态调整。ADL
+用指数移动平均（EMA）追踪两个信号：每轮草稿的有效生成长度 <span
+class="math inline">\(L^{\text{gen}}\)</span>（遇到 EOS
+截断）和实际被接受的长度 <span
+class="math inline">\(L^{\text{acc}}\)</span>，然后按如下规则更新下一轮的
+<span class="math inline">\(\gamma\)</span>：</p>
+<p><span class="math display">\[k_{t+1} = \text{clip}\!\left(\lfloor
+L^{\text{gen}} \rfloor + \delta \cdot \mathbf{1}[L^{\text{acc}} \geq
+L^{\text{gen}}],\ k_{\min},\ k_{\max}\right)\]</span></p>
+<p>接受率高（<span class="math inline">\(L^{\text{acc}} \geq
+L^{\text{gen}}\)</span>）时，<span class="math inline">\(\gamma\)</span>
+增加 <span class="math inline">\(\delta\)</span>（默认 10 个
+token）；接受率低时，<span class="math inline">\(\gamma\)</span> 收缩回
+<span class="math inline">\(L^{\text{gen}}\)</span> 附近。默认 <span
+class="math inline">\(k_{\min}=20\)</span>，<span
+class="math inline">\(k_{\max}=30\)</span>，控制器开销为 <span
+class="math inline">\(O(1)\)</span>。</p>
+<h2 id="实验结果-1">实验结果</h2>
+<p>在 Qwen-2.5-72B 和 LLaMA-2-70B 上测试，无训练情况下：</p>
+<table>
+<thead>
+<tr>
+<th>任务</th>
+<th>加速比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MT-Bench</td>
+<td>3.09×</td>
+</tr>
+<tr>
+<td>翻译</td>
+<td>3.38×</td>
+</tr>
+<tr>
+<td>数学</td>
+<td>4.02×</td>
+</tr>
+<tr>
+<td>摘要</td>
+<td>2.41×</td>
+</tr>
+<tr>
+<td><strong>平均</strong></td>
+<td><strong>3.08×</strong></td>
+</tr>
+</tbody>
+</table>
+<p>平均接受长度（MAT）达到 6.99，接近需要额外训练的 EAGLE-2。</p>
+<h2 id="局限">局限</h2>
+<p>CPS
+搜索引入了额外延迟；草稿长度需要提前指定上限；不同任务的接受率差异较大，ADL
+需要仔细调参。本质上，无训练意味着扩散模型和 Target Model
+之间没有显式对齐，只靠搜索策略弥合。</p>
+<hr />
+<h1
+id="specdiff-2用训练解决对齐问题">SpecDiff-2：用训练解决对齐问题</h1>
+<p><a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2511.00606">SpecDiff-2（2511.00606）</a>
+是对 DiffuSpec 的后续工作。它的判断也很明确：<strong>只在推理时靠 CPS
+搜索补救，治标不治本；扩散草稿器和自回归验证器之间的分布对齐，最好在训练阶段解决。</strong></p>
+<h2 id="两个对齐机制">两个对齐机制</h2>
+<p><strong>Streak-Distillation（训练阶段）</strong></p>
+<p>用一个代理验证器（贪心接受）来给扩散模型提供训练信号：模型生成的草稿，如果验证器连续接受了
+<span class="math inline">\(k\)</span> 个
+token，就给这条路径正梯度；否则给负梯度。本质是让扩散模型学会“生成验证器愿意接受的序列”。</p>
+<p>训练的草稿模型是现成的扩散语言模型（DiffuCoder-7B 或
+DiffuLLaMA-7B），在此基础上微调。</p>
+<p><strong>Self-Selection Acceptance（推理阶段）</strong></p>
+<p>推理时并行采样 <span class="math inline">\(K\)</span> 条草稿，用
+Target Model
+给每条草稿打分，选期望吞吐最高的那条提交验证。用少量额外的并行计算换更高的接受率。</p>
+<h2 id="实验结果-2">实验结果</h2>
+<p>在 Qwen2.5-72B 和 LLaMA-2-70B 上：</p>
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th>任务</th>
+<th>加速比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Qwen2.5-72B</td>
+<td>Math-500</td>
+<td><strong>4.62×</strong></td>
+</tr>
+<tr>
+<td>LLaMA-2-70B</td>
+<td>综合</td>
+<td>3.61×</td>
+</tr>
+<tr>
+<td><strong>平均</strong></td>
+<td></td>
+<td><strong>4.71×</strong></td>
+</tr>
+</tbody>
+</table>
+<p>相比 DiffuSpec 的 3.08× 提升了约 55%。</p>
+<h2 id="局限-1">局限</h2>
+<p>Streak-Distillation 训练成本较高（约 50k–60k GPU
+hours）；Self-Selection 需要并行生成 <span
+class="math inline">\(K\)</span> 条草稿，引入了额外的显存和计算开销；跨
+tokenizer 或跨模型族的迁移效果会下降。</p>
+<hr />
+<h1 id="现在的瓶颈与未来方向">现在的瓶颈与未来方向</h1>
+<h2 id="三者对比">三者对比</h2>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th></th>
+<th>DiffuSpec</th>
+<th>SpecDiff-2</th>
+<th>DFlash</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>是否需要训练</td>
+<td>否</td>
+<td>是（蒸馏）</td>
+<td>是（从头训练）</td>
+</tr>
+<tr>
+<td>对齐方式</td>
+<td>CPS 搜索（推理时）</td>
+<td>Streak-Distillation（训练时）</td>
+<td>Target特征直接注入 KV Cache</td>
+</tr>
+<tr>
+<td>草稿器深度</td>
+<td>独立扩散模型</td>
+<td>独立扩散模型</td>
+<td>5 层，深度嵌入 Target 语义</td>
+</tr>
+<tr>
+<td>平均加速比</td>
+<td>~3×</td>
+<td>~4.7×</td>
+<td><strong>~5×（Transformers）/ ~8×（SGLang B200）</strong></td>
+</tr>
+<tr>
+<td>核心思路</td>
+<td>扩散并行 + 搜索对齐</td>
+<td>扩散并行 + 训练对齐</td>
+<td>扩散并行 + 特征融合对齐</td>
+</tr>
+</tbody>
+</table>
+<p>DiffuSpec 和 SpecDiff-2
+都把扩散模型当作一个<strong>独立</strong>的草稿器，再通过外部手段（搜索或蒸馏）让它和
+Target Model 对齐。DFlash 走的是另一条路：让草稿器<strong>从设计上就依赖
+Target Model</strong>，把 Target 的中间特征直接注进 Draft
+的每一层，对齐问题在架构层面先解决掉。</p>
+<h2 id="瓶颈与可能方向">瓶颈与可能方向</h2>
+<p>DFlash 的加速比已经很高了，但这条路上还有几个很现实的瓶颈。</p>
+<p><strong>瓶颈一：高并发下加速比大幅下降</strong></p>
+<p>DFlash 的测试主要在并发 = 1（单请求）的场景下进行，此时 GPU
+计算资源充裕，并行草稿生成能发挥出最大收益。但在生产环境的高并发场景下，GPU
+已经被多个请求占满，草稿生成和验证都面临资源竞争，加速比会显著缩小。这是所有投机解码方法的共同瓶颈，不只是
+DFlash 的问题。</p>
+<p><strong>可能方向</strong>：针对批处理推理专门设计的扩散草稿器，或者结合
+Continuous Batching 的流水线调度，让草稿生成和验证在时间轴上错开。</p>
+<p><strong>瓶颈二：草稿长度 γ 需要手动调</strong></p>
+<p>当前 DFlash 的 block size（即 <span
+class="math inline">\(\gamma\)</span>）在训练时就固定了（8、10 或
+16）。不同任务、不同模型的最优 <span
+class="math inline">\(\gamma\)</span>
+差异很大：数学推理适合长草稿（接受率高），开放对话适合短草稿（接受率低、长草稿浪费）。训练时固定
+<span class="math inline">\(\gamma\)</span>
+意味着一个模型无法自适应。</p>
+<p><strong>可能方向</strong>：类似 DiffuSpec 的 ADL，在推理时动态调整
+<span class="math inline">\(\gamma\)</span>；或者训练时覆盖多种 block
+size，推理时按任务类型切换。</p>
+<p><strong>瓶颈三：扩散草稿器本身的训练成本</strong></p>
+<p>DFlash 的草稿器需要针对每个 Target Model 单独训练（6
+epochs，最大序列长度
+3072），不同模型族之间不能直接复用。这意味着每换一个 Target Model
+就要重新训练草稿器，部署成本较高。</p>
+<p><strong>可能方向</strong>：先做草稿器的通用预训练，在大规模语料上得到一个扩散基础草稿器；再用少量数据对特定
+Target Model 做轻量对齐，思路有点像 SpecDiff-2
+的蒸馏，但成本可以更低。</p>
+<p><strong>瓶颈四：显存占用增加</strong></p>
+<p>DFlash 的草稿器有 5 层，且每层 KV Cache 都要额外存储 Target Model
+提取的融合特征，显存占用高于 EAGLE-3 的 1
+层草稿器。在显存紧张的场景（如边缘设备或多路并发）下，这会限制可用的批大小。</p>
+<p><strong>可能方向</strong>：特征压缩（减少注入的 Target
+层数），或者量化草稿器的 KV Cache。</p>
+<h2
+id="更长远扩散与自回归的深度融合">更长远：扩散与自回归的深度融合</h2>
+<p>DFlash 本质上还是“自回归 Target + 扩散草稿”的两阶段结构，Target Model
+本身没有变。更激进的方向，是让 Target Model
+自身也具备并行生成能力，比如把它训练成一个混合自回归-扩散模型，在解码阶段直接输出多个
+token
+的联合分布，彻底消除对单独草稿器的依赖。这个方向目前还处于早期探索阶段（如
+D3LLM 等工作），离生产可用还有一段距离。</p>
+<hr />
+<h1 id="小结">小结</h1>
+<p>DFlash
+的核心洞见其实很朴素：<strong>投机解码的草稿器不必是自回归的，只要能快速生成多个候选
+token，就能拿来做草稿。</strong></p>
+<p>块扩散恰好提供了这个能力：块内并行生成 <span
+class="math inline">\(\gamma\)</span> 个 token，草稿成本和 <span
+class="math inline">\(\gamma\)</span> 基本脱钩。再加上对 Target Model
+深层特征的全层 KV Cache 注入，Draft Model
+的预测质量明显上去了，平均接受长度也从 EAGLE-3 的 3.4 提升到 6.49。</p>
+<p>如果把 EAGLE 系列和 DFlash
+放在一起看，主线其实一直没变：<strong>尽量减少 Target Model
+的前向次数</strong>。区别只在于，EAGLE 主要靠更好的草稿树；DFlash
+则同时压低草稿成本、抬高草稿质量，于是把加速比又往前推了一截。</p>
+<hr />
+<h1 id="参考文献">参考文献</h1>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2602.06036">DFlash（2602.06036）</a>
+— 本文主角</li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2502.09992">LLaDA（2502.09992）</a> —
+掩码扩散语言模型</li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2503.09573">Block Diffusion /
+BD3-LM（2503.09573）</a> — 块间 AR、块内扩散</li>
+<li><a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2510.02358">DiffuSpec（2510.02358）</a> —
+无训练扩散草稿器 + CPS</li>
+<li><a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/2511.00606">SpecDiff-2（2511.00606）</a> —
+Streak-Distillation 对齐训练</li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2401.15077">EAGLE（2401.15077）</a> —
+特征级自回归草稿器</li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2406.16858">EAGLE-2（2406.16858）</a>
+— 动态草稿树</li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2503.01840">EAGLE-3（2503.01840）</a>
+— 多层特征融合</li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2211.17192">Speculative
+Decoding（2211.17192）</a> — 投机解码原论文</li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2601.07568">D3LLM（2601.07568）</a> —
+自回归-扩散深度融合探索</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>wnma3mz
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://wnma3mz.github.io/2026/04/12/ai/llm/inference/LLM%E7%9A%84%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F-DFlash/" title="LLM的推理加速-DFlash：用扩散模型做投机解码">https://wnma3mz.github.io/2026/04/12/ai/llm/inference/LLM的推理加速-DFlash/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/hexo_blog/tags/Speculative-Decoding/" rel="tag"># Speculative Decoding</a>
+              <a href="/hexo_blog/tags/Diffusion/" rel="tag"># Diffusion</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2026/04/08/ai/deep-learning/FFN%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0%E4%B8%8EMoE%E6%BC%94%E8%BF%9B/" rel="prev" title="FFN 的激活函数和 MLP 演进">
+      <i class="fa fa-chevron-left"></i> FFN 的激活函数和 MLP 演进
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/hexo_blog/2026/04/12/humanized/" rel="next" title="LLM的推理加速-DFlash：用扩散模型做投机解码">
+      LLM的推理加速-DFlash：用扩散模型做投机解码 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86"><span class="nav-text">前置知识</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#eagle-%E7%9A%84%E5%A4%A9%E8%8A%B1%E6%9D%BF"><span class="nav-text">EAGLE 的天花板</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%89%A9%E6%95%A3%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B"><span class="nav-text">扩散语言模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#llada%E4%BB%8E-mask-%E5%87%BA%E5%8F%91%E7%9A%84%E6%89%A9%E6%95%A3%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B"><span class="nav-text">LLaDA：从 Mask
+出发的扩散语言模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83"><span class="nav-text">训练</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A8%E7%90%86"><span class="nav-text">推理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9D%97%E6%89%A9%E6%95%A3%E6%8A%8A%E8%87%AA%E5%9B%9E%E5%BD%92%E5%92%8C%E6%89%A9%E6%95%A3%E8%9E%8D%E5%90%88%E8%B5%B7%E6%9D%A5"><span class="nav-text">块扩散：把自回归和扩散融合起来</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%80%9D%E8%B7%AF"><span class="nav-text">核心思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83-1"><span class="nav-text">训练</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#attention-mask-%E7%9A%84%E7%B2%BE%E7%A1%AE%E8%AE%BE%E8%AE%A1"><span class="nav-text">Attention Mask 的精确设计</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83%E6%97%B6%E6%AF%8F%E4%B8%AA-block-%E7%8B%AC%E7%AB%8B%E9%87%87%E6%A0%B7%E5%99%AA%E5%A3%B0%E6%AF%94%E4%BE%8B"><span class="nav-text">训练时每个 block
+独立采样噪声比例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%99%AA%E5%A3%B0%E8%B0%83%E5%BA%A6%E6%8C%89-block-%E5%A4%A7%E5%B0%8F%E4%BC%98%E5%8C%96%E8%A3%81%E5%89%AA%E8%8C%83%E5%9B%B4"><span class="nav-text">噪声调度：按 block
+大小优化裁剪范围</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A8%E7%90%86kv-cache-%E8%B7%A8-block-%E4%BC%A0%E9%80%92"><span class="nav-text">推理：KV Cache 跨 block 传递</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8E%E7%BA%AF%E6%89%A9%E6%95%A3%E7%9A%84%E5%AF%B9%E6%AF%94"><span class="nav-text">与纯扩散的对比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E6%9D%83%E8%A1%A1"><span class="nav-text">关键权衡</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#dflash%E6%8A%8A%E5%9D%97%E6%89%A9%E6%95%A3%E5%8F%98%E6%88%90%E6%8A%95%E6%9C%BA%E8%A7%A3%E7%A0%81%E7%9A%84%E8%8D%89%E7%A8%BF%E5%99%A8"><span class="nav-text">DFlash：把块扩散变成投机解码的草稿器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1"><span class="nav-text">架构设计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83%E4%BD%8D%E7%BD%AE%E6%9D%83%E9%87%8D%E8%A1%B0%E5%87%8F"><span class="nav-text">训练：位置权重衰减</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AA%8C%E8%AF%81%E5%AE%8C%E5%85%A8%E5%85%BC%E5%AE%B9%E6%A0%87%E5%87%86%E6%8A%95%E6%9C%BA%E8%A7%A3%E7%A0%81"><span class="nav-text">验证：完全兼容标准投机解码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88-5-%E5%B1%82-draft-model-%E6%AF%94-1-%E5%B1%82%E6%9B%B4%E5%BF%AB"><span class="nav-text">为什么 5 层 Draft Model 比
+1 层更快？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C"><span class="nav-text">实验结果</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%B3%E5%9D%87%E6%8E%A5%E5%8F%97%E9%95%BF%E5%BA%A6aal"><span class="nav-text">平均接受长度（AAL）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AB%AF%E5%88%B0%E7%AB%AF%E5%8A%A0%E9%80%9F%E6%AF%94"><span class="nav-text">端到端加速比</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#diffuspec%E6%97%A0%E9%9C%80%E8%AE%AD%E7%BB%83%E7%9A%84%E6%89%A9%E6%95%A3%E8%8D%89%E7%A8%BF%E5%99%A8"><span class="nav-text">DiffuSpec：无需训练的扩散草稿器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E9%97%AE%E9%A2%98%E6%89%A9%E6%95%A3%E6%98%AF%E5%8F%8C%E5%90%91%E7%9A%84%E9%AA%8C%E8%AF%81%E6%98%AF%E5%8D%95%E5%90%91%E7%9A%84"><span class="nav-text">核心问题：扩散是双向的，验证是单向的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C-1"><span class="nav-text">实验结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B1%80%E9%99%90"><span class="nav-text">局限</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#specdiff-2%E7%94%A8%E8%AE%AD%E7%BB%83%E8%A7%A3%E5%86%B3%E5%AF%B9%E9%BD%90%E9%97%AE%E9%A2%98"><span class="nav-text">SpecDiff-2：用训练解决对齐问题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%A4%E4%B8%AA%E5%AF%B9%E9%BD%90%E6%9C%BA%E5%88%B6"><span class="nav-text">两个对齐机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C-2"><span class="nav-text">实验结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B1%80%E9%99%90-1"><span class="nav-text">局限</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%8E%B0%E5%9C%A8%E7%9A%84%E7%93%B6%E9%A2%88%E4%B8%8E%E6%9C%AA%E6%9D%A5%E6%96%B9%E5%90%91"><span class="nav-text">现在的瓶颈与未来方向</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E8%80%85%E5%AF%B9%E6%AF%94"><span class="nav-text">三者对比</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%93%B6%E9%A2%88%E4%B8%8E%E5%8F%AF%E8%83%BD%E6%96%B9%E5%90%91"><span class="nav-text">瓶颈与可能方向</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%B4%E9%95%BF%E8%BF%9C%E6%89%A9%E6%95%A3%E4%B8%8E%E8%87%AA%E5%9B%9E%E5%BD%92%E7%9A%84%E6%B7%B1%E5%BA%A6%E8%9E%8D%E5%90%88"><span class="nav-text">更长远：扩散与自回归的深度融合</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-text">小结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-text">参考文献</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="wnma3mz"
+      src="https://avatars.githubusercontent.com/u/23001152?s=460&u=dacc012cd237ac86458d888b3723d1d495cb1aa4&v=4">
+  <p class="site-author-name" itemprop="name">wnma3mz</p>
+  <div class="site-description" itemprop="description">Day Day Up</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/hexo_blog/archives/">
+        
+          <span class="site-state-item-count">92</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/hexo_blog/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/hexo_blog/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wnma3mz" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wnma3mz" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wnma3mz@gmail.com" title="E-Mail → mailto:wnma3mz@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wnma3mz</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='99' src="/hexo_blog/lib/canvas-nest/canvas-nest-nomobile.min.js"></script>
+  <script src="/hexo_blog/lib/anime.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.min.js"></script>
+  <script src="/hexo_blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/hexo_blog/js/utils.js"></script>
+
+<script src="/hexo_blog/js/motion.js"></script>
+
+
+<script src="/hexo_blog/js/schemes/muse.js"></script>
+
+
+<script src="/hexo_blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/hexo_blog/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme    : 'forest',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
