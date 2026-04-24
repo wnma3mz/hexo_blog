@@ -28,7 +28,7 @@
 <meta property="og:description" content="EAGLE-3 的自回归草稿器卡在了“速度”和“质量”的对立里：想让草稿更准，就得加深模型；模型越深，串行生成的代价越大。DFlash 的回答很直接：用块扩散模型替换自回归草稿器，单次前向传播并行生成整个 block，让草稿成本与投机长度彻底脱钩。相比 EAGLE-3，加速约 2.5×，平均接受长度提升约 2.2×。  论文：https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;2602.06036 代码：">
 <meta property="og:locale">
 <meta property="article:published_time" content="2026-04-12T06:00:00.000Z">
-<meta property="article:modified_time" content="2026-04-12T08:00:39.287Z">
+<meta property="article:modified_time" content="2026-04-24T14:36:10.118Z">
 <meta property="article:author" content="wnma3mz">
 <meta property="article:tag" content="Speculative Decoding">
 <meta property="article:tag" content="Diffusion">
@@ -221,11 +221,17 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建于：2026-04-12 14:00:00 / عُدل：16:00:39" itemprop="dateCreated datePublished" datetime="2026-04-12T14:00:00+08:00">2026-04-12</time>
+              <time title="创建于：2026-04-12 14:00:00" itemprop="dateCreated datePublished" datetime="2026-04-12T14:00:00+08:00">2026-04-12</time>
 
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="عُدل：2026-04-24 22:36:10" itemprop="dateModified" datetime="2026-04-24T22:36:10+08:00">2026-04-24</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -539,16 +545,16 @@ class="math inline">\(T \times t_{\text{full}}\)</span>，并不比 EAGLE
 的不确定性小得多，一步预测往往就够。这和块扩散里“前置 block
 已完成，并作为当前 block 的条件”其实是同一类结构。</p>
 <p>所以 DFlash 只保留块扩散最有用的部分：<strong>attention
-结构</strong>。块内双向注意力负责并行预测 <span
-class="math inline">\(\gamma\)</span>
-个位置，块间因果结构负责和投机解码的左到右验证对齐。至于扩散里的加噪、去噪和多轮迭代，在这个场景里都被拿掉了。</p>
+结构</strong>和“mask 一个
+block、单步并行补全”的生成范式。块内双向注意力负责并行预测多个位置，块间因果结构负责和投机解码的左到右验证对齐。多轮扩散里的反复加噪、去噪和迭代调度被拿掉了，但推理时仍然会用
+mask token 作为当前 block 的占位符。</p>
 <p>因此，DFlash 的 Draft Model 虽然沿用了块扩散的 attention
-架构，但<strong>训练目标是直接的 token
-级交叉熵，推理时也是单次前向传播直接取
-logits</strong>，没有任何迭代去噪步骤。它本质上是一个借用了块扩散
-attention mask 的并行预测器，草稿成本真正压缩到 <span
-class="math inline">\(1 \times t_{\text{draft}}\)</span>，与 <span
-class="math inline">\(\gamma\)</span> 无关。</p>
+架构，但<strong>训练目标是直接的 token 级交叉熵，推理时只做一次 masked
+block prediction</strong>，而不是 <span class="math inline">\(T\)</span>
+步迭代去噪。它本质上是一个借用了块扩散 attention mask
+的并行预测器，草稿成本真正压缩到 <span class="math inline">\(1 \times
+t_{\text{draft}}\)</span>，与 <span
+class="math inline">\(\gamma\)</span> 基本脱钩。</p>
 <figure>
 <img
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-DFlash/fig3_draft_cost_compare.svg"
@@ -560,7 +566,14 @@ alt="投机解码草稿成本对比（γ=8 示意）" />
 <p>DFlash 的 Draft Model 是一个 <strong>5 层
 Transformer</strong>（Qwen3-Coder-30B 使用 8 层），与 Target Model 共享
 token embedding 和 LM Head。</p>
-<p><strong>关键创新：多层特征注入到每层 KV Cache</strong></p>
+<p>初始化上，它也不是一个完全独立的小语言模型。论文训练细节明确写到：<strong>token
+embedding 和 LM Head 直接与 Target Model
+共享，并在训练中保持冻结，只更新 Draft Transformer
+层本身</strong>。这样做有两个好处：一是显著减少可训练参数；二是让草稿器天然工作在和
+Target 一致的表示空间里，更像一个贴在 Target 上方的轻量 diffusion
+adapter，而不是从零学起的第二个 LM。</p>
+<p><strong>关键创新：多层特征注入到每层 Attention 的 K/V
+上下文</strong></p>
 <p><img
 src="https://raw.githubusercontent.com/wnma3mz/blog_posts/master/imgs/LLM的推理加速-DFlash/arch.png" /></p>
 <p>最朴素的做法，是把输入直接送进 Draft Model，让它自己完成并行预测。但
@@ -568,28 +581,32 @@ Draft Model 只有 5 层，自身表达能力有限；反过来看，Target Mode
 层之后，中间层隐向量里已经带着很丰富的上下文语义，例如词性、语义关联和长程依赖。这些信息，Draft
 Model 自己很难重新推一遍，Target Model 却已经算好了。</p>
 <p>DFlash 的做法就是把这些中间结果直接“喂”进 Draft
-Model，相当于给它开一条捷径。而且不是只注入一次，而是注入到每一层 KV
+Model，相当于给它开一条捷径。而且不是只在输入端注入一次，而是把它们作为额外的
+K/V 上下文注入到每一层 Attention
 里，让这条捷径在每一层都持续生效，不会随着深度增加而衰减。</p>
 <p>以 Target Model 有 32 层、hidden_size=4096、上下文长度为 10
-为例，具体步骤如下：</p>
-<p><strong>Step 1：从 Target Model 提取 3 个中间层的隐向量</strong></p>
-<p>在第 2 层到倒数第 3 层之间均匀采样 3 层（例如第 2、16、31
-层），每层输出形状为 <code>[batch, 10, 4096]</code>，共 3 份。</p>
+为例，具体步骤如下。论文主实验通常提取 <strong>5 个</strong> Target
+中间层；开源实现里这组层位也是可配置的：</p>
+<p><strong>Step 1：从 Target Model 提取若干个中间层的隐向量</strong></p>
+<p>在第 2 层到倒数第 3 层之间均匀采样若干层。论文默认是 5
+层，从浅层到深层均匀覆盖；代码里这组 <code>target_layer_ids</code>
+也可以由配置覆盖。每层输出形状都是 <code>[batch, 10, 4096]</code>。</p>
 <p><strong>Step 2：拼接 + Projection 降维</strong></p>
-<p>把 3 份隐向量沿特征维度拼接：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[batch, 10, 4096] × 3  →  concat  →  [batch, 10, 12288]</span><br><span class="line">                          Proj(12288→4096)</span><br><span class="line">                          →  [batch, 10, 4096]   # 融合特征 g</span><br></pre></td></tr></table></figure>
-<p>Projection 是一个轻量线性层，把三层语义压缩回单份
-hidden_size，不引入额外参数量。</p>
-<p><strong>Step 3：注入到 Draft Model 每一层的 KV Cache</strong></p>
+<p>以提取 5 层为例，把 5 份隐向量沿特征维度拼接：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[batch, 10, 4096] × 5  →  concat  →  [batch, 10, 20480]</span><br><span class="line">                          Proj(20480→4096)</span><br><span class="line">                          →  [batch, 10, 4096]   # 融合特征 g</span><br></pre></td></tr></table></figure>
+<p>Projection 是一个轻量线性层，把多层语义压缩回单份
+hidden_size，额外参数量不大，但能把浅层到深层的上下文信息压成一份更容易使用的条件特征。</p>
+<p><strong>Step 3：注入到 Draft Model 每一层的 K/V 序列</strong></p>
 <p>这里的注入方式值得细说。如果只是用一个没有注入的块扩散草稿器，Draft
 Model 每层的 Attention 只能在 <code>[M]</code> tokens 之间互相
-attend，外加前置 block 的 KV Cache：</p>
+attend，外加前缀 token 提供的历史 K/V：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">无注入时：</span><br><span class="line">  Query:  Q = [q₁, q₂, q₃]        ← 来自 [M][M][M]</span><br><span class="line">  Key:    K = [k₁, k₂, k₃]        ← 来自 [M][M][M] 自身</span><br><span class="line">  Value:  V = [v₁, v₂, v₃]</span><br><span class="line"></span><br><span class="line">  每个 [M] 只能 attend 到其他 [M]，看不到 Target 的语义</span><br></pre></td></tr></table></figure>
-<p>DFlash 把融合特征 <span class="math inline">\(g\)</span> 额外投影成
-<span class="math inline">\(K_g\)</span>、<span
-class="math inline">\(V_g\)</span>，并<strong>前置（prepend）到每一层 KV
-Cache 的头部</strong>：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">DFlash 注入后：</span><br><span class="line">  Query:  Q  = [q₁, q₂, q₃]                          ← 不变</span><br><span class="line">  Key:    K  = [k_g₁, k_g₂, k_g₃,  k₁, k₂, k₃]      ← Target特征在前，序列本身在后</span><br><span class="line">  Value:  V  = [v_g₁, v_g₂, v_g₃,  v₁, v₂, v₃]       （论文选择 prepend，append 效果也一样，</span><br><span class="line">                                                         softmax 对 K 的排列顺序不敏感）</span><br><span class="line"></span><br><span class="line">  每个 [M] 的 Query 打分对象变成 6 个 key，</span><br><span class="line">  Target 语义通过 K/V 通道直接参与每一层的 Attention 权重计算</span><br></pre></td></tr></table></figure>
+<p>DFlash 的做法更准确地说，是把融合特征 <span
+class="math inline">\(g\)</span> 当作一段额外上下文，与当前 block 的
+hidden states 分别经过同一套 K/V
+投影后，再<strong>前置（prepend）到每一层注意力的 K/V
+序列前面</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">DFlash 注入后：</span><br><span class="line">  Query:  Q  = [q₁, q₂, q₃]                     ← 当前 block 的查询</span><br><span class="line">  Key:    K  = [k_g₁, k_g₂, k_g₃, k₁, k₂, k₃]  ← Target 特征在前，block 自身在后</span><br><span class="line">  Value:  V  = [v_g₁, v_g₂, v_g₃, v₁, v₂, v₃]</span><br><span class="line"></span><br><span class="line">  每个 [M] 的 Query 打分对象变成 6 个 key，</span><br><span class="line">  Target 语义通过 K/V 通道直接参与每一层的 Attention 权重计算</span><br></pre></td></tr></table></figure>
 <p>这和 EAGLE-3 把 Target 特征拼在 input embedding
 上的做法有本质区别：EAGLE-3 的特征只影响第 1
 层输入，随着层加深会逐渐被稀释；DFlash 在<strong>每一层</strong>都把
@@ -613,7 +630,7 @@ Target 特征放进 K/V，每一层 Attention 都能直接“看到” Target
 <tr>
 <td>特征注入位置</td>
 <td>只在 Draft Model 输入端（一次）</td>
-<td>Draft Model <strong>每一层</strong> KV Cache</td>
+<td>Draft Model <strong>每一层 Attention 的 K/V 上下文</strong></td>
 </tr>
 <tr>
 <td>随层深度传播</td>
@@ -636,6 +653,13 @@ alt="DFlash 架构：Target Model 特征注入 Draft Model 各层" />
 <figcaption aria-hidden="true">DFlash 架构：Target Model 特征注入 Draft
 Model 各层</figcaption>
 </figure>
+<h3 id="核心推理伪代码">核心推理伪代码</h3>
+<p>把实现抽成几行，其实就是下面这件事：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">next_tok, hidden = Target.prefill(prefix)          <span class="comment"># Target 先给出块首 token，并提取中间层特征</span></span><br><span class="line"><span class="keyword">while</span> <span class="keyword">not</span> stop:</span><br><span class="line">    g = Fuse(SelectHidden(hidden))                 <span class="comment"># 多层 Target 特征融合</span></span><br><span class="line">    block = [next_tok] + [MASK] * (gamma - <span class="number">1</span>)</span><br><span class="line">    draft_tail = Draft(block, context=g)           <span class="comment"># 并行预测后 gamma-1 个位置</span></span><br><span class="line">    posterior = Target.verify([next_tok] + draft_tail)</span><br><span class="line">    accept longest prefix where draft == posterior[:-<span class="number">1</span>]</span><br><span class="line">    next_tok = posterior[first_rejected_or_bonus]  <span class="comment"># 用 Target token 继续下一轮</span></span><br></pre></td></tr></table></figure>
+<p>真正的优化点其实就两个：<strong>把块首 token 交给 Target
+锚定</strong>，以及<strong>把 Target 的中间层语义常驻注入 Draft 的每一层
+Attention</strong>。前者让单步块预测更稳，后者让一个很浅的 Draft
+也能拿到足够强的上下文条件。</p>
 <h2 id="训练位置权重衰减">训练：位置权重衰减</h2>
 <p>训练时，Draft Model 需要预测 block 内 <span
 class="math inline">\(\gamma\)</span> 个
@@ -666,24 +690,44 @@ token。越靠后的位置越难预测，且实际上接受率也更低。DFlash
 </tr>
 </tbody>
 </table>
-<p>训练还使用了<strong>块间稀疏 Attention Mask</strong>：block 内全局
-Attention，block 间只能看到前一个 block，确保训练与推理的 Attention
-模式完全一致。</p>
+<p>训练上，DFlash
+还有一个很关键、但论文正文里一句话容易看漏的设计：<strong>随机锚点（random
+anchors）</strong>。它不是像标准块扩散那样把 response 均匀切成
+block，再在每个 block 里随机 mask 若干位置；而是从 response 里随机采样
+anchor token，把这个 anchor 作为 block 的第一个<strong>干净
+token</strong>，然后把后面 <span class="math inline">\(\gamma -
+1\)</span> 个位置 mask 掉，让 Draft 一次并行预测。这样训练出来的
+Draft，正好对应推理时“先由 Target 给出一个 bonus token，再并行补后续
+block”的行为。</p>
+<p>训练时，所有这样的 masked blocks 会拼成一个大序列，用稀疏 attention
+一起算：<strong>同一 block 内双向注意力，不同 block
+之间互相不可见，同时都可以看到对应注入的 Target context
+feature</strong>。这样既保持了训练-推理对齐，又能用 Flex Attention
+一次性高效训练很多 block。</p>
 <p>训练超参数：6 epochs，AdamW，学习率 <span
 class="math inline">\(6\times 10^{-4}\)</span>，最大序列长度 3072
-tokens，每个序列随机采样 512 个 anchor 位置。</p>
-<h2 id="验证完全兼容标准投机解码">验证：完全兼容标准投机解码</h2>
-<p>DFlash
-不修改任何验证步骤，直接套用<strong>标准拒绝采样</strong>（Speculative
-Decoding 原论文的接受算法）：</p>
+tokens（Qwen3-Coder 为 4096）；<strong>每条序列随机采样 512 个 anchor
+位置</strong>。论文还提到训练既可以在线进行（每步现算 Target hidden
+feature），也可以离线缓存这些特征再训练 Draft，以减小开销。</p>
+<h2
+id="验证沿用投机解码的左到右验证">验证：沿用投机解码的左到右验证</h2>
+<p>论文层面，DFlash 仍然属于 <strong>lossless speculative
+decoding</strong>：最终输出始终由 Target Model
+的验证过程约束。但如果对照开源实现，表达上最好不要直接把它写成“原始
+speculative sampling
+论文里的标准拒绝采样公式”。当前代码更接近下面这套流程：</p>
 <ol type="1">
-<li>Draft Model <strong>单次前向传播</strong>并行生成 <span
-class="math inline">\(\gamma\)</span> 个候选 token（一条线性序列）</li>
-<li>Target Model 并行计算每个位置的 logits</li>
-<li>按位从左到右验证，遇到第一个被拒绝的 token 则截断</li>
-<li>接受率保证：输出分布与 Target Model 直接自回归完全等价</li>
+<li>Target Model 先给出当前 block 的第一个 token</li>
+<li>Draft Model 以这个干净 token
+为锚点，<strong>单次前向传播</strong>并行补出后续 <span
+class="math inline">\(\gamma - 1\)</span> 个候选位置</li>
+<li>Target Model 对整段 block 并行计算 posterior</li>
+<li>按位从左到右接受与 posterior 一致的最长前缀；一旦不一致，就用 Target
+的 token 继续下一轮</li>
 </ol>
-<p>这是<strong>无损加速</strong>，没有任何质量妥协。</p>
+<p>所以更稳妥的理解是：<strong>DFlash 沿用了投机解码“由 Target
+验证并兜底”的无损框架，但开源实现采用的是最长前缀接受式的具体工程实现。</strong>
+这样写既保留了论文主旨，也更贴近代码。</p>
 <p>把它和 EAGLE 系列放在一起看会更清楚：自回归草稿器每步只能生成一个
 token。为了提高覆盖率，只能在每个位置继续分叉，长成一棵草稿树，再用 tree
 attention 并行验证整棵树。DFlash 一步直接输出 <span
@@ -999,7 +1043,7 @@ tokenizer 或跨模型族的迁移效果会下降。</p>
 <td>对齐方式</td>
 <td>CPS 搜索（推理时）</td>
 <td>Streak-Distillation（训练时）</td>
-<td>Target特征直接注入 KV Cache</td>
+<td>Target 特征直接注入每层 Attention 的 K/V</td>
 </tr>
 <tr>
 <td>草稿器深度</td>
@@ -1055,11 +1099,11 @@ epochs，最大序列长度
 Target Model 做轻量对齐，思路有点像 SpecDiff-2
 的蒸馏，但成本可以更低。</p>
 <p><strong>瓶颈四：显存占用增加</strong></p>
-<p>DFlash 的草稿器有 5 层，且每层 KV Cache 都要额外存储 Target Model
-提取的融合特征，显存占用高于 EAGLE-3 的 1
+<p>DFlash 的草稿器有 5 层，且每层 Attention 都要额外携带由 Target
+特征投影得到的 K/V 上下文，显存占用高于 EAGLE-3 的 1
 层草稿器。在显存紧张的场景（如边缘设备或多路并发）下，这会限制可用的批大小。</p>
 <p><strong>可能方向</strong>：特征压缩（减少注入的 Target
-层数），或者量化草稿器的 KV Cache。</p>
+层数），或者压缩草稿器里额外的 K/V 上下文状态。</p>
 <h2
 id="更长远扩散与自回归的深度融合">更长远：扩散与自回归的深度融合</h2>
 <p>DFlash 本质上还是“自回归 Target + 扩散草稿”的两阶段结构，Target Model
@@ -1076,7 +1120,7 @@ token，就能拿来做草稿。</strong></p>
 <p>块扩散恰好提供了这个能力：块内并行生成 <span
 class="math inline">\(\gamma\)</span> 个 token，草稿成本和 <span
 class="math inline">\(\gamma\)</span> 基本脱钩。再加上对 Target Model
-深层特征的全层 KV Cache 注入，Draft Model
+深层特征的全层 K/V 上下文注入，Draft Model
 的预测质量明显上去了，平均接受长度也从 EAGLE-3 的 3.4 提升到 6.49。</p>
 <p>如果把 EAGLE 系列和 DFlash
 放在一起看，主线其实一直没变：<strong>尽量减少 Target Model
@@ -1209,7 +1253,7 @@ Decoding（2211.17192）</a> — 投机解码原论文</li>
           <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86"><span class="nav-text">前置知识</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#eagle-%E7%9A%84%E5%A4%A9%E8%8A%B1%E6%9D%BF"><span class="nav-text">EAGLE 的天花板</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%89%A9%E6%95%A3%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B"><span class="nav-text">扩散语言模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#llada%E4%BB%8E-mask-%E5%87%BA%E5%8F%91%E7%9A%84%E6%89%A9%E6%95%A3%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B"><span class="nav-text">LLaDA：从 Mask
 出发的扩散语言模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83"><span class="nav-text">训练</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A8%E7%90%86"><span class="nav-text">推理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9D%97%E6%89%A9%E6%95%A3%E6%8A%8A%E8%87%AA%E5%9B%9E%E5%BD%92%E5%92%8C%E6%89%A9%E6%95%A3%E8%9E%8D%E5%90%88%E8%B5%B7%E6%9D%A5"><span class="nav-text">块扩散：把自回归和扩散融合起来</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%80%9D%E8%B7%AF"><span class="nav-text">核心思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83-1"><span class="nav-text">训练</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#attention-mask-%E7%9A%84%E7%B2%BE%E7%A1%AE%E8%AE%BE%E8%AE%A1"><span class="nav-text">Attention Mask 的精确设计</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83%E6%97%B6%E6%AF%8F%E4%B8%AA-block-%E7%8B%AC%E7%AB%8B%E9%87%87%E6%A0%B7%E5%99%AA%E5%A3%B0%E6%AF%94%E4%BE%8B"><span class="nav-text">训练时每个 block
 独立采样噪声比例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%99%AA%E5%A3%B0%E8%B0%83%E5%BA%A6%E6%8C%89-block-%E5%A4%A7%E5%B0%8F%E4%BC%98%E5%8C%96%E8%A3%81%E5%89%AA%E8%8C%83%E5%9B%B4"><span class="nav-text">噪声调度：按 block
-大小优化裁剪范围</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A8%E7%90%86kv-cache-%E8%B7%A8-block-%E4%BC%A0%E9%80%92"><span class="nav-text">推理：KV Cache 跨 block 传递</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8E%E7%BA%AF%E6%89%A9%E6%95%A3%E7%9A%84%E5%AF%B9%E6%AF%94"><span class="nav-text">与纯扩散的对比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E6%9D%83%E8%A1%A1"><span class="nav-text">关键权衡</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#dflash%E6%8A%8A%E5%9D%97%E6%89%A9%E6%95%A3%E5%8F%98%E6%88%90%E6%8A%95%E6%9C%BA%E8%A7%A3%E7%A0%81%E7%9A%84%E8%8D%89%E7%A8%BF%E5%99%A8"><span class="nav-text">DFlash：把块扩散变成投机解码的草稿器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1"><span class="nav-text">架构设计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83%E4%BD%8D%E7%BD%AE%E6%9D%83%E9%87%8D%E8%A1%B0%E5%87%8F"><span class="nav-text">训练：位置权重衰减</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AA%8C%E8%AF%81%E5%AE%8C%E5%85%A8%E5%85%BC%E5%AE%B9%E6%A0%87%E5%87%86%E6%8A%95%E6%9C%BA%E8%A7%A3%E7%A0%81"><span class="nav-text">验证：完全兼容标准投机解码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88-5-%E5%B1%82-draft-model-%E6%AF%94-1-%E5%B1%82%E6%9B%B4%E5%BF%AB"><span class="nav-text">为什么 5 层 Draft Model 比
+大小优化裁剪范围</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A8%E7%90%86kv-cache-%E8%B7%A8-block-%E4%BC%A0%E9%80%92"><span class="nav-text">推理：KV Cache 跨 block 传递</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8E%E7%BA%AF%E6%89%A9%E6%95%A3%E7%9A%84%E5%AF%B9%E6%AF%94"><span class="nav-text">与纯扩散的对比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E6%9D%83%E8%A1%A1"><span class="nav-text">关键权衡</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#dflash%E6%8A%8A%E5%9D%97%E6%89%A9%E6%95%A3%E5%8F%98%E6%88%90%E6%8A%95%E6%9C%BA%E8%A7%A3%E7%A0%81%E7%9A%84%E8%8D%89%E7%A8%BF%E5%99%A8"><span class="nav-text">DFlash：把块扩散变成投机解码的草稿器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1"><span class="nav-text">架构设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%8E%A8%E7%90%86%E4%BC%AA%E4%BB%A3%E7%A0%81"><span class="nav-text">核心推理伪代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83%E4%BD%8D%E7%BD%AE%E6%9D%83%E9%87%8D%E8%A1%B0%E5%87%8F"><span class="nav-text">训练：位置权重衰减</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AA%8C%E8%AF%81%E6%B2%BF%E7%94%A8%E6%8A%95%E6%9C%BA%E8%A7%A3%E7%A0%81%E7%9A%84%E5%B7%A6%E5%88%B0%E5%8F%B3%E9%AA%8C%E8%AF%81"><span class="nav-text">验证：沿用投机解码的左到右验证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88-5-%E5%B1%82-draft-model-%E6%AF%94-1-%E5%B1%82%E6%9B%B4%E5%BF%AB"><span class="nav-text">为什么 5 层 Draft Model 比
 1 层更快？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C"><span class="nav-text">实验结果</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%B3%E5%9D%87%E6%8E%A5%E5%8F%97%E9%95%BF%E5%BA%A6aal"><span class="nav-text">平均接受长度（AAL）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AB%AF%E5%88%B0%E7%AB%AF%E5%8A%A0%E9%80%9F%E6%AF%94"><span class="nav-text">端到端加速比</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#diffuspec%E6%97%A0%E9%9C%80%E8%AE%AD%E7%BB%83%E7%9A%84%E6%89%A9%E6%95%A3%E8%8D%89%E7%A8%BF%E5%99%A8"><span class="nav-text">DiffuSpec：无需训练的扩散草稿器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E9%97%AE%E9%A2%98%E6%89%A9%E6%95%A3%E6%98%AF%E5%8F%8C%E5%90%91%E7%9A%84%E9%AA%8C%E8%AF%81%E6%98%AF%E5%8D%95%E5%90%91%E7%9A%84"><span class="nav-text">核心问题：扩散是双向的，验证是单向的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C-1"><span class="nav-text">实验结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B1%80%E9%99%90"><span class="nav-text">局限</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#specdiff-2%E7%94%A8%E8%AE%AD%E7%BB%83%E8%A7%A3%E5%86%B3%E5%AF%B9%E9%BD%90%E9%97%AE%E9%A2%98"><span class="nav-text">SpecDiff-2：用训练解决对齐问题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%A4%E4%B8%AA%E5%AF%B9%E9%BD%90%E6%9C%BA%E5%88%B6"><span class="nav-text">两个对齐机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C-2"><span class="nav-text">实验结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B1%80%E9%99%90-1"><span class="nav-text">局限</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%8E%B0%E5%9C%A8%E7%9A%84%E7%93%B6%E9%A2%88%E4%B8%8E%E6%9C%AA%E6%9D%A5%E6%96%B9%E5%90%91"><span class="nav-text">现在的瓶颈与未来方向</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E8%80%85%E5%AF%B9%E6%AF%94"><span class="nav-text">三者对比</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%93%B6%E9%A2%88%E4%B8%8E%E5%8F%AF%E8%83%BD%E6%96%B9%E5%90%91"><span class="nav-text">瓶颈与可能方向</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%B4%E9%95%BF%E8%BF%9C%E6%89%A9%E6%95%A3%E4%B8%8E%E8%87%AA%E5%9B%9E%E5%BD%92%E7%9A%84%E6%B7%B1%E5%BA%A6%E8%9E%8D%E5%90%88"><span class="nav-text">更长远：扩散与自回归的深度融合</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-text">小结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-text">参考文献</span></a></li></ol></div>
       </div>
       <!--/noindex-->
